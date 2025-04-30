@@ -26,23 +26,23 @@ class MainScreen(tk.Frame):
         frame_bottom = tk.Frame(self, bg="#130f26")
         frame_bottom.grid(row=2, column=0)
 
-        label = tk.Label(frame_container, text="- BALLISTIC -", width=25, height=2, font=("Arial", 50, "bold"), fg="white", bg="#1a0869")
+        label = tk.Label(frame_container, text="- Skirmish Engine -", width=25, height=2, font=("Arial", 50, "bold"), fg="white", bg="#1a0869")
         label.pack(pady=10)
 
         btn_character_select = tk.Button(
-            frame_container, text="Selecionar personagem", width=20, height=3, font=("Arial", 24, "bold"), fg="white", bg="#1a0869", command=lambda: controller.show_frame(CharacterSelectScreen))
+            frame_container, text="Character management", width=20, height=3, font=("Arial", 24, "bold"), fg="white", bg="#1a0869", command=lambda: controller.show_frame(CharacterSelectScreen))
         btn_character_select.pack(pady=10)
 
         btn_items = tk.Button(
-            frame_container, text="Tela de combate", width=20, height=3, font=("Arial", 24, "bold"), fg="white", bg="#1a0869", command=lambda: controller.show_frame(CombatSystemScreen))
+            frame_container, text="Combat management", width=20, height=3, font=("Arial", 24, "bold"), fg="white", bg="#1a0869", command=lambda: controller.show_frame(CombatSystemScreen))
         btn_items.pack(pady=10)
 
         btn_combat = tk.Button(
-            frame_container, text="Regras e Itens", width=20, height=3, font=("Arial", 24, "bold"), fg="white", bg="#1a0869", command=lambda: controller.show_frame(RegrasItensScreen))
+            frame_container, text="Rulebook and data", width=20, height=3, font=("Arial", 24, "bold"), fg="white", bg="#1a0869", command=lambda: controller.show_frame(RegrasItensScreen))
         btn_combat.pack(pady=10)
 
         btn_sair = tk.Button(
-        frame_bottom, text="Desligar", width=15, height=2, font=("Arial", 20, "bold"), fg="white", bg="#1a0869", command=controller.quit)
+        frame_bottom, text="Shutdown", width=15, height=2, font=("Arial", 20, "bold"), fg="white", bg="#1a0869", command=controller.quit)
         btn_sair.pack(pady=10)
 ### TELA PRINCIPAL ###
 ### TELA PRINCIPAL ###
@@ -56,105 +56,153 @@ class CharacterSelectScreen(tk.Frame):
     def __init__(self, parent, controller):
         super().__init__(parent)
         self.controller = controller
-        self.players = D.Players
-        self.npcs = D.NPCs
-        
+        self.characters = D.GruposDePersonagens["Players"] + D.GruposDePersonagens["NPCs"]
         self.config(bg='#130f26')
 
-        self.grid_columnconfigure(0, weight=1)
-        self.grid_columnconfigure(1, weight=1)
-        self.grid_columnconfigure(2, weight=1)
-        self.grid_rowconfigure(0, weight=1)
-        self.grid_rowconfigure(1, weight=5)
-        self.grid_rowconfigure(2, weight=1)
+        # --- Grid Layout 4x3 ---
+        for col in range(4):
+            self.grid_columnconfigure(col, weight=1)
+        for row in range(3):
+            self.grid_rowconfigure(row, weight=1)
 
-        title = tk.Label(self, text="Seleção de Personagem",width=35, height=3, fg="white", bg="#1a0869", font=("Arial", 25, "bold"))
-        title.grid(row=0, column=1, padx=10, pady=10, sticky="n")
+        # --- Botões de Navegação (linha 0) ---
+        tk.Button(self, text="Início", width=20, height=2, command=self.Voltar,
+                  bg="#1a0869", fg="white", font=("Arial", 18)).grid(row=0, column=0, pady=10)
 
-        self.players_frame = self.create_list_section(self, "Players", self.players, 0)
-        self.npcs_frame = self.create_list_section(self, "NPCs", self.npcs, 2)
+        tk.Label(self, text="Seleção de Personagem", fg="white", bg="#1a0869",
+                 font=("Arial", 20, "bold"), width=20, height=2).grid(row=0, column=1, pady=10)
 
-        inicio = tk.Button(self, text="Início", width=20, height=2, command= self.Voltar, bg="#1a0869", fg="white", font=("Arial", 18))
-        combate = tk.Button(self, text="Combate", width=20, height=2, command= self.TelaDeCombate, bg="#1a0869", fg="white", font=("Arial", 18))
-        dicionarios = tk.Button(self, text="Dicionários", width=20, height=2, command= self.TelaDeRegrasEItens, bg="#1a0869", fg="white", font=("Arial", 18))
-        inicio.grid(row=2, column=1, pady=10, sticky="s")
-        combate.grid(row=2, column=0, pady=10, sticky="s")
-        dicionarios.grid(row=2, column=2, pady=10, sticky="s")
+        tk.Button(self, text="Combate", width=20, height=2, command=self.TelaDeCombate,
+                  bg="#1a0869", fg="white", font=("Arial", 18)).grid(row=0, column=2, pady=10)
 
-    def create_list_section(self, parent, title, data_list, column):
+        tk.Button(self, text="Dicionários", width=20, height=2, command=self.TelaDeRegrasEItens,
+                  bg="#1a0869", fg="white", font=("Arial", 18)).grid(row=0, column=3, pady=10)
+
+        # --- Lista de Personagens (linha 1, coluna 0) ---
+        self.char_list_frame = self.create_list_section(self, self.characters)
+        self.char_list_frame.grid(row=1, column=0, rowspan=2, padx=10, pady=10, sticky="ns")
+
+        # --- Botões de Criação (linha 1, coluna 3) ---
+        self.create_controls(self).grid(row=1, column=3, padx=10, pady=10, sticky="n")
+
+        # Atualizar a lista quando o grupo for alterado
+        self.group_var.trace("w", self.refresh)  # Atualiza a lista automaticamente
+
+    def create_list_section(self, parent, data_list):
         frame = tk.Frame(parent, bg='#1a0869')
-        frame.grid(row=1, column=column, padx=10, pady=10, sticky="nsew")
 
-        label = tk.Label(frame, text=title, fg="white", bg="#1a0869", font=("Arial", 18, "bold"))
+        # --- Combobox de Seleção de Grupo --- 
+        self.group_var = tk.StringVar(value="Players")  # Valor inicial como "Players"
+        group_menu = ttk.Combobox(frame, textvariable=self.group_var, state="readonly", values=["Players", "NPCs"], font=("Arial", 12))
+        group_menu.pack(pady=(10, 5))  # Adiciona um pouco de espaço antes e depois do combobox
+
+        # --- Título da seção de personagens ---
+        label = tk.Label(frame, text="Personagens", fg="white", bg="#1a0869", font=("Arial", 18, "bold"))
         label.pack()
 
+        # --- Frame e Canvas para Scroll da Lista de Personagens ---
         canvas_frame = tk.Frame(frame, bg='#1a0869')
         canvas_frame.pack(fill="both", expand=True)
-        canvas = tk.Canvas(canvas_frame, bg="#1a0869", highlightthickness=0)
-        scrollbar = tk.Scrollbar(canvas_frame, orient="vertical", command=canvas.yview)
+        canvas = tk.Canvas(canvas_frame, bg="#1a0869", highlightthickness=0, width=280)
+        scrollbar = tk.Scrollbar(canvas_frame, orient="vertical", command=canvas.yview, width=20)
         canvas.configure(yscrollcommand=scrollbar.set)
-
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
-        canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+        canvas.pack(side=tk.LEFT, fill="both", expand=True)
 
         inner_frame = tk.Frame(canvas, bg="#1a0869")
         canvas.create_window((0, 0), window=inner_frame, anchor='nw')
-
         inner_frame.bind("<Configure>", lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
 
-
+        # --- Criação dos Botões de Personagens ---
         for char in data_list:
-            char_frame = tk.Frame(inner_frame, bg="#1a0869")
-            char_frame.pack(fill="x", pady=2)
+            if isinstance(char, CB.Personagem):
+                char_frame = tk.Frame(inner_frame, bg="#1a0869")
+                char_frame.pack(fill="x", pady=2)
 
-            char_button = tk.Button(char_frame,
-                                    text=f"{char.nome} - Nível {char.nivel} - XP:{char.XPAtual}/{char.XPlvlUp} - HP:{char.vidaAtual}/{char.vidaMax}",
-                                    bg="#1a0869", fg="white", font=("Arial", 12), anchor="w", justify="left",
-                                    width=35,height=2,command=lambda c=char: self.controller.abrir_detalhes(c))
-            char_button.pack(side=tk.LEFT, fill="x", expand=True)
+                # Configurar as colunas do frame para controlar o layout
+                char_frame.columnconfigure(0, weight=1)  # Botão principal ocupa o espaço restante
+                char_frame.columnconfigure(1, weight=0)  # Botão de remover não expande
 
-            remove_btn = tk.Button(char_frame, text="X", fg="white", bg="#8b0000", font=("Arial", 12, "bold"), width=3, height=2,command=lambda c=char: self.remove_specific_character(title, c))
-            remove_btn.pack(side=tk.RIGHT, padx=5)
+                # Botão principal do personagem
+                char_button = tk.Button(char_frame,
+                                        text=f"{char.nome} - Nível {char.nivel} - XP:{char.XPAtual}/{char.XPlvlUp} - HP:{char.vidaAtual}/{char.vidaMax}",
+                                        bg="#1a0869", fg="white", font=("Arial", 12),
+                                        anchor="w", justify="left",
+                                        height=2, wraplength=300, width=34,
+                                        command=lambda c=char: self.controller.abrir_detalhes(c))
+                char_button.grid(row=0, column=0, sticky="ew", padx=(2, 5))  # Preenche horizontalmente a coluna 0
 
-        add_button = tk.Button(frame, text="Adicionar", command=lambda: self.add_character(title), width=20, height=1, bg="#1a0869", fg="white", font=("Arial", 15))
+                # Botão de remover
+                remove_button = tk.Button(char_frame, text="X", bg="red", fg="white", font=("Arial", 12, "bold"),
+                                        width=3,  # Controla largura
+                                        command=lambda c=char: self.remove_specific_character(c))
+                remove_button.grid(row=0, column=1, padx=(0, 5))  # Pequeno espaço à direita
+
+        return frame
+
+    def create_controls(self, parent):
+        frame = tk.Frame(parent, bg="#1a0869")
+
+        add_button = tk.Button(frame, text="Adicionar", command=lambda: self.add_character("Personagens"),
+                               width=20, height=1, bg="#1a0869", fg="white", font=("Arial", 15))
         add_button.pack(pady=5)
 
-        random_button = tk.Button(frame, text="Gerar NPC", command=lambda: self.gerar_NPC(title), width=20, height=1, bg="#1a0869", fg="white", font=("Arial", 15))
-        random_button.pack(pady=(0, 5))
+        random_button = tk.Button(frame, text="Gerar NPC", command=lambda: self.gerar_NPC("Personagens"),
+                                  width=20, height=1, bg="#1a0869", fg="white", font=("Arial", 15))
+        random_button.pack(pady=5)
 
-        group_button = tk.Button(frame, text="Gerar Grupo de NPC", command=lambda: self.gerar_grupo_NPCs(title),
-                                width=20, height=1, bg="#1a0869", fg="white", font=("Arial", 15))
-        group_button.pack(pady=(0, 10))
+        group_button = tk.Button(frame, text="Gerar Grupo de NPC", command=lambda: self.gerar_grupo_NPCs("Personagens"),
+                                 width=20, height=1, bg="#1a0869", fg="white", font=("Arial", 15))
+        group_button.pack(pady=5)
+
         return frame
     
-    def refresh(self):
-        self.players_frame.destroy()
-        self.npcs_frame.destroy()
+    def refresh(self, *args):
+        # Primeiro, destrua o frame atual para garantir que vamos recriar a interface.
+        self.char_list_frame.destroy()
 
-        self.players_frame = self.create_list_section(self, "Players", self.players, 0)
-        self.npcs_frame = self.create_list_section(self, "NPCs", self.npcs, 2)
+        # Obtenha o grupo atual selecionado no combobox
+        selected_group = self.group_var.get()  # Pegue o valor atual selecionado no combobox
 
-    def remove_specific_character(self, title, character):
-        print(f"Removendo personagem: {character.nome}")
-        if title == "Players":
-            self.players.remove(character)
-        elif title == "NPCs":
-            self.npcs.remove(character)
+        # Se o valor do combobox for válido, atualize com o grupo correto
+        if selected_group in D.GruposDePersonagens:
+            # Atualiza a interface com o grupo selecionado
+            self.char_list_frame = self.create_list_section(self, D.GruposDePersonagens[selected_group])
+        
+        # Reposicione o novo frame na tela
+        self.char_list_frame.grid(row=1, column=0, rowspan=2, padx=10, pady=10, sticky="nsew")
+
+    def remove_specific_character(self, character):
+        selected_group = self.group_var.get()
+        print(f"Removendo personagem: {character.nome} do grupo {selected_group}")
+        
+        if selected_group in D.GruposDePersonagens:
+            try:
+                D.GruposDePersonagens[selected_group].remove(character)
+            except ValueError:
+                print("Personagem não encontrado no grupo.")
+        
         self.refresh()
     
     def add_character(self, title):
         popup = tk.Toplevel(self)
         popup.title("Criar Novo Personagem")
-        popup.geometry("400x500")
+        popup.geometry("400x550")
         popup.config(bg="#130f26")
+
+        # Usar self.group_var ao invés de criar uma nova variável local
+        tk.Label(popup, text="Inserir em:", bg="#130f26", fg="white", font=("Arial", 12)).pack(pady=(10, 0))
+
+        # Modificando o Combobox para usar self.group_var e valores corretos
+        lista_menu = ttk.Combobox(popup, textvariable=self.group_var, state="readonly", 
+                                values=list(D.GruposDePersonagens.keys()), font=("Arial", 11))
+        lista_menu.pack(pady=(0, 10))
 
         campos = ["Nome", "Nível", "Força", "Agilidade", "Vigor", "Inteligência", "Presença", "Tática"]
         entradas = {}
 
         for i, campo in enumerate(campos):
-            label = tk.Label(popup, text=campo, bg="#130f26", fg="white", font=("Arial", 12))
-            label.pack(pady=(10 if i == 0 else 5, 0))
-
+            tk.Label(popup, text=campo, bg="#130f26", fg="white", font=("Arial", 12)).pack(pady=(5 if i else 10, 0))
             entrada = tk.Entry(popup, font=("Arial", 12))
             entrada.pack()
             entradas[campo] = entrada
@@ -170,29 +218,38 @@ class CharacterSelectScreen(tk.Frame):
                 Presenca = int(entradas["Presença"].get())
                 Tatica = int(entradas["Tática"].get())
 
-                novo_personagem = CB.Personagem(nome, nivel, Forca, Agilidade, Vigor, Inteligencia, Presenca, Tatica)
+                # Cria o personagem com as proficiências padrão (todas com valor 0)
+                novo_personagem = CB.Personagem( nome, nivel, Forca, Agilidade, Vigor, Inteligencia, Presenca, Tatica, proficiencias_base=D.Proficiencias)
 
-                if title == "Players": self.players.append(novo_personagem)
-                elif title == "NPCs": self.npcs.append(novo_personagem)
+                destino = self.group_var.get()
+                if destino in D.GruposDePersonagens:
+                    D.GruposDePersonagens[destino].append(novo_personagem)
 
                 popup.destroy()
                 self.refresh()
             except ValueError:
-                tk.messagebox.showerror("Erro", "Certifique-se de preencher todos os campos corretamente!")
+                tk.messagebox.showerror("Erro", "Preencha todos os campos corretamente!")
 
-        botao_confirmar = tk.Button(popup, text="Confirmar", command=confirmar, bg="#1a0869", fg="white", font=("Arial", 14), width=20)
-        botao_confirmar.pack(pady=20)
+        tk.Button(popup, text="Confirmar", command=confirmar, bg="#1a0869", fg="white", font=("Arial", 14), width=20).pack(pady=20)
     
     def gerar_NPC(self, title):
         import random
         popup = tk.Toplevel(self)
         popup.title("Gerar NPC")
-        popup.geometry("400x450")
+        popup.geometry("400x550")
         popup.config(bg="#130f26")
 
         entradas = {}
 
-        # --- Grupo NPC ---
+        # --- Grupo de Destino (GruposDePersonagens) ---
+        tk.Label(popup, text="Inserir em:", bg="#130f26", fg="white", font=("Arial", 12)).pack(pady=(10, 0))
+        grupo_destino_var = tk.StringVar(value=list(D.GruposDePersonagens.keys())[0])
+        grupo_destino_menu = ttk.Combobox(popup, textvariable=grupo_destino_var, state="readonly",
+                                        values=list(D.GruposDePersonagens.keys()), font=("Arial", 11))
+        grupo_destino_menu.pack(pady=(0, 10))
+        entradas["GrupoDestino"] = grupo_destino_var
+
+        # --- Grupo NPC (Facção) ---
         tk.Label(popup, text="Grupo (Facção)", bg="#130f26", fg="white", font=("Arial", 12)).pack(pady=(10, 0))
         grupo_var = tk.StringVar(value=list(D.NPCs_predefinidos.keys())[0])
         grupo_menu = tk.OptionMenu(popup, grupo_var, *D.NPCs_predefinidos.keys())
@@ -239,7 +296,7 @@ class CharacterSelectScreen(tk.Frame):
         nivel_entry.pack(pady=5)
         entradas["Nivel"] = nivel_entry
 
-        # Nome do NPC
+        # --- Nome ---
         tk.Label(popup, text="Nome do NPC", bg="#130f26", fg="white", font=("Arial", 12)).pack(pady=(10, 0))
         nome_entry = tk.Entry(popup, font=("Arial", 12), width=25, justify="center")
         nome_entry.pack(pady=5)
@@ -252,36 +309,30 @@ class CharacterSelectScreen(tk.Frame):
                 classe = entradas["Classe"].get()
                 kit_key = entradas["Kit"].get()
                 nivel = int(entradas["Nivel"].get())
+                destino = entradas["GrupoDestino"].get()
 
-                # Tenta pegar a tupla do NPC
+                # Pega a tupla do NPC
                 tupla_npc = next((t for t in D.NPCs_predefinidos[grupo] if t[0] == classe), None)
                 if not tupla_npc:
                     raise ValueError("Classe selecionada não encontrada no grupo escolhido.")
 
-                # Desempacota corretamente a tupla com 7 valores (sem nome nem nível)
-                classe, Forca, Agilidade, Vigor, Inteligencia, Presenca, Tatica = tupla_npc
-
-                # Converte atributos para inteiro
-                Forca = int(Forca)
-                Agilidade = int(Agilidade)
-                Vigor = int(Vigor)
-                Inteligencia = int(Inteligencia)
-                Presenca = int(Presenca)
-                Tatica = int(Tatica)
-
-                # Nome vindo do campo ou gerado automaticamente
+                # Nome
                 nome = entradas["Nome"].get() or f"{classe}_{random.randint(1, 50)}"
 
-                # Cria o NPC com nome correto
-                npc = CB.NPC(grupo, classe, Forca, Agilidade, Vigor, Inteligencia, Presenca, Tatica)
+                # Cria o NPC base
+                classe, Forca, Agilidade, Vigor, Inteligencia, Presenca, Tatica = tupla_npc
+                npc = CB.NPC(grupo, classe, int(Forca), int(Agilidade), int(Vigor),
+                            int(Inteligencia), int(Presenca), int(Tatica))
 
+                # Recupera kit e chama Gerador
                 kit = D.kits_por_nome[kit_key]
-                personagem = CB.Gerador(npc=npc, kit=kit, nivel=nivel, nome=nome)
+                personagem = CB.Gerador(npc=npc, kit=kit, nivel=nivel, nome=nome, proficiencias_base=D.Proficiencias)
 
-                if title == "Players":
-                    self.players.append(personagem)
-                elif title == "NPCs":
-                    self.npcs.append(personagem)
+                # Pós-processamento
+                self.carregar_armas_e_armaduras(personagem)
+
+                if destino in D.GruposDePersonagens:
+                    D.GruposDePersonagens[destino].append(personagem)
 
                 self.refresh()
                 popup.destroy()
@@ -292,80 +343,186 @@ class CharacterSelectScreen(tk.Frame):
         botao_confirmar = tk.Button(popup, text="Confirmar", command=confirmar, bg="#0b8f33", fg="white", font=("Arial", 12, "bold"))
         botao_confirmar.pack(pady=20)
 
+    def carregar_armas_e_armaduras(self, personagem):
+        print("Chamando carregar_armas_e_armaduras...")  # Garante que está sendo chamada
+
+        for entrada in personagem.inventario.itens:
+            item = entrada["item"]
+            if isinstance(item, CB.Ranged):
+                print(f"Verificando arma: {item.nome}")
+                capacidade_restante = item.capacidade - item.munições  # ou len(item.municoes) se for lista
+
+                if capacidade_restante <= 0:
+                    print(f"{item.nome} já está carregada.")
+                    continue
+
+                # Procurar munição compatível
+                for municao_entrada in personagem.inventario.itens:
+                    municao = municao_entrada["item"]
+                    quantidade_disponivel = municao_entrada["quantidade"]
+
+                    if isinstance(municao, CB.Municao) and municao.calibre == item.calibre:
+                        print(f"Encontrada munição compatível: {municao.nome} x{quantidade_disponivel}")
+                        quantidade_a_carregar = min(quantidade_disponivel, capacidade_restante)
+                        carregado = item.carregar_municao(municao, quantidade_a_carregar)
+
+                        if carregado > 0:
+                            print(f"{item.nome} carregada com {carregado} munições de {municao.nome}")
+                            personagem.inventario.remover_item(municao, carregado)
+                        else:
+                            print(f"Falha ao carregar {item.nome} com {municao.nome}")
+                        break
+
+        # Equipar proteções que estão no inventário
+        for item_dict in personagem.inventario.itens:
+            item = item_dict["item"]
+            if hasattr(item, "regiao"):
+                personagem.equipar_do_inventario(item.regiao, item.nome)
+
     def gerar_grupo_NPCs(self, title):
+        import random
+
         popup = tk.Toplevel()
         popup.title("Gerar Grupo de NPCs")
         popup.configure(bg="#130f26")
-        popup.geometry("400x400")
+        popup.geometry("550x600")
 
         entradas = {}
 
-        # Grupo
-        tk.Label(popup, text="Grupo (Facção)", bg="#130f26", fg="white", font=("Arial", 12)).pack(pady=(10, 0))
-        grupo_var = tk.StringVar(value=list(D.NPCs_predefinidos.keys())[0])
-        grupo_menu = tk.OptionMenu(popup, grupo_var, *D.NPCs_predefinidos.keys())
-        grupo_menu.config(bg="#1a0869", fg="white", font=("Arial", 12), width=30)
-        grupo_menu.pack(pady=5)
-        entradas["Grupo"] = grupo_var
+        # Cabeçalho com opções iniciais
+        header_frame = tk.Frame(popup, bg="#130f26")
+        header_frame.pack(pady=10)
 
-        # Kit
-        tk.Label(popup, text="Kit", bg="#130f26", fg="white", font=("Arial", 12)).pack(pady=(10, 0))
-        kit_var = tk.StringVar(value=list(D.kits_por_nome.keys())[0])
-        kit_menu = tk.OptionMenu(popup, kit_var, *D.kits_por_nome.keys())
-        kit_menu.config(bg="#1a0869", fg="white", font=("Arial", 12), width=30)
-        kit_menu.pack(pady=5)
-        entradas["Kit"] = kit_var
+        # Grupo de destino
+        tk.Label(header_frame, text="Inserir em:", bg="#130f26", fg="white").grid(row=0, column=0, padx=5, sticky="e")
+        destino_var = tk.StringVar(value=list(D.GruposDePersonagens.keys())[0])
+        destino_menu = ttk.Combobox(header_frame, textvariable=destino_var, state="readonly", values=list(D.GruposDePersonagens.keys()), width=20)
+        destino_menu.grid(row=0, column=1, padx=5)
+        entradas["Destino"] = destino_var
+
+        # Facção (grupo de NPCs)
+        tk.Label(header_frame, text="Facção:", bg="#130f26", fg="white").grid(row=0, column=2, padx=5, sticky="e")
+        faccao_var = tk.StringVar(value=list(D.NPCs_predefinidos.keys())[0])
+        faccao_menu = ttk.Combobox(header_frame, textvariable=faccao_var, state="readonly", values=list(D.NPCs_predefinidos.keys()), width=20)
+        faccao_menu.grid(row=0, column=3, padx=5)
+        entradas["Facção"] = faccao_var
 
         # Quantidade
-        tk.Label(popup, text="Quantidade de NPCs", bg="#130f26", fg="white", font=("Arial", 12)).pack(pady=(10, 0))
-        qtd_entry = tk.Entry(popup, font=("Arial", 12), width=25, justify="center")
-        qtd_entry.insert(0, "3")
-        qtd_entry.pack(pady=5)
-        entradas["Qtd"] = qtd_entry
+        # Quantidade
+        tk.Label(header_frame, text="Quantidade:", bg="#130f26", fg="white").grid(row=1, column=0, padx=5, pady=5, sticky="e")
+        qtd_var = tk.StringVar(value="3")
+        qtd_entry = tk.Entry(header_frame, textvariable=qtd_var, width=5, justify="center")
+        qtd_entry.grid(row=1, column=1, padx=5, pady=5)
 
-        # Nível Mínimo
-        tk.Label(popup, text="Nível Mínimo", bg="#130f26", fg="white", font=("Arial", 12)).pack()
-        nivel_min_entry = tk.Entry(popup, font=("Arial", 12), width=25, justify="center")
-        nivel_min_entry.insert(0, "1")
-        nivel_min_entry.pack(pady=5)
-        entradas["Min"] = nivel_min_entry
+        # Área scrollável para os NPCs
+        canvas_frame = tk.Frame(popup, bg="#130f26")
+        canvas_frame.pack(fill="both", expand=True)
 
-        # Nível Máximo
-        tk.Label(popup, text="Nível Máximo", bg="#130f26", fg="white", font=("Arial", 12)).pack()
-        nivel_max_entry = tk.Entry(popup, font=("Arial", 12), width=25, justify="center")
-        nivel_max_entry.insert(0, "5")
-        nivel_max_entry.pack(pady=5)
-        entradas["Max"] = nivel_max_entry
+        canvas = tk.Canvas(canvas_frame, bg="#130f26", highlightthickness=0)
+        scrollbar = tk.Scrollbar(canvas_frame, orient="vertical", command=canvas.yview)
+        scrollable_frame = tk.Frame(canvas, bg="#130f26")
 
-        def confirmar():
+        scrollable_frame.bind("<Configure>", lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
+        canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
+        canvas.configure(yscrollcommand=scrollbar.set)
+
+        canvas.pack(side="left", fill="both", expand=True)
+        scrollbar.pack(side="right", fill="y")
+
+        slots = []
+
+        def gerar_slots():
+            for widget in scrollable_frame.winfo_children():
+                widget.destroy()
+            slots.clear()
+
             try:
-                grupo = entradas["Grupo"].get()
-                kit_key = entradas["Kit"].get()
-                qtd = int(entradas["Qtd"].get())
-                nivel_min = int(entradas["Min"].get())
-                nivel_max = int(entradas["Max"].get())
+                qtd = int(qtd_var.get())
+            except:
+                tk.messagebox.showerror("Erro", "Valores inválidos.")
+                return
 
-                # ✅ Cria lista de NPCs base do grupo selecionado
-                lista_npcs_base = [
-                CB.NPC(grupo, classe, int(Forca), int(Agilidade), int(Vigor),
-                    int(Inteligencia), int(Presenca), int(Tatica))
-                for (classe, Forca, Agilidade, Vigor, Inteligencia, Presenca, Tatica)
-                in D.NPCs_predefinidos[grupo]
-                ]
+            faccao = faccao_var.get()
+            classes_disponiveis = [c[0] for c in D.NPCs_predefinidos.get(faccao, [])]
 
-                # ✅ Recupera o Kit como objeto
-                kit = D.kits_por_nome[kit_key]
+            for i in range(qtd):
+                slot = {}
+                frame = tk.Frame(scrollable_frame, bg="#1f1b3a", bd=1, relief="solid", padx=5, pady=5)
+                frame.pack(padx=5, pady=5, fill="x")
 
-                # ✅ Chama o gerador de grupo com os dados certos
-                CB.Gerador_grupo(self,title, lista_npcs_base, kit, qtd, nivel_min, nivel_max)
+                # Título
+                tk.Label(frame, text=f"NPC {i+1}", bg="#1f1b3a", fg="white", font=("Arial", 10, "bold")).grid(row=0, column=0, columnspan=6, pady=(0, 5), sticky="w")
 
-                popup.destroy()
+                # Classe
+                tk.Label(frame, text="Classe", bg="#1f1b3a", fg="white").grid(row=1, column=0, padx=2, sticky="e")
+                classe_var = tk.StringVar(value=classes_disponiveis[0] if classes_disponiveis else "")
+                classe_menu = ttk.Combobox(frame, textvariable=classe_var, state="readonly", values=classes_disponiveis, width=25)
+                classe_menu.grid(row=1, column=1, padx=2)
 
-            except Exception as e:
-                tk.messagebox.showerror("Erro", f"Erro ao gerar o grupo:\n{e}")
+                # Kit
+                tk.Label(frame, text="Kit", bg="#1f1b3a", fg="white").grid(row=1, column=2, padx=2, sticky="e")
+                kit_var = tk.StringVar(value=list(D.kits_por_nome.keys())[0])
+                kit_menu = ttk.Combobox(frame, textvariable=kit_var, state="readonly", values=list(D.kits_por_nome.keys()), width=25)
+                kit_menu.grid(row=1, column=3, padx=2)
 
-        tk.Button(popup, text="Confirmar", command=confirmar,
-                font=("Arial", 12), width=20, bg="#0b8f33", fg="white").pack(pady=15)
+                # Nível individual (inicializa com o padrão)
+                tk.Label(frame, text="Nível", bg="#1f1b3a", fg="white").grid(row=1, column=4, padx=2, sticky="e")
+                nivel_var = tk.StringVar(value="1")
+                nivel_entry = tk.Entry(frame, textvariable=nivel_var, width=5, justify="center")
+                nivel_entry.grid(row=1, column=5, padx=2)
+
+                # Adiciona ao slot
+                slot.update({
+                    "Classe": classe_var,
+                    "Kit": kit_var,
+                    "Nivel": nivel_var
+                })
+
+                slots.append(slot)
+
+        # Botão para gerar os slots com base nos valores acima
+        tk.Button(popup, text="Gerar Slots", command=gerar_slots, font=("Arial", 11), bg="#0b4f8f", fg="white").pack(pady=(10, 10))
+        tk.Button(popup, text="Confirmar Geração", command=lambda: self.confirmar_geracao(slots, entradas), font=("Arial", 11), bg="#1a7837", fg="white").pack(pady=(0, 10))
+
+    def confirmar_geracao(self, slots, entradas):
+        import random
+        try:
+            faccao = entradas["Facção"].get()
+            destino = entradas["Destino"].get()
+
+            for i, slot in enumerate(slots):
+                classe_nome = slot["Classe"].get()
+                kit_nome = slot["Kit"].get()
+                nivel = int(slot["Nivel"].get())
+
+                # Buscar a tupla da classe
+                tupla_npc = next((t for t in D.NPCs_predefinidos[faccao] if t[0] == classe_nome), None)
+                if not tupla_npc:
+                    raise ValueError(f"Classe '{classe_nome}' não encontrada na facção '{faccao}'.")
+
+                classe, Forca, Agilidade, Vigor, Inteligencia, Presenca, Tatica = tupla_npc
+                npc_base = CB.NPC(faccao, classe, int(Forca), int(Agilidade), int(Vigor),
+                                int(Inteligencia), int(Presenca), int(Tatica))
+
+                # Criar personagem
+                kit = D.kits_por_nome[kit_nome]
+                nome = f"{classe}_{random.randint(1, 99)}"
+                personagem = CB.Gerador(npc=npc_base, kit=kit, nivel=nivel, nome=nome, proficiencias_base=D.Proficiencias)
+
+                # Pós-processamento
+                self.carregar_armas_e_armaduras(personagem)
+
+                # Adicionar ao grupo
+                if destino in D.GruposDePersonagens:
+                    D.GruposDePersonagens[destino].append(personagem)
+                else:
+                    raise ValueError(f"Grupo de destino '{destino}' não encontrado.")
+
+            self.refresh()
+            tk.messagebox.showinfo("Sucesso", "NPCs gerados com sucesso!")
+            
+        except Exception as e:
+            tk.messagebox.showerror("Erro", f"Ocorreu um erro ao gerar os NPCs:\n{e}")
 
     def Voltar(self):
         self.controller.voltar()
@@ -446,15 +603,6 @@ class CharacterDetailsScreen(tk.Frame):
         self.scrollbar_prof.pack(side="right", fill="y")
 
         self.proficiencia_widgets = []
-
-        self.botoes_frame = tk.Frame(self.frame_proficiencias, bg='#1a0869')
-        self.botoes_frame.pack(side='bottom', pady=10)
-
-        self.btn_adicionar_prof = tk.Button(self.botoes_frame, text="Adicionar Proficiência", command=self.abrir_popup_adicionar, bg="#1a0869", fg="white", width=20, height=2)
-        self.btn_adicionar_prof.pack(side='left', padx=10)
-
-        self.btn_remover_prof = tk.Button(self.botoes_frame, text="Remover Proficiência", command=self.remover_proficiencia_popup, bg="#1a0869", fg="white", width=20, height=2)
-        self.btn_remover_prof.pack(side='left', padx=10)
         ## Frame proficiencias ##
         ## Frame proficiencias ## 
 
@@ -1749,8 +1897,8 @@ class CombatSystemScreen(tk.Frame):
         super().__init__(parent)
         self.configure(bg='#130f26')
         self.controller = controller
-        self.players = D.Players
-        self.npcs = D.NPCs
+        self.players = D.GruposDePersonagens["Players"]
+        self.npcs = D.GruposDePersonagens["NPCs"]
 
         # Título
         title = tk.Label(self, text="Tela de Combate", fg="white", bg="#1a0869", font=("Arial", 30, "bold"), width=35)

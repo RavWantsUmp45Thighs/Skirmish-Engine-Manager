@@ -8,7 +8,7 @@ def gerar_id():
 ### CLASSE PERSONAGEM ###
 ### CLASSE PERSONAGEM ###
 class Personagem:
-    def __init__(self, nome, nivel, Forca, Agilidade, Vigor, Inteligencia, Presenca, Tatica):
+    def __init__(self, nome, nivel, Forca, Agilidade, Vigor, Inteligencia, Presenca, Tatica, proficiencias_base=None):
         self.nome: str = nome
         self.nivel: int = nivel
         self.XPlvlUp: int = 1000 + (500 * nivel)
@@ -29,20 +29,25 @@ class Personagem:
         self.esquiva: int = 5 + Agilidade
         self.CargaMax: float = 10 + (Forca * 2)
         self.cargaAtual: float = 0
-        self.mobilidade: int = (Agilidade * 5)
+        self.mobilidade: int = 5 + (Agilidade * 2)
         #Corpo#
         self.Cabeça = None
         self.Rosto = None
         self.Torso = None
         self.Pernas = None
         self.Braços = None
-        #proficiências#
-        self.proficiencias = SistemaDeProficiencias()
         #Inventário#
         self.inventario = Inventario()
+        #proficiências#
+        self.proficiencias = SistemaDeProficiencias()
+        if proficiencias_base:
+            for nome, criador in proficiencias_base.items():
+                self.proficiencias.proficiencias[nome] = criador()
+        self.recalcularAtributos()
+        
 
-    def CriarPersonagem(nome, nivel, Forca, Agilidade, Vigor, Inteligencia, Presenca, Tatica):
-        return Personagem(nome, nivel, Forca, Agilidade, Vigor, Inteligencia, Presenca, Tatica)
+    def CriarPersonagem(nome, nivel, Forca, Agilidade, Vigor, Inteligencia, Presenca, Tatica, proficiencias_base=None):
+        return Personagem(nome, nivel, Forca, Agilidade, Vigor, Inteligencia, Presenca, Tatica, proficiencias_base)
 
 # funções principais #
     def calcular_peso_total(self):
@@ -854,6 +859,7 @@ class Ranged(Item):
             self.MaxRange += 10
         else:
             print(f"Erro: Raridade '{raridade}' não reconhecida.")
+
         self.danoBase = self.dano
         self.recuoBase = self.recuo
         self.MaxRangeBase = self.MaxRange
@@ -973,7 +979,7 @@ class Ranged(Item):
 
 
 class Protecao(Item):
-    def __init__(self, nome, peso, nivelBalistico, absorcaoFisica, absorcaoBalistica):
+    def __init__(self, nome, peso, nivelBalistico, absorcaoFisica, absorcaoBalistica, regiao):
         super().__init__(nome, peso)
         self.nivelBalisticoBase: int = nivelBalistico
         self.nivelBalistico: int = nivelBalistico
@@ -981,6 +987,7 @@ class Protecao(Item):
         self.absorcaoFisica: int = absorcaoFisica
         self.absorcaoBalisticaBase: int = absorcaoBalistica
         self.absorcaoBalistica: int = absorcaoBalistica
+        self.regiao = regiao
         self.Melhorias: list[Melhoria] = []
         self.Id = gerar_id()
 
@@ -1129,40 +1136,33 @@ class Kit:
         return None
 
 ### Funções de Geração ###
-def Gerador(npc: NPC, kit=None, nivel=None, nome=None):
-    import random
+def Gerador(npc: NPC, kit=None, nivel=None, nome=None, proficiencias_base=None):
     if nivel is None:
         nivel = 1
-    def rolar(base):
-        return base + random.randint(0, nivel // 2)
-    f = rolar(npc.forca)
-    a = rolar(npc.agilidade)
-    v = rolar(npc.vigor)
-    i = rolar(npc.inteligencia)
-    p = rolar(npc.presenca)
-    t = rolar(npc.tatica)
+    f = npc.forca
+    a = npc.agilidade
+    v = npc.vigor
+    i = npc.inteligencia
+    p = npc.presenca
+    t = npc.tatica
 
     nome_base = nome or f"{npc.classe} ({npc.grupo})"
 
-    inimigo = Personagem(nome=nome_base, nivel=nivel, Forca=f, Agilidade=a, Vigor=v, Inteligencia=i, Presenca=p, Tatica=t)
+    inimigo = Personagem.CriarPersonagem(nome=nome_base, nivel=nivel, Forca=f, Agilidade=a, Vigor=v, Inteligencia=i, Presenca=p, Tatica=t, proficiencias_base=proficiencias_base)
     if kit:
         for item in kit.itens:
             inimigo.inventario.adicionar_item_objeto(item)
     return inimigo
 
-def Gerador_grupo(self, title, lista_npcs_base, kit, qtd, nivel_min, nivel_max):
-    import random
-
-    for _ in range(qtd):
-        npc_base = random.choice(lista_npcs_base)
-        nivel = random.randint(nivel_min, nivel_max)
-        nome = f"{npc_base.classe}_{random.randint(1, 50)}"
+def Gerador_grupo(self, grupo_destino, configuracoes):
+    for config in configuracoes:
+        npc_base = config['npc_base']
+        kit = config['kit']
+        nivel = config['nivel']
+        nome = config['nome']
 
         personagem = Gerador(npc=npc_base, kit=kit, nivel=nivel, nome=nome)
-        if title == "Players":
-            self.players.append(personagem)
-        elif title == "NPCs":
-            self.npcs.append(personagem)
+        self.GruposDePersonagens[grupo_destino].append(personagem)
 
     self.refresh()
 ### Funções de Geração ###

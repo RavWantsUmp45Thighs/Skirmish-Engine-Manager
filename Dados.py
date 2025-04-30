@@ -267,32 +267,32 @@ Melees = {
     "Marreta de Demolição": lambda: Melee("Marreta de Demolição", 15, "Concussivas", "Marreta", "Rara"),
 }
 
-Protecoes = {
-    "ColeteLeve": lambda: Protecao("ColeteLeve", 2, 2, 8, 4),
-    "ColeteMedio": lambda: Protecao("ColeteMedio", 3, 3, 8, 6),
-    "ColetePesado": lambda: Protecao("ColetePesado", 5, 4, 10, 8),
-    "Colete 6B45": lambda: Protecao("6B45", 7, 8, 10, 8),
-    
-    "Capacete de moto": lambda: Protecao("Capacete de moto", 2.2, 2, 8, 2),
-    "CapaceteM1": lambda: Protecao("Capacete M1", 3, 3, 6, 2),
-    "Mich2000": lambda: Protecao("Mich2000", 2.5, 4, 6, 4),
-    "Capacete 6B47": lambda: Protecao("Capacete 6B47", 5, 8, 10, 8),
-    "Capacete LSZH 1+": lambda: Protecao("Capacete LSZH 1+", 4.5, 8, 8, 10),
-    "Altlyn": lambda: Protecao("Altlyn", 6.5, 8, 12, 10),
-    "Maska 1-SCH": lambda: Protecao("Maska 1-SCH", 7, 8, 16, 12),
+Protecoes = {    
+    "Capacete de moto": lambda: Protecao("Capacete de moto", 2.2, 2, 8, 2, "Cabeça"),
+    "CapaceteM1": lambda: Protecao("Capacete M1", 3, 3, 6, 2, "Cabeça"),
+    "Mich2000": lambda: Protecao("Mich2000", 2.5, 4, 6, 4, "Cabeça"),
+    "Capacete 6B47": lambda: Protecao("Capacete 6B47", 5, 8, 10, 8, "Cabeça"),
+    "Capacete LSZH 1+": lambda: Protecao("Capacete LSZH 1+", 4.5, 8, 8, 10, "Cabeça"),
+    "Altlyn": lambda: Protecao("Altlyn", 6.5, 8, 12, 10, "Cabeça"),
+    "Maska 1-SCH": lambda: Protecao("Maska 1-SCH", 7, 8, 16, 12, "Cabeça"),
 
-    "Mascará de gás": lambda: Protecao("Mascará de gás", 1.4, 2, 4, 4),
-    "Visor balístico": lambda: Protecao("Visor balístico", 1.2, 3, 4, 6),
-    "NVG-2": lambda: Protecao("NVG-2", 2.4, 3, 6, 10),
-    "NVG-4": lambda: Protecao("NVG-4", 2.8, 3, 8, 10),
-    "Visor Altlyn": lambda: Protecao("Visor Altlyn", 2.5, 8, 12, 10),
-    "Visor Maska 1-SCH": lambda: Protecao("Visor Maska 1-SCH", 2.5, 8, 16, 12),
+    "Mascará de gás": lambda: Protecao("Mascará de gás", 1.4, 2, 4, 4, "Rosto"),
+    "Visor balístico": lambda: Protecao("Visor balístico", 1.2, 3, 4, 6, "Rosto"),
+    "NVG-2": lambda: Protecao("NVG-2", 2.4, 3, 6, 10, "Rosto"),
+    "NVG-4": lambda: Protecao("NVG-4", 2.8, 3, 8, 10, "Rosto"),
+    "Visor Altlyn": lambda: Protecao("Visor Altlyn", 2.5, 8, 12, 10, "Rosto"),
+    "Visor Maska 1-SCH": lambda: Protecao("Visor Maska 1-SCH", 2.5, 8, 16, 12, "Rosto"),
 
-    "JoelheirasTaticas": lambda: Protecao("JoelheirasTaticas", 3, 2, 6, 4),
-    "Joelheiras 6B51": lambda: Protecao("Joelheiras 6B51", 3, 8, 10, 8),
+    "ColeteLeve": lambda: Protecao("ColeteLeve", 2, 2, 8, 4, "Torso"),
+    "ColeteMedio": lambda: Protecao("ColeteMedio", 3, 3, 8, 6, "Torso"),
+    "ColetePesado": lambda: Protecao("ColetePesado", 5, 4, 10, 8, "Torso"),
+    "Colete 6B45": lambda: Protecao("6B45", 7, 8, 10, 8, "Torso"),
 
-    "Cotoveleiras táticas": lambda: Protecao("Cotoveleiras táticas", 2, 5, 8, 6),
-    "Cotoveleiras 6B51": lambda: Protecao("Cotoveleiras 6B51", 3, 8, 10, 8),
+    "JoelheirasTaticas": lambda: Protecao("JoelheirasTaticas", 3, 2, 6, 4, "Pernas"),
+    "Joelheiras 6B51": lambda: Protecao("Joelheiras 6B51", 3, 8, 10, 8, "Pernas"),
+
+    "Cotoveleiras táticas": lambda: Protecao("Cotoveleiras táticas", 2, 5, 8, 6, "Braços"),
+    "Cotoveleiras 6B51": lambda: Protecao("Cotoveleiras 6B51", 3, 8, 10, 8, "Braços"),
 }
 
 Items = {
@@ -493,8 +493,10 @@ NPCs_predefinidos = {
     ]
 }
 
-Players = []
-NPCs = []
+GruposDePersonagens = {
+    "Players": [],
+    "NPCs": []
+}
 
 Regras_de_Combate = """
 Regras Integradas de Combate (In-Combat)
