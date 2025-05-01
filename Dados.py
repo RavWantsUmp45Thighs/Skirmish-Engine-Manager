@@ -393,9 +393,9 @@ kits_por_nome = {}
 
 kits_por_nome["Agent"] = Kit("Pistola", {"Glock 17", "Cassetete",("9x19mm FMJ", 60),("Comunicador", 1)}, Pools)
 
-kits_por_nome["ATP_Soldat"] = Kit("ATP_Soldat", {"HK416","P226","Faca Bowie",("9x19mm +P FMJ", 60),("Comunicador", 1), ("Cartão de acesso", 1)}, Pools)
+kits_por_nome["ATP_Soldat"] = Kit("ATP_Soldat", {"HK416","P226","Faca Bowie",("9x19mm +P FMJ", 76), ("5.56x45mm FMJ", 120),"ColeteMedio",("Comunicador", 1), ("Cartão de acesso", 1)}, Pools)
 
-kits_por_nome["ATP_Engineer"] = Kit("ATP_Engineer", {"AAC Honey Badger","USP-9","Faca Bowie", (".300Blk SuperS", 90), ("9x19mm FMJ", 60), ("Comunicador", 1)}, Pools)
+kits_por_nome["ATP_Engineer"] = Kit("ATP_Engineer", {"AAC Honey Badger","USP-9","Faca Bowie", (".300Blk SuperS", 120), ("9x19mm FMJ", 60),"ColeteMedio", ("Comunicador", 1)}, Pools)
 
 kits_por_nome["Agent_melee"] = Kit("Melee", {"Glock 18","Tomahawk", "Cassetete", ("Comunicador", 1), ("Bebidas", 3),("9x19mm FMJ", 60)}, Pools)
 

@@ -92,9 +92,10 @@ class CharacterSelectScreen(tk.Frame):
         frame = tk.Frame(parent, bg='#1a0869')
 
         # --- Combobox de Seleção de Grupo --- 
-        self.group_var = tk.StringVar(value="Players")  # Valor inicial como "Players"
+        self.group_var = tk.StringVar(value="Players")
+        self.group_var.trace("w", self.refresh)  # <- move pra cá, depois de definir
         group_menu = ttk.Combobox(frame, textvariable=self.group_var, state="readonly", values=["Players", "NPCs"], font=("Arial", 12))
-        group_menu.pack(pady=(10, 5))  # Adiciona um pouco de espaço antes e depois do combobox
+        group_menu.pack(pady=(10, 5))
 
         # --- Título da seção de personagens ---
         label = tk.Label(frame, text="Personagens", fg="white", bg="#1a0869", font=("Arial", 18, "bold"))
