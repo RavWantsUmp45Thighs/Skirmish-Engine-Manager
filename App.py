@@ -345,36 +345,29 @@ class CharacterSelectScreen(tk.Frame):
         botao_confirmar.pack(pady=20)
 
     def carregar_armas_e_armaduras(self, personagem):
-        print("Chamando carregar_armas_e_armaduras...")  # Garante que está sendo chamada
 
         for entrada in personagem.inventario.itens:
             item = entrada["item"]
             if isinstance(item, CB.Ranged):
-                print(f"Verificando arma: {item.nome}")
                 capacidade_restante = item.capacidade - item.munições  # ou len(item.municoes) se for lista
 
                 if capacidade_restante <= 0:
-                    print(f"{item.nome} já está carregada.")
                     continue
 
-                # Procurar munição compatível
                 for municao_entrada in personagem.inventario.itens:
                     municao = municao_entrada["item"]
                     quantidade_disponivel = municao_entrada["quantidade"]
 
                     if isinstance(municao, CB.Municao) and municao.calibre == item.calibre:
-                        print(f"Encontrada munição compatível: {municao.nome} x{quantidade_disponivel}")
                         quantidade_a_carregar = min(quantidade_disponivel, capacidade_restante)
                         carregado = item.carregar_municao(municao, quantidade_a_carregar)
 
                         if carregado > 0:
-                            print(f"{item.nome} carregada com {carregado} munições de {municao.nome}")
                             personagem.inventario.remover_item(municao, carregado)
                         else:
                             print(f"Falha ao carregar {item.nome} com {municao.nome}")
                         break
 
-        # Equipar proteções que estão no inventário
         for item_dict in personagem.inventario.itens:
             item = item_dict["item"]
             if hasattr(item, "regiao"):
@@ -408,7 +401,6 @@ class CharacterSelectScreen(tk.Frame):
         faccao_menu.grid(row=0, column=3, padx=5)
         entradas["Facção"] = faccao_var
 
-        # Quantidade
         # Quantidade
         tk.Label(header_frame, text="Quantidade:", bg="#130f26", fg="white").grid(row=1, column=0, padx=5, pady=5, sticky="e")
         qtd_var = tk.StringVar(value="3")
@@ -1912,7 +1904,6 @@ class CombatSystemScreen(tk.Frame):
         btn_cfg = {"width": 15, "height": 2, "font": ("Arial", 18, "bold"), "bg": "#7a3cff", "fg": "white"}
         tk.Button(action_buttons_frame, text="Ataque", command=self.abrir_popup_ataque, **btn_cfg).pack(pady=5)
         tk.Button(action_buttons_frame, text="Looting", command=self.abrir_popup_loot, **btn_cfg).pack(pady=5)
-        tk.Button(action_buttons_frame, text="Rolagem", command=self.abrir_popup_rolagem, **btn_cfg).pack(pady=5)
 
         # Voltar
         tk.Button(self, text="Tela Inicial", command=self.Voltar,width=15, height=2, font=("Arial", 18), bg="#1a0869", fg="white").place(x=800, y=850, anchor="center")
@@ -1997,173 +1988,6 @@ class CombatSystemScreen(tk.Frame):
 
         self.players_frame = self.create_list_section("Players", self.players, x=50, y=100)
         self.npcs_frame = self.create_list_section("NPCs", self.npcs, x=1050, y=100)
-    
-    def abrir_popup_rolagem(self):
-        popup = tk.Toplevel(self)
-        popup.title("Rolagem de Dados")
-        popup.configure(bg="#1a1a2e")
-        popup.geometry("550x400")
-        popup.resizable(False,False)
-
-        tk.Label(popup, text="Escolha o tipo de rolagem:", bg="#1a1a2e", fg="white", font=("Arial", 12)).pack(pady=5)
-
-        tipo_rolagem = tk.StringVar(value="normal")
-
-        frame_tipos = tk.Frame(popup, bg="#1a1a2e")
-        frame_tipos.pack()
-
-        tk.Radiobutton(frame_tipos, text="Fórmula direta", variable=tipo_rolagem, value="normal",
-                    bg="#1a1a2e", fg="white").grid(row=0, column=0, padx=10)
-        tk.Radiobutton(frame_tipos, text="Atributo + Proficiência", variable=tipo_rolagem, value="atributo",
-                    bg="#1a1a2e", fg="white").grid(row=0, column=1, padx=10)
-
-        # Frame para fórmula direta
-        frame_normal = tk.Frame(popup, bg="#1a1a2e")
-        tk.Label(frame_normal, text="Digite a fórmula (ex: 2D6 + 1D10):", bg="#1a1a2e", fg="white").pack()
-        formula_var = tk.StringVar()
-        tk.Entry(frame_normal, textvariable=formula_var, width=30).pack(pady=5)
-
-        # Frame para rolagem por atributo
-        frame_atributo = tk.Frame(popup, bg="#1a1a2e")
-
-        tk.Label(frame_atributo, text="Escolha o personagem:", bg="#1a1a2e", fg="white").pack()
-        personagens = self.players + self.npcs
-        nomes_personagens = [c.nome for c in personagens]
-        personagens_dict = {p.nome: p for p in personagens}
-        personagem_var = tk.StringVar()
-        personagem_combo = ttk.Combobox(frame_atributo, values=nomes_personagens, textvariable=personagem_var, state="readonly")
-        personagem_combo.pack(pady=5)
-
-        frame_escolhas = tk.Frame(frame_atributo, bg="#1a1a2e")
-
-        atributo_var = tk.StringVar()
-        prof_var = tk.StringVar()
-        mod_extra_var = tk.IntVar(value=0)
-
-        def atualizar_opcoes_personagem(*args):
-            nome = personagem_var.get()
-            personagem = next((p for p in personagens if p.nome == nome), None)
-            if not personagem:
-                return
-
-            for widget in frame_escolhas.winfo_children():
-                widget.destroy()
-
-            atributos_dict = {
-                "Força": personagem.Forca,
-                "Agilidade": personagem.Agilidade,
-                "Vigor": personagem.Vigor,
-                "Inteligência": personagem.Inteligencia,
-                "Presença": personagem.Presenca,
-                "Tática": personagem.Tatica,
-            }
-
-            tk.Label(frame_escolhas, text="Atributo:", bg="#1a1a2e", fg="white").pack()
-            atributo_var.set(list(atributos_dict.keys())[0])
-            ttk.Combobox(frame_escolhas, values=list(atributos_dict.keys()), textvariable=atributo_var, state="readonly").pack(pady=5)
-
-            profs = [prof.nome for nome, prof in personagem.proficiencias.items()]
-            tk.Label(frame_escolhas, text="Proficiência:", bg="#1a1a2e", fg="white").pack()
-            if profs:
-                prof_var.set(profs[0])
-            else:
-                prof_var.set("Nenhuma")
-            ttk.Combobox(frame_escolhas, values=profs or ["Nenhuma"], textvariable=prof_var, state="readonly").pack(pady=5)
-
-            tk.Label(frame_escolhas, text="Modificador extra:", bg="#1a1a2e", fg="white").pack()
-            tk.Entry(frame_escolhas, textvariable=mod_extra_var).pack(pady=5)
-
-            frame_escolhas.pack()
-
-        personagem_var.trace_add("write", atualizar_opcoes_personagem)
-
-        resultado_label = tk.Label(popup, text="", bg="#1a1a2e", fg="white", font=("Arial", 12, "bold"))
-        resultado_label.pack(pady=10)
-
-        def atualizar_frames():
-            if tipo_rolagem.get() == "normal":
-                frame_normal.pack(pady=10)
-                frame_atributo.pack_forget()
-            else:
-                frame_normal.pack_forget()
-                frame_atributo.pack(pady=10)
-
-        tipo_rolagem.trace_add("write", lambda *args: atualizar_frames())
-        atualizar_frames()
-
-        def rolar_formula(formula: str):
-            padrao = r"(\d*)[dD](\d+)"
-            termos = re.findall(padrao, formula)
-            soma_total = 0
-            detalhes = []
-
-            for quantidade, faces in termos:
-                qtd = int(quantidade) if quantidade else 1
-                dado = int(faces)
-                rolagens = [random.randint(1, dado) for _ in range(qtd)]
-                soma = sum(rolagens)
-                detalhes.append(f"{qtd}d{dado}: {rolagens} = {soma}")
-                soma_total += soma
-
-            return soma_total, " | ".join(detalhes)
-
-        def rolar():
-            if tipo_rolagem.get() == "normal":
-                # Rolar com base na fórmula digitada
-                formula = formula_var.get()
-                try:
-                    resultado_total, detalhes = rolar_formula(formula)
-                    resultado_label.config(text=f"Rolagem: {resultado_total} ({detalhes})")
-                except Exception as e:
-                    resultado_label.config(text=f"Erro na fórmula: {e}")
-            else:
-                # Rolar por atributo + proficiência
-                personagem_nome = personagem_var.get()
-                personagem = personagens_dict.get(personagem_nome)
-
-                atributo_escolhido = atributo_var.get()
-                prof_escolhida = prof_var.get()
-                mod_extra = mod_extra_var.get()
-
-                atributos = {
-                    "Força": personagem.Forca,
-                    "Agilidade": personagem.Agilidade,
-                    "Vigor": personagem.Vigor,
-                    "Inteligência": personagem.Inteligencia,
-                    "Presença": personagem.Presenca,
-                    "Tática": personagem.Tatica
-                }
-
-                valor_atributo = atributos.get(atributo_escolhido, 0)
-
-                # Aqui está o ajuste:
-                if prof_escolhida != "Nenhuma":
-                    valor_proficiencia = personagem.proficiencias.obter_bonus(prof_escolhida)
-                else:
-                    valor_proficiencia = 0
-
-                # Calcular número de dados: 1d20 para cada 2 pontos no atributo
-            dados = max(1, valor_atributo // 2)  # Garante ao menos 1 dado
-
-            rolagens = [random.randint(1, 20) for _ in range(dados)]
-            melhor_rolagem = max(rolagens) if rolagens else 0
-
-            try:
-                mod_extra_int = int(mod_extra)
-            except ValueError:
-                mod_extra_int = 0
-
-            total = melhor_rolagem + valor_proficiencia + mod_extra_int
-
-            resultado_label.config(
-                text=(
-                    f"Rolagem: {total} "
-                    f"(D20s: {rolagens}, Melhor: {melhor_rolagem}, "
-                    f"Proficiência: {valor_proficiencia}, Mod: {mod_extra_int})"
-                )
-                )
-
-        tk.Button(popup, text="Rolar", command=rolar, bg="#4e54c8", fg="white", font=("Arial", 12, "bold")).pack(pady=10)
 
 ## função mais importante do sistema inteiro ##
     def abrir_popup_ataque(self):
@@ -2207,7 +2031,7 @@ class CombatSystemScreen(tk.Frame):
 
         # Buff/Debuff
         y += 30
-        tk.Label(popup, text="Buff/Debuff no Acerto (ex: -2 ou +1):", bg="#1a1a2e", fg="white", font=("Arial", 12)).place(x=20, y=y)
+        tk.Label(popup, text="Debuff/Buff(+ para debuff / - para buff):", bg="#1a1a2e", fg="white", font=("Arial", 12)).place(x=20, y=y)
         buff_var = tk.IntVar(value=0)
         y += 25
         tk.Entry(popup, textvariable=buff_var, font=("Arial", 12), width=10, justify="center").place(x=20, y=y)
@@ -2283,7 +2107,7 @@ class CombatSystemScreen(tk.Frame):
                     rolagem=rolagem,
                     id_arma=arma.Id,
                     regiao=regiao,
-                    debuff=buff,
+                    buff=buff,
                     disparos=disparos,
                     distancia=distancia
                 )
@@ -2494,10 +2318,10 @@ class CombatSystemScreen(tk.Frame):
                     btn.pack(side="right", padx=4)
 
             for item in origem.inventario.listar_itens():
-                criar_item_row(frame_scroll_o, item, origem, destino, "→")
+                criar_item_row(frame_scroll_o, item, origem, destino, "←")
 
             for item in destino.inventario.listar_itens():
-                criar_item_row(frame_scroll_d, item, destino, origem, "←")
+                criar_item_row(frame_scroll_d, item, destino, origem, "→")
 
         origem_var.trace_add("write", lambda *_: atualizar_listas())
         destino_var.trace_add("write", lambda *_: atualizar_listas())

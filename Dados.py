@@ -14,25 +14,26 @@ Munições = {
 
     ".40 S&W HP": lambda: Municao(".40 S&W HP", 0, ".40S&W", 1, 2),
     ".40 S&W FMJ": lambda: Municao(".40 S&W FMJ", 0, ".40S&W", 2, 1),
-    "10mm Auto FMJ": lambda: Municao("10mm Auto FMJ", 0, "10mm Auto", 2, 4),
-    "10mm Auto HP": lambda: Municao("10mm Auto HP", 0, "10mm Auto", 2, 6),
     "5.7x28mm FMJ": lambda: Municao("5.7x28mm FMJ", 0, "5.7x28mm", 1, 2),
     "5.7x28mm AP": lambda: Municao("5.7x28mm FMJ", 0, "5.7x28mm", 3, 0),
     "4.6x30mm FMJ": lambda: Municao("4.6x30mm FMJ", 0, "4.6x30mm", 2, 2),
-    "4.6x30mm FMJ": lambda: Municao("4.6x30mm FMJ", 0, "4.6x30mm", 3, 0),
+    "4.6x30mm AP": lambda: Municao("4.6x30mm AP", 0, "4.6x30mm", 3, 0),
 
     ".45ACP HP": lambda: Municao(".45ACP HP", 0, ".45ACP", 1, 5),
     ".45ACP FMJ": lambda: Municao(".45ACP FMJ", 0, ".45ACP", 2, 3),
-    ".45ACP +P HP": lambda: Municao(".45ACP HP", 0, ".45ACP", 1, 7),
-    ".45ACP +P FMJ": lambda: Municao(".45ACP HP", 0, ".45ACP", 2, 5),
+    ".45ACP +P HP": lambda: Municao(".45ACP +P HP", 0, ".45ACP", 1, 7),
+    ".45ACP +P FMJ": lambda: Municao(".45ACP +P FMJ", 0, ".45ACP", 2, 5),
+
+    "10mm Auto FMJ": lambda: Municao("10mm Auto FMJ", 0, "10mm Auto", 2, 4),
+    "10mm Auto HP": lambda: Municao("10mm Auto HP", 0, "10mm Auto", 2, 6),
     ".50AE FMJ": lambda: Municao(".50AE FMJ", 0, ".50AE", 3, 6),
 
     ".357Mag FMJ": lambda: Municao(".357Mag FMJ", 0, ".357Mag", 3, 4),
     ".357Mag HP": lambda: Municao(".357Mag HP", 0, ".357Mag", 2, 6),
     ".44Mag FMJ": lambda: Municao(".44Mag FMJ", 0, ".44Mag", 3, 6),
-    ".44Mag FMJ": lambda: Municao(".44Mag FMJ", 0, ".44Mag", 2, 8),
+    ".44Mag HP": lambda: Municao(".44Mag HP", 0, ".44Mag", 2, 8),
     ".454Casull FMJ": lambda: Municao(".454Casull FMJ", 0, ".454Casull", 4, 6),
-    ".454Casull HP": lambda: Municao(".454Casull FMJ", 0, ".454Casull", 4, 8),
+    ".454Casull HP": lambda: Municao(".454Casull HP", 0, ".454Casull", 4, 8),
     ".500Mag FMJ": lambda: Municao(".500Mag FMJ", 0, ".500Mag", 5, 6),
     ".500Mag HP": lambda: Municao(".500Mag HP", 0, ".500Mag", 4, 10),
 
@@ -41,16 +42,16 @@ Munições = {
     ".410Bore #00) Slug": lambda: Municao(".410Bore #00) Slug", 0, ".410Bore", 3, 2),
     "12ga #4 Buck": lambda: Municao("12 gauge #4 Buckshot", 0, "12ga", 1, 8),
     "12ga #00 Buck": lambda: Municao("12 gauge #00 Buckshot", 0, "12ga", 2, 8),
-    "12ga Slug": lambda: Municao("12ga Slug", 0, "12 gauge", 2, 4),
-    "12ga Sabot Slug": lambda: Municao("12ga Sabot Slug", 0, "12 gauge", 3, 2),
-    "12ga Dragons Breath": lambda: Municao("12ga Dragons Breath", 0, "12 gauge", 0, -20),
+    "12ga Slug": lambda: Municao("12ga Slug", 0, "12ga", 2, 4),
+    "12ga Sabot Slug": lambda: Municao("12ga Sabot Slug", 0, "12ga", 3, 2),
+    "12ga Dragons Breath": lambda: Municao("12ga Dragons Breath", 0, "12ga", 0, -20),
     "23x75mmr Barrikada": lambda: Municao("23x75mmr Barrikada", 0, "23x75mmr", 6, 5),
     "23x75mmr Volna-R": lambda: Municao("23x75mmr Volna-R", 0, "23x75mmr", 4, 6),
-    "23x75 Shrapnel-10": lambda: Municao("23x75mmr Shrapnel-10", 0, "23x75mmr", 4, 8),
-    "23x75 Shrapnel-25": lambda: Municao("23x75mmr Shrapnel-25", 0, "23x75mmr", 4, 8),
-    "23x75 Zvezda": lambda: Municao("23x75mmr Zvezda", 0, "23x75mmr", 0, -10),
-    "23x75 Siren-7": lambda: Municao("23x75mmr Siren-7", 0, "23x75mmr", 0, -15),
-    "23x75 Cheremukha-7": lambda: Municao("23x75mmr Cheremukha-7", 0, "23x75mmr", 0, -15),
+    "23x75mmr Shrapnel-10": lambda: Municao("23x75mmr Shrapnel-10", 0, "23x75mmr", 4, 8),
+    "23x75mmr Shrapnel-25": lambda: Municao("23x75mmr Shrapnel-25", 0, "23x75mmr", 4, 8),
+    "23x75mmr Zvezda": lambda: Municao("23x75mmr Zvezda", 0, "23x75mmr", 0, -10),
+    "23x75mmr Siren-7": lambda: Municao("23x75mmr Siren-7", 0, "23x75mmr", 0, -15),
+    "23x75mmr Cheremukha-7": lambda: Municao("23x75mmr Cheremukha-7", 0, "23x75mmr", 0, -15),
 
     ".300Blk SuperS": lambda: Municao(".300Blk SuperS", 0, ".300Blk", 4, 6),
     ".300Blk SubS": lambda: Municao(".300Blk SubS", 0, ".300Blk", 4, 2),
@@ -134,6 +135,8 @@ Rangeds = {
     "Uzi": lambda: Ranged("Uzi", 2.4, "Submetralhadora", "Auto", "Incomum", "9x19mm", 30),
     "MP5K": lambda: Ranged("MP5K", 2.0, "Submetralhadora", "Auto", "Incomum", "9x19mm", 30),
     "Thompson": lambda: Ranged("Thompson", 2.8, "Submetralhadora", "Auto", "Comum", ".45Acp", 30),
+    "MP40": lambda: Ranged("MP40", 2.5, "Submetralhadora", "Auto", "Comum", "9x19mm", 32),
+    "PPSH-41": lambda: Ranged("PPSH-41", 3.2, "Submetralhadora", "Auto", "Incomum", "7.62x25mm", 71),
     "Mac-10": lambda: Ranged("Mac-10", 2.0, "Submetralhadora", "Auto", "Incomum", ".45Acp", 30),
     "AKS-74U": lambda: Ranged("AKS-74U", 2.4, "Submetralhadora", "Auto", "Comum", "5.45x39mm", 30),
     "PP19 Bizon": lambda: Ranged("PP19 Bizon", 2.7, "Submetralhadora", "Auto", "Comum", "9x18mm", 64),
@@ -149,38 +152,39 @@ Rangeds = {
     "Winchester 1886": lambda: Ranged("Winchester 1886", 2.5, "Espingarda", "Alavanca", "Comum", ".45-70Gov", 5),
     "Taurus Rossi Judge": lambda: Ranged("Taurus Rossi Judge", 2.8, "Espingarda", "Dupla", "Rara", ".410Bore", 5),
     
-    "M4A1": lambda: Ranged("M4A1", 2.5, "Carabina", "Auto", "Comum", "5.56x45mm", 30),
-    "M4": lambda: Ranged("M4", 2.5, "Carabina", "Rajada", "Comum", "5.56x45mm", 30),
-    "AAC Honey Badger": lambda: Ranged("AAC Honey Badger", 2.3, "Carabina", "Auto", "Rara", ".300Blk", 30),
-    "AKS-74": lambda: Ranged("AKS-74", 2.6, "Carabina", "Auto", "Comum", "5.45x39mm", 30),
-    "AK-105": lambda: Ranged("AK-105", 2.4, "Carabina", "Auto", "Incomum", "5.45x39mm", 30),
-    "G36K": lambda: Ranged("G36C", 2.4, "Carabina", "Auto", "Rara", "5.56x45mm", 30),
-    "AK-105": lambda: Ranged("AK-105", 2.3, "Carabina", "Auto", "Incomum", "5.45x39mm", 30),
-    "SR-3M": lambda: Ranged("SR-3M", 2.1, "Carabina", "Auto", "Rara", "9x39mm", 20),
-    "Groza-1": lambda: Ranged("Groza-1", 2.4, "Carabina", "Auto", "Rara", "7.62x39mm", 30),
-    "Groza-4": lambda: Ranged("Groza-4", 2.4, "Carabina", "Auto", "Rara", "9x39mm", 20),
+    "M4A1": lambda: Ranged("M4A1", 3.5, "Carabina", "Auto", "Comum", "5.56x45mm", 30),
+    "M4": lambda: Ranged("M4", 3.5, "Carabina", "Rajada", "Comum", "5.56x45mm", 30),
+    "Honey Badger": lambda: Ranged("Honey Badger", 3.3, "Carabina", "Auto", "Rara", ".300Blk", 30),
+    "AKS-74": lambda: Ranged("AKS-74", 3.6, "Carabina", "Auto", "Comum", "5.45x39mm", 30),
+    "AK-105": lambda: Ranged("AK-105", 3.4, "Carabina", "Auto", "Incomum", "5.45x39mm", 30),
+    "G36K": lambda: Ranged("G36C", 3.4, "Carabina", "Auto", "Rara", "5.56x45mm", 30),
+    "AK-105": lambda: Ranged("AK-105", 3.3, "Carabina", "Auto", "Incomum", "5.45x39mm", 30),
+    "SR-3M": lambda: Ranged("SR-3M", 3.1, "Carabina", "Auto", "Rara", "9x39mm", 20),
+    "Groza-1": lambda: Ranged("Groza-1", 3.4, "Carabina", "Auto", "Rara", "7.62x39mm", 30),
+    "Groza-4": lambda: Ranged("Groza-4", 3.4, "Carabina", "Auto", "Rara", "9x39mm", 20),
 
-    "M16A4": lambda: Ranged("M16A4", 2.7, "Fuzil De Assalto", "Rajada", "Comum", "5.56x45mm", 30),
-    "M16A3": lambda: Ranged("M16A3", 2.7, "Fuzil De Assalto", "Auto", "Comum", "5.56x45mm", 30),
-    "G36": lambda: Ranged("G36", 2.6, "Fuzil De Assalto", "Auto", "Comum", "5.56x45mm", 30),
-    "L85A2": lambda: Ranged("L85A2", 2.7, "Fuzil De Assalto", "Auto", "Comum", "5.56x45mm", 30),
-    "HK416": lambda: Ranged("HK416", 2.6, "Fuzil De Assalto", "Auto", "Incomum", "5.56x45mm", 30),
-    "AK-47": lambda: Ranged("AK-47", 2.8, "Fuzil De Assalto", "Auto", "Comum", "7.62x39mm", 30),
-    "AK-74": lambda: Ranged("AK-74", 2.4, "Fuzil De Assalto", "Auto", "Incomum", "5.45x39mm", 30),
-    "AK-103": lambda: Ranged("AK-103", 2.6, "Fuzil De Assalto", "Auto", "Incomum", "7.62x39mm", 30),
-    "AK-12M": lambda: Ranged("AK-12M", 2.3, "Fuzil De Assalto", "Auto", "Incomum", "5.45x39mm", 30),
-    "AK-15": lambda: Ranged("AK-15", 2.4, "Fuzil De Assalto", "Auto", "Incomum", "7.62x39mm", 30),
-    "AN-94 Abakan": lambda: Ranged("AN-94 Abakan", 2.4, "Fuzil De Assalto", "Rajada", "Exótica", "5.45x39mm", 30),
+    "M16A4": lambda: Ranged("M16A4", 3.7, "Fuzil De Assalto", "Rajada", "Comum", "5.56x45mm", 30),
+    "M16A3": lambda: Ranged("M16A3", 3.7, "Fuzil De Assalto", "Auto", "Comum", "5.56x45mm", 30),
+    "G36": lambda: Ranged("G36", 3.6, "Fuzil De Assalto", "Auto", "Comum", "5.56x45mm", 30),
+    "L85A2": lambda: Ranged("L85A2", 3.7, "Fuzil De Assalto", "Auto", "Comum", "5.56x45mm", 30),
+    "HK416": lambda: Ranged("HK416", 3.6, "Fuzil De Assalto", "Auto", "Incomum", "5.56x45mm", 30),
+    "AK-47": lambda: Ranged("AK-47", 3.8, "Fuzil De Assalto", "Auto", "Comum", "7.62x39mm", 30),
+    "AK-74": lambda: Ranged("AK-74", 3.4, "Fuzil De Assalto", "Auto", "Incomum", "5.45x39mm", 30),
+    "AK-103": lambda: Ranged("AK-103", 3.6, "Fuzil De Assalto", "Auto", "Incomum", "7.62x39mm", 30),
+    "AK-12M": lambda: Ranged("AK-12M", 3.3, "Fuzil De Assalto", "Auto", "Incomum", "5.45x39mm", 30),
+    "AK-15": lambda: Ranged("AK-15", 3.4, "Fuzil De Assalto", "Auto", "Incomum", "7.62x39mm", 30),
+    "AN-94 Abakan": lambda: Ranged("AN-94 Abakan", 3.4, "Fuzil De Assalto", "Rajada", "Exótica", "5.45x39mm", 30),
     
 
-    "FAL": lambda: Ranged("FAL", 3.0, "Fuzil De Batalha", "Auto", "Comum", "7.62x51mm", 20),
-    "M14": lambda: Ranged("M14", 3.4, "Fuzil De Batalha", "Semi", "Comum", "7.62x51mm", 10),
-    "HK417": lambda: Ranged("HK417", 3.0, "Fuzil De Batalha", "Auto", "Incomum", "7.62x51mm", 20),
-    "AK-308": lambda: Ranged("AK-308", 2.6, "Fuzil De Assalto", "Auto", "Rara", "7.62x51mm", 20),
-    "Beowulf ECR": lambda: Ranged("Beowulf ECR", 3.0, "Fuzil De Batalha", "Auto", "Rara", ".50Beowulf", 10),
-    "G3": lambda: Ranged("G3", 3.4, "Fuzil De Batalha", "Auto", "Comum", "7.62x51mm", 20),
-    "SCAR-H": lambda: Ranged("SCAR-H", 3.5, "Fuzil De Batalha", "Auto", "Rara", "7.62x51mm", 20),
-    "Dragunov SVU-A": lambda: Ranged("Dragunov SVU-A", 2.8, "DMR", "Auto", "Rara", "7.62x54mmr", 10),
+    "M1-Garand": lambda: Ranged("M1-Garand", 3.2, "Fuzil De Batalha", "Auto", "Comum", ".30-06", 20),
+    "FAL": lambda: Ranged("FAL", 4.0, "Fuzil De Batalha", "Auto", "Comum", "7.62x51mm", 20),
+    "M14": lambda: Ranged("M14", 4.4, "Fuzil De Batalha", "Semi", "Comum", "7.62x51mm", 10),
+    "HK417": lambda: Ranged("HK417", 4.0, "Fuzil De Batalha", "Auto", "Incomum", "7.62x51mm", 20),
+    "AK-308": lambda: Ranged("AK-308", 3.6, "Fuzil De Assalto", "Auto", "Rara", "7.62x51mm", 20),
+    "Beowulf ECR": lambda: Ranged("Beowulf ECR", 4.0, "Fuzil De Batalha", "Auto", "Rara", ".50Beowulf", 10),
+    "G3": lambda: Ranged("G3", 4.4, "Fuzil De Batalha", "Auto", "Comum", "7.62x51mm", 20),
+    "SCAR-H": lambda: Ranged("SCAR-H", 4.5, "Fuzil De Batalha", "Auto", "Rara", "7.62x51mm", 20),
+    "Dragunov SVU-A": lambda: Ranged("Dragunov SVU-A", 3.8, "DMR", "Auto", "Rara", "7.62x54mmr", 10),
 
     "SKS": lambda: Ranged("SKS", 2.8, "DMR", "Semi", "Comum", "7.62x39mm", 10),
     "M21": lambda: Ranged("M21", 2.5, "DMR", "Semi", "Comum", "7.62x51mm", 10),
@@ -193,17 +197,17 @@ Rangeds = {
     "Dragunov SVU": lambda: Ranged("Dragunov SVU", 2.8, "DMR", "Semi", "Rara", "7.62x54mmr", 10),
     "VSS Vintorez": lambda: Ranged("VSS Vintorez", 2.4, "DMR", "Semi", "Rara", "9x39mm", 10),
 
-    "Mosin Nagant": lambda: Ranged("Mosin Nagant", 3.6, "Fuzil De Precisão", "Bolt", "Comum", "7.62x54mmR", 5),
+    "Mosin Nagant": lambda: Ranged("Mosin Nagant", 3.6, "Fuzil De Precisão", "Bolt", "Comum", "7.62x54mmr", 5),
     "M40A1": lambda: Ranged("M40A1", 2.7, "Fuzil De Precisão", "Bolt", "Comum", "7.62x51mm", 3),
     "Model 700": lambda: Ranged("Model 700", 3.0, "Fuzil De Precisão", "Bolt", "Comum", ".306Remington", 6),
-    "Dragunov SVD": lambda: Ranged("Dragunov SVD", 4.2, "Fuzil De Precisão", "Semi", "Comum", "7.62x54mmR", 10),
+    "Dragunov SVD": lambda: Ranged("Dragunov SVD", 4.2, "Fuzil De Precisão", "Semi", "Comum", "7.62x54mmr", 10),
     "AWP": lambda: Ranged("AWP", 3.1, "Fuzil De Precisão", "Bolt", "Incomum", ".308Remington", 10),
     "AWS": lambda: Ranged("AWS", 3.3, "Fuzil De Precisão", "Bolt", "Rara", ".308Remington", 10),
     "AWM": lambda: Ranged("AWM", 3.8, "Fuzil De Precisão", "Bolt", "Rara", ".338LapuaMag", 5),
     "TRG-42": lambda: Ranged("TRG-42", 4.1, "Fuzil De Precisão", "Bolt", "Rara", ".338LapuaMag", 5),
     "WA2000": lambda: Ranged("WA2000", 3.8, "Fuzil De Precisão", "Semi", "Exótica", ".308Remington", 5),
-    "Dragunov SVDs": lambda: Ranged("Dragunov SVDs", 3.4, "Fuzil De Precisão", "Semi", "Incomum", "7.62x54mmR", 10),
-    "SV-98": lambda: Ranged("SV-98", 3.6, "Fuzil De Precisão", "Bolt", "Incomum", "7.62x54mmR", 5),
+    "Dragunov SVDs": lambda: Ranged("Dragunov SVDs", 3.4, "Fuzil De Precisão", "Semi", "Incomum", "7.62x54mmr", 10),
+    "SV-98": lambda: Ranged("SV-98", 3.6, "Fuzil De Precisão", "Bolt", "Incomum", "7.62x54mmr", 5),
     "M200 Intervention": lambda: Ranged("M200 Intervention", 5.8, "Fuzil De Precisão", "Bolt", "Exótica", ".408Cheytac", 10),
     "M107": lambda: Ranged("M107", 6.5, "Fuzil De Precisão", "Semi", "Incomum", ".50BMG", 10),
     "M82A1": lambda: Ranged("M82A1", 6.5, "Fuzil De Precisão", "Semi", "Rara", ".50BMG", 10),
@@ -229,7 +233,6 @@ Melees = {
     "Karambit": lambda: Melee("Karambit", 1.5, "Cortante", "Faca", "Exótica"),
     "Adaga": lambda: Melee("Adaga", 2.5, "Cortante", "Adaga", "Incomum"),
     "Tanto": lambda: Melee("Tanto", 2.5, "Cortante", "Adaga", "Rara"),
-    
 
     "Machadinha": lambda: Melee("Machadinha", 3, "Cortante", "Machadinha", "Comum"),
     "Tomahawk": lambda: Melee("Tomahawk", 3, "Cortante", "Machadinha", "Incomum"),
@@ -268,7 +271,6 @@ Melees = {
 }
 
 Protecoes = {    
-    "Capacete de moto": lambda: Protecao("Capacete de moto", 2.2, 2, 8, 2, "Cabeça"),
     "CapaceteM1": lambda: Protecao("Capacete M1", 3, 3, 6, 2, "Cabeça"),
     "Mich2000": lambda: Protecao("Mich2000", 2.5, 4, 6, 4, "Cabeça"),
     "Capacete 6B47": lambda: Protecao("Capacete 6B47", 5, 8, 10, 8, "Cabeça"),
@@ -283,12 +285,12 @@ Protecoes = {
     "Visor Altlyn": lambda: Protecao("Visor Altlyn", 2.5, 8, 12, 10, "Rosto"),
     "Visor Maska 1-SCH": lambda: Protecao("Visor Maska 1-SCH", 2.5, 8, 16, 12, "Rosto"),
 
-    "ColeteLeve": lambda: Protecao("ColeteLeve", 2, 2, 8, 4, "Torso"),
-    "ColeteMedio": lambda: Protecao("ColeteMedio", 3, 3, 8, 6, "Torso"),
-    "ColetePesado": lambda: Protecao("ColetePesado", 5, 4, 10, 8, "Torso"),
+    "ColeteLeve": lambda: Protecao("Colete Leve", 2, 2, 8, 4, "Torso"),
+    "Colete Medio": lambda: Protecao("Colete Medio", 3, 3, 8, 6, "Torso"),
+    "Colete Pesado": lambda: Protecao("Colete Pesado", 5, 4, 10, 8, "Torso"),
     "Colete 6B45": lambda: Protecao("6B45", 7, 8, 10, 8, "Torso"),
 
-    "JoelheirasTaticas": lambda: Protecao("JoelheirasTaticas", 3, 2, 6, 4, "Pernas"),
+    "Joelheiras táticas": lambda: Protecao("Joelheiras táticas", 3, 2, 6, 4, "Pernas"),
     "Joelheiras 6B51": lambda: Protecao("Joelheiras 6B51", 3, 8, 10, 8, "Pernas"),
 
     "Cotoveleiras táticas": lambda: Protecao("Cotoveleiras táticas", 2, 5, 8, 6, "Braços"),
@@ -391,17 +393,17 @@ Pools.update(Munições)
 
 kits_por_nome = {}
 
-kits_por_nome["Agent"] = Kit("Pistola", {"Glock 17", "Cassetete",("9x19mm FMJ", 60),("Comunicador", 1)}, Pools)
+kits_por_nome["Agent"] = Kit("Pistola", {"Glock 19", "Cassetete",("9x19mm FMJ", 76), ("Comunicador", 1), ("Gaze", 5), ("Bandagem", 5)}, Pools)
 
-kits_por_nome["ATP_Soldat"] = Kit("ATP_Soldat", {"HK416","P226","Faca Bowie",("9x19mm +P FMJ", 76), ("5.56x45mm FMJ", 120),"ColeteMedio",("Comunicador", 1), ("Cartão de acesso", 1)}, Pools)
+kits_por_nome["ATP_Soldat"] = Kit("ATP_Soldat", {"HK416","P226","Faca Bowie",("9x19mm +P FMJ", 76), ("5.56x45mm FMJ", 120),"Colete Medio", "Joelheiras táticas", ("Comunicador", 1), ("Gaze", 5), ("Bandagem", 5), ("Cartão de acesso", 1)}, Pools)
 
-kits_por_nome["ATP_Engineer"] = Kit("ATP_Engineer", {"AAC Honey Badger","USP-9","Faca Bowie", (".300Blk SuperS", 120), ("9x19mm FMJ", 60),"ColeteMedio", ("Comunicador", 1)}, Pools)
+kits_por_nome["ATP_Engineer"] = Kit("ATP_Engineer", {"AAC Honey Badger","USP-9","Faca Bowie", (".300Blk SuperS", 120), ("9x19mm FMJ", 60),"Colete Medio", "Joelheiras táticas", "Cotoveleiras táticas", ("Comunicador", 1), ("Gaze", 5), ("Bandagem", 5)}, Pools)
 
 kits_por_nome["Agent_melee"] = Kit("Melee", {"Glock 18","Tomahawk", "Cassetete", ("Comunicador", 1), ("Bebidas", 3),("9x19mm FMJ", 60)}, Pools)
 
-kits_por_nome["ATP_Soldat_melee"] = Kit("ATP_Soldat_melee", {"MP9", "Wakisashi", "Karambit","ColeteMedio",("9x19mm FMJ", 90), ("Comunicador", 1),("Kit Médico Leve", 1)}, Pools)
+kits_por_nome["ATP_Soldat_melee"] = Kit("ATP_Soldat_melee", {"MP9", "Wakisashi", "Karambit","Colete Medio",("9x19mm FMJ", 90), ("Comunicador", 1), ("Kit Médico Leve", 1)}, Pools)
 
-kits_por_nome["ATP_Engineer_SMG"] = Kit("ATP_Engineer_SMG", {"UMP-45", "USP-45", "Odachi", "ColeteMedio",(".45ACP +P FMJ", 90),(".45ACP HP", 60), ("Comunicador", 1),("Kit Médico Leve", 1)}, Pools)
+kits_por_nome["ATP_Engineer_SMG"] = Kit("ATP_Engineer_SMG", {"UMP-45", "USP-45", "Odachi", "Colete Medio",(".45ACP +P FMJ", 90),(".45ACP HP", 60), ("Comunicador", 1), ("Kit Médico Leve", 1)}, Pools)
 
 Força = {
     "Luta": lambda: Proficiencia("Luta", 0),
@@ -415,30 +417,30 @@ Agilidade = {
     "Acrobacia": lambda: Proficiencia("Acrobacia", 0),
     "Furtividade": lambda: Proficiencia("Furtividade", 0),
     "Reflexo": lambda: Proficiencia("Reflexo", 0),
-    "Pilotagem": lambda: Proficiencia("Pilotagem", 0),
-    "Iniciativa": lambda: Proficiencia("Iniciativa", 0),
+    #"Pilotagem": lambda: Proficiencia("Pilotagem", 0),
+    #"Iniciativa": lambda: Proficiencia("Iniciativa", 0),
 }
 
 Vigor = {
     "Atletismo": lambda: Proficiencia("Atletismo", 0),
     "Fortitude": lambda: Proficiencia("Fortitude", 0),
-    "Resiliencia": lambda: Proficiencia("Resiliencia", 0),
+    #"Resiliencia": lambda: Proficiencia("Resiliencia", 0),
     "Vitalidade": lambda: Proficiencia("Vitalidade", 0),
-    "Folego": lambda: Proficiencia("Folego", 0),
+    #"Folego": lambda: Proficiencia("Folego", 0),
 }
 
 Inteligencia = {
     "Investigação": lambda: Proficiencia("Investigação", 0),
     "Medicina": lambda: Proficiencia("Medicina", 0),
-    "Ciencia": lambda: Proficiencia("Ciencia", 0),
-    "Tecnologia": lambda: Proficiencia("Tecnologia", 0),
+    #"Ciencia": lambda: Proficiencia("Ciencia", 0),
+    #"Tecnologia": lambda: Proficiencia("Tecnologia", 0),
     "Sobrevivencia": lambda: Proficiencia("Sobrevivencia", 0),
 }
 
 Presença = {
     "Diplomacia": lambda: Proficiencia("Diplomacia", 0),
     "Intimidação": lambda: Proficiencia("Intimidação", 0),
-    "Intuição": lambda: Proficiencia("Intuição", 0),
+    #"Intuição": lambda: Proficiencia("Intuição", 0),
     "Enganação": lambda: Proficiencia("Enganação", 0),
     "Percepção": lambda: Proficiencia("Percepção", 0),
 }

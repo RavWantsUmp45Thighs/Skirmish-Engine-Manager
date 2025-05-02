@@ -83,15 +83,23 @@ class Personagem:
         self.recalcularAtributos()
     
     def recalcularAtributos(self):
-        self.XPlvlUp = 200 + (50 * self.nivel)
-        self.vidaMax = 30 + (5 * self.Vigor) + (5 * self.nivel)
-        self.vidaAtual = self.vidaMax
-        self.PeMax = 3 + 1 * self.Presenca
-        self.mobilidade = (self.Agilidade * 2) + (self.Vigor)
-        self.PeAtual = self.PeMax
-        self.bloqueio = 4 + self.Forca
-        self.esquiva = 4 + self.Agilidade
-        self.mobilidade = (self.Agilidade * 4)
+        self.XPlvlUp = 1000 + (500 * self.nivel)
+
+        # Obter níveis das proficiências específicas
+        bonus_profs = self.proficiencias.obter_proficiencias("Vitalidade", "Carga")
+        bonus_vida = bonus_profs.get("Vitalidade", 0) * 5
+        bonus_carga = bonus_profs.get("Carga", 0) * 2
+
+        # Recalcular atributos com bônus de proficiências
+        self.vidaMax = 50 + (10 * self.Vigor) + (5 * self.nivel) + bonus_vida
+        self.vidaAtual = min(self.vidaAtual, self.vidaMax)
+        self.PeMax = 5 + self.Presenca + (self.nivel // 2)
+        self.PeAtual = min(self.PeAtual, self.PeMax)
+        self.bloqueio = 5 + self.Forca
+        self.esquiva = 5 + self.Agilidade
+        self.CargaMax = 10 + (self.Forca * 2) + bonus_carga
+        self.mobilidade = 5 + (self.Agilidade * 2)
+
         self.calcular_peso_total()
 # funções principais #
 
@@ -1083,14 +1091,6 @@ class NPC:
         self.presenca = presenca
         self.tatica = tatica
 
-        if self.classe == "Bandidos": pass
-        if self.classe == "NRDN": pass
-        if self.classe == "Aberrações": pass
-        if self.classe == "Nexus Core Agency": pass
-        if self.classe == "Bandido": pass
-        if self.classe == "Bandido": pass
-        if self.classe == "Bandido": pass
-
     def __repr__(self):
         return {"Grupo": self.grupo,
                 "Classe": self.classe,
@@ -1157,12 +1157,13 @@ def Gerador(npc: NPC, kit=None, nivel=None, nome=None, proficiencias_base=None):
 def Gerador_grupo(self, grupo_destino, configuracoes):
     for config in configuracoes:
         npc_base = config['npc_base']
-        kit = config['kit']
         nivel = config['nivel']
         nome = config['nome']
-
+        if kit: kit = config['kit']
+        else: kit = None
         personagem = Gerador(npc=npc_base, kit=kit, nivel=nivel, nome=nome)
         self.GruposDePersonagens[grupo_destino].append(personagem)
+
 
     self.refresh()
 ### Funções de Geração ###
@@ -1180,45 +1181,45 @@ def acerto_melee(atacante: Personagem, alvo: Personagem, rolagem: int, id_arma, 
     classe = arma_obj.classe
 
     if classe == "Cortante":
-        BonusClasseArma = atacante.proficiencias.obter_bonus("Arma")
+        BonusClasseArma = atacante.proficiencias.obter_bonus("Pericia em Cortantes")
     elif classe == "Concussiva":
-        BonusClasseArma = atacante.proficiencias.obter_bonus("luta")
+        BonusClasseArma = atacante.proficiencias.obter_bonus("Pericia em Concussivas")
     else:
         BonusClasseArma = 0
 
-    if not isinstance(arma_obj, Melee):
-        return "Erro: A arma utilizada não é corpo a corpo.\n"
-
     mapa_regioes = {'Cabeça': 'Cabeça', 'Rosto': 'Rosto', 'Torso': 'Torso', 'Pernas': 'Pernas', 'Braços': 'Braços'}
-    if regiao not in mapa_regioes:
-        return "Erro: Região inválida para calcular acerto.\n"
 
     protecao = getattr(alvo, mapa_regioes[regiao], None)
-    debuff_total = alvo.proficiencias.obter_bonus("fortitude") + debuff
+    debuff_total = alvo.proficiencias.obter_bonus("fortitude")
 
     if tipo_ataque == "simples":
+        BonusAcertoArma = atacante.proficiencias.obter_bonus("luta")
         dano_base = arma_obj.dano_simples
         crit_mult = arma_obj.critico_simples
         valor_pra_crit = arma_obj.base_valor_critico_simples
     elif tipo_ataque == "forte":
+        BonusAcertoArma = atacante.proficiencias.obter_bonus("luta")
         dano_base = arma_obj.dano_forte
         crit_mult = arma_obj.critico_forte
         valor_pra_crit = arma_obj.base_valor_critico_forte
     elif tipo_ataque == "investida":
+        BonusAcertoArma = atacante.proficiencias.obter_bonus("luta")
         dano_base = arma_obj.dano_investida
         crit_mult = arma_obj.critico_investida
         valor_pra_crit = arma_obj.base_valor_critico_investida
-    elif tipo_ataque == "arremesso":
+    else:
+        BonusAcertoArma = atacante.proficiencias.obter_bonus("Arremesso")
         dano_base = arma_obj.dano_arremesso
         crit_mult = arma_obj.critico_arremesso
         valor_pra_crit = arma_obj.base_valor_critico_arremesso
-    else:
-        return "Erro: Tipo de ataque inválido. Escolha entre 'simples', 'forte', 'investida' ou 'arremesso'.\n"
 
     absorcao = protecao.absorcaoFisica if protecao else 0
-
-    bonusconta = valor_pra_crit > 20
-    acerto_final = rolagem + atacante.proficiencias.obter_bonus("luta")
+    if valor_pra_crit > 20:
+        bonusconta = True
+    else:
+        bonusconta = False
+        
+    acerto_final = rolagem + BonusAcertoArma - debuff
 
     if bonusconta == True:
         if acerto_final >= atacante.bloqueio:
@@ -1226,36 +1227,33 @@ def acerto_melee(atacante: Personagem, alvo: Personagem, rolagem: int, id_arma, 
                 dano_final = (dano_base * crit_mult) + BonusClasseArma - (absorcao + debuff_total)
                 dano_final = max(1, dano_final)
                 alvo.TomarDano(dano_final)
-                resultado += f"{atacante.nome} causou {dano_final} de dano crítico com {arma_obj.nome} em um ataque {tipo_ataque}.\n"
+                resultado += f"Dano crítico:{(dano_base * crit_mult) + BonusClasseArma} - absorção: {absorcao} - debuff: {debuff_total}.\n"
             else:
                 dano_final = (dano_base) + BonusClasseArma - (absorcao + debuff_total)
                 dano_final = max(1, dano_final)
                 alvo.TomarDano(dano_final)
-                resultado += f"{atacante.nome} causou {dano_final} de dano com {arma_obj.nome} ({tipo_ataque}).\n"
+                resultado += f"Dano :{dano_base + BonusClasseArma} - absorção: {absorcao} - debuff: {debuff_total}.\n"
     else:
         if acerto_final >= atacante.bloqueio:
             if rolagem >= valor_pra_crit:
                 dano_final = (dano_base * crit_mult) + BonusClasseArma - (absorcao + debuff_total)
                 dano_final = max(1, dano_final)
                 alvo.TomarDano(dano_final)
-                resultado += f"{atacante.nome} causou {dano_final} de dano crítico com {arma_obj.nome} em um ataque {tipo_ataque}.\n"
+                resultado += f"Dano crítico:{(dano_base * crit_mult) + BonusClasseArma} - absorção: {absorcao} - debuff: {debuff_total}.\n"
             else:
                 dano_final = (dano_base) + BonusClasseArma - (absorcao + debuff_total)
                 dano_final = max(1, dano_final)
                 alvo.TomarDano(dano_final)
-                resultado += f"{atacante.nome} causou {dano_final} de dano com {arma_obj.nome} ({tipo_ataque}).\n"
+                resultado += f"Dano :{dano_base + BonusClasseArma} - absorção: {absorcao} - debuff: {debuff_total}.\n"
         else:
             resultado += f"{atacante.nome} errou o ataque {tipo_ataque} com a/ou {arma_obj.nome}.\n"
     return resultado
 
 
-def acerto_ranged(atacante: Personagem, alvo: Personagem, rolagem: int, id_arma, distancia: int, disparos: int, regiao: str, debuff: int):
+def acerto_ranged(atacante: Personagem, alvo: Personagem, rolagem: int, id_arma, distancia: int, disparos: int, regiao: str, buff: int):
     resultado = ""
 
     arma_data = atacante.inventario.obter_item_por_id(id_arma)
-    if not arma_data:
-        print(f"[ERRO] Arma com ID {id_arma} não encontrada no inventário de {atacante.nome}")
-        return
     
     arma_obj = arma_data["item"]
 
@@ -1264,17 +1262,14 @@ def acerto_ranged(atacante: Personagem, alvo: Personagem, rolagem: int, id_arma,
 
     mapa_regioes = {'Cabeça': 'Cabeça', 'Rosto': 'Rosto', 'Torso': 'Torso', 'Pernas': 'Pernas', 'Braços': 'Braços'}
 
-    if regiao not in mapa_regioes:
-        return "Erro: Região inválida para calcular acerto.\n"
-
     protecao = getattr(alvo, mapa_regioes[regiao], None)
 
     dano = arma_obj.dano
     debuff_acerto, debuff_dano = 0, 0
 
-    if distancia <= 50:
+    if distancia <= 30:
         ValorPraCrit = arma_obj.ShortCrit
-    elif distancia > 51 and distancia <= 100:
+    elif distancia > 31 and distancia <= 61:
         ValorPraCrit = arma_obj.MediumCrit
     else:
         ValorPraCrit = arma_obj.LongCrit
@@ -1299,47 +1294,34 @@ def acerto_ranged(atacante: Personagem, alvo: Personagem, rolagem: int, id_arma,
         absorcao *= 2
 
     dano_final = dano - debuff_dano
-    acerto_final = rolagem + atacante.proficiencias.obter_bonus("pontaria") - debuff_acerto - debuff
+    acerto_base = rolagem + atacante.proficiencias.obter_bonus("Pontaria") - debuff_acerto + buff
+    recuo_acumulado = 0
 
     for disparo in range(min(disparos, arma_obj.munições)):
         if arma_obj.munições == 0:
             resultado += f"Disparo {disparo + 1}: Click... (Sem munição)\n"
             break
+
+        acerto_disparo = acerto_base - recuo_acumulado
+
         if ValorPraCrit > 20:
-            BonusConta = True
+            critico = acerto_disparo >= ValorPraCrit
         else:
-            BonusConta = False
-        if BonusConta == True:
-            if acerto_final >= ValorPraCrit:
-                if acerto_final >= alvo.esquiva:
-                    dano_tiro = max(1, ((dano_final * 2) - absorcao))
-                    resultado += f"Disparo {disparo + 1}: {dano_tiro} de dano crítico.\n"
-                    alvo.TomarDano(dano_tiro)
-                else:
-                    resultado += f"Disparo {disparo + 1}: Errou.\n"
+            critico = (rolagem >= ValorPraCrit) and (acerto_disparo >= ValorPraCrit)
+
+        if acerto_disparo >= alvo.esquiva:
+            if critico:
+                dano_tiro = max(1, (dano_final * 2) - absorcao)
+                resultado += f"Disparo {disparo + 1}: Dano crítico: {dano_final * 2}, Absorção: {absorcao}, dano total: {dano_tiro}..\n"
             else:
-                if acerto_final >= alvo.esquiva:
-                    dano_tiro = max(1, (dano_final - absorcao))
-                    resultado += f"Disparo {disparo + 1}: {dano_tiro} de dano.\n"
-                    alvo.TomarDano(dano_tiro)
-                else:
-                    resultado += f"Disparo {disparo + 1}: Errou.\n"
+                dano_tiro = max(1, dano_final - absorcao)
+                resultado += f"Disparo {disparo + 1}: Dano: {dano_final}, Absorção: {absorcao}, dano total: {dano_tiro}.\n"
+
+            alvo.TomarDano(dano_tiro)
         else:
-            if rolagem >= ValorPraCrit:
-                if acerto_final >= alvo.esquiva:
-                    dano_tiro = max(1, ((dano_final * 2) - absorcao))
-                    resultado += f"Disparo {disparo + 1}: {dano_tiro} de dano crítico.\n"
-                    alvo.TomarDano(dano_tiro)
-                else:
-                    resultado += f"Disparo {disparo + 1}: Errou.\n"
-            else:
-                if acerto_final >= alvo.esquiva:
-                    dano_tiro = max(1, (dano_final - absorcao))
-                    resultado += f"Disparo {disparo + 1}: {dano_tiro} de dano.\n"
-                    alvo.TomarDano(dano_tiro)
-                else:
-                    resultado += f"Disparo {disparo + 1}: Errou.\n"
-        acerto_final -= arma_obj.recuo
+            resultado += f"Disparo {disparo + 1}: Errou.\n"
+
+        recuo_acumulado += arma_obj.recuo
         arma_obj.munições -= 1
 
     return resultado
