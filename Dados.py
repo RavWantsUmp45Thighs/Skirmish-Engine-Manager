@@ -1,5 +1,5 @@
 
-from Codigos import Ranged, Melee, Protecao, Item, Municao, Melhoria, Kit, Proficiencia
+from Codigos import Ranged, Melee, Protecao, Item, Consumivel, Explosivo, Municao, Melhoria, Kit, Proficiencia
 
 Munições = {
     "9x19mm HP": lambda: Municao("9x19mm HP", 0, "9x19mm", 1, 4),
@@ -198,6 +198,7 @@ Rangeds = {
     "VSS Vintorez": lambda: Ranged("VSS Vintorez", 2.4, "DMR", "Semi", "Rara", "9x39mm", 10),
 
     "Mosin Nagant": lambda: Ranged("Mosin Nagant", 3.6, "Fuzil De Precisão", "Bolt", "Comum", "7.62x54mmr", 5),
+    "Kar-98k": lambda: Ranged("Kar-98k", 3.6, "Fuzil De Precisão", "Bolt", "Comum", "7.92x57mm", 5),
     "M40A1": lambda: Ranged("M40A1", 2.7, "Fuzil De Precisão", "Bolt", "Comum", "7.62x51mm", 3),
     "Model 700": lambda: Ranged("Model 700", 3.0, "Fuzil De Precisão", "Bolt", "Comum", ".306Remington", 6),
     "Dragunov SVD": lambda: Ranged("Dragunov SVD", 4.2, "Fuzil De Precisão", "Semi", "Comum", "7.62x54mmr", 10),
@@ -239,12 +240,13 @@ Melees = {
     "Pá tatica": lambda: Melee("Pá tatica", 4.5, "Cortante", "Machadinha", "Rara"),
 
     "Facão": lambda: Melee("Facão", 2.5, "Cortante", "Espada curta", "Comum"),
+    "Facão spetnaz": lambda: Melee("Facão spetnaz", 2.5, "Cortante", "Espada curta", "Incomum"),
     "Kukri": lambda: Melee("Kukri", 2.5, "Cortante", "Espada curta", "Rara"),
 
     "Espada Curta": lambda: Melee("Espada Curta", 4.5, "Cortante", "Espada longa", "Comum"),
     "Espada Longa": lambda: Melee("Espada Longa", 6.5, "Cortante", "Espada longa", "Incomum"),
+    "Katana": lambda: Melee("Katana", 6.0, "Cortante", "Espada longa", "Rara"),
     "Zweihander": lambda: Melee("Zweihander", 9.5, "Cortante", "Espada longa", "Lendária"),
-    "Katana": lambda: Melee("Katana", 6.0, "Cortante", "Sabre", "Rara"),
     "Wakisashi": lambda: Melee("Wakisashi", 5.0, "Cortante", "Sabre", "Rara"),
     "Odachi": lambda: Melee("Odachi", 7.5, "Cortante", "Sabre", "Exótica"),
 
@@ -271,45 +273,33 @@ Melees = {
 }
 
 Protecoes = {    
-    "CapaceteM1": lambda: Protecao("Capacete M1", 3, 3, 6, 2, "Cabeça"),
-    "Mich2000": lambda: Protecao("Mich2000", 2.5, 4, 6, 4, "Cabeça"),
-    "Capacete 6B47": lambda: Protecao("Capacete 6B47", 5, 8, 10, 8, "Cabeça"),
-    "Capacete LSZH 1+": lambda: Protecao("Capacete LSZH 1+", 4.5, 8, 8, 10, "Cabeça"),
-    "Altlyn": lambda: Protecao("Altlyn", 6.5, 8, 12, 10, "Cabeça"),
-    "Maska 1-SCH": lambda: Protecao("Maska 1-SCH", 7, 8, 16, 12, "Cabeça"),
+    "Capacete leve": lambda: Protecao("Capacete leve", 2.5, 3, 4, 4, "Cabeça"),
+    "Capacete médio": lambda: Protecao("Capacete médio", 5, 6, 8, 8, "Cabeça"),
+    "Capacete pesado": lambda: Protecao("Capacete pesado", 8, 8, 10, 10, "Cabeça"),
+    "Altlyn": lambda: Protecao("Altlyn", 8, 8, 12, 10, "Cabeça"),
+    "Maska 1-SCH": lambda: Protecao("Maska 1-SCH", 8, 8, 12, 10, "Cabeça"),
 
-    "Mascará de gás": lambda: Protecao("Mascará de gás", 1.4, 2, 4, 4, "Rosto"),
-    "Visor balístico": lambda: Protecao("Visor balístico", 1.2, 3, 4, 6, "Rosto"),
-    "NVG-2": lambda: Protecao("NVG-2", 2.4, 3, 6, 10, "Rosto"),
-    "NVG-4": lambda: Protecao("NVG-4", 2.8, 3, 8, 10, "Rosto"),
-    "Visor Altlyn": lambda: Protecao("Visor Altlyn", 2.5, 8, 12, 10, "Rosto"),
-    "Visor Maska 1-SCH": lambda: Protecao("Visor Maska 1-SCH", 2.5, 8, 16, 12, "Rosto"),
+    "Protetor facial leve": lambda: Protecao("Protetor facial leve", 1.5, 3, 4, 4, "Rosto"),
+    "Protetor facial médio": lambda: Protecao("Protetor facial médio", 3, 6, 8, 8, "Rosto"),
+    "Protetor facial pesado": lambda: Protecao("Protetor facial pesado", 4, 7, 10, 10, "Rosto"),
+    "Visor Altlyn": lambda: Protecao("Visor Altlyn", 4, 8, 10, 10, "Rosto"),
+    "Visor Maska 1-SCH": lambda: Protecao("Visor Maska 1-SCH", 4, 8, 14, 14, "Rosto"),
 
-    "ColeteLeve": lambda: Protecao("Colete Leve", 2, 2, 8, 4, "Torso"),
-    "Colete Medio": lambda: Protecao("Colete Medio", 3, 3, 8, 6, "Torso"),
-    "Colete Pesado": lambda: Protecao("Colete Pesado", 5, 4, 10, 8, "Torso"),
-    "Colete 6B45": lambda: Protecao("6B45", 7, 8, 10, 8, "Torso"),
+    "Colete leve": lambda: Protecao("Colete leve", 2, 2, 8, 4, "Torso"),
+    "Colete médio": lambda: Protecao("Colete médio", 3, 3, 8, 6, "Torso"),
+    "Colete pesado": lambda: Protecao("Colete pesado", 5, 4, 10, 8, "Torso"),
 
-    "Joelheiras táticas": lambda: Protecao("Joelheiras táticas", 3, 2, 6, 4, "Pernas"),
-    "Joelheiras 6B51": lambda: Protecao("Joelheiras 6B51", 3, 8, 10, 8, "Pernas"),
+    "Proteção de pernas leve": lambda: Protecao("Proteção de pernas leve", 2.5, 3, 4, 4, "Pernas"),
+    "Proteção de pernas média": lambda: Protecao("Proteção de pernas média", 5, 6, 8, 8, "Pernas"),
+    "Proteção de pernas pesada": lambda: Protecao("Proteção de pernas pesada", 8, 7, 10, 10, "Pernas"),
 
-    "Cotoveleiras táticas": lambda: Protecao("Cotoveleiras táticas", 2, 5, 8, 6, "Braços"),
-    "Cotoveleiras 6B51": lambda: Protecao("Cotoveleiras 6B51", 3, 8, 10, 8, "Braços"),
+
+    "Proteção de braços leve": lambda: Protecao("Proteção de braços leve", 2.5, 3, 4, 4, "Braços"),
+    "Proteção de braços média": lambda: Protecao("Proteção de braços média", 5, 6, 8, 8, "Braços"),
+    "Proteção de braços pesada": lambda: Protecao("Proteção de braços pesada", 8, 7, 10, 10, "Braços")
 }
 
 Items = {
-    "Comida": lambda: Item("Comida", 0.1),
-    "Bebida": lambda: Item("Bebida", 0.2),
-    "MRE Leve": lambda: Item("MRE Leve", 0.8),
-    "MRE Médio": lambda: Item("MRE Médio", 1.4),
-    "MRE 24h": lambda: Item("MRE 24h", 3),
-
-    "Bandagem": lambda: Item("Bandagem", 0.2),
-    "Gaze": lambda: Item("Gaze", 0.1),
-    "Kit Médico Leve": lambda: Item("Kit Médico Leve", 0.5),
-    "Kit Médico Médio": lambda: Item("Kit Médico Médio", 1.5),
-    "Kit Médico Pesado": lambda: Item("Kit Médico Pesado", 3.5),
-
     "Comunicador": lambda: Item("Comunicador", 0.2),
     "Walkie-Talkie": lambda: Item("Walkie-Talkie", 0.2),
     "Bandoleira": lambda: Item("Bandoleira", 0.5),
@@ -334,12 +324,6 @@ Items = {
 
     "Bastão de luz": lambda: Item("Bastão de luz", .5),
     "Sinalizador": lambda: Item("Sinalizador", 1.5),
-    "Granada Flashbang": lambda: Item("Granada Flashbang", 2.5),
-    "Granada": lambda: Item("Granada", 3.2),
-    "Mina antipessoal": lambda: Item("Mina antipessoal", 3.5),
-    "Granada de fumaça": lambda: Item("Granada de fumaça", 2.5),
-    "Breaching charge": lambda: Item("Breaching charge", 3),
-    "C4": lambda: Item("Explosive Charge", 5),
     
     "Zip tie militar": lambda: Item("Zip tie militar", 0),
     "Maçarico Torch-9": lambda: Item("Maçarico Torch-9", 2.5),
@@ -347,6 +331,33 @@ Items = {
     "Decodificador Óptico KeyCrack-4": lambda: Item("Decodificador Óptico KeyCrack-4", 2),
     "Espuma de Contenção Rápida FoamLock": lambda: Item("Espuma de Contenção Rápida FoamLock", 4),
     "Escudo Portátil Dobrável TitanFold": lambda: Item("Escudo Portátil Dobrável TitanFold", 10),
+}
+
+Consumiveis = {
+    "Comida": lambda: Consumivel("Comida", 0.1, 2, 1),
+    "Bebida": lambda: Consumivel("Bebida", 0.2, 2, 1),
+    "MRE Leve": lambda: Consumivel("MRE Leve", 0.8, 5, 2),
+    "MRE Médio": lambda: Consumivel("MRE Médio", 1.4, 10, 4),
+    "MRE 12h": lambda: Consumivel("MRE 12h", 3, 15, 6),
+    "MRE 24h": lambda: Consumivel("MRE 24h", 6, 30, 12),
+
+    "Bandagem": lambda: Consumivel("Bandagem", 0.2, 2, 0),
+    "Gaze": lambda: Consumivel("Gaze", 0.1, 2, 0),
+    "Kit Médico Leve": lambda: Consumivel("Kit Médico Leve", 0.5, 2, 0),
+    "Kit Médico Médio": lambda: Consumivel("Kit Médico Médio", 1.5, 2, 0),
+    "Kit Médico Pesado": lambda: Consumivel("Kit Médico Pesado", 3.5, 2, 0),
+}
+
+Explosivos = {
+    "Granada Flashbang": lambda: Explosivo("Granada Flashbang", 3, 8, 5, "Concussão"),
+    "Granada de fumaça": lambda: Explosivo("Granada de fumaça", 3, 15, 0, "Nenhum"),
+    "Granada de fragmentação": lambda: Explosivo("Granada de fragmentação", 3, 15, 50, "Fragmentação"),
+    "Granada HE": lambda: Explosivo("Granada HE", 3, 15, 50, "Explosivo"),
+    "Granada incendiária": lambda: Explosivo("Granada incendiária", 3, 5, 25, "Incendiário"),
+    "Mina antipessoal": lambda: Explosivo("Mina antipessoal", 6, 5, 80, "Explosivo"),
+    "Claymore": lambda: Explosivo("Claymore", 6, 5, 80, "Fragmentação"),
+    "Breaching charge": lambda: Explosivo("Breaching charge", 3, 2, 15, "Concussão"),
+    "C4": lambda: Explosivo("C4", 8, 5, 100, "Explosivo"),
 }
 
 Melhorias = {
@@ -390,20 +401,22 @@ Pools.update(Melees)
 Pools.update(Protecoes)
 Pools.update(Melhorias)
 Pools.update(Munições)
+Pools.update(Consumiveis)
+Pools.update(Explosivos)
 
 kits_por_nome = {}
 
-kits_por_nome["Agent"] = Kit("Pistola", {"Glock 19", "Cassetete",("9x19mm FMJ", 76), ("Comunicador", 1), ("Gaze", 5), ("Bandagem", 5)}, Pools)
+kits_por_nome["Agent"] = Kit("Pistola", {"MP5", "Glock 19", "Cassetete",("9x19mm FMJ", 180), "Colete leve", "Proteção de pernas leve", "Proteção de braços leve", ("Comunicador", 1), ("Gaze", 5), ("Bandagem", 5)}, Pools)
 
-kits_por_nome["ATP_Soldat"] = Kit("ATP_Soldat", {"HK416","P226","Faca Bowie",("9x19mm +P FMJ", 76), ("5.56x45mm FMJ", 120),"Colete Medio", "Joelheiras táticas", ("Comunicador", 1), ("Gaze", 5), ("Bandagem", 5), ("Cartão de acesso", 1)}, Pools)
+kits_por_nome["ATP_Soldat"] = Kit("ATP_Soldat", {"HK416","P226","Faca Bowie",("9x19mm +P FMJ", 76), ("5.56x45mm FMJ", 120), "Colete médio", "Proteção de pernas média", "Proteção de braços média", ("Comunicador", 1), ("Gaze", 5), ("Bandagem", 5)}, Pools)
 
-kits_por_nome["ATP_Engineer"] = Kit("ATP_Engineer", {"AAC Honey Badger","USP-9","Faca Bowie", (".300Blk SuperS", 120), ("9x19mm FMJ", 60),"Colete Medio", "Joelheiras táticas", "Cotoveleiras táticas", ("Comunicador", 1), ("Gaze", 5), ("Bandagem", 5)}, Pools)
+kits_por_nome["ATP_Engineer"] = Kit("ATP_Engineer", {"AAC Honey Badger","USP-9","Faca Bowie", (".300Blk SuperS", 120), ("9x19mm FMJ", 60), "Colete médio", "Proteção de pernas média", "Proteção de braços média", ("Comunicador", 1), ("Gaze", 5), ("Bandagem", 5)}, Pools)
 
-kits_por_nome["Agent_melee"] = Kit("Melee", {"Glock 18","Tomahawk", "Cassetete", ("Comunicador", 1), ("Bebidas", 3),("9x19mm FMJ", 60)}, Pools)
+kits_por_nome["Agent2"] = Kit("Melee", {"Glock 18","Tomahawk", "Cassetete", ("Comunicador", 1), "Colete médio", "Proteção de pernas média", "Proteção de braços média", ("Bebidas", 3),("9x19mm FMJ", 80)}, Pools)
 
-kits_por_nome["ATP_Soldat_melee"] = Kit("ATP_Soldat_melee", {"MP9", "Wakisashi", "Karambit","Colete Medio",("9x19mm FMJ", 90), ("Comunicador", 1), ("Kit Médico Leve", 1)}, Pools)
+kits_por_nome["ATP_Soldat2"] = Kit("ATP_Soldat_melee", {"MP9", "Wakisashi", "Karambit","Colete Medio",("9x19mm FMJ", 90), ("Comunicador", 1), ("Kit Médico Leve", 1)}, Pools)
 
-kits_por_nome["ATP_Engineer_SMG"] = Kit("ATP_Engineer_SMG", {"UMP-45", "USP-45", "Odachi", "Colete Medio",(".45ACP +P FMJ", 90),(".45ACP HP", 60), ("Comunicador", 1), ("Kit Médico Leve", 1)}, Pools)
+kits_por_nome["ATP_Engineer2"] = Kit("ATP_Engineer_SMG", {"UMP-45", "USP-45", "Odachi", "Colete Medio",(".45ACP +P FMJ", 90),(".45ACP HP", 60), ("Comunicador", 1), ("Kit Médico Leve", 1)}, Pools)
 
 Força = {
     "Luta": lambda: Proficiencia("Luta", 0),
@@ -459,9 +472,9 @@ Proficiencias.update(Força), Proficiencias.update(Agilidade), Proficiencias.upd
 NPCs_predefinidos = {
     "Comum": [
         ("Civil", 1, 1, 1, 1, 1, 1),
-        ("Segurança", 1, 1, 1, 1, 1, 1),
-        ("Policial", 2, 3, 2, 2, 1, 2),
-        ("Sheriff", 2, 3, 2, 2, 1, 2),
+        ("Segurança", 2, 2, 2, 2, 2, 2),
+        ("Policial", 2, 3, 2, 2, 2, 2),
+        ("Sheriff", 2, 3, 2, 2, 3, 3),
         ("SWAT", 3, 3, 3, 5, 4, 4)       
     ],
 
@@ -514,8 +527,6 @@ Turnos e Iniciativa
 
     Cada personagem realiza suas ações durante seu turno, e o ciclo continua até que o combate se encerre.
 
-
-
 Estrutura de Turno.
     Cada turno é composto por uma Ação de Movimento, e 3 Ações, e possíveis Reações conforme o contexto:
         1. Ações
@@ -527,7 +538,7 @@ Estrutura de Turno.
                 Ação de movimento: Navegação, locomoção ou posicionamento do personagem pelo mapa de combate.
 
         2. Reações
-            Podem ser executadas fora do próprio turno, como ataques de oportunidade, ações conjuntas ou overwatch.
+            Mudam a ordem do turno, o personagem que teve a reação troca com o atual e perde a vez na rodada.
 
 
 Posicionamento e Cobertura.
@@ -591,20 +602,7 @@ Furtividade e Exploração
         Posicionamento: Jogadores podem tentar entrar em uma posição estratégica para observar o ambiente (como se esconder atrás de uma janela ou de um canto) sem serem notados. Esse posicionamento pode oferecer vantagens em termos de cobertura e furtividade.
 """
 
-Sobre_O_App = """
-Versão 0.1.6
-
-Feito por Lucas Henrique Gonzaga Santos
-
-Linguagem de programação usada: Python
-
-Biblioteca de interface usada: Tkinter
-
-Programa usado: Visual Studio Code
-"""
-
 Topicos = {
     "Combate": Regras_de_Combate,
     "Off-Combat": Regras_de_OffCombat,
-    "Sobre o App": Sobre_O_App
 }

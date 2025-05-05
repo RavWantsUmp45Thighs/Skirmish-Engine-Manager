@@ -23,11 +23,11 @@ class Personagem:
         #stats#
         self.vidaMax: int = 50 + (10 * Vigor) + (5 * nivel)
         self.vidaAtual: int = self.vidaMax
-        self.PeMax: int = 5 + Presenca + (nivel // 2)
+        self.PeMax: int = 4 + Presenca
         self.PeAtual: int = self.PeMax
         self.bloqueio: int = 5 + Forca
         self.esquiva: int = 5 + Agilidade
-        self.CargaMax: float = 10 + (Forca * 2)
+        self.CargaMax: float = 15 + (Forca * 2)
         self.cargaAtual: float = 0
         self.mobilidade: int = 5 + (Agilidade * 2)
         #Corpo#
@@ -38,6 +38,7 @@ class Personagem:
         self.Braços = None
         #Inventário#
         self.inventario = Inventario()
+        self.equipados = Inventario()
         #proficiências#
         self.proficiencias = SistemaDeProficiencias()
         if proficiencias_base:
@@ -54,7 +55,10 @@ class Personagem:
         peso_total = 0
         for item_data in self.inventario.itens:
             item = item_data['item']
-            peso_total += item.peso * item_data['quantidade']    
+            peso_total += item.peso * item_data['quantidade']
+        for item_data in self.equipados.itens:
+            item = item_data['item']
+            peso_total += item.peso * item_data['quantidade']   
         protecoes = [self.Cabeça, self.Torso, self.Pernas, self.Braços]
         for protecao in protecoes:
             if protecao is not None:
@@ -87,39 +91,59 @@ class Personagem:
 
         # Obter níveis das proficiências específicas
         bonus_profs = self.proficiencias.obter_proficiencias("Vitalidade", "Carga")
-        bonus_vida = bonus_profs.get("Vitalidade", 0) * 5
-        bonus_carga = bonus_profs.get("Carga", 0) * 2
+        bonus_vida = bonus_profs.get("Vitalidade", 0) * 2
+        bonus_carga = bonus_profs.get("Carga", 0) * 1
 
         # Recalcular atributos com bônus de proficiências
         self.vidaMax = 50 + (10 * self.Vigor) + (5 * self.nivel) + bonus_vida
         self.vidaAtual = min(self.vidaAtual, self.vidaMax)
-        self.PeMax = 5 + self.Presenca + (self.nivel // 2)
+        self.PeMax = 4 + self.Presenca
         self.PeAtual = min(self.PeAtual, self.PeMax)
         self.bloqueio = 5 + self.Forca
         self.esquiva = 5 + self.Agilidade
-        self.CargaMax = 10 + (self.Forca * 2) + bonus_carga
+        self.CargaMax = 15 + (self.Forca * 2) + bonus_carga
         self.mobilidade = 5 + (self.Agilidade * 2)
 
         self.calcular_peso_total()
+    
+    def equipar_item(self, item):
+        if self.inventario.remover_item(item):
+            self.equipados.adicionar_item_objeto(item)
+            return True
+        return False
+
+    def desequipar_item(self, item):
+        if self.equipados.remover_item(item):
+            self.inventario.adicionar_item_objeto(item)
+            return True
+        return False
 # funções principais #
 
 # funções de proteção #
     def equipar_do_inventario(self, regiao, nome_protecao):
         if not hasattr(self, regiao):
-            return
+            print(f"[ERRO] Região inválida: {regiao}")
+            return False
         item_encontrado = next((i for i in self.inventario.itens if i["item"].nome == nome_protecao), None)
         if not item_encontrado:
-            return
+            print(f"[ERRO] Item '{nome_protecao}' não encontrado no inventário.")
+            return False
+
         protecao_nova = item_encontrado["item"]
         protecao_atual = getattr(self, regiao)
+
         if protecao_atual:
             self.inventario.gerenciar_item(item_objeto=protecao_atual, quantidade=1, operacao="adicionar")
+
         setattr(self, regiao, protecao_nova)
+
         if hasattr(protecao_nova, "Id"):
             self.inventario.remover_item_por_id(protecao_nova.Id)
         else:
             self.inventario.remover_item(item_objeto=protecao_nova, quantidade=1)
+
         self.calcular_peso_total()
+        return True
 
     def remover_protecao(self, regiao):
         if not hasattr(self, regiao):
@@ -140,7 +164,6 @@ class Personagem:
                 print(f"{regiao}: {protecao.nome}")
             else:
                 print(f"{regiao}: Nenhuma proteção equipada.")
-# funções de proteção #
 ### CLASSE PERSONAGEM ###
 ### CLASSE PERSONAGEM ###
 ### CLASSE PERSONAGEM ###
@@ -244,9 +267,13 @@ class Proficiencia:
 
     def adicionar_pontos(self, pontos):
         self.nivel += pontos
+        if self.nivel >= 10:
+            self.nivel = 10
 
     def remover_pontos(self, pontos):
         self.nivel -= pontos
+        if self.nivel <= -10:
+            self.nivel = -10
 
     def __str__(self):
         return f"{self.nome}: {self.nivel} ponto(s)"
@@ -283,7 +310,7 @@ class SistemaDeProficiencias:
     def items(self):
         return self.proficiencias.items()
 
-# Classe Base para Itens
+
 class Item:
     def __init__(self, nome, peso):
         self.nome: str = nome
@@ -295,7 +322,39 @@ class Item:
             "Peso": f"{self.peso} kg",
         }
  
-  
+
+class Consumivel(Item):
+    def __init__(self, nome, peso, cura, energia):
+        super().__init__(nome, peso)
+        self.cura: int = cura
+        self.energia: int = energia
+
+    def stats(self):
+        return {
+            "Nome": self.nome,
+            "Peso": f"{self.peso} kg",
+            "Cura": self.cura,
+            "Energia": self.energia
+        }
+
+
+class Explosivo(Item):
+    def __init__(self, nome, peso, raio, dano, tipo_dano):
+        super().__init__(nome, peso)
+        self.raio: int = raio
+        self.dano: int = dano
+        self.tipo_dano: int = tipo_dano
+
+    def stats(self):
+        return {
+            "Nome": self.nome,
+            "Peso": f"{self.peso} kg",
+            "Raio": self.raio,
+            "Dano": self.dano,
+            "Tipo de Dano": self.tipo_dano
+        }
+
+
 class Municao(Item):
     def __init__(self, nome, peso, calibre, perfuracao, dano):
         super().__init__(nome, peso)
@@ -341,153 +400,153 @@ class Melee(Item):
 
         # Subclasse e Raridade #
         if self.subclasse == "Faca":
-            self.dano_simples = 12
+            self.dano_simples = 15
             self.critico_simples = 2
-            self.valor_critico_simples = 19
+            self.valor_critico_simples = 15
 
-            self.dano_forte = 8
-            self.critico_forte = 4
-            self.valor_critico_forte = 30
-
-            self.dano_investida = 8
-            self.critico_investida = 32
-            self.valor_critico_investida = 30
-
-            self.dano_arremesso = 10
-            self.critico_arremesso = 3
-            self.valor_critico_arremesso = 19
-        elif self.subclasse == "Adaga":
-            self.dano_simples = 10
-            self.critico_simples = 2
-            self.valor_critico_simples = 20
-
-            self.dano_forte = 10
-            self.critico_forte = 3
-            self.valor_critico_forte = 25
-
-            self.dano_investida = 10
-            self.critico_investida = 3
-            self.valor_critico_investida = 25
-
-            self.dano_arremesso = 10
-            self.critico_arremesso = 2
-            self.valor_critico_arremesso = 20
-        elif self.subclasse == "Espada curta":
-            self.dano_simples = 8
-            self.critico_simples = 3
-            self.valor_critico_simples = 22
-
-            self.dano_forte = 12
+            self.dano_forte = 30
             self.critico_forte = 2
             self.valor_critico_forte = 20
-
-            self.dano_investida = 12
-            self.critico_investida = 2
-            self.valor_critico_investida = 22
-
-            self.dano_arremesso = 8
-            self.critico_arremesso = 3
-            self.valor_critico_arremesso = 25
-        elif self.subclasse == "Espada longa":
-            self.dano_simples = 8
-            self.critico_simples = 2
-            self.valor_critico_simples = 25
-
-            self.dano_forte = 15
-            self.critico_forte = 2
-            self.valor_critico_forte = 20
-
-            self.dano_investida = 15
-            self.critico_investida = 2
-            self.valor_critico_investida = 20
-
-            self.dano_arremesso = 10
-            self.critico_arremesso = 3
-            self.valor_critico_arremesso = 30
-        elif self.subclasse == "Sabre":
-            self.dano_simples = 10
-            self.critico_simples = 4
-            self.valor_critico_simples = 25
-
-            self.dano_forte = 15
-            self.critico_forte = 3
-            self.valor_critico_forte = 25
-
-            self.dano_investida = 15
-            self.critico_investida = 3
-            self.valor_critico_investida = 25
-
-            self.dano_arremesso = 10
-            self.critico_arremesso = 3
-            self.valor_critico_arremesso = 30
-        elif self.subclasse == "Machadinha":
-            self.dano_simples = 10
-            self.critico_simples = 2
-            self.valor_critico_simples = 25
-
-            self.dano_forte = 15
-            self.critico_forte = 3
-            self.valor_critico_forte = 25
-
-            self.dano_investida = 15
-            self.critico_investida = 2
-            self.valor_critico_investida = 25
-
-            self.dano_arremesso = 15
-            self.critico_arremesso = 2
-            self.valor_critico_arremesso = 20
-        elif self.subclasse == "Machado":
-            self.dano_simples = 10
-            self.critico_simples = 2
-            self.valor_critico_simples = 25
-
-            self.dano_forte = 15
-            self.critico_forte = 4
-            self.valor_critico_forte = 25
 
             self.dano_investida = 20
             self.critico_investida = 2
-            self.valor_critico_investida = 25
-
-            self.dano_arremesso = 10
-            self.critico_arremesso = 4
-            self.valor_critico_arremesso = 30
-        elif self.subclasse == "Lança":
-            self.dano_simples = 10
-            self.critico_simples = 1
-            self.valor_critico_simples = 20
-
-            self.dano_forte = 10
-            self.critico_forte = 3
-            self.valor_critico_forte = 22
-
-            self.dano_investida = 14
-            self.critico_investida = 3
             self.valor_critico_investida = 20
 
-            self.dano_arremesso = 14
+            self.dano_arremesso = 20
             self.critico_arremesso = 3
-            self.valor_critico_arremesso = 22
-        elif self.subclasse == "Martelo":
-            self.dano_simples = 10
+            self.valor_critico_arremesso = 25
+        elif self.subclasse == "Adaga":
+            self.dano_simples = 15
+            self.critico_simples = 3
+            self.valor_critico_simples = 25
+
+            self.dano_forte = 30
+            self.critico_forte = 2
+            self.valor_critico_forte = 20
+
+            self.dano_investida = 30
+            self.critico_investida = 2
+            self.valor_critico_investida = 20
+
+            self.dano_arremesso = 20
+            self.critico_arremesso = 3
+            self.valor_critico_arremesso = 25
+        elif self.subclasse == "Espada curta":
+            self.dano_simples = 20
             self.critico_simples = 2
             self.valor_critico_simples = 25
 
-            self.dano_forte = 10
+            self.dano_forte = 30
             self.critico_forte = 2
-            self.valor_critico_forte = 18
+            self.valor_critico_forte = 20
 
-            self.dano_investida = 14
+            self.dano_investida = 30
+            self.critico_investida = 2
+            self.valor_critico_investida = 20
+
+            self.dano_arremesso = 20
+            self.critico_arremesso = 2
+            self.valor_critico_arremesso = 25
+        elif self.subclasse == "Espada longa":
+            self.dano_simples = 20
+            self.critico_simples = 2
+            self.valor_critico_simples = 20
+
+            self.dano_forte = 30
+            self.critico_forte = 2
+            self.valor_critico_forte = 25
+
+            self.dano_investida = 30
             self.critico_investida = 2
             self.valor_critico_investida = 25
 
-            self.dano_arremesso = 10
+            self.dano_arremesso = 20
+            self.critico_arremesso = 2
+            self.valor_critico_arremesso = 20
+        elif self.subclasse == "Sabre":
+            self.dano_simples = 25
+            self.critico_simples = 2
+            self.valor_critico_simples = 25
+
+            self.dano_forte = 30
+            self.critico_forte = 3
+            self.valor_critico_forte = 20
+
+            self.dano_investida = 30
+            self.critico_investida = 3
+            self.valor_critico_investida = 20
+
+            self.dano_arremesso = 20
+            self.critico_arremesso = 2
+            self.valor_critico_arremesso = 20
+        elif self.subclasse == "Machadinha":
+            self.dano_simples = 20
+            self.critico_simples = 3
+            self.valor_critico_simples = 20
+
+            self.dano_forte = 30
+            self.critico_forte = 3
+            self.valor_critico_forte = 25
+
+            self.dano_investida = 30
+            self.critico_investida = 3
+            self.valor_critico_investida = 25
+
+            self.dano_arremesso = 20
+            self.critico_arremesso = 3
+            self.valor_critico_arremesso = 20
+        elif self.subclasse == "Machado":
+            self.dano_simples = 20
+            self.critico_simples = 2
+            self.valor_critico_simples = 20
+
+            self.dano_forte = 40
+            self.critico_forte = 3
+            self.valor_critico_forte = 30
+
+            self.dano_investida = 40
+            self.critico_investida = 3
+            self.valor_critico_investida = 30
+
+            self.dano_arremesso = 20
+            self.critico_arremesso = 2
+            self.valor_critico_arremesso = 20
+        elif self.subclasse == "Lança":
+            self.dano_simples = 20
+            self.critico_simples = 2
+            self.valor_critico_simples = 20
+
+            self.dano_forte = 30
+            self.critico_forte = 2
+            self.valor_critico_forte = 20
+
+            self.dano_investida = 40
+            self.critico_investida = 2
+            self.valor_critico_investida = 20
+
+            self.dano_arremesso = 40
+            self.critico_arremesso = 2
+            self.valor_critico_arremesso = 20
+        elif self.subclasse == "Martelo":
+            self.dano_simples = 25
+            self.critico_simples = 3
+            self.valor_critico_simples = 25
+
+            self.dano_forte = 30
+            self.critico_forte = 2
+            self.valor_critico_forte = 20
+
+            self.dano_investida = 30
+            self.critico_investida = 2
+            self.valor_critico_investida = 20
+
+            self.dano_arremesso = 25
             self.critico_arremesso = 2
             self.valor_critico_arremesso = 20
         elif self.subclasse == "Porrete":
-            self.dano_simples = 8
+            self.dano_simples = 25
             self.critico_simples = 2
-            self.valor_critico_simples = 25
+            self.valor_critico_simples = 20
 
             self.dano_forte = 14
             self.critico_forte = 2
@@ -499,55 +558,55 @@ class Melee(Item):
 
             self.dano_arremesso = 8
             self.critico_arremesso = 2
-            self.valor_critico_arremesso = 25
+            self.valor_critico_arremesso = 20
         elif self.subclasse == "Taco":
-            self.dano_simples = 10
+            self.dano_simples = 20
             self.critico_simples = 2
-            self.valor_critico_simples = 20
+            self.valor_critico_simples = 25
 
-            self.dano_forte = 15
+            self.dano_forte = 35
             self.critico_forte = 2
-            self.valor_critico_forte = 18
+            self.valor_critico_forte = 25
 
-            self.dano_investida = 15
+            self.dano_investida = 35
             self.critico_investida = 2
-            self.valor_critico_investida = 18
+            self.valor_critico_investida = 20
 
-            self.dano_arremesso = 10
+            self.dano_arremesso = 25
             self.critico_arremesso = 2
-            self.valor_critico_arremesso = 25
+            self.valor_critico_arremesso = 20
         elif self.subclasse == "Maça":
-            self.dano_simples = 8
+            self.dano_simples = 25
             self.critico_simples = 2
             self.valor_critico_simples = 20
 
-            self.dano_forte = 15
+            self.dano_forte = 35
             self.critico_forte = 3
-            self.valor_critico_forte = 23
+            self.valor_critico_forte = 28
 
-            self.dano_investida = 15
+            self.dano_investida = 18
             self.critico_investida = 3
-            self.valor_critico_investida = 23
+            self.valor_critico_investida = 25
 
-            self.dano_arremesso = 8
+            self.dano_arremesso = 20
             self.critico_arremesso = 2
             self.valor_critico_arremesso = 20
         elif self.subclasse == "Marreta":
-            self.dano_simples = 10
+            self.dano_simples = 25
             self.critico_simples = 2
-            self.valor_critico_simples = 20
+            self.valor_critico_simples = 25
 
-            self.dano_forte = 20
-            self.critico_forte = 3
-            self.valor_critico_forte = 30
+            self.dano_forte = 40
+            self.critico_forte = 2
+            self.valor_critico_forte = 20
 
-            self.dano_investida = 20
-            self.critico_investida = 3
-            self.valor_critico_investida = 30
+            self.dano_investida = 35
+            self.critico_investida = 2
+            self.valor_critico_investida = 20
 
-            self.dano_arremesso = 10
-            self.critico_arremesso = 3
-            self.valor_critico_arremesso = 30
+            self.dano_arremesso = 25
+            self.critico_arremesso = 2
+            self.valor_critico_arremesso = 25
         else:
             print(f"Erro: Subclasse '{self.subclasse}' não reconhecida.")
     
@@ -691,7 +750,7 @@ class Ranged(Item):
             self.dano = 10
             self.recuo = 2
             self.MaxRange = 40
-            self.MinRange = 2
+            self.MinRange = 5
             self.ShortCrit = 18
             self.MediumCrit = 25
             self.LongCrit = 30
@@ -699,7 +758,7 @@ class Ranged(Item):
             self.dano = 14
             self.recuo = 3
             self.MaxRange = 50
-            self.MinRange = 2
+            self.MinRange = 5
             self.ShortCrit = 20
             self.MediumCrit = 22
             self.LongCrit = 28
@@ -707,7 +766,7 @@ class Ranged(Item):
             self.dano = 10
             self.recuo = 2
             self.MaxRange = 45
-            self.MinRange = 3
+            self.MinRange = 5
             self.ShortCrit = 18
             self.MediumCrit = 25
             self.LongCrit = 29
@@ -715,7 +774,7 @@ class Ranged(Item):
             self.dano = 20
             self.recuo = 3
             self.MaxRange = 45
-            self.MinRange = 4
+            self.MinRange = 5
             self.ShortCrit = 20
             self.MediumCrit = 30
             self.LongCrit = 40
@@ -723,7 +782,7 @@ class Ranged(Item):
             self.dano = 16
             self.recuo = 3
             self.MaxRange = 60
-            self.MinRange = 3
+            self.MinRange = 5
             self.ShortCrit = 22
             self.MediumCrit = 28
             self.LongCrit = 34
@@ -731,7 +790,7 @@ class Ranged(Item):
             self.dano = 10
             self.recuo = 3
             self.MaxRange = 60
-            self.MinRange = 4
+            self.MinRange = 5
             self.ShortCrit = 20
             self.MediumCrit = 24
             self.LongCrit = 30
@@ -747,7 +806,7 @@ class Ranged(Item):
             self.dano = 12
             self.recuo = 3
             self.MaxRange = 100
-            self.MinRange = 6
+            self.MinRange = 5
             self.ShortCrit = 22
             self.MediumCrit = 21
             self.LongCrit = 22
@@ -755,7 +814,7 @@ class Ranged(Item):
             self.dano = 20
             self.recuo = 3
             self.MaxRange = 130
-            self.MinRange = 6
+            self.MinRange = 5
             self.ShortCrit = 28
             self.MediumCrit = 24
             self.LongCrit = 19
@@ -763,7 +822,7 @@ class Ranged(Item):
             self.dano = 20
             self.recuo = 3
             self.MaxRange = 150
-            self.MinRange = 7
+            self.MinRange = 8
             self.ShortCrit = 32
             self.MediumCrit = 22
             self.LongCrit = 18
@@ -779,7 +838,7 @@ class Ranged(Item):
             self.dano = 14
             self.recuo = 3
             self.MaxRange = 100
-            self.MinRange = 15
+            self.MinRange = 10
             self.ShortCrit = 25
             self.MediumCrit = 25
             self.LongCrit = 25
@@ -787,7 +846,7 @@ class Ranged(Item):
             self.dano = 20
             self.recuo = 4
             self.MaxRange = 150
-            self.MinRange = 20
+            self.MinRange = 10
             self.ShortCrit = 30
             self.MediumCrit = 30
             self.LongCrit = 30
@@ -795,7 +854,7 @@ class Ranged(Item):
             self.dano = 35
             self.recuo = 5
             self.MaxRange = 250
-            self.MinRange = 25
+            self.MinRange = 10
             self.ShortCrit = 35
             self.MediumCrit = 25
             self.LongCrit = 20
@@ -1027,6 +1086,7 @@ class Protecao(Item):
             "Nível Balístico": self.nivelBalistico,
             "Absorção Física": self.absorcaoFisica,
             "Absorção Balística": self.absorcaoBalistica,
+            "Região": self.regiao,
         }
 
 
@@ -1101,6 +1161,7 @@ class NPC:
                 "Presença": self.presenca,
                 "Tática": self.tatica,
                 }
+
 
 class Kit:
     def __init__(self, nome, itens, pools):
@@ -1228,11 +1289,13 @@ def acerto_melee(atacante: Personagem, alvo: Personagem, rolagem: int, id_arma, 
                 dano_final = max(1, dano_final)
                 alvo.TomarDano(dano_final)
                 resultado += f"Dano crítico:{(dano_base * crit_mult) + BonusClasseArma} - absorção: {absorcao} - debuff: {debuff_total}.\n"
+                resultado += f"Dano total:{dano_final}.\n"
             else:
                 dano_final = (dano_base) + BonusClasseArma - (absorcao + debuff_total)
                 dano_final = max(1, dano_final)
                 alvo.TomarDano(dano_final)
                 resultado += f"Dano :{dano_base + BonusClasseArma} - absorção: {absorcao} - debuff: {debuff_total}.\n"
+                resultado += f"Dano total:{dano_final}.\n"
     else:
         if acerto_final >= atacante.bloqueio:
             if rolagem >= valor_pra_crit:
@@ -1240,11 +1303,13 @@ def acerto_melee(atacante: Personagem, alvo: Personagem, rolagem: int, id_arma, 
                 dano_final = max(1, dano_final)
                 alvo.TomarDano(dano_final)
                 resultado += f"Dano crítico:{(dano_base * crit_mult) + BonusClasseArma} - absorção: {absorcao} - debuff: {debuff_total}.\n"
+                resultado += f"Dano total:{dano_final}.\n"
             else:
                 dano_final = (dano_base) + BonusClasseArma - (absorcao + debuff_total)
                 dano_final = max(1, dano_final)
                 alvo.TomarDano(dano_final)
                 resultado += f"Dano :{dano_base + BonusClasseArma} - absorção: {absorcao} - debuff: {debuff_total}.\n"
+                resultado += f"Dano total:{dano_final}.\n"
         else:
             resultado += f"{atacante.nome} errou o ataque {tipo_ataque} com a/ou {arma_obj.nome}.\n"
     return resultado
@@ -1274,10 +1339,10 @@ def acerto_ranged(atacante: Personagem, alvo: Personagem, rolagem: int, id_arma,
     else:
         ValorPraCrit = arma_obj.LongCrit
 
-    if distancia < arma_obj.MinRange:
-        debuff_acerto = 2 * (arma_obj.MinRange - distancia)
+    if distancia < 2:
+        debuff_acerto = arma_obj.MinRange
     elif distancia > arma_obj.MaxRange:
-        debuff_dano = 2 * ((distancia - arma_obj.MaxRange) // 5)
+        debuff_dano = 5 * ((distancia - arma_obj.MaxRange) // 5)
         debuff_acerto = (distancia - arma_obj.MaxRange) // 5
 
     nivel = protecao.nivelBalistico if protecao else 0
@@ -1325,4 +1390,9 @@ def acerto_ranged(atacante: Personagem, alvo: Personagem, rolagem: int, id_arma,
         arma_obj.munições -= 1
 
     return resultado
+
+
+
+def acerto_explosivos():
+    pass
 ### Funções de Acerto ###

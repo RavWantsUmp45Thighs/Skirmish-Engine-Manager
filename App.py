@@ -13,37 +13,54 @@ class MainScreen(tk.Frame):
     def __init__(self, parent, controller):
         super().__init__(parent)
         self.controller = controller
-
         self.configure(bg="#130f26")
-        self.grid_rowconfigure(0, weight=1)
-        self.grid_rowconfigure(1, weight=3)
-        self.grid_rowconfigure(2, weight=1)
-        self.grid_rowconfigure(3, weight=1)
-        self.grid_columnconfigure(0, weight=1)  
 
-        frame_container = tk.Frame(self, bg="#130f26")
-        frame_container.grid(row=1, column=0)
-        frame_bottom = tk.Frame(self, bg="#130f26")
-        frame_bottom.grid(row=2, column=0)
+        # Título da tela
+        label = tk.Label(text="- Skirmish Engine -", width=25, height=3, font=("Arial", 40, "bold"), fg="white", bg="#1a0869")
+        label.place(width=800,height=100,x=400, y=120)
 
-        label = tk.Label(frame_container, text="- Skirmish Engine -", width=25, height=2, font=("Arial", 50, "bold"), fg="white", bg="#1a0869")
-        label.pack(pady=10)
+        tk.Label(self, text="Tela inicial", fg="white", bg="#1a0869",
+                font=("Arial", 20, "bold"), width=20, height=2).place(x=20, y=10, width=350, height=75)
+        
+        tk.Button(self, text="Tela de seleção", height=2, command=self.TelaDeSelecao,
+                bg="#1a0869", fg="white", font=("Arial", 20)).place(x=385, y=10, width=350, height=75)
+        
+        tk.Button(self, text="Combate", height=2, command=self.TelaDeCombate,
+                bg="#1a0869", fg="white", font=("Arial", 20)).place(x=870, y=10, width=350, height=75)
 
-        btn_character_select = tk.Button(
-            frame_container, text="Character management", width=20, height=3, font=("Arial", 24, "bold"), fg="white", bg="#1a0869", command=lambda: controller.show_frame(CharacterSelectScreen))
-        btn_character_select.pack(pady=10)
+        tk.Button(self, text="Informações", height=2, command=self.TelaDeRegrasEItens,
+                bg="#1a0869", fg="white", font=("Arial", 20)).place(x=1235, y=10, width=350, height=75)
+        
 
-        btn_items = tk.Button(
-            frame_container, text="Combat management", width=20, height=3, font=("Arial", 24, "bold"), fg="white", bg="#1a0869", command=lambda: controller.show_frame(CombatSystemScreen))
-        btn_items.pack(pady=10)
+        # Frame para o texto sobre o aplicativo, com fundo preto
+        sobre_frame = tk.Frame(self, bg="black")
+        sobre_frame.place(x=550, y=250, width=500, height=300)
 
-        btn_combat = tk.Button(
-            frame_container, text="Rulebook and data", width=20, height=3, font=("Arial", 24, "bold"), fg="white", bg="#1a0869", command=lambda: controller.show_frame(RegrasItensScreen))
-        btn_combat.pack(pady=10)
+        sobre_o_app = """
+Versão 1.4.0
 
-        btn_sair = tk.Button(
-        frame_bottom, text="Shutdown", width=15, height=2, font=("Arial", 20, "bold"), fg="white", bg="#1a0869", command=controller.quit)
-        btn_sair.pack(pady=10)
+Feito por Lucas Henrique Gonzaga Santos
+
+Linguagem de programação usada: Python
+
+Biblioteca de interface usada: Tkinter
+
+Programa usado: Visual Studio Code """
+
+        sobre_label = tk.Label(sobre_frame, text=sobre_o_app, font=("Arial", 14), fg="white", bg="black", justify="left")
+        sobre_label.pack(fill="both", expand=True, padx=10, pady=10)
+
+        btn_sair = tk.Button(text="Shutdown", width=15, height=2, font=("Arial", 30, "bold"), fg="white", bg="#1a0869", command=controller.quit)
+        btn_sair.place(width=300,height=100, x=650, y=800)
+
+    def TelaDeSelecao(self):
+        self.controller.TelaDeSelecao()
+
+    def TelaDeCombate(self):
+        self.controller.TelaDeCombate()
+
+    def TelaDeRegrasEItens(self):
+        self.controller.TelaDeRegrasEItens()
 ### TELA PRINCIPAL ###
 ### TELA PRINCIPAL ###
 ### TELA PRINCIPAL ###
@@ -59,119 +76,101 @@ class CharacterSelectScreen(tk.Frame):
         self.characters = D.GruposDePersonagens["Players"] + D.GruposDePersonagens["NPCs"]
         self.config(bg='#130f26')
 
-        # --- Grid Layout 4x3 ---
-        for col in range(4):
-            self.grid_columnconfigure(col, weight=1)
-        for row in range(3):
-            self.grid_rowconfigure(row, weight=1)
-
-        # --- Botões de Navegação (linha 0) ---
-        tk.Button(self, text="Início", width=20, height=2, command=self.Voltar,
-                  bg="#1a0869", fg="white", font=("Arial", 18)).grid(row=0, column=0, pady=10)
+        # --- Botões de Navegação ---
+        tk.Button(self, text="Tela inicial", height=2, command=self.Voltar,
+                bg="#1a0869", fg="white", font=("Arial", 20)).place(x=20, y=10, width=350, height=75)
 
         tk.Label(self, text="Seleção de Personagem", fg="white", bg="#1a0869",
-                 font=("Arial", 20, "bold"), width=20, height=2).grid(row=0, column=1, pady=10)
+                font=("Arial", 20, "bold"), width=20, height=2).place(x=385, y=10, width=350, height=75)
 
-        tk.Button(self, text="Combate", width=20, height=2, command=self.TelaDeCombate,
-                  bg="#1a0869", fg="white", font=("Arial", 18)).grid(row=0, column=2, pady=10)
+        tk.Button(self, text="Combate", height=2, command=self.TelaDeCombate,
+                bg="#1a0869", fg="white", font=("Arial", 20)).place(x=870, y=10, width=350, height=75)
 
-        tk.Button(self, text="Dicionários", width=20, height=2, command=self.TelaDeRegrasEItens,
-                  bg="#1a0869", fg="white", font=("Arial", 18)).grid(row=0, column=3, pady=10)
+        tk.Button(self, text="Informações", height=2, command=self.TelaDeRegrasEItens,
+                bg="#1a0869", fg="white", font=("Arial", 20)).place(x=1235, y=10, width=350, height=75)
 
-        # --- Lista de Personagens (linha 1, coluna 0) ---
+        # --- Lista de Personagens ---
         self.char_list_frame = self.create_list_section(self, self.characters)
-        self.char_list_frame.grid(row=1, column=0, rowspan=2, padx=10, pady=10, sticky="ns")
+        self.char_list_frame.place(x=20, y=120, width=350, height=600)
 
-        # --- Botões de Criação (linha 1, coluna 3) ---
-        self.create_controls(self).grid(row=1, column=3, padx=10, pady=10, sticky="n")
+        # --- Botões de Criação ---
+        self.create_controls(self).place(x=420, y=120)
 
-        # Atualizar a lista quando o grupo for alterado
-        self.group_var.trace("w", self.refresh)  # Atualiza a lista automaticamente
+        self.group_var.trace("w", self.refresh)
 
     def create_list_section(self, parent, data_list):
         frame = tk.Frame(parent, bg='#1a0869')
 
-        # --- Combobox de Seleção de Grupo --- 
+        # --- Combobox de Seleção de Grupo ---
         self.group_var = tk.StringVar(value="Players")
-        self.group_var.trace("w", self.refresh)  # <- move pra cá, depois de definir
+        self.group_var.trace("w", self.refresh)
         group_menu = ttk.Combobox(frame, textvariable=self.group_var, state="readonly", values=["Players", "NPCs"], font=("Arial", 12))
-        group_menu.pack(pady=(10, 5))
+        group_menu.place(x=10, y=10, width=320, height=30)
 
         # --- Título da seção de personagens ---
         label = tk.Label(frame, text="Personagens", fg="white", bg="#1a0869", font=("Arial", 18, "bold"))
-        label.pack()
+        label.place(x=10, y=50)
 
         # --- Frame e Canvas para Scroll da Lista de Personagens ---
         canvas_frame = tk.Frame(frame, bg='#1a0869')
-        canvas_frame.pack(fill="both", expand=True)
-        canvas = tk.Canvas(canvas_frame, bg="#1a0869", highlightthickness=0, width=280)
+        canvas_frame.place(x=10, y=90, width=320, height=350)
+
+        canvas = tk.Canvas(canvas_frame, bg="#1a0869", highlightthickness=0, width=300, height=350)
         scrollbar = tk.Scrollbar(canvas_frame, orient="vertical", command=canvas.yview, width=20)
         canvas.configure(yscrollcommand=scrollbar.set)
-        scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
-        canvas.pack(side=tk.LEFT, fill="both", expand=True)
+
+        # Colocando a barra de rolagem ao lado direito do canvas
+        scrollbar.place(x=300, y=0, height=350)
+
+        canvas.place(x=0, y=0, width=300, height=350)
 
         inner_frame = tk.Frame(canvas, bg="#1a0869")
         canvas.create_window((0, 0), window=inner_frame, anchor='nw')
         inner_frame.bind("<Configure>", lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
 
         # --- Criação dos Botões de Personagens ---
+        y_offset = 0  # Controle de deslocamento vertical para os botões
         for char in data_list:
             if isinstance(char, CB.Personagem):
                 char_frame = tk.Frame(inner_frame, bg="#1a0869")
-                char_frame.pack(fill="x", pady=2)
-
-                # Configurar as colunas do frame para controlar o layout
-                char_frame.columnconfigure(0, weight=1)  # Botão principal ocupa o espaço restante
-                char_frame.columnconfigure(1, weight=0)  # Botão de remover não expande
+                char_frame.place(x=0, y=y_offset, width=300, height=60)
 
                 # Botão principal do personagem
-                char_button = tk.Button(char_frame,
-                                        text=f"{char.nome} - Nível {char.nivel} - XP:{char.XPAtual}/{char.XPlvlUp} - HP:{char.vidaAtual}/{char.vidaMax}",
-                                        bg="#1a0869", fg="white", font=("Arial", 12),
-                                        anchor="w", justify="left",
-                                        height=2, wraplength=300, width=34,
-                                        command=lambda c=char: self.controller.abrir_detalhes(c))
-                char_button.grid(row=0, column=0, sticky="ew", padx=(2, 5))  # Preenche horizontalmente a coluna 0
+                char_button = tk.Button(char_frame, text=f"{char.nome} - Nível {char.nivel} - XP:{char.XPAtual}/{char.XPlvlUp} - HP:{char.vidaAtual}/{char.vidaMax}", bg="#1a0869", fg="white", font=("Arial", 12),
+                                        anchor="w", justify="left", height=2, wraplength=250, width=34, command=lambda c=char: self.controller.abrir_detalhes(c))
+                char_button.place(x=0, y=0, width=250, height=50)
 
                 # Botão de remover
-                remove_button = tk.Button(char_frame, text="X", bg="red", fg="white", font=("Arial", 12, "bold"),
-                                        width=3,  # Controla largura
-                                        command=lambda c=char: self.remove_specific_character(c))
-                remove_button.grid(row=0, column=1, padx=(0, 5))  # Pequeno espaço à direita
+                remove_button = tk.Button(char_frame, text="X", bg="red", fg="white", font=("Arial", 12, "bold"), width=3, command=lambda c=char: self.remove_specific_character(c))
+                remove_button.place(x=230, y=0, width=30, height=50)
 
+                y_offset += 60
         return frame
 
     def create_controls(self, parent):
         frame = tk.Frame(parent, bg="#1a0869")
 
-        add_button = tk.Button(frame, text="Adicionar", command=lambda: self.add_character("Personagens"),
-                               width=20, height=1, bg="#1a0869", fg="white", font=("Arial", 15))
+        add_button = tk.Button(frame, text="Adicionar", command=lambda: self.add_character("Personagens"), width=20, height=1, bg="#1a0869", fg="white", font=("Arial", 15))
         add_button.pack(pady=5)
 
-        random_button = tk.Button(frame, text="Gerar NPC", command=lambda: self.gerar_NPC("Personagens"),
-                                  width=20, height=1, bg="#1a0869", fg="white", font=("Arial", 15))
+        random_button = tk.Button(frame, text="Gerar NPC", command=lambda: self.gerar_NPC("Personagens"), width=20, height=1, bg="#1a0869", fg="white", font=("Arial", 15))
         random_button.pack(pady=5)
 
-        group_button = tk.Button(frame, text="Gerar Grupo de NPC", command=lambda: self.gerar_grupo_NPCs("Personagens"),
-                                 width=20, height=1, bg="#1a0869", fg="white", font=("Arial", 15))
+        group_button = tk.Button(frame, text="Gerar Grupo de NPC", command=lambda: self.gerar_grupo_NPCs("Personagens"), width=20, height=1, bg="#1a0869", fg="white", font=("Arial", 15))
         group_button.pack(pady=5)
 
         return frame
     
     def refresh(self, *args):
-        # Primeiro, destrua o frame atual para garantir que vamos recriar a interface.
-        self.char_list_frame.destroy()
+        for widget in self.char_list_frame.winfo_children():
+            widget.destroy()
 
-        # Obtenha o grupo atual selecionado no combobox
-        selected_group = self.group_var.get()  # Pegue o valor atual selecionado no combobox
+        selected_group = self.group_var.get()
 
-        # Se o valor do combobox for válido, atualize com o grupo correto
         if selected_group in D.GruposDePersonagens:
-            # Atualiza a interface com o grupo selecionado
             self.char_list_frame = self.create_list_section(self, D.GruposDePersonagens[selected_group])
-        
-        # Reposicione o novo frame na tela
-        self.char_list_frame.grid(row=1, column=0, rowspan=2, padx=10, pady=10, sticky="nsew")
+
+        self.char_list_frame.place(x=20, y=120, width=350, height=600)
 
     def remove_specific_character(self, character):
         selected_group = self.group_var.get()
@@ -368,10 +367,12 @@ class CharacterSelectScreen(tk.Frame):
                             print(f"Falha ao carregar {item.nome} com {municao.nome}")
                         break
 
-        for item_dict in personagem.inventario.itens:
+        for item_dict in personagem.inventario.itens[:]:  # cópia para evitar problemas
             item = item_dict["item"]
             if hasattr(item, "regiao"):
-                personagem.equipar_do_inventario(item.regiao, item.nome)
+                sucesso = personagem.equipar_do_inventario(item.regiao, item.nome)
+                if not sucesso:
+                    print(f"[AVISO] Não foi possível equipar {item.nome} na região {item.regiao}")
 
     def gerar_grupo_NPCs(self, title):
         import random
@@ -518,7 +519,7 @@ class CharacterSelectScreen(tk.Frame):
             tk.messagebox.showerror("Erro", f"Ocorreu um erro ao gerar os NPCs:\n{e}")
 
     def Voltar(self):
-        self.controller.voltar()
+        self.controller.TelaInicial()
 
     def TelaDeCombate(self):
         self.controller.TelaDeCombate()
@@ -541,6 +542,12 @@ class CharacterDetailsScreen(tk.Frame):
 
         self.title_label = tk.Label(self, font=("Arial", 24, "bold"), bg="#1a0869", fg="white")
         self.title_label.place(x=500, y=20, width=600, height=50)
+
+        self.btn_tela_de_selecao = tk.Button(self, text="Seleção", bg="#1a0869", fg="white", font=("Arial", 18), command=self.controller.TelaDeSelecao)
+        self.btn_tela_de_selecao.place(x=50, y=20, width=200, height=50)
+
+        self.btn_tela_de_combate = tk.Button(self, text="Tela de Combate", bg="#1a0869", fg="white", font=("Arial", 18), command=self.controller.TelaDeCombate)
+        self.btn_tela_de_combate.place(x=1350, y=20, width=200, height=50)
 
         ## Frame da Vida ##
         self.frame_vida = tk.Frame(self, bg='#1a0869', bd=2, relief='ridge')
@@ -566,11 +573,21 @@ class CharacterDetailsScreen(tk.Frame):
 
         ## Frame dos Atributos ##
         self.frame_atributos = tk.Frame(self, bg='#1a0869', bd=2, relief='ridge')
-        self.frame_atributos.place(x=300, y=100, width=250, height=240)
+        self.frame_atributos.place(x=250, y=100, width=250, height=240)
         self.label_atributos_title = tk.Label(self.frame_atributos, text="Atributos", bg='#1a0869', fg="white", font=("Arial", 18, "bold"))
         self.label_atributos_title.pack(pady=(0, 5))
         self.atributo_labels = []
         ## Frame dos Atributos ##
+
+        ## Frame da AC ##
+        self.frame_AC = tk.Frame(self, bg='#1a0869', bd=2, relief='ridge')
+        self.frame_AC.place(x=50, y=340, width=200, height=80)
+
+        self.label_bloqueio= tk.Label(self.frame_AC, bg='#1a0869', fg="white", font=("Arial", 16))
+        self.label_bloqueio.pack(pady=2)
+        self.label_esquiva= tk.Label(self.frame_AC, bg='#1a0869', fg="white", font=("Arial", 16))
+        self.label_esquiva.pack(pady=2)
+        ## Frame da AC ##
 
         ## Frame proficiencias ##
         ## Frame proficiencias ##
@@ -583,7 +600,7 @@ class CharacterDetailsScreen(tk.Frame):
         self.container_scroll_prof = tk.Frame(self.frame_proficiencias, bg='#130f26')
         self.container_scroll_prof.pack()
 
-        self.canvas_prof = tk.Canvas(self.container_scroll_prof, bg='#1a0869', highlightthickness=0, width=360, height=640)
+        self.canvas_prof = tk.Canvas(self.container_scroll_prof, bg='#1a0869', highlightthickness=0, width=360, height=700)
         self.scrollbar_prof = tk.Scrollbar(self.container_scroll_prof, orient="vertical", command=self.canvas_prof.yview)
 
         self.scrollable_frame_prof = tk.Frame(self.canvas_prof, bg='#1a0869')
@@ -602,15 +619,20 @@ class CharacterDetailsScreen(tk.Frame):
         ## Frame do Inventário ##
         ## Frame do Inventário ##
         self.frame_inventario = tk.Frame(self, bg='#1a0869')
-        self.frame_inventario.place(x=700, y=100, width=400, height=750)
+        self.frame_inventario.place(x=530, y=100, width=600, height=350)
 
-        self.label_inventario_title = tk.Label(self.frame_inventario, text="Inventário", font=("Arial", 18, "bold"), bg="#1a0869", fg="white")
-        self.label_inventario_title.pack(pady=(10, 5))
+        self.header_inventario = tk.Frame(self.frame_inventario, bg="#1a0869")
+        self.header_inventario.pack(pady=(10, 5), fill="x", padx=10)
 
-        self.container_scroll_inventario = tk.Frame(self.frame_inventario, bg='#130f26', width=380, height=640)
+        self.label_inventario_title = tk.Label(self.header_inventario, text="Inventário", font=("Arial", 18, "bold"), bg="#1a0869", fg="white")
+        self.label_inventario_title.pack(side="left")
+        self.btn_adicionar_item = tk.Button(self.header_inventario, text="Adicionar Item", command=self.abrir_popup_adicionar_item, bg="#1a0869", fg="white", font=("Arial", 12))
+        self.btn_adicionar_item.pack(side="right", padx=(10, 0))
+
+        self.container_scroll_inventario = tk.Frame(self.frame_inventario, bg='#130f26', width=600, height=300)
         self.container_scroll_inventario.place(x=10, y=50)
 
-        self.canvas_inventario = tk.Canvas(self.container_scroll_inventario, bg='#1a0869', highlightthickness=0, width=360, height=640)
+        self.canvas_inventario = tk.Canvas(self.container_scroll_inventario, bg='#1a0869', highlightthickness=0, width=600, height=300)
         self.scrollbar_inventario = tk.Scrollbar(self.container_scroll_inventario, orient="vertical", command=self.canvas_inventario.yview)
 
         self.scrollable_frame_inventario = tk.Frame(self.canvas_inventario, bg='#1a0869')
@@ -620,56 +642,70 @@ class CharacterDetailsScreen(tk.Frame):
         self.canvas_inventario.configure(yscrollcommand=self.scrollbar_inventario.set)
 
         self.canvas_inventario.place(x=0, y=0)
-        self.scrollbar_inventario.place(x=360, y=0, height=640)
+        self.scrollbar_inventario.place(x=570, y=0, height=300)
 
-        self.frame_lista_itens = tk.Frame(self.scrollable_frame_inventario, bg='#1a0869', width=360)
+        self.frame_lista_itens = tk.Frame(self.scrollable_frame_inventario, bg='#1a0869', width=400)
         self.frame_lista_itens.pack()
 
         self.item_widgets = []
+        ## Frame do Inventário ##
+        ## Frame do Inventário ##
 
-        self.btn_adicionar_item = tk.Button(self.frame_inventario, text="Adicionar Item", command=self.abrir_popup_adicionar_item, bg="#1a0869", fg="white", font=("Arial", 14))
-        self.btn_adicionar_item.place(x=120, y=700, width=160, height=40)
-        ## Frame do Inventário ##
-        ## Frame do Inventário ##
+        ## Frame dos Equipados ##
+        self.frame_equipados = tk.Frame(self, bg='#1a0869')
+        self.frame_equipados.place(x=530, y=500, width=600, height=350)
+
+        self.header_equipados = tk.Frame(self.frame_equipados, bg="#1a0869")
+        self.header_equipados.pack(pady=(10, 5), fill="x", padx=10)
+        self.label_equipados_title = tk.Label(self.header_equipados, text="Equipados", font=("Arial", 18, "bold"), bg="#1a0869", fg="white")
+        self.label_equipados_title.pack(side="left")
+
+
+        self.container_scroll_equipados = tk.Frame(self.frame_equipados, bg='#130f26', width=600, height=300)
+        self.container_scroll_equipados.place(x=10, y=50)
+        self.canvas_equipados = tk.Canvas(self.container_scroll_equipados, bg='#1a0869', highlightthickness=0, width=600, height=300)
+        self.scrollbar_equipados = tk.Scrollbar(self.container_scroll_equipados, orient="vertical", command=self.canvas_equipados.yview)
+        self.scrollable_frame_equipados = tk.Frame(self.canvas_equipados, bg='#1a0869')
+        self.scrollable_frame_equipados.bind("<Configure>", lambda e: self.canvas_equipados.configure(scrollregion=self.canvas_equipados.bbox("all")))
+
+        self.canvas_equipados.create_window((0, 0), window=self.scrollable_frame_equipados, anchor="nw")
+        self.canvas_equipados.configure(yscrollcommand=self.scrollbar_equipados.set)
+        self.canvas_equipados.place(x=0, y=0)
+        self.scrollbar_equipados.place(x=570, y=0, height=300)
+
+        self.frame_lista_equipados = tk.Frame(self.scrollable_frame_equipados, bg='#1a0869', width=400)
+        self.frame_lista_equipados.pack()
+        ## Frame dos Equipados ##
 
         ## Frame de Proteções ##
         ## Frame de Proteções ##
         self.frame_protecoes = tk.Frame(self, bg='#1a0869')
-        self.frame_protecoes.place(x=50, y=550, width=500, height=300)
+        self.frame_protecoes.place(x=50, y=550, width=430, height=300)
         self.label_protecoes_title = tk.Label(self.frame_protecoes, text="Proteções Equipadas",font=("Arial", 18, "bold"), bg="#1a0869", fg="white")
         self.label_protecoes_title.pack(pady=(10, 5))
 
-        # Frame direto para os itens de proteção
         self.frame_lista_protecoes = tk.Frame(self.frame_protecoes, bg='#1a0869')
         self.frame_lista_protecoes.pack(fill="both", expand=True)
 
-        # Aqui serão adicionados os widgets das proteções
         self.protecao_widgets = []
         ## Frame de Proteções ##
         ## Frame de Proteções ##
 
         ## Botões entre Atributos e Proteções ##
         ## Botões entre Atributos e Proteções ##
-        self.btn_personalizado1 = tk.Button(self, text="Rolagem", command=lambda: self.abrir_popup_rolagem_avancada(), bg="#1a0869", fg="white", font=("Arial", 14))
-        self.btn_personalizado1.place(x=50, y=350, width=250, height=40)
+        self.btn_status_completo = tk.Button(self, text="Change Stats", command=self.abrir_popup_status_completo, bg="#1a0869", fg="white", font=("Arial", 14))
+        self.btn_status_completo.place(x=250, y=340, width=250, height=40)
 
-        self.btn_personalizado2 = tk.Button(self, text="Vida/Energia", command=lambda: self.abrir_popup_vida_energia(), bg="#1a0869", fg="white", font=("Arial", 14))
-        self.btn_personalizado2.place(x=50, y=500, width=250, height=40)
+        self.btn_rolagem = tk.Button(self, text="Dice Roll", command=lambda: self.abrir_popup_rolagem_avancada(), bg="#1a0869", fg="white", font=("Arial", 14))
+        self.btn_rolagem.place(x=250, y=380, width=250, height=40)
 
-        self.btn_personalizado3 = tk.Button(self, text="XP/Level", command=lambda: self.abrir_popup_xp_nivel(), bg="#1a0869", fg="white", font=("Arial", 14))
-        self.btn_personalizado3.place(x=300, y=350, width=250, height=40)
+        self.btn_rolagem = tk.Button(self, text="Looting/Sharing", command=lambda: self.abrir_popup_transferencia(), bg="#1a0869", fg="white", font=("Arial", 14))
+        self.btn_rolagem.place(x=250, y=420, width=250, height=40)
 
-        self.btn_personalizado4 = tk.Button(self, text="Atributos", command=lambda: self.abrir_popup_atributos(),bg="#1a0869", fg="white", font=("Arial", 14))
-        self.btn_personalizado4.place(x=300, y=500, width=250, height=40)
+        self.btn_rolagem = tk.Button(self, text="Item upgrades", command=lambda: self.abrir_popup_melhorias(), bg="#1a0869", fg="white", font=("Arial", 14))
+        self.btn_rolagem.place(x=250, y=460, width=250, height=40)
         ## Botões entre Atributos e Proteções ##
         ## Botões entre Atributos e Proteções ##
-
-        ## Botão Voltar ##
-        ## Botão Voltar ##
-        self.btn_voltar = tk.Button(self, text="Voltar", command=self.controller.voltar,bg="#1a0869", fg="white", font=("Arial", 18))
-        self.btn_voltar.place(x=50, y=20, width=200, height=50)
-        ## Botão Voltar ##
-        # Botão Voltar ##
     
     def refresh(self, character=None):
         if character is not None:
@@ -683,6 +719,9 @@ class CharacterDetailsScreen(tk.Frame):
             self.label_carga.config(text=f"Carga: {self.character.cargaAtual:.2f}/{self.character.CargaMax:.2f}")
             self.label_energia.config(text=f"Energia: {self.character.PeAtual}/{self.character.PeMax}")
             self.label_mobilidade.config(text=f"Mobilidade: {self.character.mobilidade}m")
+            self.label_bloqueio.config(text=f"Bloqueio: {self.character.bloqueio}")
+            self.label_esquiva.config(text=f"Esquiva: {self.character.esquiva}")
+
 
             for lbl in self.atributo_labels:
                 lbl.destroy()
@@ -742,32 +781,113 @@ class CharacterDetailsScreen(tk.Frame):
                 frame_item = tk.Frame(self.scrollable_frame_inventario, bg="#1a0869", pady=2)
                 frame_item.pack(fill='x', padx=5, pady=2)
 
-                # Definir o texto do botão
-                if item_id:  # Não stackável
+                if item_id:
                     texto_item = item_nome
-                else:  # Stackável
+                else:
                     texto_item = f"{item_nome} x{quantidade}"
 
-                # Botão clicável (sem função por enquanto)
-                btn_item = tk.Button(frame_item,text=texto_item,bg="#2a0d89",fg="white",font=("Arial", 14), anchor='w',relief=tk.FLAT,borderwidth=0,highlightthickness=0,
-                width=22,command=lambda i=item_obj: self.mostrar_popup_detalhes_item(i))
+                btn_item = tk.Button(frame_item, text=texto_item, bg="#2a0d89", fg="white",
+                    font=("Arial", 14), anchor='w', relief=tk.FLAT,borderwidth=0, highlightthickness=0, width=35,
+                    command=lambda i=item_obj: self.mostrar_popup_detalhes_item(i))
                 btn_item.pack(side="left", fill='x', expand=True)
 
-                if item_id:  # Não stackável
-                    btn_remover = tk.Button(frame_item,text="Remover",command=lambda i=item_obj: self._remover_item_do_inventario(i),bg="#2a0d89",fg="white",font=("Arial", 10))     
-                    btn_remover.pack(side="right", padx=5)
-                    self.item_widgets.append(btn_remover)
-                else:  # Stackável
-                    btn_remover_1 = tk.Button(frame_item,text="-1",command=lambda i=item_obj: self._remover_item_do_inventario(i, 1),bg="#2a0d89",fg="white",
-                        font=("Arial", 10),width=4)
-                    btn_remover_10 = tk.Button(frame_item,text="-10",command=lambda i=item_obj: self._remover_item_do_inventario(i, 10),bg="#2a0d89",fg="white",font=("Arial", 10),width=4)
+                if item_id:
+                    if isinstance(item_obj, (CB.Melee)):
+                        btn_equipar = tk.Button(frame_item, text="Equip", command=lambda i=item_obj: self._equipar_item(i), bg="#2a0d89", fg="white", font=("Arial", 8), width=6)
+                        btn_equipar.pack(side="right", padx=5)
+                        btn_remover = tk.Button(frame_item,text="Discard",command=lambda i=item_obj: self._remover_item_do_inventario(i),bg="#2a0d89",fg="white",font=("Arial", 8))     
+                        btn_remover.pack(side="right", padx=5)
+                        self.item_widgets.append(btn_equipar)
+                    elif isinstance(item_obj, (CB.Ranged)):
+                        btn_equipar = tk.Button(frame_item, text="Equip", command=lambda i=item_obj: self._equipar_item(i), bg="#2a0d89", fg="white", font=("Arial", 8), width=6)
+                        btn_equipar.pack(side="right", padx=5)
+                        btn_equipar = tk.Button(frame_item, text="Unload", command=lambda i=item_obj: self.descarregar_municao_ranged(i), bg="#2a0d89", fg="white", font=("Arial", 8), width=6)
+                        btn_equipar.pack(side="right", padx=5)
+                        btn_remover = tk.Button(frame_item,text="Discard",command=lambda i=item_obj: self._remover_item_do_inventario(i),bg="#2a0d89",fg="white",font=("Arial", 8))     
+                        btn_remover.pack(side="right", padx=5)
+                        self.item_widgets.append(btn_equipar)
+                    elif isinstance(item_obj, (CB.Protecao)):
+                        print(f"Item {item_nome} é uma Protecao!")
+                        regiao = getattr(item_obj, "regiao", None)
+                        if regiao:
+                            btn_equipar = tk.Button(frame_item, text="Equip", command=lambda i=item_obj: self._equipar_protecao(i), bg="#2a0d89", fg="white", font=("Arial", 8), width=6)
+                            btn_equipar.pack(side="right", padx=5)
+                            btn_remover = tk.Button(frame_item,text="Discard",command=lambda i=item_obj: self._remover_item_do_inventario(i),bg="#2a0d89",fg="white",font=("Arial", 8))     
+                            btn_remover.pack(side="right", padx=5)
+                            self.item_widgets.append(btn_equipar)
+                    else:
+                        btn_remover = tk.Button(
+                            frame_item, text="Discard",
+                            command=lambda i=item_obj: self._remover_item_do_inventario(i),
+                            bg="#2a0d89", fg="white", font=("Arial", 8)
+                        )
+                        btn_remover.pack(side="right", padx=5)
+                        self.item_widgets.append(btn_remover)
+                else:
+                    btn_remover_1 = tk.Button(
+                        frame_item, text="-1",
+                        command=lambda i=item_obj: self._remover_item_do_inventario(i, 1),
+                        bg="#2a0d89", fg="white", font=("Arial", 8), width=3
+                    )
+                    btn_remover_5 = tk.Button(
+                        frame_item, text="-5",
+                        command=lambda i=item_obj: self._remover_item_do_inventario(i, 5),
+                        bg="#2a0d89", fg="white", font=("Arial", 8), width=3
+                    )
+                    btn_remover_10 = tk.Button(
+                        frame_item, text="-10",
+                        command=lambda i=item_obj: self._remover_item_do_inventario(i, 10),
+                        bg="#2a0d89", fg="white", font=("Arial", 8), width=3
+                    )
                     btn_remover_1.pack(side="right", padx=(2, 0))
-                    btn_remover_10.pack(side="right", padx=(5, 0))
+                    btn_remover_5.pack(side="right", padx=(5, 0))
+                    btn_remover_10.pack(side="right", padx=(7, 0))
                     self.item_widgets.extend([btn_remover_1, btn_remover_10])
         except Exception as e:
             print("Erro ao carregar inventário:", e)
         ## Atualização do inventário ##
         ## Atualização do inventário ##
+
+        ## Atualização do equipados ##
+        ## Atualização do equipados ##
+        for widget in self.scrollable_frame_equipados.winfo_children():
+            widget.destroy()
+
+        try:
+            for i in self.character.equipados.listar_itens():
+                item_obj = i["objeto"]
+                item_nome = i["nome"]
+                quantidade = i["quantidade"]
+                item_id = i["id"]
+
+                if not item_id:
+                    continue
+                frame_item = tk.Frame(self.scrollable_frame_equipados, bg="#1a0869", pady=2)
+                frame_item.pack(fill='x', padx=5, pady=2)
+
+                texto_item = item_nome
+
+                btn_item = tk.Button(
+                    frame_item, text=texto_item, bg="#2a0d89", fg="white", font=("Arial", 14), anchor='w', relief=tk.FLAT,
+                    borderwidth=0, highlightthickness=0, width=35, command=lambda i=item_obj: self.mostrar_popup_detalhes_item(i))
+                btn_item.pack(side="left", fill='x', expand=True)
+
+                btn_desequipar = tk.Button(frame_item, text="Unequip", command=lambda i=item_obj: self._desequipar_item(i), bg="#2a0d89", fg="white", font=("Arial", 8), width=6)
+                btn_desequipar.pack(side="right", padx=5)
+                self.item_widgets.append(btn_desequipar)
+
+                if isinstance(item_obj, CB.Ranged):
+                    btn_recarregar = tk.Button(frame_item, text="Reload", command=lambda i=item_obj: self.carregar_municao_ranged(i), bg="#2a0d89", fg="white", font=("Arial", 8), width=6)
+                    btn_recarregar.pack(side="right", padx=5)
+                    btn_disparar = tk.Button(frame_item, text="Shoot", command=lambda i=item_obj: self.disparar_ranged(i), bg="#2a0d89", fg="white", font=("Arial", 8), width=6)
+                    btn_disparar.pack(side="right", padx=5)
+                    self.item_widgets.append(btn_recarregar)
+
+                self.item_widgets.append(btn_item)
+        except Exception as e:
+            print("Erro ao carregar itens equipados:", e)
+        ## Atualização do equipados ##
+        ## Atualização do equipados ##
 
         ## Atualização das proteções ##
         ## Atualização das proteções ##
@@ -781,8 +901,7 @@ class CharacterDetailsScreen(tk.Frame):
             "Rosto": self.character.Rosto,
             "Torso": self.character.Torso,
             "Braços": self.character.Braços,
-            "Pernas": self.character.Pernas,
-        }
+            "Pernas": self.character.Pernas}
 
         for regiao, protecao in regioes.items():
             frame_linha = tk.Frame(self.frame_lista_protecoes, bg='#1a0869')
@@ -811,72 +930,6 @@ class CharacterDetailsScreen(tk.Frame):
     def decrementar_proficiencia(self, prof):
         prof.nivel -= 1
         self.refresh()
-    
-    def abrir_popup_adicionar(self):
-        popup = tk.Toplevel(self)
-        popup.title("Adicionar Proficiência")
-        popup.configure(bg="#1e1b3a")
-        popup.geometry("300x300")
-
-        tk.Label(popup, text="Escolha uma proficiência:", bg="#1e1b3a", fg="white").pack(pady=10)
-
-        todas = list(D.Proficiencias.keys())
-        prof_existentes = self.character.proficiencias.proficiencias.keys()
-        disponiveis = [p for p in todas if p not in prof_existentes]
-
-        if not disponiveis:
-            tk.Label(popup, text="Todas as proficiências já foram adicionadas.", bg="#1e1b3a", fg="white").pack(pady=10)
-            return
-        prof_var = tk.StringVar(value=disponiveis[0])
-        dropdown = tk.OptionMenu(popup, prof_var, *disponiveis)
-        dropdown.pack()
-
-        def confirmar():
-            nome = prof_var.get()
-            if nome:
-                nova = D.Proficiencias[nome]()
-                self.character.proficiencias.proficiencias[nome] = nova
-                nova.pontos = 1
-                popup.destroy()
-                self.refresh(character=self.character)
-
-        def adicionar_todas():
-            for nome in disponiveis:
-                nova = D.Proficiencias[nome]()
-                self.character.proficiencias.proficiencias[nome] = nova
-                nova.pontos = 1
-            popup.destroy()
-            self.refresh(character=self.character)
-
-        tk.Button(popup, text="Confirmar", command=confirmar, bg="#292562", fg="white").pack(pady=10)
-        tk.Button(popup, text="Adicionar Todas", command=adicionar_todas, bg="#44408a", fg="white").pack(pady=5)
-    
-    def remover_proficiencia_popup(self):
-        popup = tk.Toplevel(self)
-        popup.title("Remover Proficiência")
-        popup.configure(bg="#1e1b3a")
-        popup.geometry("300x150")
-
-        tk.Label(popup, text="Escolha a proficiência para remover:", bg="#1e1b3a", fg="white").pack(pady=10)
-
-        prof_existentes = list(self.character.proficiencias.proficiencias.keys())
-
-        if not prof_existentes:
-            tk.Label(popup, text="Nenhuma proficiência para remover.", fg="white", bg="#1e1b3a").pack(pady=10)
-            return
-
-        prof_var = tk.StringVar(value=prof_existentes[0])
-        dropdown = tk.OptionMenu(popup, prof_var, *prof_existentes)
-        dropdown.pack()
-
-        def confirmar_remover():
-            nome = prof_var.get()
-            if nome:
-                self.character.proficiencias.remover_proficiencia(nome, self.character.proficiencias.obter_bonus(nome))
-                popup.destroy()
-                self.refresh(character=self.character)
-
-        tk.Button(popup, text="Remover", command=confirmar_remover, bg="#5a1a1a", fg="white").pack(pady=10)
     # proficiencias #
     
     # inventário #
@@ -898,9 +951,11 @@ class CharacterDetailsScreen(tk.Frame):
             "Armas de Fogo": D.Rangeds,
             "Armas Corpo a Corpo": D.Melees,
             "Proteções": D.Protecoes,
-            "Itens": D.Items,
             "Melhorias": D.Melhorias,
-            "Munições": D.Munições
+            "Munições": D.Munições,
+            "Consumíveis": D.Consumiveis,
+            "Explosivos": D.Explosivos,
+            "Itens": D.Items
         }
 
         tk.Label(popup, text="Categoria:", bg="#1a0869", fg="white", font=("Arial", 16)).pack(pady=5)
@@ -1004,10 +1059,11 @@ class CharacterDetailsScreen(tk.Frame):
             stats = item_obj.stats()
             tipo = item_obj.__class__.__name__
 
+            # Ajustando o tamanho horizontal do popup
             popup = tk.Toplevel(self)
             popup.title(f"Detalhes do Item: {stats.get('Nome', 'Desconhecido')}")
             popup.configure(bg="#1a0869")
-            popup.geometry("800x500")
+            popup.geometry("600x400")  # Diminuído a largura
             popup.resizable(False, False)
 
             lbl_titulo = tk.Label(
@@ -1020,7 +1076,7 @@ class CharacterDetailsScreen(tk.Frame):
             lbl_titulo.pack(pady=(20, 10))
 
             # Frame que contém o canvas com scroll
-            frame_scroll = tk.Frame(popup, bg="#1a0869", height=400)
+            frame_scroll = tk.Frame(popup, bg="#1a0869", height=250)  # Diminuído o tamanho vertical
             frame_scroll.pack(pady=10, padx=20, fill='both', expand=True)
 
             canvas = tk.Canvas(frame_scroll, bg="#130f26", highlightthickness=0)
@@ -1054,26 +1110,19 @@ class CharacterDetailsScreen(tk.Frame):
                 btn = tk.Button(frame_acoes, text=texto, command=comando, bg="#004080", fg="white", font=("Arial", 10), width=int(largura / 10))
                 btn.pack(side="left", padx=(10, 0), pady=10)
 
-            # Botões específicos por tipo
-            if tipo == "Melee":
-                criar_botao("Equipar/Desequipar Melhoria", lambda: self.abrir_popup_melhorias(item_obj), largura=240)
-            elif tipo == "Ranged":
-                criar_botao("Recarregar", lambda: self.carregar_municao_ranged(item_obj))
-                criar_botao("Descarregar", lambda: self.descarregar_municao_ranged(item_obj))
-                criar_botao("Disparar", lambda: self.disparar_ranged(item_obj))
-                criar_botao("Equipar/Desequipar Acessório", lambda: self.abrir_popup_melhorias(item_obj), largura=240)
-            elif tipo == "Protecao":
-                criar_botao("Equipar", lambda p=popup: self.abrir_popup_equipar_protecao(item_obj, p))
-                criar_botao("Equipar/Desequipar Melhoria", lambda: self.abrir_popup_melhorias(item_obj), largura=240)
-
-            # Botão "Entregar Item"
-            btn_entregar = tk.Button(popup, text="Entregar Item", bg="#800000", fg="white", font=("Arial", 12), command=lambda: self.popup_entregar_item(item_obj, popup))
-            btn_entregar.pack(side="left", padx=(30, 0), pady=20)
+            if tipo == "Protecao":
+                # Botão Equipar ao lado do "Fechar"
+                btn_equipar = tk.Button(
+                    frame_acoes,
+                    text="Equipar", 
+                    command=lambda p=popup: self.abrir_popup_equipar_protecao(item_obj, p),
+                    bg="#004080", fg="white", font=("Arial", 10), width=10
+                )
+                btn_equipar.pack(side="left", padx=(10, 10))
 
             # Botão Fechar
             btn_fechar = tk.Button(popup, text="Fechar", command=popup.destroy, bg="#004080", fg="white", font=("Arial", 12))
             btn_fechar.pack(side="right", padx=(0, 30), pady=20)
-                
 
         except Exception as e:
             print("Erro ao mostrar detalhes do item:", e)
@@ -1088,17 +1137,38 @@ class CharacterDetailsScreen(tk.Frame):
                 linha.pack(anchor='w', pady=2, padx=10)
                 tk.Label(linha, text=f"{chave}:", font=("Arial", 12, "bold"), fg="white", bg="#130f26").pack(side="left")
                 tk.Label(linha, text=f" {valor}", font=("Arial", 12), fg="white", bg="#130f26").pack(side="left")
+    
+    def _equipar_item(self, item):
+        try:
+            sucesso = self.character.equipar_item(item)
+            if sucesso:
+                self.refresh()
+            else:
+                print("Item não pôde ser equipado.")
+        except Exception as e:
+            print("Erro ao equipar item:", e)
+    
+    def _desequipar_item(self, item):
+        try:
+            sucesso = self.character.desequipar_item(item)
+            if sucesso:
+                self.refresh()
+            else:
+                print("Item não pôde ser equipado.")
+        except Exception as e:
+            print("Erro ao equipar item:", e)
+    
+    def _equipar_protecao(self, item):
+        self.character.equipar_do_inventario(item.regiao, item.nome)
+        self.refresh()
     # inventário #
 
-    # funções do popup de detalhe de items #
+    # funções de items #
     def disparar_ranged(self, arma):
         if not isinstance(arma, CB.Ranged):
             print("Esse item não é uma arma de fogo.")
             return
 
-        tipo_acao_simples = ["simples", "pump", "bolt", "alavanca"]
-
-        # Popup sempre será aberto
         popup = tk.Toplevel(self)
         popup.title("Disparo")
         popup.configure(bg="#1a0869")
@@ -1129,7 +1199,7 @@ class CharacterDetailsScreen(tk.Frame):
         spinbox_qtd.pack()
 
         mensagem_label = tk.Label(popup, text="", bg="#1a0869", fg="lightgreen", font=("Arial", 10))
-        mensagem_label.pack()
+        mensagem_label.pack(pady=(5, 10))
 
         def confirmar_disparo():
             try:
@@ -1140,27 +1210,26 @@ class CharacterDetailsScreen(tk.Frame):
                     return
 
                 arma.disparar(qtd)
-                mensagem_label.config(text=f"{qtd} disparo(s) efetuado(s).", fg="lightgreen")
-                label_municoes.config(text=f"Munições disponíveis: {arma.munições}")
-                self.atualizar_popup_detalhes(self.item_detalhes_atual, self.scroll_frame_item_detalhes)
                 self.refresh()
+                popup.destroy()
             except Exception as e:
                 mensagem_label.config(text=f"Erro ao disparar: {e}", fg="red")
 
-        # Disparo simples sem popup
-        if arma.acao in tipo_acao_simples:
-            if arma.municao and arma.munições > 0:
-                arma.disparar(1)
-                print("Disparo único efetuado.")
-            else:
-                print("Click Click Click... (arma descarregada)")
-            self.refresh()
-            return
+        def cancelar():
+            popup.destroy()
+
+        botoes_frame = tk.Frame(popup, bg="#1a0869")
+        botoes_frame.pack(pady=10)
 
         tk.Button(
-            popup, text="Confirmar", command=confirmar_disparo,
-            bg="#004080", fg="white"
-        ).pack(pady=20)
+            botoes_frame, text="Cancelar", command=cancelar,
+            bg="#800000", fg="white", width=10
+        ).pack(side="left", padx=10)
+
+        tk.Button(
+            botoes_frame, text="Confirmar", command=confirmar_disparo,
+            bg="#004080", fg="white", width=10
+        ).pack(side="right", padx=10)
     
     def carregar_municao_ranged(self, arma):
         try:
@@ -1214,8 +1283,8 @@ class CharacterDetailsScreen(tk.Frame):
                 if carregado > 0:
                     self._remover_item_do_inventario(municao_obj, carregado)
                     mensagem_label.config(text=f"{carregado} munições carregadas.")
-                    self.atualizar_popup_detalhes(self.item_detalhes_atual, self.scroll_frame_item_detalhes)
                     self.refresh()
+                    popup.destroy()
                 else:
                     mensagem_label.config(text="Não foi possível carregar a munição.", fg="red")
             def recarregar_tudo():
@@ -1236,8 +1305,8 @@ class CharacterDetailsScreen(tk.Frame):
                 if carregado > 0:
                     self._remover_item_do_inventario(municao_obj, carregado)
                     mensagem_label.config(text=f"{carregado} munições carregadas.")
-                    self.atualizar_popup_detalhes(self.item_detalhes_atual, self.scroll_frame_item_detalhes)
                     self.refresh()
+                    popup.destroy()
                 else:
                     mensagem_label.config(text="Não foi possível carregar a munição.", fg="red")
             
@@ -1294,8 +1363,8 @@ class CharacterDetailsScreen(tk.Frame):
                     for municao in municoes:
                         self.character.inventario.adicionar_item_objeto(municao)
                     mensagem_label.config(text=f"{len(municoes)} munições devolvidas ao inventário.")
-                    self.atualizar_popup_detalhes(self.item_detalhes_atual, self.scroll_frame_item_detalhes)
                     self.refresh()
+                    popup.destroy()
                 else:
                     mensagem_label.config(text="Nada foi descarregado.", fg="orange")
             except Exception as e:
@@ -1310,8 +1379,8 @@ class CharacterDetailsScreen(tk.Frame):
                     for municao in municoes:
                         self.character.inventario.adicionar_item_objeto(municao)
                     mensagem_label.config(text=f"{len(municoes)} munições devolvidas ao inventário.")
-                    self.atualizar_popup_detalhes(self.item_detalhes_atual, self.scroll_frame_item_detalhes)
                     self.refresh()
+                    popup.destroy()
                 else:
                     mensagem_label.config(text="Nada foi descarregado.", fg="orange")
             except Exception as e:
@@ -1358,106 +1427,108 @@ class CharacterDetailsScreen(tk.Frame):
         popup_detalhes.destroy()
         self.refresh()
     
-    def popup_entregar_item(self, item_obj, parent_popup):
-        entrega_popup = tk.Toplevel(self)
-        entrega_popup.title("Selecionar Grupo para Entrega")
-        entrega_popup.configure(bg="#1a0869")
-        entrega_popup.geometry("400x200")
-        entrega_popup.resizable(False, False)
+    def abrir_popup_transferencia(self):
+        popup = tk.Toplevel(self)
+        popup.title("Transferência de Itens")
+        popup.geometry("900x500")
+        popup.configure(bg="#1a1a2e")
+        popup.resizable(False, False)
 
-        tk.Label(entrega_popup, text="Escolha o grupo:", bg="#1a0869", fg="white", font=("Arial", 14)).pack(pady=20)
+        personagem_origem = self.character
 
-        def abrir_selecao_personagem(grupo_nome, lista_personagens):
-            entrega_popup.destroy()
-            selecao_popup = tk.Toplevel(self)
-            selecao_popup.title(f"Selecionar Personagem do grupo {grupo_nome}")
-            selecao_popup.configure(bg="#1a0869")
-            selecao_popup.geometry("500x400")
-            selecao_popup.resizable(False, False)
+        # Lista todos os personagens de todos os grupos, exceto o personagem de origem
+        todos_personagens = sum(D.GruposDePersonagens.values(), [])
+        personagens_destino = [p for p in todos_personagens if p != personagem_origem]
 
-            tk.Label(selecao_popup, text=f"Escolha quem receberá o item:", bg="#1a0869", fg="white", font=("Arial", 14)).pack(pady=20)
+        destino_var = tk.StringVar()
+        destino_nomes = [f"{p.nome} ({grupo})"
+                        for grupo, lista in D.GruposDePersonagens.items()
+                        for p in lista if p != personagem_origem]
 
-            frame = tk.Frame(selecao_popup, bg="#1a0869")
-            frame.pack(fill="both", expand=True, padx=20, pady=10)
+        # --- Linha de seleção ---
+        linha_selecao = tk.Frame(popup, bg="#1a1a2e")
+        linha_selecao.pack(pady=10)
 
+        tk.Label(linha_selecao, text=f"Origem: {personagem_origem.nome}", bg="#1a1a2e", fg="white", font=("Arial", 12)).grid(row=0, column=0, padx=30)
+
+        tk.Label(linha_selecao, text="Destino:", bg="#1a1a2e", fg="white", font=("Arial", 12)).grid(row=0, column=1, padx=10)
+        ttk.Combobox(linha_selecao, textvariable=destino_var, state="readonly", values=destino_nomes).grid(row=0, column=2)
+
+        # --- Linha dos inventários ---
+        linha_inventario = tk.Frame(popup, bg="#1a1a2e")
+        linha_inventario.pack(fill="both", expand=True, padx=20, pady=(10, 10))
+
+        def criar_frame_inventario(parent, titulo):
+            frame = tk.Frame(parent, bg="#130f26")
+            frame.pack(side="left", fill="both", expand=True, padx=10)
+            tk.Label(frame, text=titulo, font=("Arial", 12, "bold"), bg="#130f26", fg="white").pack()
             canvas = tk.Canvas(frame, bg="#130f26", highlightthickness=0)
             scrollbar = tk.Scrollbar(frame, orient="vertical", command=canvas.yview)
-            scroll_frame = tk.Frame(canvas, bg="#130f26")
-
-            scroll_frame.bind("<Configure>", lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
-            canvas.create_window((0, 0), window=scroll_frame, anchor='nw')
+            frame_scroll = tk.Frame(canvas, bg="#130f26")
+            canvas.create_window((0, 0), window=frame_scroll, anchor="nw")
             canvas.configure(yscrollcommand=scrollbar.set)
-
             canvas.pack(side="left", fill="both", expand=True)
             scrollbar.pack(side="right", fill="y")
+            return frame_scroll
 
-            personagem_doador = self.character
+        frame_scroll_o = criar_frame_inventario(linha_inventario, "Inventário de Origem")
+        frame_scroll_d = criar_frame_inventario(linha_inventario, "Inventário de Destino")
 
-            def entregar_para(destino):
-                try:
-                    if not hasattr(item_obj, "Id"):
-                        # Item stackável, pedir quantidade
-                        quantidade_popup = tk.Toplevel(self)
-                        quantidade_popup.title("Quantidade")
-                        quantidade_popup.configure(bg="#1a0869")
-                        quantidade_popup.geometry("300x150")
-                        quantidade_popup.resizable(False, False)
+        def transferir_item(item, origem, destino, quantidade):
+            if quantidade <= 0: return
+            origem.inventario.remover_item(item, quantidade)
+            destino.inventario.adicionar_item_objeto(item, quantidade)
+            atualizar_listas()
 
-                        tk.Label(quantidade_popup, text="Digite a quantidade:", bg="#1a0869", fg="white", font=("Arial", 12)).pack(pady=10)
-                        quantidade_entry = tk.Entry(quantidade_popup, font=("Arial", 12))
-                        quantidade_entry.pack(pady=5)
+        def atualizar_listas():
+            for w in frame_scroll_o.winfo_children(): w.destroy()
+            for w in frame_scroll_d.winfo_children(): w.destroy()
 
-                        def confirmar_quantidade():
-                            try:
-                                quantidade = int(quantidade_entry.get())
-                                if quantidade <= 0:
-                                    raise ValueError
-                                destino.inventario.adicionar_item_objeto(item_objeto=item_obj, quantidade=quantidade)
-                                self.character.inventario.gerenciar_item(item_objeto=item_obj, quantidade=quantidade, operacao="remover")
-                                self.refresh()
-                                parent_popup.destroy()
-                                selecao_popup.destroy()
-                                quantidade_popup.destroy()
-                            except Exception as e:
-                                print(f"Erro ao transferir item: {e}")
+            nome_destino_formatado = destino_var.get()
+            nome_destino = nome_destino_formatado.split(" (")[0] if " (" in nome_destino_formatado else nome_destino_formatado
 
-                        confirmar_btn = tk.Button(quantidade_popup, text="Confirmar", font=("Arial", 12), command=confirmar_quantidade)
-                        confirmar_btn.pack(pady=10)
-                    else:
-                        # Item não empilhável
-                        destino.inventario.adicionar_item_objeto(item_objeto=item_obj, quantidade=1)
-                        self.character.inventario.remover_item(item_obj)
-                        self.refresh()
-                        parent_popup.destroy()
-                        selecao_popup.destroy()
+            destino = next((p for p in todos_personagens if p.nome == nome_destino), None)
+            if not destino:
+                return
 
-                except Exception as e:
-                    print(f"Erro ao transferir item: {e}")
+            def criar_item_row(parent_frame, item_data, de, para, direcao):
+                nome = item_data["nome"]
+                obj = item_data["objeto"]
+                qtd = item_data["quantidade"]
+                is_stackable = item_data["id"] is None
 
-            for personagem in lista_personagens:
-                if personagem == personagem_doador:
-                    continue  # Não deixa entregar para si mesmo
+                frame = tk.Frame(parent_frame, bg="#130f26")
+                frame.pack(fill="x", pady=2, padx=5)
 
-                btn = tk.Button(
-                    scroll_frame,
-                    text=f"{personagem.nome} - Nível {personagem.nivel}",
-                    bg="#004080", fg="white", font=("Arial", 12),
-                    command=lambda p=personagem: entregar_para(p)
-                )
-                btn.pack(fill="x", pady=5, padx=10)
+                tk.Label(frame, text=f"{nome} x{qtd}" if is_stackable else nome,
+                        bg="#130f26", fg="white", font=("Arial", 11)).pack(side="left")
 
-        # Botões de seleção de grupo
-        btn_players = tk.Button(entrega_popup, text="Players", font=("Arial", 14), width=15, height=2,
-                                command=lambda: abrir_selecao_personagem("Players", D.Players))
-        btn_players.pack(pady=10)
+                if is_stackable:
+                    qtd_var = tk.IntVar(value=1)
+                    tk.Entry(frame, textvariable=qtd_var, width=4, font=("Arial", 10), justify="center").pack(side="right", padx=(2, 0))
 
-        btn_npcs = tk.Button(entrega_popup, text="NPCs", font=("Arial", 14), width=15, height=2,
-                            command=lambda: abrir_selecao_personagem("NPCs", D.NPCs))
-        btn_npcs.pack(pady=10)
+                    btn = tk.Button(frame, text=direcao, font=("Arial", 10, "bold"), bg="#2a0d89", fg="white",
+                                    command=lambda: transferir_item(obj, de, para, qtd_var.get()))
+                    btn.pack(side="right", padx=(2, 4))
+                else:
+                    btn = tk.Button(frame, text=direcao, font=("Arial", 10, "bold"), bg="#2a0d89", fg="white",
+                                    command=lambda: transferir_item(obj, de, para, 1))
+                    btn.pack(side="right", padx=4)
+
+            for item in personagem_origem.inventario.listar_itens():
+                criar_item_row(frame_scroll_o, item, personagem_origem, destino, "→")
+
+            for item in destino.inventario.listar_itens():
+                criar_item_row(frame_scroll_d, item, destino, personagem_origem, "←")
+
+            self.refresh()
+
+        destino_var.trace_add("write", lambda *_: atualizar_listas())
+
+        tk.Button(popup, text="Fechar", command=popup.destroy, font=("Arial", 12), bg="#004080", fg="white").pack(pady=(0, 10))
     
-    def abrir_popup_melhorias(self, item_obj):
+    def abrir_popup_melhorias(self):
         try:
-            # Função auxiliar para descobrir o atributo correto onde estão as melhorias
             def obter_melhorias(item):
                 for nome in ["Acessorios", "Melhorias", "melhorias_equipadas"]:
                     if hasattr(item, nome):
@@ -1467,32 +1538,48 @@ class CharacterDetailsScreen(tk.Frame):
             def ao_clicar_em_melhoria(melhoria, arma, personagem):
                 melhorias_aplicadas = obter_melhorias(arma)
                 if melhoria in melhorias_aplicadas:
-                    # Desequipar
                     melhoria.remover(arma)
                     if melhoria in melhorias_aplicadas:
                         melhorias_aplicadas.remove(melhoria)
                     arma.recalcular_atributos()
                     personagem.inventario.adicionar_item_objeto(melhoria, 1)
-                    self.atualizar_popup_detalhes(self.item_detalhes_atual, self.scroll_frame_item_detalhes)
-                    self.refresh()
                 elif any(melhoria is item["objeto"] for item in personagem.inventario.listar_itens()):
-                    # Equipar
                     sucesso = melhoria.aplicar(arma)
                     if sucesso:
                         personagem.inventario.remover_item(melhoria, 1)
-                        self.atualizar_popup_detalhes(self.item_detalhes_atual, self.scroll_frame_item_detalhes)
-                        self.refresh()
-                    else:
-                        print("Erro: Melhoria não está nem na arma nem no inventário.")
+                atualizar_listas()
+                self.refresh()
 
             popup = tk.Toplevel(self)
             popup.title("Gerenciar Melhorias")
             popup.configure(bg="#1a0869")
-            popup.geometry("900x500")
-            popup.resizable(False, False)
+            popup.geometry("900x550")
 
-            lbl_titulo = tk.Label(popup, text=f"Melhorias - {item_obj.nome}", font=("Arial", 14, "bold"), bg="#1a0869", fg="white")
-            lbl_titulo.pack(pady=10)
+            tk.Label(popup, text="Escolha o item para gerenciar melhorias:", font=("Arial", 12, "bold"), bg="#1a0869", fg="white").pack(pady=(10, 5))
+
+            # ============ COMBOBOX DE ITENS ============
+            todos_itens_validos = []
+
+            for item in self.character.inventario.listar_itens():
+                if isinstance(item["objeto"], (CB.Ranged, CB.Melee, CB.Protecao)):
+                    todos_itens_validos.append(item["objeto"])
+            for slot in self.character.equipados.listar_itens():
+                if isinstance(slot, (CB.Ranged, CB.Melee)):
+                    todos_itens_validos.append(slot)
+            regioes = {
+                "Cabeça": self.character.Cabeça,
+                "Rosto": self.character.Rosto,
+                "Torso": self.character.Torso,
+                "Braços": self.character.Braços,
+                "Pernas": self.character.Pernas
+            }
+            for protecao in regioes.values():
+                if isinstance(protecao, CB.Protecao):
+                    todos_itens_validos.append(protecao)
+
+            item_selecionado = tk.StringVar()
+            combobox = ttk.Combobox(popup, textvariable=item_selecionado, values=[i.nome for i in todos_itens_validos], state="readonly")
+            combobox.pack(pady=5)
 
             frame_geral = tk.Frame(popup, bg="#1a0869")
             frame_geral.pack(fill="both", expand=True, padx=20, pady=10)
@@ -1513,7 +1600,7 @@ class CharacterDetailsScreen(tk.Frame):
             canvas_eq.pack(side="left", fill="both", expand=True)
             scrollbar_eq.pack(side="right", fill="y")
 
-            # ====== MELHORIAS DISPONÍVEIS NO INVENTÁRIO ======
+            # ====== MELHORIAS NO INVENTÁRIO ======
             frame_inventario = tk.Frame(frame_geral, bg="#1a0869")
             frame_inventario.pack(side="right", fill="both", expand=True, padx=10)
 
@@ -1529,13 +1616,13 @@ class CharacterDetailsScreen(tk.Frame):
             canvas_inv.pack(side="left", fill="both", expand=True)
             scrollbar_inv.pack(side="right", fill="y")
 
-            # ====== LÓGICA: Adicionar botões de mover melhorias ======
             def atualizar_listas():
-                # Limpa ambos os frames
-                for w in frame_scroll_eq.winfo_children():
-                    w.destroy()
-                for w in frame_scroll_inv.winfo_children():
-                    w.destroy()
+                for w in frame_scroll_eq.winfo_children(): w.destroy()
+                for w in frame_scroll_inv.winfo_children(): w.destroy()
+
+                nome = item_selecionado.get()
+                item_obj = next((i for i in todos_itens_validos if i.nome == nome), None)
+                if not item_obj: return
 
                 melhorias_equipadas = obter_melhorias(item_obj)
 
@@ -1543,14 +1630,7 @@ class CharacterDetailsScreen(tk.Frame):
                     frame = tk.Frame(frame_scroll_eq, bg="#130f26")
                     frame.pack(fill="x", pady=2, padx=4)
                     tk.Label(frame, text=melhoria.nome, font=("Arial", 11), bg="#130f26", fg="white").pack(side="left")
-
-                    btn_remover = tk.Button(
-                        frame,
-                        text="Remover",
-                        font=("Arial", 10),
-                        command=lambda m=melhoria: [ao_clicar_em_melhoria(m, item_obj, self.character), atualizar_listas()]
-                    )
-                    btn_remover.pack(side="right", padx=4)
+                    tk.Button(frame, text="Remover", command=lambda m=melhoria: ao_clicar_em_melhoria(m, item_obj, self.character)).pack(side="right", padx=4)
 
                 for item in self.character.inventario.listar_itens():
                     obj = item["objeto"]
@@ -1558,32 +1638,19 @@ class CharacterDetailsScreen(tk.Frame):
                         if (obj.tipo == "ranged" and isinstance(item_obj, CB.Ranged)) or \
                         (obj.tipo == "melee" and isinstance(item_obj, CB.Melee)) or \
                         (obj.tipo == "protecao" and isinstance(item_obj, CB.Protecao)):
-
                             frame = tk.Frame(frame_scroll_inv, bg="#130f26")
                             frame.pack(fill="x", pady=2, padx=4)
                             tk.Label(frame, text=obj.nome, font=("Arial", 11), bg="#130f26", fg="white").pack(side="left")
+                            tk.Button(frame, text="Equipar", command=lambda m=obj: ao_clicar_em_melhoria(m, item_obj, self.character)).pack(side="right", padx=4)
 
-                            btn_equipar = tk.Button(
-                                frame,
-                                text="Equipar",
-                                font=("Arial", 10),
-                                command=lambda m=obj: [ao_clicar_em_melhoria(m, item_obj, self.character), atualizar_listas()]
-                            )
-                            btn_equipar.pack(side="right", padx=4)
-
-            atualizar_listas()
+            # Atualiza lista ao selecionar item
+            combobox.bind("<<ComboboxSelected>>", lambda e: atualizar_listas())
 
             tk.Button(popup, text="Fechar", command=popup.destroy, font=("Arial", 12), bg="#004080", fg="white").pack(pady=10)
 
         except Exception as e:
             print("Erro ao abrir popup de melhorias:", e)
-
-            # Botão fechar
-            tk.Button(popup, text="Fechar", command=popup.destroy, font=("Arial", 12), bg="#004080", fg="white").pack(pady=10)
-
-        except Exception as e:
-            print("Erro ao abrir popup de melhorias:", e)
-    ## funções do popup de detalhe de items ##
+    ## funções de items ##
 
     ## funções dos botões extras ##
     def abrir_popup_rolagem_avancada(self):
@@ -1711,171 +1778,77 @@ class CharacterDetailsScreen(tk.Frame):
         rolar_btn = tk.Button(popup, text="Rolar", command=rolar_dados, bg="#4e54c8", fg="white", font=("Arial", 12, "bold"))
         rolar_btn.pack(pady=10)
     
-    def abrir_popup_vida_energia(self):
+    def abrir_popup_status_completo(self):
         popup = tk.Toplevel(self)
-        popup.title("Vida e Energia")
+        popup.title("Status do Personagem")
         popup.configure(bg="#1e1b3a")
-        popup.geometry("330x180")
+        popup.geometry("540x200")
 
-        personagem = self.character  # Só pra facilitar
-        # --- Labels Vida ---
-        tk.Label(popup, text=f"Vida: {personagem.vidaAtual}/{personagem.vidaMax}", bg="#1e1b3a", fg="white", font=("Arial", 12)).grid(row=0, column=0, padx=20, pady=10)
-        entrada_vida = tk.Entry(popup, justify="center")
-        entrada_vida.grid(row=1, column=0, padx=20)
-        # --- Labels Energia ---
-        tk.Label(popup, text=f"Energia: {personagem.PeAtual}/{personagem.PeMax}", bg="#1e1b3a", fg="white", font=("Arial", 12)).grid(row=0, column=1, padx=20, pady=10)
-        entrada_energia = tk.Entry(popup, justify="center")
-        entrada_energia.grid(row=1, column=1, padx=20)
-        # --- Funções auxiliares ---
-        def tratar_valor(entrada):
-            try:
-                return int(entrada.get())
-            except ValueError:
-                return None
-        def curar_vida():
-            valor = tratar_valor(entrada_vida)
-            if valor is not None:
-                personagem.TomarCura(valor)
-                self.refresh(character=personagem)
-                popup.destroy()
-                self.abrir_popup_vida_energia()
-        def dano_vida():
-            valor = tratar_valor(entrada_vida)
-            if valor is not None:
-                personagem.TomarDano(valor)
-                self.refresh(character=personagem)
-                popup.destroy()
-                self.abrir_popup_vida_energia()
-        def curar_energia():
-            valor = tratar_valor(entrada_energia)
-            if valor is not None:
-                personagem.PeAtual = min(personagem.PeAtual + valor, personagem.PeMax)
-                self.refresh(character=personagem)
-                popup.destroy()
-                self.abrir_popup_vida_energia()
-        def gastar_energia():
-            valor = tratar_valor(entrada_energia)
-            if valor is not None:
-                personagem.PeAtual = max(personagem.PeAtual - valor, 0)
-                self.refresh(character=personagem)
-                popup.destroy()
-                self.abrir_popup_vida_energia()
-        # --- Botões Vida ---
-        tk.Button(popup, text="Curar", command=curar_vida, bg="#115c11", fg="white").grid(row=2, column=0, pady=5)
-        tk.Button(popup, text="Dano", command=dano_vida, bg="#8c1d1d", fg="white").grid(row=3, column=0, pady=5)
-        # --- Botões Energia ---
-        tk.Button(popup, text="Recuperar", command=curar_energia, bg="#115c11", fg="white").grid(row=2, column=1, pady=5)
-        tk.Button(popup, text="Gastar", command=gastar_energia, bg="#8c1d1d", fg="white").grid(row=3, column=1, pady=5)
-    
-    def abrir_popup_xp_nivel(self):
-        popup = tk.Toplevel(self)
-        popup.title("XP e Nível")
-        popup.configure(bg="#1e1b3a")
-        popup.geometry("280x150")
+        personagem = self.character  # Referência ao personagem
 
-        personagem = self.character
-
-        # --- Labels XP ---
-        tk.Label(popup, text=f"XP: {personagem.XPAtual}/{personagem.XPlvlUp}", bg="#1e1b3a", fg="white", font=("Arial", 12)).grid(row=0, column=0, padx=20, pady=10)
-        entrada_xp = tk.Entry(popup, justify="center")
-        entrada_xp.grid(row=1, column=0, padx=20)
-
-        # --- Label Nível ---
-        label_nivel = tk.Label(popup, text=f"Nível: {personagem.nivel}", bg="#1e1b3a", fg="white", font=("Arial", 12))
-        label_nivel.grid(row=0, column=1, columnspan=2, padx=20, pady=10)
-
-        # --- Funções auxiliares ---
+        # Função auxiliar
         def tratar_valor(entrada):
             try:
                 return int(entrada.get())
             except ValueError:
                 return None
 
-        def ganhar_xp():
-            valor = tratar_valor(entrada_xp)
-            if valor is not None:
-                personagem.GanharXP(valor)
-                self.refresh(character=personagem)
-                popup.destroy()
-                self.abrir_popup_xp_nivel()
+        # --- Seção Vida/Energia ---
+        frame_vida_energia = tk.Frame(popup, bg="#1e1b3a")
+        frame_vida_energia.grid(row=0, column=0, padx=15, pady=10)
 
-        def remover_xp():
-            valor = tratar_valor(entrada_xp)
-            if valor is not None:
-                personagem.XPAtual = max(personagem.XPAtual - valor, 0)
-                self.refresh(character=personagem)
-                popup.destroy()
-                self.abrir_popup_xp_nivel()
+        tk.Label(frame_vida_energia, text=f"Vida: {personagem.vidaAtual}/{personagem.vidaMax}",
+                bg="#1e1b3a", fg="white", font=("Arial", 12)).grid(row=0, column=0, columnspan=2)
+        entrada_vida = tk.Entry(frame_vida_energia, justify="center")
+        entrada_vida.grid(row=1, column=0, columnspan=2, pady=5)
 
-        def aumentar_nivel():
-            personagem.nivel += 1
-            personagem.recalcularAtributos()
-            self.refresh(character=personagem)
-            popup.destroy()
-            self.abrir_popup_xp_nivel()
+        tk.Button(frame_vida_energia, text="Curar", command=lambda: (personagem.TomarCura(tratar_valor(entrada_vida) or 0), self.refresh(character=personagem), popup.destroy(), self.abrir_popup_status_completo()), bg="#115c11", fg="white").grid(row=2, column=0, pady=2)
+        tk.Button(frame_vida_energia, text="Dano", command=lambda: (personagem.TomarDano(tratar_valor(entrada_vida) or 0), self.refresh(character=personagem), popup.destroy(), self.abrir_popup_status_completo()), bg="#8c1d1d", fg="white").grid(row=2, column=1, pady=2)
 
-        def diminuir_nivel():
-            if personagem.nivel > 1:  # Garante que não fique zero ou negativo
-                personagem.nivel -= 1
-                personagem.recalcularAtributos()
-                self.refresh(character=personagem)
-            popup.destroy()
-            self.abrir_popup_xp_nivel()
+        tk.Label(frame_vida_energia, text=f"Energia: {personagem.PeAtual}/{personagem.PeMax}",
+                bg="#1e1b3a", fg="white", font=("Arial", 12)).grid(row=3, column=0, columnspan=2)
+        entrada_energia = tk.Entry(frame_vida_energia, justify="center")
+        entrada_energia.grid(row=4, column=0, columnspan=2, pady=5)
 
-        # --- Botões XP ---
-        tk.Button(popup, text="Ganhar XP", command=ganhar_xp, bg="#115c11", fg="white").grid(row=2, column=0, pady=5)
-        tk.Button(popup, text="Remover XP", command=remover_xp, bg="#8c1d1d", fg="white").grid(row=3, column=0, pady=5)
+        tk.Button(frame_vida_energia, text="Recuperar", command=lambda: (setattr(personagem, 'PeAtual', min(personagem.PeAtual + (tratar_valor(entrada_energia) or 0), personagem.PeMax)), self.refresh(character=personagem), popup.destroy(), self.abrir_popup_status_completo()), bg="#115c11", fg="white").grid(row=5, column=0, pady=2)
+        tk.Button(frame_vida_energia, text="Gastar", command=lambda: (setattr(personagem, 'PeAtual', max(personagem.PeAtual - (tratar_valor(entrada_energia) or 0), 0)), self.refresh(character=personagem), popup.destroy(), self.abrir_popup_status_completo()), bg="#8c1d1d", fg="white").grid(row=5, column=1, pady=2)
 
-        # --- Botões Nível ---
-        tk.Button(popup, text="+", command=aumentar_nivel, bg="#115c11", fg="white", width=4).grid(row=1, column=1, padx=5)
-        tk.Button(popup, text="-", command=diminuir_nivel, bg="#8c1d1d", fg="white", width=4).grid(row=1, column=2, padx=5)
-    
-    def abrir_popup_atributos(self):
-        popup = tk.Toplevel(self)
-        popup.title("Atributos")
-        popup.configure(bg="#1e1b3a")
-        popup.geometry("220x220")
+        # --- Seção XP/Nível ---
+        frame_xp = tk.Frame(popup, bg="#1e1b3a")
+        frame_xp.grid(row=0, column=1, padx=15, pady=10)
 
-        personagem = self.character  # Só pra facilitar
+        tk.Label(frame_xp, text=f"XP: {personagem.XPAtual}/{personagem.XPlvlUp}",
+                bg="#1e1b3a", fg="white", font=("Arial", 12)).grid(row=0, column=0, columnspan=2)
+        entrada_xp = tk.Entry(frame_xp, justify="center")
+        entrada_xp.grid(row=1, column=0, columnspan=2, pady=5)
+
+        tk.Button(frame_xp, text="Ganhar XP", command=lambda: (personagem.GanharXP(tratar_valor(entrada_xp) or 0), self.refresh(character=personagem), popup.destroy(), self.abrir_popup_status_completo()), bg="#115c11", fg="white").grid(row=2, column=0, pady=2)
+        tk.Button(frame_xp, text="Remover XP", command=lambda: (setattr(personagem, 'XPAtual', max(personagem.XPAtual - (tratar_valor(entrada_xp) or 0), 0)), self.refresh(character=personagem), popup.destroy(), self.abrir_popup_status_completo()), bg="#8c1d1d", fg="white").grid(row=2, column=1, pady=2)
+
+        tk.Label(frame_xp, text=f"Nível: {personagem.nivel}",
+                bg="#1e1b3a", fg="white", font=("Arial", 12)).grid(row=3, column=0, columnspan=2, pady=5)
+
+        tk.Button(frame_xp, text="+", command=lambda: (setattr(personagem, 'nivel', personagem.nivel + 1), personagem.recalcularAtributos(), self.refresh(character=personagem), popup.destroy(), self.abrir_popup_status_completo()), bg="#115c11", fg="white", width=4).grid(row=4, column=0, padx=5)
+        tk.Button(frame_xp, text="-", command=lambda: (setattr(personagem, 'nivel', max(personagem.nivel - 1, 1)), personagem.recalcularAtributos(), self.refresh(character=personagem), popup.destroy(), self.abrir_popup_status_completo()), bg="#8c1d1d", fg="white", width=4).grid(row=4, column=1, padx=5)
+
+        # --- Seção Atributos ---
+        frame_atributos = tk.Frame(popup, bg="#1e1b3a")
+        frame_atributos.grid(row=0, column=2, padx=15, pady=10)
 
         atributos = {
             "Força": "Forca",
             "Agilidade": "Agilidade",
             "Vigor": "Vigor",
             "Presença": "Presenca",
-            "Inteligencia": "Inteligencia",
-            "Tatica": "Tatica"
+            "Inteligência": "Inteligencia",
+            "Tática": "Tatica"
         }
 
-        labels = {}
-
-        def atualizar_label(nome_visivel, nome_real):
-            valor = getattr(personagem, nome_real)
-            labels[nome_visivel].config(text=f"{nome_visivel}: {valor}")
-
-        def incrementar(nome_visivel, nome_real):
-            setattr(personagem, nome_real, getattr(personagem, nome_real) + 1)
-            personagem.recalcularAtributos()
-            atualizar_label(nome_visivel, nome_real)
-            self.refresh(character=personagem)
-
-        def decrementar(nome_visivel, nome_real):
-            if getattr(personagem, nome_real) > 0:
-                setattr(personagem, nome_real, getattr(personagem, nome_real) - 1)
-                personagem.recalcularAtributos()
-                atualizar_label(nome_visivel, nome_real)
-                self.refresh(character=personagem)
-
         for idx, (nome_visivel, nome_real) in enumerate(atributos.items()):
-            labels[nome_visivel] = tk.Label(popup, text=f"{nome_visivel}: {getattr(personagem, nome_real)}",
-                                            bg="#1e1b3a", fg="white", font=("Arial", 12))
-            labels[nome_visivel].grid(row=idx, column=0, padx=20, pady=5, sticky="w")
-
-            tk.Button(popup, text="+", command=lambda nv=nome_visivel, nr=nome_real: incrementar(nv, nr),
-                    bg="#115c11", fg="white", width=3).grid(row=idx, column=1)
-
-            tk.Button(popup, text="-", command=lambda nv=nome_visivel, nr=nome_real: decrementar(nv, nr),
-                    bg="#8c1d1d", fg="white", width=3).grid(row=idx, column=2)
+            tk.Label(frame_atributos, text=f"{nome_visivel}: {getattr(personagem, nome_real)}",
+                    bg="#1e1b3a", fg="white", font=("Arial", 12)).grid(row=idx, column=0, sticky="w", pady=2)
+            tk.Button(frame_atributos, text="+", command=lambda nv=nome_real: (setattr(personagem, nv, getattr(personagem, nv) + 1), personagem.recalcularAtributos(), self.refresh(character=personagem), popup.destroy(), self.abrir_popup_status_completo()), bg="#115c11", fg="white", width=3).grid(row=idx, column=1, padx=2)
+            tk.Button(frame_atributos, text="-", command=lambda nv=nome_real: (setattr(personagem, nv, max(getattr(personagem, nv) - 1, 0)), personagem.recalcularAtributos(), self.refresh(character=personagem), popup.destroy(), self.abrir_popup_status_completo()), bg="#8c1d1d", fg="white", width=3).grid(row=idx, column=2, padx=2)
     ## funções dos botões extras ##
 ### TELA DE DETALHES ###
 ### TELA DE DETALHES ###
@@ -1893,9 +1866,17 @@ class CombatSystemScreen(tk.Frame):
         self.players = D.GruposDePersonagens["Players"]
         self.npcs = D.GruposDePersonagens["NPCs"]
 
-        # Título
-        title = tk.Label(self, text="Tela de Combate", fg="white", bg="#1a0869", font=("Arial", 30, "bold"), width=35)
-        title.place(x=800, y=20, anchor="n")
+        tk.Button(self, text="Tela inicial", height=2, command=self.TelaInicial,
+                bg="#1a0869", fg="white", font=("Arial", 20)).place(x=20, y=10, width=350, height=75)
+        
+        tk.Button(self, text="Tela de seleção", height=2, command=self.TelaDeSelecao,
+                bg="#1a0869", fg="white", font=("Arial", 20)).place(x=385, y=10, width=350, height=75)
+
+        tk.Label(self, text="Combate", fg="white", bg="#1a0869",
+                font=("Arial", 20, "bold"), width=20, height=2).place(x=870, y=10, width=350, height=75)
+
+        tk.Button(self, text="Informações", height=2, command=self.TelaDeRegrasEItens,
+                bg="#1a0869", fg="white", font=("Arial", 20)).place(x=1235, y=10, width=350, height=75)
 
         # Frame de botões centrais
         action_buttons_frame = tk.Frame(self, bg='#130f26', width= 25, height= 4)
@@ -1903,12 +1884,7 @@ class CombatSystemScreen(tk.Frame):
 
         btn_cfg = {"width": 15, "height": 2, "font": ("Arial", 18, "bold"), "bg": "#7a3cff", "fg": "white"}
         tk.Button(action_buttons_frame, text="Ataque", command=self.abrir_popup_ataque, **btn_cfg).pack(pady=5)
-        tk.Button(action_buttons_frame, text="Looting", command=self.abrir_popup_loot, **btn_cfg).pack(pady=5)
-
-        # Voltar
-        tk.Button(self, text="Tela Inicial", command=self.Voltar,width=15, height=2, font=("Arial", 18), bg="#1a0869", fg="white").place(x=800, y=850, anchor="center")
-        tk.Button(self, text="Tela de Seleção", command=self.TelaDeSelecao,width=15, height=2, font=("Arial", 18), bg="#1a0869", fg="white").place(x=200, y=850, anchor="center")
-        tk.Button(self, text="Dicionários", command=self.TelaDeRegrasEItens,width=15, height=2, font=("Arial", 18), bg="#1a0869", fg="white").place(x=1400, y=850, anchor="center")
+        tk.Button(action_buttons_frame, text="Pilhar", command=self.abrir_popup_loot, **btn_cfg).pack(pady=5)
 
         # Painéis laterais (Players e NPCs)
         self.players_frame = self.create_list_section("Players", self.players, x=50, y=100)
@@ -2328,14 +2304,15 @@ class CombatSystemScreen(tk.Frame):
 
         tk.Button(popup, text="Fechar", command=popup.destroy, font=("Arial", 12), bg="#004080", fg="white").pack(pady=(0, 10))
 
-    def Voltar(self):
-        self.controller.voltar()
+    def TelaInicial(self):
+        self.controller.TelaInicial()
 
     def TelaDeSelecao(self):
         self.controller.TelaDeSelecao()
-
+    
     def TelaDeRegrasEItens(self):
         self.controller.TelaDeRegrasEItens()
+
 ### TELA DE COMBATE ###
 ### TELA DE COMBATE ###
 ### TELA DE COMBATE ###
@@ -2671,7 +2648,7 @@ class MainApp(tk.Tk):
         frame.grid_rowconfigure(0, weight=1)
         frame.grid_columnconfigure(0, weight=1)
 
-    def voltar(self):
+    def TelaInicial(self):
         self.show_frame(MainScreen)
     
     def TelaDeSelecao(self):
