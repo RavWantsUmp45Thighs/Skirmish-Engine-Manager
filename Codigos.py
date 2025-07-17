@@ -1,6 +1,7 @@
-#Versão 2
-
 from uuid import uuid4
+import json
+import os
+
 def gerar_id():
     return str(uuid4())[:5]
 
@@ -21,7 +22,7 @@ class Personagem:
         self.Presenca: int = Presenca
         self.Tatica: int = Tatica
         #stats#
-        self.vidaMax: int = 50 + (10 * Vigor) + (5 * nivel)
+        self.vidaMax: int = 50 + (10 * Vigor)
         self.vidaAtual: int = self.vidaMax
         self.PeMax: int = 4 + Presenca
         self.PeAtual: int = self.PeMax
@@ -43,8 +44,12 @@ class Personagem:
         self.proficiencias = SistemaDeProficiencias()
         if proficiencias_base:
             for nome, criador in proficiencias_base.items():
-                self.proficiencias.proficiencias[nome] = criador()
+                self.proficiencias.proficiencias[nome] = criador
         self.recalcularAtributos()
+        #Buffs/debuffs#
+        self.efeitos = GerenciadorDeEfeitos()
+        #Habilidades/Poderes#
+        self.habilidades = GerenciadorDeHabilidades()
         
 
     def CriarPersonagem(nome, nivel, Forca, Agilidade, Vigor, Inteligencia, Presenca, Tatica, proficiencias_base=None):
@@ -53,16 +58,24 @@ class Personagem:
 # funções principais #
     def calcular_peso_total(self):
         peso_total = 0
+        
+        # Verificar itens no inventário
         for item_data in self.inventario.itens:
             item = item_data['item']
-            peso_total += item.peso * item_data['quantidade']
+            if hasattr(item, 'peso') and item.peso:
+                peso_total += item.peso * item_data['quantidade']
+        
+        # Verificar itens equipados
         for item_data in self.equipados.itens:
             item = item_data['item']
-            peso_total += item.peso * item_data['quantidade']   
+            if hasattr(item, 'peso') and item.peso:
+                peso_total += item.peso * item_data['quantidade']   
+        
+        # Verificar proteções equipadas
         protecoes = [self.Cabeça, self.Torso, self.Pernas, self.Braços]
         for protecao in protecoes:
-            if protecao is not None:
-                peso_total += (protecao.peso // 2) # Proteção equipada tem peso reduzido
+            if protecao is not None and hasattr(protecao, 'peso') and protecao.peso:
+                peso_total += (protecao.peso // 2)  # Proteção equipada tem peso reduzido
 
         # Atualiza o peso atual no personagem
         self.cargaAtual = peso_total
@@ -74,6 +87,14 @@ class Personagem:
         self.vidaAtual += cura
         if self.vidaAtual > self.vidaMax:
             self.vidaAtual = self.vidaMax
+        
+    def GastarEnergia(self, energia):
+        self.PeAtual = max(0, self.PeAtual - energia)
+
+    def GanharEnergia(self, energia):
+        self.PeAtual += energia
+        if self.PeAtual > self.PeMax:
+            self.PeAtual = self.PeMax
 
     def GanharXP(self, xp):
         self.XPAtual += xp
@@ -95,7 +116,7 @@ class Personagem:
         bonus_carga = bonus_profs.get("Carga", 0) * 1
 
         # Recalcular atributos com bônus de proficiências
-        self.vidaMax = 50 + (10 * self.Vigor) + (5 * self.nivel) + bonus_vida
+        self.vidaMax = 50 + (10 * self.Vigor) + bonus_vida
         self.vidaAtual = min(self.vidaAtual, self.vidaMax)
         self.PeMax = 4 + self.Presenca
         self.PeAtual = min(self.PeAtual, self.PeMax)
@@ -117,6 +138,75 @@ class Personagem:
             self.inventario.adicionar_item_objeto(item)
             return True
         return False
+
+    def ReceberKit(self, kit):
+        """
+        Recebe um kit e adiciona todos os itens ao inventário do personagem.
+        
+        Args:
+            kit: Objeto kit que contém uma lista de itens ou um dicionário de itens
+            
+        Returns:
+            bool: True se o kit foi recebido com sucesso, False caso contrário
+        """
+        try:
+            # Verifica se o kit tem uma lista de itens
+            if hasattr(kit, 'itens'):
+                # Se kit.itens é uma lista de dicionários com 'item' e 'quantidade'
+                if isinstance(kit.itens, list):
+                    for item_data in kit.itens:
+                        if isinstance(item_data, dict) and 'item' in item_data:
+                            item = item_data['item']
+                            quantidade = item_data.get('quantidade', 1)
+                            self.inventario.adicionar_item_objeto(item, quantidade)
+                        else:
+                            # Se for apenas um objeto item
+                            self.inventario.adicionar_item_objeto(item_data, 1)
+                
+                # Se kit.itens é um dicionário de itens
+                elif isinstance(kit.itens, dict):
+                    for nome_item, quantidade in kit.itens.items():
+                        if hasattr(quantidade, '__call__'):  # Se for uma função construtora
+                            item = quantidade()
+                            self.inventario.adicionar_item_objeto(item, 1)
+                        else:
+                            # Assumindo que é uma quantidade numérica e precisamos do objeto
+                            # Neste caso, seria necessário ter acesso aos dicionários de itens
+                            pass
+            
+            # Se o kit é uma lista direta de itens
+            elif isinstance(kit, list):
+                for item in kit:
+                    if isinstance(item, dict) and 'item' in item:
+                        objeto_item = item['item']
+                        quantidade = item.get('quantidade', 1)
+                        self.inventario.adicionar_item_objeto(objeto_item, quantidade)
+                    else:
+                        self.inventario.adicionar_item_objeto(item, 1)
+            
+            # Se o kit é um dicionário direto
+            elif isinstance(kit, dict):
+                for nome_item, item_info in kit.items():
+                    if isinstance(item_info, dict) and 'item' in item_info:
+                        item = item_info['item']
+                        quantidade = item_info.get('quantidade', 1)
+                        self.inventario.adicionar_item_objeto(item, quantidade)
+                    elif hasattr(item_info, '__call__'):  # Se for uma função construtora
+                        item = item_info()
+                        self.inventario.adicionar_item_objeto(item, 1)
+                    else:
+                        # Tratamento para outros tipos de estrutura
+                        self.inventario.adicionar_item_objeto(item_info, 1)
+            
+            # Recalcula o peso após adicionar os itens
+            self.calcular_peso_total()
+            
+            print(f"{self.nome} recebeu o kit com sucesso!")
+            return True
+            
+        except Exception as e:
+            print(f"Erro ao receber kit: {e}")
+            return False
 # funções principais #
 
 # funções de proteção #
@@ -164,9 +254,241 @@ class Personagem:
                 print(f"{regiao}: {protecao.nome}")
             else:
                 print(f"{regiao}: Nenhuma proteção equipada.")
+
+    def to_dict(self):
+        return {
+            "nome": self.nome,
+            "nivel": self.nivel,
+            "XPAtual": self.XPAtual,
+            "XPlvlUp": self.XPlvlUp,
+            "Forca": self.Forca,
+            "Agilidade": self.Agilidade,
+            "Vigor": self.Vigor,
+            "Inteligencia": self.Inteligencia,
+            "Presenca": self.Presenca,
+            "Tatica": self.Tatica,
+            "vidaMax": self.vidaMax,
+            "vidaAtual": self.vidaAtual,
+            "PeMax": self.PeMax,
+            "PeAtual": self.PeAtual,
+            "bloqueio": self.bloqueio,
+            "esquiva": self.esquiva,
+            "CargaMax": self.CargaMax,
+            "cargaAtual": self.cargaAtual,
+            "mobilidade": self.mobilidade,
+            "Cabeça": self.Cabeça,
+            "Rosto": self.Rosto,
+            "Torso": self.Torso,
+            "Pernas": self.Pernas,
+            "Braços": self.Braços,
+            "inventario": {"itens": self.inventario.itens},
+            "equipados": {"itens": self.equipados.itens},
+            "proficiencias": {"proficiencias": self.proficiencias.proficiencias},
+            "efeitos": self.efeitos.to_dict(),
+            "habilidades": self.habilidades.to_dict()
+
+        }
+
+    @classmethod
+    def from_dict(cls, data):
+        personagem = cls(
+            nome=data.get("nome", "SemNome"),
+            nivel=data.get("nivel", 1),
+            Forca=data.get("Forca", 1),
+            Agilidade=data.get("Agilidade", 1),
+            Vigor=data.get("Vigor", 1),
+            Inteligencia=data.get("Inteligencia", 1),
+            Presenca=data.get("Presenca", 1),
+            Tatica=data.get("Tatica", 1)
+        )
+
+        personagem.XPAtual = data.get("XPAtual", 0)
+        personagem.XPlvlUp = data.get("XPlvlUp", 1000 + 500 * personagem.nivel)
+        personagem.vidaAtual = data.get("vidaAtual", personagem.vidaMax)
+        personagem.vidaMax = data.get("vidaMax", personagem.vidaMax)
+        personagem.PeAtual = data.get("PeAtual", personagem.PeMax)
+        personagem.PeMax = data.get("PeMax", personagem.PeMax)
+        personagem.bloqueio = data.get("bloqueio", 5 + personagem.Forca)
+        personagem.esquiva = data.get("esquiva", 5 + personagem.Agilidade)
+        personagem.CargaMax = data.get("CargaMax", 15 + 2 * personagem.Forca)
+        personagem.cargaAtual = data.get("cargaAtual", 0)
+        personagem.mobilidade = data.get("mobilidade", 5 + 2 * personagem.Agilidade)
+
+        personagem.Cabeça = data.get("Cabeça")
+        personagem.Rosto = data.get("Rosto")
+        personagem.Torso = data.get("Torso")
+        personagem.Pernas = data.get("Pernas")
+        personagem.Braços = data.get("Braços")
+
+        personagem.inventario = Inventario.from_dict(data.get("inventario", {}))
+        personagem.equipados = Inventario.from_dict(data.get("equipados", {}))
+        personagem.proficiencias = SistemaDeProficiencias.from_dict(data.get("proficiencias", {}))
+        personagem.efeitos = GerenciadorDeEfeitos.from_dict(data.get("efeitos", {}))
+        personagem.habilidades = GerenciadorDeHabilidades.from_dict(data.get("habilidades", {}))
+
+        return personagem
 ### CLASSE PERSONAGEM ###
 ### CLASSE PERSONAGEM ###
 ### CLASSE PERSONAGEM ###
+
+class HabilidadePoder:
+    def __init__(self, nome, descricao, efeito, gasto_energia=0):
+        self.nome = nome
+        self.descricao = descricao
+        self.efeito = efeito
+        self.gasto_energia = gasto_energia
+        self.tipo = "passivo" if gasto_energia == 0 else "ativo"
+    
+    def __str__(self):
+        tipo_symbol = "🔮" if self.tipo == "passivo" else "⚡"
+        energia_text = f"(Custo: {self.gasto_energia} PE)" if self.gasto_energia > 0 else "(Passivo)"
+        return f"[{tipo_symbol}] {self.nome}: {self.descricao} - {self.efeito} {energia_text}"
+    
+    def to_dict(self):
+        return {
+            "nome": self.nome,
+            "descricao": self.descricao,
+            "efeito": self.efeito,
+            "gasto_energia": self.gasto_energia,
+            "tipo": self.tipo
+        }
+    
+    @classmethod
+    def from_dict(cls, data):
+        return cls(
+            nome=data.get("nome", ""),
+            descricao=data.get("descricao", ""),
+            efeito=data.get("efeito", ""),
+            gasto_energia=data.get("gasto_energia", 0)
+        )
+
+class GerenciadorDeHabilidades:
+    def __init__(self):
+        self.habilidades = []
+    
+    def adicionar_habilidade(self, nome, descricao, efeito, gasto_energia=0):
+        """Adiciona uma nova habilidade/poder à lista"""
+        habilidade = HabilidadePoder(nome, descricao, efeito, gasto_energia)
+        self.habilidades.append(habilidade)
+        return habilidade
+    
+    def remover_habilidade(self, nome):
+        """Remove uma habilidade pelo nome"""
+        self.habilidades = [h for h in self.habilidades if h.nome != nome]
+    
+    def limpar_habilidades(self):
+        """Remove todas as habilidades"""
+        self.habilidades.clear()
+    
+    def obter_habilidade(self, nome):
+        """Retorna uma habilidade específica pelo nome"""
+        for habilidade in self.habilidades:
+            if habilidade.nome == nome:
+                return habilidade
+        return None
+    
+    def listar_habilidades(self):
+        """Retorna todas as habilidades"""
+        return self.habilidades.copy()
+    
+    def listar_ativas(self):
+        """Retorna apenas as habilidades ativas (com custo de energia)"""
+        return [h for h in self.habilidades if h.tipo == "ativo"]
+    
+    def listar_passivas(self):
+        """Retorna apenas as habilidades passivas (sem custo de energia)"""
+        return [h for h in self.habilidades if h.tipo == "passivo"]
+    
+    def to_dict(self):
+        return {
+            "habilidades": [habilidade.to_dict() for habilidade in self.habilidades]
+        }
+    
+    @classmethod
+    def from_dict(cls, data):
+        gerenciador = cls()
+        for habilidade_data in data.get("habilidades", []):
+            habilidade = HabilidadePoder.from_dict(habilidade_data)
+            gerenciador.habilidades.append(habilidade)
+        return gerenciador
+
+class Efeito:
+    def __init__(self, nome, descricao, valor=0, tipo="buff"):
+        self.nome = nome
+        self.descricao = descricao
+        self.valor = valor  # Pode ser um número, string, ou qualquer valor relevante
+        self.tipo = tipo  # "buff" ou "debuff"
+    
+    def __str__(self):
+        tipo_symbol = "+" if self.tipo == "buff" else "-"
+        return f"[{tipo_symbol}] {self.nome}: {self.descricao} (Valor: {self.valor})"
+    
+    def to_dict(self):
+        return {
+            "nome": self.nome,
+            "descricao": self.descricao,
+            "valor": self.valor,
+            "tipo": self.tipo
+        }
+    
+    @classmethod
+    def from_dict(cls, data):
+        return cls(
+            nome=data.get("nome", ""),
+            descricao=data.get("descricao", ""),
+            valor=data.get("valor", 0),
+            tipo=data.get("tipo", "buff")
+        )
+
+class GerenciadorDeEfeitos:
+    def __init__(self):
+        self.efeitos = []
+    
+    def adicionar_efeito(self, nome, descricao, valor=0, tipo="buff"):
+        """Adiciona um novo efeito à lista"""
+        efeito = Efeito(nome, descricao, valor, tipo)
+        self.efeitos.append(efeito)
+        return efeito
+    
+    def remover_efeito(self, nome):
+        """Remove um efeito pelo nome"""
+        self.efeitos = [e for e in self.efeitos if e.nome != nome]
+    
+    def limpar_efeitos(self):
+        """Remove todos os efeitos"""
+        self.efeitos.clear()
+    
+    def obter_efeito(self, nome):
+        """Retorna um efeito específico pelo nome"""
+        for efeito in self.efeitos:
+            if efeito.nome == nome:
+                return efeito
+        return None
+    
+    def listar_efeitos(self):
+        """Retorna todos os efeitos"""
+        return self.efeitos.copy()
+    
+    def listar_buffs(self):
+        """Retorna apenas os buffs"""
+        return [e for e in self.efeitos if e.tipo == "buff"]
+    
+    def listar_debuffs(self):
+        """Retorna apenas os debuffs"""
+        return [e for e in self.efeitos if e.tipo == "debuff"]
+    
+    def to_dict(self):
+        return {
+            "efeitos": [efeito.to_dict() for efeito in self.efeitos]
+        }
+    
+    @classmethod
+    def from_dict(cls, data):
+        gerenciador = cls()
+        for efeito_data in data.get("efeitos", []):
+            efeito = Efeito.from_dict(efeito_data)
+            gerenciador.efeitos.append(efeito)
+        return gerenciador
 
 class Inventario:
     def __init__(self):
@@ -260,11 +582,53 @@ class Inventario:
             resultado.append(info)
         return resultado
 
-class Proficiencia:
-    def __init__(self, nome, nivel=0):
-        self.nome: str = nome
-        self.nivel: int = nivel
+    def to_dict(self):
+        lista_serializada = []
+        for entrada in self.itens:
+            item = entrada["item"]
+            qtd = entrada["quantidade"]
+            # Se o item tem um método to_dict(), usa ele; senão, salva nome + tipo
+            if hasattr(item, "to_dict"):
+                item_dict = item.to_dict()
+                item_dict["_classe"] = item.__class__.__name__
+                lista_serializada.append({"item": item_dict, "quantidade": qtd})
+            elif hasattr(item, "Id"):  # fallback: serializa por Id
+                lista_serializada.append({
+                    "item": {"Id": item.Id, "nome": item.nome, "_classe": item.__class__.__name__},
+                    "quantidade": qtd
+                })
+            else:
+                lista_serializada.append({
+                    "item": {"nome": item.nome, "_classe": item.__class__.__name__},
+                    "quantidade": qtd
+                })
+        return lista_serializada
 
+    @classmethod
+    def from_dict(cls, data):
+        inventario = cls()
+
+        # Garante que há uma lista de itens
+        itens_data = data.get("itens", [])
+        if isinstance(itens_data, list):
+            for entrada in itens_data:
+                if isinstance(entrada, dict) and "item" in entrada:
+                    item_data = entrada["item"]
+                    item = Item.from_dict(item_data)
+                    inventario.itens.append(item)
+                else:
+                    print(f"[Inventario] Entrada inválida no inventário: {repr(entrada)}")
+        else:
+            print(f"[Inventario] 'itens' não é uma lista: {type(itens_data)}")
+
+        return inventario
+
+class Proficiencia:
+    def __init__(self, nome, atributo, nivel=0):
+        self.nome: str = nome
+        self.atributo: str = atributo
+        self.nivel: int = nivel
+        
     def adicionar_pontos(self, pontos):
         self.nivel += pontos
         if self.nivel >= 10:
@@ -277,14 +641,27 @@ class Proficiencia:
 
     def __str__(self):
         return f"{self.nome}: {self.nivel} ponto(s)"
+    
+    def to_dict(self):
+        return {
+            "nome": self.nome,
+            "atributo": self.atributo,
+            "nivel": self.nivel,
+        }
+
+    @classmethod
+    def from_dict(cls, data):
+        prof = cls(data["nome"], data["atributo"])
+        prof.nivel = data.get("nivel", 0)
+        return prof
 
 class SistemaDeProficiencias:
     def __init__(self):
         self.proficiencias = {}
 
-    def adicionar_proficiencia(self, nome, pontos):
+    def adicionar_proficiencia(self, nome, atributo ,pontos):
         if nome not in self.proficiencias:
-            self.proficiencias[nome] = Proficiencia(nome)
+            self.proficiencias[nome] = Proficiencia(nome, atributo)
         self.proficiencias[nome].adicionar_pontos(pontos)
 
     def remover_proficiencia(self, nome, pontos):
@@ -300,8 +677,11 @@ class SistemaDeProficiencias:
         for prof in self.proficiencias.values():
             print(prof)
     
-    def obter_bonus(self, nome):
-        return self.proficiencias.get(nome, Proficiencia(nome)).nivel
+    def obter_bonus(self, nome, atributo=None):
+        prof = self.proficiencias.get(nome)
+        if prof:
+            return prof.nivel
+        return 0
 
     def obter_proficiencias(self, *nomes):
         """Retorna os níveis de várias proficiências."""
@@ -310,18 +690,38 @@ class SistemaDeProficiencias:
     def items(self):
         return self.proficiencias.items()
 
+    def to_dict(self):
+        return {
+            nome: prof.to_dict()
+            for nome, prof in self.proficiencias.items()
+            if hasattr(prof, "to_dict")
+        }
+
+    @classmethod
+    def from_dict(cls, data):
+        sistema = cls()
+
+        # Se os dados vierem no formato {'proficiencias': {...}}, extrair
+        if isinstance(data, dict) and "proficiencias" in data:
+            data = data["proficiencias"]
+
+        for nome, dados in data.items():
+            prof = Proficiencia.from_dict(dados)
+            sistema.proficiencias[nome] = prof
+
+        return sistema
 
 class Item:
-    def __init__(self, nome, peso):
+    def __init__(self, nome, peso=None):
         self.nome: str = nome
-        self.peso: float = peso
+        if peso:
+            self.peso: float = peso
 
     def stats(self):
         return {
             "Nome": self.nome,
             "Peso": f"{self.peso} kg",
         }
- 
 
 class Consumivel(Item):
     def __init__(self, nome, peso, cura, energia):
@@ -336,7 +736,6 @@ class Consumivel(Item):
             "Cura": self.cura,
             "Energia": self.energia
         }
-
 
 class Explosivo(Item):
     def __init__(self, nome, peso, raio, dano, tipo_dano):
@@ -354,30 +753,27 @@ class Explosivo(Item):
             "Tipo de Dano": self.tipo_dano
         }
 
-
 class Municao(Item):
-    def __init__(self, nome, peso, calibre, perfuracao, dano):
-        super().__init__(nome, peso)
-        self.calibre: str = calibre
-        self.perfuracao: int = perfuracao
-        self.dano: int = dano
+    def __init__(self, nome, calibre, perfuracao, dano):
+        super().__init__(nome)
+        self.calibre = calibre
+        self.perfuracao = perfuracao
+        self.dano = dano
 
     def stats(self):
         return {
             "Nome": self.nome,
-            "Peso": f"{self.peso} kg",
             "Calibre": self.calibre,
             "Perfuração": self.perfuracao,
             "Dano": self.dano,
         }
 
-
 class Melee(Item):
-    def __init__(self, nome, peso, classe, subclasse, raridade):
+    def __init__(self, nome, peso, classe, tipo_dano, raridade):
         super().__init__(nome, peso)
         
         self.classe = classe
-        self.subclasse = subclasse
+        self.tipo_dano = tipo_dano
         self.raridade = raridade
         self.Melhorias = []
         self.Id = gerar_id()
@@ -399,7 +795,7 @@ class Melee(Item):
         self.valor_critico_arremesso = 0
 
         # Subclasse e Raridade #
-        if self.subclasse == "Faca":
+        if self.classe == "Faca":
             self.dano_simples = 15
             self.critico_simples = 2
             self.valor_critico_simples = 15
@@ -415,7 +811,7 @@ class Melee(Item):
             self.dano_arremesso = 20
             self.critico_arremesso = 3
             self.valor_critico_arremesso = 25
-        elif self.subclasse == "Adaga":
+        elif self.classe == "Adaga":
             self.dano_simples = 15
             self.critico_simples = 3
             self.valor_critico_simples = 25
@@ -431,7 +827,7 @@ class Melee(Item):
             self.dano_arremesso = 20
             self.critico_arremesso = 3
             self.valor_critico_arremesso = 25
-        elif self.subclasse == "Espada curta":
+        elif self.classe == "Espada curta":
             self.dano_simples = 20
             self.critico_simples = 2
             self.valor_critico_simples = 25
@@ -447,7 +843,7 @@ class Melee(Item):
             self.dano_arremesso = 20
             self.critico_arremesso = 2
             self.valor_critico_arremesso = 25
-        elif self.subclasse == "Espada longa":
+        elif self.classe == "Espada longa":
             self.dano_simples = 20
             self.critico_simples = 2
             self.valor_critico_simples = 20
@@ -463,7 +859,7 @@ class Melee(Item):
             self.dano_arremesso = 20
             self.critico_arremesso = 2
             self.valor_critico_arremesso = 20
-        elif self.subclasse == "Sabre":
+        elif self.classe == "Sabre":
             self.dano_simples = 25
             self.critico_simples = 2
             self.valor_critico_simples = 25
@@ -479,7 +875,7 @@ class Melee(Item):
             self.dano_arremesso = 20
             self.critico_arremesso = 2
             self.valor_critico_arremesso = 20
-        elif self.subclasse == "Machadinha":
+        elif self.classe == "Machadinha":
             self.dano_simples = 20
             self.critico_simples = 3
             self.valor_critico_simples = 20
@@ -495,7 +891,7 @@ class Melee(Item):
             self.dano_arremesso = 20
             self.critico_arremesso = 3
             self.valor_critico_arremesso = 20
-        elif self.subclasse == "Machado":
+        elif self.classe == "Machado":
             self.dano_simples = 20
             self.critico_simples = 2
             self.valor_critico_simples = 20
@@ -511,7 +907,7 @@ class Melee(Item):
             self.dano_arremesso = 20
             self.critico_arremesso = 2
             self.valor_critico_arremesso = 20
-        elif self.subclasse == "Lança":
+        elif self.classe == "Lança":
             self.dano_simples = 20
             self.critico_simples = 2
             self.valor_critico_simples = 20
@@ -527,7 +923,7 @@ class Melee(Item):
             self.dano_arremesso = 40
             self.critico_arremesso = 2
             self.valor_critico_arremesso = 20
-        elif self.subclasse == "Martelo":
+        elif self.classe == "Martelo":
             self.dano_simples = 25
             self.critico_simples = 3
             self.valor_critico_simples = 25
@@ -543,7 +939,7 @@ class Melee(Item):
             self.dano_arremesso = 25
             self.critico_arremesso = 2
             self.valor_critico_arremesso = 20
-        elif self.subclasse == "Porrete":
+        elif self.classe == "Porrete":
             self.dano_simples = 25
             self.critico_simples = 2
             self.valor_critico_simples = 20
@@ -559,7 +955,7 @@ class Melee(Item):
             self.dano_arremesso = 8
             self.critico_arremesso = 2
             self.valor_critico_arremesso = 20
-        elif self.subclasse == "Taco":
+        elif self.classe == "Taco":
             self.dano_simples = 20
             self.critico_simples = 2
             self.valor_critico_simples = 25
@@ -575,7 +971,7 @@ class Melee(Item):
             self.dano_arremesso = 25
             self.critico_arremesso = 2
             self.valor_critico_arremesso = 20
-        elif self.subclasse == "Maça":
+        elif self.classe == "Maça":
             self.dano_simples = 25
             self.critico_simples = 2
             self.valor_critico_simples = 20
@@ -591,7 +987,7 @@ class Melee(Item):
             self.dano_arremesso = 20
             self.critico_arremesso = 2
             self.valor_critico_arremesso = 20
-        elif self.subclasse == "Marreta":
+        elif self.classe == "Marreta":
             self.dano_simples = 25
             self.critico_simples = 2
             self.valor_critico_simples = 25
@@ -705,7 +1101,7 @@ class Melee(Item):
             "Nome": self.nome,
             "Peso": self.peso,
             "Classe": self.classe,
-            "Subclasse": self.subclasse,
+            "Tipo de dano": self.tipo_dano,
             "Dano Simples": self.dano_simples,
             "Crítico Simples": self.critico_simples,
             "Valor Crítico Simples": self.valor_critico_simples,
@@ -719,7 +1115,6 @@ class Melee(Item):
             "Crítico Arremesso": self.critico_arremesso,
             "Valor Crítico Arremesso": self.valor_critico_arremesso,
         }
-
 
 class Ranged(Item):
     def __init__(self, nome, peso, classe, acao, raridade, calibre, capacidade):
@@ -842,7 +1237,7 @@ class Ranged(Item):
             self.ShortCrit = 25
             self.MediumCrit = 25
             self.LongCrit = 25
-        elif classe == "Metralhadora média":
+        elif classe == "Metralhadora pesada":
             self.dano = 20
             self.recuo = 4
             self.MaxRange = 150
@@ -850,7 +1245,7 @@ class Ranged(Item):
             self.ShortCrit = 30
             self.MediumCrit = 30
             self.LongCrit = 30
-        elif classe == "Fuzil anti-material":
+        elif classe == "Fuzil Antimaterial":
             self.dano = 35
             self.recuo = 5
             self.MaxRange = 250
@@ -1044,7 +1439,6 @@ class Ranged(Item):
             ] if self.Acessorios else "Nenhum acessório equipado."
         }
 
-
 class Protecao(Item):
     def __init__(self, nome, peso, nivelBalistico, absorcaoFisica, absorcaoBalistica, regiao):
         super().__init__(nome, peso)
@@ -1088,7 +1482,6 @@ class Protecao(Item):
             "Absorção Balística": self.absorcaoBalistica,
             "Região": self.regiao,
         }
-
 
 class Melhoria(Item):
     def __init__(self, nome, peso, tipo, modificadores):
@@ -1139,7 +1532,6 @@ class Melhoria(Item):
         else:
             return False
 
-
 class NPC:
     def __init__(self, grupo, classe, forca, agilidade, vigor, inteligencia, presenca, tatica):
         self.grupo = grupo
@@ -1162,42 +1554,8 @@ class NPC:
                 "Tática": self.tatica,
                 }
 
-
-class Kit:
-    def __init__(self, nome, itens, pools):
-        self.nome = nome
-        self.pools = pools
-        self.itens_simples = set()
-        self.itens_com_quantidade = {}
-
-        for item in itens:
-            if isinstance(item, str):
-                self.itens_simples.add(item)
-            elif isinstance(item, tuple) and len(item) == 2:
-                nome, qtd = item
-                self.itens_com_quantidade[nome] = qtd
-
-        self.itens = self.gerar_itens()
-
-    def gerar_itens(self):
-        resultado = []
-        for nome in self.itens_simples:
-            if nome in self.pools:
-                resultado.append(self.pools[nome]())
-        for nome, qtd in self.itens_com_quantidade.items():
-            if nome in self.pools:
-                for _ in range(qtd):
-                    resultado.append(self.pools[nome]())
-        return resultado
-
-    def buscar_em_pools(self, nome):
-        for pool in self.pools:
-            if nome in pool:
-                return pool[nome]
-        return None
-
 ### Funções de Geração ###
-def Gerador(npc: NPC, kit=None, nivel=None, nome=None, proficiencias_base=None):
+def Gerador(npc: NPC, nivel=None, nome=None, proficiencias_base=None):
     if nivel is None:
         nivel = 1
     f = npc.forca
@@ -1209,10 +1567,19 @@ def Gerador(npc: NPC, kit=None, nivel=None, nome=None, proficiencias_base=None):
 
     nome_base = nome or f"{npc.classe} ({npc.grupo})"
 
-    inimigo = Personagem.CriarPersonagem(nome=nome_base, nivel=nivel, Forca=f, Agilidade=a, Vigor=v, Inteligencia=i, Presenca=p, Tatica=t, proficiencias_base=proficiencias_base)
-    if kit:
-        for item in kit.itens:
-            inimigo.inventario.adicionar_item_objeto(item)
+    # Criar o personagem
+    inimigo = Personagem.CriarPersonagem(
+        nome=nome_base, 
+        nivel=nivel, 
+        Forca=f, 
+        Agilidade=a, 
+        Vigor=v, 
+        Inteligencia=i, 
+        Presenca=p, 
+        Tatica=t, 
+        proficiencias_base=proficiencias_base
+    )
+    
     return inimigo
 
 def Gerador_grupo(self, grupo_destino, configuracoes):
@@ -1220,12 +1587,8 @@ def Gerador_grupo(self, grupo_destino, configuracoes):
         npc_base = config['npc_base']
         nivel = config['nivel']
         nome = config['nome']
-        if kit: kit = config['kit']
-        else: kit = None
-        personagem = Gerador(npc=npc_base, kit=kit, nivel=nivel, nome=nome)
+        personagem = Gerador(npc=npc_base, nivel=nivel, nome=nome)
         self.GruposDePersonagens[grupo_destino].append(personagem)
-
-
     self.refresh()
 ### Funções de Geração ###
 
@@ -1390,7 +1753,6 @@ def acerto_ranged(atacante: Personagem, alvo: Personagem, rolagem: int, id_arma,
         arma_obj.munições -= 1
 
     return resultado
-
 
 
 def acerto_explosivos():
