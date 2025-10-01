@@ -1,11 +1,9 @@
 import tkinter as tk
-from tkinter import ttk
-from tkinter import messagebox
+from tkinter import ttk, messagebox, scrolledtext
 import Dados as D
 import Codigos as CB
-import re
-import random
-import os
+import re, random, os, json, traceback
+
 
 ### TELA PRINCIPAL ###
 ### TELA PRINCIPAL ###
@@ -16,127 +14,179 @@ class MainScreen(tk.Frame):
         self.controller = controller
         self.configure(bg="#130f26")
 
-        # Título da tela
-        label = tk.Label(text="- Skirmish Engine -", width=25, height=3, font=("Arial", 40, "bold"), fg="white", bg="#1a0869")
-        label.place(width=800,height=100,x=400, y=120)
+        # Título da tela com tamanho reduzido
+        title_frame = tk.Frame(self, bg="#1a0869", relief="raised", bd=3)
+        title_frame.place(width=700, height=90, x=450, y=100)
+        
+        label = tk.Label(title_frame, text="- Skirmish Engine -", 
+                        font=("Arial", 32, "bold"), fg="#ffffff", bg="#1a0869")
+        label.pack(expand=True)
 
-        tk.Label(self, text="Tela inicial", fg="white", bg="#1a0869",
-                font=("Arial", 20, "bold"), width=20, height=2).place(x=20, y=10, width=350, height=75)
+        # Barra de navegação superior
+        nav_frame = tk.Frame(self, bg="#130f26")
+        nav_frame.place(x=20, y=10, width=1565, height=85)
         
-        tk.Button(self, text="Seleção", height=2, command=self.TelaDeSelecao,
-                bg="#1a0869", fg="white", font=("Arial", 20)).place(x=385, y=10, width=350, height=75)
+        tk.Label(self, text="Tela inicial", fg="white", bg="#1a0869", font=("Arial", 20, "bold"), width=20, height=2).place(x=20, y=10, width=350, height=75)
         
-        tk.Button(self, text="Combate", height=2, command=self.TelaDeCombate,
-                bg="#1a0869", fg="white", font=("Arial", 20)).place(x=870, y=10, width=350, height=75)
+        tk.Button(self, text="Seleção", height=2, command=self.TelaDeSelecao, bg="#1a0869", fg="white", font=("Arial", 20)).place(x=385, y=10, width=350, height=75)
 
-        tk.Button(self, text="Informações", height=2, command=self.TelaDeRegrasEItens,
-                bg="#1a0869", fg="white", font=("Arial", 20)).place(x=1235, y=10, width=350, height=75)
+        tk.Button(self, text="Combate", height=2, command=self.TelaDeCombate, bg="#1a0869", fg="white", font=("Arial", 20)).place(x=870, y=10, width=350, height=75)
+
+        tk.Button(self, text="Informações", height=2, command=self.TelaDeRegrasEItens, bg="#1a0869", fg="white", font=("Arial", 20)).place(x=1235, y=10, width=350, height=75)
         
-        # === SEÇÃO DE GERENCIAMENTO DE SESSÕES ===
-        # Frame para controles de sessão
-        sessao_frame = tk.Frame(self, bg="#1a0869")
-        sessao_frame.place(x=50, y=250, width=450, height=400)
+        # === SEÇÃO DE GERENCIAMENTO DE SESSÕES (CENTRALIZADA E AUMENTADA) ===
+        sessao_frame = tk.Frame(self, bg="#1a0869", relief="raised", bd=3)
+        sessao_frame.place(x=300, y=220, width=600, height=550)
         
-        # Título da seção
-        tk.Label(sessao_frame, text="Gerenciamento de Sessões", 
-                font=("Arial", 16, "bold"), fg="white", bg="#1a0869").pack(pady=10)
+        # Título da seção com estilo aprimorado
+        title_bg = tk.Frame(sessao_frame, bg="#2a1f3d", height=50)
+        title_bg.pack(fill="x")
+        tk.Label(title_bg, text="🎮 Gerenciamento de Sessões", 
+                font=("Arial", 18, "bold"), fg="#ffffff", bg="#2a1f3d").pack(pady=12)
         
-        # Frame para listbox e scrollbar
-        lista_frame = tk.Frame(sessao_frame, bg="#1a0869")
-        lista_frame.pack(fill="both", expand=True, padx=10, pady=5)
+        # Container principal
+        main_container = tk.Frame(sessao_frame, bg="#1a0869")
+        main_container.pack(fill="both", expand=True, padx=20, pady=15)
         
-        # Listbox para mostrar sessões disponíveis
-        self.sessoes_listbox = tk.Listbox(lista_frame, font=("Arial", 12), bg="#2a1f3d", fg="white", 
-                                         selectbackground="#4a3f5d", height=8)
+        # Frame para listbox com visual melhorado
+        lista_frame = tk.Frame(main_container, bg="#1a0869")
+        lista_frame.pack(fill="both", expand=True, pady=(0, 15))
+        
+        # Listbox estilizada
+        self.sessoes_listbox = tk.Listbox(lista_frame, font=("Arial", 12, "bold"), 
+                                         bg="#2a1f3d", fg="#ffffff", 
+                                         selectbackground="#4a3f5d", 
+                                         selectforeground="#ffffff",
+                                         relief="sunken", bd=2,
+                                         height=12, activestyle="dotbox")
         self.sessoes_listbox.pack(side="left", fill="both", expand=True)
         
-        # Scrollbar para a listbox
-        scrollbar = tk.Scrollbar(lista_frame, orient="vertical", command=self.sessoes_listbox.yview)
+        # Scrollbar estilizada
+        scrollbar = tk.Scrollbar(lista_frame, orient="vertical", 
+                               command=self.sessoes_listbox.yview,
+                               bg="#2a1f3d", troughcolor="#130f26",
+                               activebackground="#4a3f5d")
         scrollbar.pack(side="right", fill="y")
         self.sessoes_listbox.config(yscrollcommand=scrollbar.set)
         
-        # Frame para botões de sessão
-        botoes_sessao_frame = tk.Frame(sessao_frame, bg="#1a0869")
-        botoes_sessao_frame.pack(fill="x", padx=10, pady=5)
+        # Frame para controles - primeira linha
+        controles1_frame = tk.Frame(main_container, bg="#1a0869")
+        controles1_frame.pack(fill="x", pady=(0, 10))
         
-        # Botões para gerenciar sessões
-        tk.Button(botoes_sessao_frame, text="Atualizar Lista", command=self.atualizar_lista_sessoes,
-                bg="#2a1f3d", fg="white", font=("Arial", 10)).pack(side="left", padx=2)
+        tk.Button(controles1_frame, text="🔄 Atualizar", command=self.atualizar_lista_sessoes,
+                bg="#2a1f3d", fg="white", font=("Arial", 11, "bold"), 
+                relief="raised", bd=2, activebackground="#4a3f5d",
+                width=12).pack(side="left", padx=5)
         
-        tk.Button(botoes_sessao_frame, text="Carregar", command=self.carregar_sessao_selecionada,
-                bg="#2a1f3d", fg="white", font=("Arial", 10)).pack(side="left", padx=2)
+        tk.Button(controles1_frame, text="📂 Carregar", command=self.carregar_sessao_selecionada,
+                bg="#2a1f3d", fg="white", font=("Arial", 11, "bold"),
+                relief="raised", bd=2, activebackground="#4a3f5d",
+                width=12).pack(side="left", padx=5)
         
-        tk.Button(botoes_sessao_frame, text="Deletar", command=self.deletar_sessao_selecionada,
-                bg="#2a1f3d", fg="white", font=("Arial", 10)).pack(side="left", padx=2)
+        tk.Button(controles1_frame, text="🗑️ Deletar", command=self.deletar_sessao_selecionada,
+                bg="#8b1538", fg="white", font=("Arial", 11, "bold"),
+                relief="raised", bd=2, activebackground="#a61e42",
+                width=12).pack(side="left", padx=5)
         
-        # Frame para criar/salvar sessão
-        criar_frame = tk.Frame(sessao_frame, bg="#1a0869")
-        criar_frame.pack(fill="x", padx=10, pady=5)
+        # Separador visual
+        separator = tk.Frame(main_container, bg="#4a3f5d", height=2)
+        separator.pack(fill="x", pady=10)
         
-        tk.Label(criar_frame, text="Nome da sessão:", fg="white", bg="#1a0869", font=("Arial", 10)).pack(anchor="w")
+        # Frame para entrada de texto
+        entrada_frame = tk.Frame(main_container, bg="#1a0869")
+        entrada_frame.pack(fill="x", pady=(0, 10))
         
-        self.nome_sessao_entry = tk.Entry(criar_frame, font=("Arial", 12), bg="#2a1f3d", fg="white")
-        self.nome_sessao_entry.pack(fill="x", pady=2)
+        tk.Label(entrada_frame, text="💾 Nome da sessão:", 
+                fg="white", bg="#1a0869", font=("Arial", 12, "bold")).pack(anchor="w")
         
-        # Frame para botões criar/salvar
-        botoes_criar_frame = tk.Frame(criar_frame, bg="#1a0869")
-        botoes_criar_frame.pack(fill="x", pady=5)
+        self.nome_sessao_entry = tk.Entry(entrada_frame, font=("Arial", 12), 
+                                        bg="#2a1f3d", fg="white", relief="sunken", bd=2,
+                                        insertbackground="white")
+        self.nome_sessao_entry.pack(fill="x", pady=5)
         
-        tk.Button(botoes_criar_frame, text="Nova Sessão", command=self.criar_nova_sessao,
-                bg="#2a1f3d", fg="white", font=("Arial", 10)).pack(side="left", padx=2)
+        # Frame para controles - segunda linha
+        controles2_frame = tk.Frame(main_container, bg="#1a0869")
+        controles2_frame.pack(fill="x")
         
-        tk.Button(botoes_criar_frame, text="Salvar Atual", command=self.salvar_sessao_atual,
-                bg="#2a1f3d", fg="white", font=("Arial", 10)).pack(side="left", padx=2)
+        tk.Button(controles2_frame, text="➕ Nova Sessão", command=self.criar_nova_sessao,
+                bg="#2a1f3d", fg="white", font=("Arial", 11, "bold"),
+                relief="raised", bd=2, activebackground="#4a3f5d",
+                width=15).pack(side="left", padx=5)
         
-        tk.Button(botoes_criar_frame, text="Duplicar", command=self.duplicar_sessao_selecionada,
-                bg="#2a1f3d", fg="white", font=("Arial", 10)).pack(side="left", padx=2)
+        tk.Button(controles2_frame, text="💾 Salvar Atual", command=self.salvar_sessao_atual,
+                bg="#1a5f2a", fg="white", font=("Arial", 11, "bold"),
+                relief="raised", bd=2, activebackground="#2a7f3a",
+                width=15).pack(side="left", padx=5)
         
-        # === INFORMAÇÕES DA SESSÃO ATUAL ===
-        info_frame = tk.Frame(self, bg="black")
-        info_frame.place(x=550, y=250, width=500, height=300)
+        tk.Button(controles2_frame, text="✏️ Renomear", command=self.renomear_sessao_selecionada,
+                bg="#2a1f3d", fg="white", font=("Arial", 11, "bold"),
+                relief="raised", bd=2, activebackground="#4a3f5d",
+                width=15).pack(side="left", padx=5)
         
-        tk.Label(info_frame, text="Sessão Atual", font=("Arial", 14, "bold"), fg="white", bg="black").pack(pady=5)
-        
-        self.info_sessao_label = tk.Label(info_frame, text="Nenhuma sessão carregada", 
-                                         font=("Arial", 12), fg="white", bg="black", justify="left")
-        self.info_sessao_label.pack(fill="both", expand=True, padx=10, pady=5)
-        
-        # === INFORMAÇÕES DO APLICATIVO ===
-        sobre_frame = tk.Frame(self, bg="black")
-        sobre_frame.place(x=1100, y=250, width=500, height=300)
+        # === INFORMAÇÕES DO APLICATIVO (LADO DIREITO E AUMENTADA) ===
+        sobre_frame = tk.Frame(self, bg="#1a0869", relief="raised", bd=3)
+        sobre_frame.place(x=950, y=220, width=500, height=550)
 
-        sobre_o_app = """
-Versão 1.4.0
+        # Título da seção sobre
+        sobre_title_bg = tk.Frame(sobre_frame, bg="#2a1f3d", height=50)
+        sobre_title_bg.pack(fill="x")
+        tk.Label(sobre_title_bg, text="ℹ️ Sobre o Aplicativo", 
+                font=("Arial", 18, "bold"), fg="#ffffff", bg="#2a1f3d").pack(pady=12)
 
-Feito por Lucas Henrique Gonzaga Santos
+        # Conteúdo sobre
+        sobre_content = tk.Frame(sobre_frame, bg="#1a0869")
+        sobre_content.pack(fill="both", expand=True, padx=20, pady=15)
 
-Linguagem de programação usada: Python
+        sobre_o_app = """🎯 Versão 1.4.0
 
-Biblioteca de interface usada: Tkinter
+👨‍💻 Desenvolvido por:
+    Lucas Henrique Gonzaga Santos
 
-Programa usado: Visual Studio Code """
+🐍 Linguagem:
+    Python
 
-        sobre_label = tk.Label(sobre_frame, text=sobre_o_app, font=("Arial", 14), fg="white", bg="black", justify="left")
-        sobre_label.pack(fill="both", expand=True, padx=10, pady=10)
+🖼️ Interface:
+    Tkinter
 
-        btn_sair = tk.Button(text="Shutdown", width=15, height=2, font=("Arial", 30, "bold"), fg="white", bg="#1a0869", command=controller.quit)
-        btn_sair.place(width=300,height=100, x=650, y=800)
+💻 Editor:
+    Visual Studio Code
+
+🎮 Sistema de combate tático
+    para RPGs de mesa"""
+
+        sobre_label = tk.Label(sobre_content, text=sobre_o_app, 
+                             font=("Arial", 13), fg="white", bg="#1a0869", 
+                             justify="left", anchor="nw")
+        sobre_label.pack(fill="both", expand=True)
+
+        # Botão de shutdown reduzido
+        shutdown_frame = tk.Frame(self, bg="#130f26")
+        shutdown_frame.place(x=700, y=810, width=200, height=70)
+        
+        btn_sair = tk.Button(shutdown_frame, text="🔴 SHUTDOWN", 
+                           font=("Arial", 18, "bold"), fg="white", bg="#8b1538",
+                           command=controller.quit, relief="raised", bd=4,
+                           activebackground="#a61e42", activeforeground="white")
+        btn_sair.pack(fill="both", expand=True)
         
         # Carrega a lista de sessões na inicialização
         self.atualizar_lista_sessoes()
-        self.atualizar_info_sessao_atual()
 
     def atualizar_lista_sessoes(self):
         """Atualiza a listbox com as sessões disponíveis"""
         try:
-            from Dados import listar_sessoes_disponiveis
             self.sessoes_listbox.delete(0, tk.END)
             
-            sessoes = listar_sessoes_disponiveis()
+            # Importa a função correta do módulo D
+            from Dados import listar_sessoes
+            sessoes = listar_sessoes()
+            
             for sessao in sessoes:
-                # Formato: "Nome - DD/MM/YYYY HH:MM"
-                item = f"{sessao['nome']} - {sessao['data_formatada']}"
+                # Formato: "Nome - Data Atualização (X personagens em Y grupos)"
+                status_icon = "🔄" if sessao.get('modificada', False) else "✨"
+                item = f"{status_icon} {sessao['nome']} - ({sessao['total_personagens']} chars em {sessao['total_grupos']} grupos)"
                 self.sessoes_listbox.insert(tk.END, item)
+                
         except Exception as e:
             tk.messagebox.showerror("Erro", f"Erro ao carregar lista de sessões: {e}")
 
@@ -148,16 +198,19 @@ Programa usado: Visual Studio Code """
                 tk.messagebox.showwarning("Aviso", "Selecione uma sessão para carregar.")
                 return
             
-            # Pega o nome da sessão (antes do " - ")
+            # Extrai o nome da sessão (após o emoji e antes do " - ")
             item_text = self.sessoes_listbox.get(selection[0])
-            nome_sessao = item_text.split(" - ")[0]
+            # Remove emoji e pega o nome até o primeiro " - "
+            nome_sessao = item_text.split(" ", 1)[1].split(" - ")[0]
             
-            from Dados import carregar_sessao_do_supabase
-            if carregar_sessao_do_supabase(nome_sessao):
+            # Importa a função correta do módulo D
+            from Dados import carregar_sessao
+            
+            if carregar_sessao(nome_sessao):
                 tk.messagebox.showinfo("Sucesso", f"Sessão '{nome_sessao}' carregada com sucesso!")
-                self.atualizar_info_sessao_atual()
             else:
                 tk.messagebox.showerror("Erro", f"Erro ao carregar sessão '{nome_sessao}'")
+                
         except Exception as e:
             tk.messagebox.showerror("Erro", f"Erro ao carregar sessão: {e}")
 
@@ -169,27 +222,39 @@ Programa usado: Visual Studio Code """
                 tk.messagebox.showwarning("Aviso", "Selecione uma sessão para deletar.")
                 return
             
+            # Extrai o nome da sessão
             item_text = self.sessoes_listbox.get(selection[0])
-            nome_sessao = item_text.split(" - ")[0]
+            nome_sessao = item_text.split(" ", 1)[1].split(" - ")[0]
             
             # Confirma a exclusão
-            if tk.messagebox.askyesno("Confirmar", f"Deletar sessão '{nome_sessao}'?"):
-                from Dados import deletar_sessao_do_supabase
-                if deletar_sessao_do_supabase(nome_sessao):
-                    tk.messagebox.showinfo("Sucesso", f"Sessão '{nome_sessao}' deletada!")
+            if tk.messagebox.askyesno("Confirmar Exclusão", 
+                                    f"Tem certeza que deseja deletar a sessão '{nome_sessao}'?\n\nEsta ação não pode ser desfeita."):
+                # Importa a função correta do módulo D
+                from Dados import deletar_sessao
+                
+                if deletar_sessao(nome_sessao):
+                    tk.messagebox.showinfo("Sucesso", f"Sessão '{nome_sessao}' deletada com sucesso!")
                     self.atualizar_lista_sessoes()
                 else:
                     tk.messagebox.showerror("Erro", f"Erro ao deletar sessão '{nome_sessao}'")
+                    
         except Exception as e:
             tk.messagebox.showerror("Erro", f"Erro ao deletar sessão: {e}")
 
     def criar_nova_sessao(self):
         """Cria uma nova sessão vazia"""
         try:
-            from Dados import criar_nova_sessao
-            criar_nova_sessao()
-            tk.messagebox.showinfo("Sucesso", "Nova sessão criada (dados limpos)!")
-            self.atualizar_info_sessao_atual()
+            # Importa a função correta do módulo D
+            from Dados import limpar_sessao_atual
+            
+            # Confirma se o usuário quer limpar a sessão atual
+            if tk.messagebox.askyesno("Confirmar Nova Sessão", 
+                                    "Criar uma nova sessão irá limpar todos os dados atuais.\n\nDeseja continuar?"):
+                limpar_sessao_atual()
+                tk.messagebox.showinfo("Sucesso", "Nova sessão criada! Todos os dados foram limpos da memória.")
+                # Atualiza outras telas se necessário
+                self.controller.atualizar_todas_telas()
+                
         except Exception as e:
             tk.messagebox.showerror("Erro", f"Erro ao criar nova sessão: {e}")
 
@@ -201,73 +266,128 @@ Programa usado: Visual Studio Code """
                 tk.messagebox.showwarning("Aviso", "Digite um nome para a sessão.")
                 return
             
-            from Dados import salvar_sessao_no_supabase, verificar_sessao_existe
+            # Importa as funções corretas do módulo D
+            from Dados import salvar_sessao, listar_sessoes
             
-            # Verifica se já existe
-            if verificar_sessao_existe(nome_sessao):
-                if tk.messagebox.askyesno("Confirmar", f"Sessão '{nome_sessao}' já existe. Sobrescrever?"):
-                    if salvar_sessao_no_supabase(nome_sessao, sobrescrever=True):
-                        tk.messagebox.showinfo("Sucesso", f"Sessão '{nome_sessao}' atualizada!")
+            # Verifica se já existe uma sessão com esse nome
+            sessoes_existentes = listar_sessoes()
+            sessao_existe = any(s['nome'] == nome_sessao for s in sessoes_existentes)
+            
+            if sessao_existe:
+                if tk.messagebox.askyesno("Confirmar Sobrescrita", 
+                                        f"A sessão '{nome_sessao}' já existe.\n\nDeseja sobrescrever?"):
+                    if salvar_sessao(nome_sessao, sobrescrever=True):
+                        tk.messagebox.showinfo("Sucesso", f"Sessão '{nome_sessao}' atualizada com sucesso!")
                         self.atualizar_lista_sessoes()
                         self.nome_sessao_entry.delete(0, tk.END)
                     else:
-                        tk.messagebox.showerror("Erro", f"Erro ao salvar sessão '{nome_sessao}'")
+                        tk.messagebox.showerror("Erro", f"Erro ao atualizar sessão '{nome_sessao}'")
             else:
-                if salvar_sessao_no_supabase(nome_sessao):
-                    tk.messagebox.showinfo("Sucesso", f"Sessão '{nome_sessao}' salva!")
+                if salvar_sessao(nome_sessao):
+                    tk.messagebox.showinfo("Sucesso", f"Sessão '{nome_sessao}' salva com sucesso!")
                     self.atualizar_lista_sessoes()
                     self.nome_sessao_entry.delete(0, tk.END)
                 else:
                     tk.messagebox.showerror("Erro", f"Erro ao salvar sessão '{nome_sessao}'")
+                    
         except Exception as e:
             tk.messagebox.showerror("Erro", f"Erro ao salvar sessão: {e}")
 
-    def duplicar_sessao_selecionada(self):
-        """Duplica a sessão selecionada"""
+    def renomear_sessao_selecionada(self):
+        """Renomeia a sessão selecionada"""
         try:
             selection = self.sessoes_listbox.curselection()
             if not selection:
-                tk.messagebox.showwarning("Aviso", "Selecione uma sessão para duplicar.")
+                tk.messagebox.showwarning("Aviso", "Selecione uma sessão para renomear.")
                 return
             
             nome_novo = self.nome_sessao_entry.get().strip()
             if not nome_novo:
-                tk.messagebox.showwarning("Aviso", "Digite um nome para a nova sessão.")
+                tk.messagebox.showwarning("Aviso", "Digite o novo nome para a sessão.")
                 return
             
+            # Extrai o nome atual da sessão
             item_text = self.sessoes_listbox.get(selection[0])
-            nome_origem = item_text.split(" - ")[0]
+            nome_antigo = item_text.split(" ", 1)[1].split(" - ")[0]
             
-            from Dados import duplicar_sessao
-            if duplicar_sessao(nome_origem, nome_novo):
-                tk.messagebox.showinfo("Sucesso", f"Sessão duplicada: '{nome_origem}' -> '{nome_novo}'")
-                self.atualizar_lista_sessoes()
-                self.nome_sessao_entry.delete(0, tk.END)
-            else:
-                tk.messagebox.showerror("Erro", f"Erro ao duplicar sessão")
-        except Exception as e:
-            tk.messagebox.showerror("Erro", f"Erro ao duplicar sessão: {e}")
-
-    def atualizar_info_sessao_atual(self):
-        """Atualiza as informações da sessão atual"""
-        try:
-            from Dados import obter_info_sessao_atual
-            info = obter_info_sessao_atual()
+            if nome_antigo == nome_novo:
+                tk.messagebox.showwarning("Aviso", "O novo nome deve ser diferente do nome atual.")
+                return
             
-            if info['total_personagens'] == 0:
-                texto = "Nenhuma sessão carregada"
-            else:
-                texto = f"Grupos: {info['total_grupos']}\n"
-                texto += f"Personagens: {info['total_personagens']}\n\n"
+            # Confirma a renomeação
+            if tk.messagebox.askyesno("Confirmar Renomeação", 
+                                    f"Renomear sessão de:\n'{nome_antigo}'\npara:\n'{nome_novo}'?"):
+                # Importa a função correta do módulo D
+                from Dados import clonar_sessao, deletar_sessao
                 
-                for nome_grupo, grupo_info in info['grupos'].items():
-                    texto += f"• {nome_grupo}: {grupo_info['quantidade']} personagens\n"
-                    for nome in grupo_info['nomes']:
-                        texto += f"  - {nome}\n"
-            
-            self.info_sessao_label.config(text=texto)
+                # Como não há função renomear_sessao, usa clone + delete
+                if clonar_sessao(nome_antigo, nome_novo):
+                    if deletar_sessao(nome_antigo):
+                        tk.messagebox.showinfo("Sucesso", f"Sessão renomeada com sucesso:\n'{nome_antigo}' → '{nome_novo}'")
+                        self.atualizar_lista_sessoes()
+                        self.nome_sessao_entry.delete(0, tk.END)
+                    else:
+                        tk.messagebox.showerror("Erro", "Sessão clonada, mas erro ao deletar a original.")
+                        self.atualizar_lista_sessoes()
+                else:
+                    tk.messagebox.showerror("Erro", f"Erro ao renomear sessão. Verifique se o novo nome já existe.")
+                    
         except Exception as e:
-            self.info_sessao_label.config(text=f"Erro ao carregar informações: {e}")
+            tk.messagebox.showerror("Erro", f"Erro ao renomear sessão: {e}")
+
+    def validar_sessao_selecionada(self):
+        """Valida a sessão selecionada"""
+        try:
+            selection = self.sessoes_listbox.curselection()
+            if not selection:
+                tk.messagebox.showwarning("Aviso", "Selecione uma sessão para validar.")
+                return
+            
+            # Extrai o nome da sessão
+            item_text = self.sessoes_listbox.get(selection[0])
+            nome_sessao = item_text.split(" ", 1)[1].split(" - ")[0]
+            
+            # Importa a função de validação
+            from Dados import validar_sessao
+            
+            valida, resultado = validar_sessao(nome_sessao)
+            
+            if valida:
+                tk.messagebox.showinfo("Validação", f"✅ Sessão '{nome_sessao}' válida!\n\n{resultado}")
+            else:
+                tk.messagebox.showerror("Validação", f"❌ Problemas na sessão '{nome_sessao}':\n\n{resultado}")
+                
+        except Exception as e:
+            tk.messagebox.showerror("Erro", f"Erro ao validar sessão: {e}")
+
+    def mostrar_status_sessao_atual(self):
+        """Mostra o status da sessão atual carregada na memória"""
+        try:
+            from Dados import GruposDePersonagens, KitsDisponíveis
+            
+            if not GruposDePersonagens:
+                tk.messagebox.showinfo("Status da Sessão", "📭 Nenhuma sessão carregada na memória")
+                return
+            
+            # Calcula estatísticas
+            total_personagens = 0
+            detalhes_grupos = []
+            
+            for grupo, lista in GruposDePersonagens.items():
+                total_personagens += len(lista)
+                detalhes_grupos.append(f"👥 {grupo}: {len(lista)} personagens")
+            
+            status_text = f"📊 SESSÃO ATUAL CARREGADA:\n\n"
+            status_text += "\n".join(detalhes_grupos)
+            status_text += f"\n\n📈 Total: {total_personagens} personagens em {len(GruposDePersonagens)} grupos"
+            
+            if KitsDisponíveis:
+                status_text += f"\n📦 {len(KitsDisponíveis)} kits disponíveis"
+            
+            tk.messagebox.showinfo("Status da Sessão", status_text)
+            
+        except Exception as e:
+            tk.messagebox.showerror("Erro", f"Erro ao verificar status da sessão: {e}")
 
     def TelaDeSelecao(self):
         self.controller.TelaDeSelecao()
@@ -276,8 +396,7 @@ Programa usado: Visual Studio Code """
         self.controller.TelaDeCombate()
 
     def TelaDeRegrasEItens(self):
-        self.controller.TelaDeRegrasEItens()
-### TELA PRINCIPAL ###
+        self.controller.TelaDeRegrasEItens()### TELA PRINCIPAL ###
 ### TELA PRINCIPAL ###
 ### TELA PRINCIPAL ###
 
@@ -301,61 +420,46 @@ class CharacterSelectScreen(tk.Frame):
         
         self.config(bg='#130f26')
 
-        # --- Navegação ---
-        tk.Button(self, text="Tela inicial", height=2, command=self.Voltar,
-                bg="#1a0869", fg="white", font=("Arial", 20)).place(x=20, y=10, width=350, height=75)
+        tk.Button(self, text="Tela inicial", height=2, command=self.TelaInicial, bg="#1a0869", fg="white", font=("Arial", 20)).place(x=20, y=10, width=350, height=75)
+        
+        tk.Label(self, text="Seleção", fg="white", bg="#1a0869", font=("Arial", 20, "bold"), width=20, height=2).place(x=385, y=10, width=350, height=75)
 
-        tk.Label(self, text="Seleção", fg="white", bg="#1a0869",
-                font=("Arial", 20, "bold"), width=20, height=2).place(x=385, y=10, width=350, height=75)
+        tk.Button(self, text="Combate", height=2, command=self.TelaDeCombate, bg="#1a0869", fg="white", font=("Arial", 20)).place(x=870, y=10, width=350, height=75)
 
-        tk.Button(self, text="Combate", height=2, command=self.TelaDeCombate,
-                bg="#1a0869", fg="white", font=("Arial", 20)).place(x=870, y=10, width=350, height=75)
+        tk.Button(self, text="Informações", height=2, command=self.TelaDeRegrasEItens, bg="#1a0869", fg="white", font=("Arial", 20)).place(x=1235, y=10, width=350, height=75)
 
-        tk.Button(self, text="Informações", height=2, command=self.TelaDeRegrasEItens,
-                bg="#1a0869", fg="white", font=("Arial", 20)).place(x=1235, y=10, width=350, height=75)
-
-        ### --- Grupos --- ###
-        # --- Gerenciamento de Grupos (coluna 1) ---
+        ### --- Grupos (coluna 1) --- ###
+        # --- Gerenciamento de Grupos ---
         self.group_management_frame = tk.Frame(self, bg='#1a0869')
-        self.group_management_frame.place(x=20, y=120, width=350, height=80)
+        self.group_management_frame.place(x=20, y=120, width=450, height=80)
         self.create_group_management(self.group_management_frame)
 
-        # --- Lista de Grupos (coluna 1) ---
+        # --- Lista de Grupos ---
         self.group_list_frame = tk.Frame(self, bg='#1a0869')
-        self.group_list_frame.place(x=20, y=210, width=350, height=470)
+        self.group_list_frame.place(x=20, y=210, width=450, height=470) 
         self.create_group_list_section(self.group_list_frame)
-        ### --- Grupos --- ###
 
-        ### --- Personagens --- ###
-        # --- Gerenciamento de Personagens (coluna 2) ---
+        ### --- Personagens (coluna 2) --- ###
+        # --- Gerenciamento de Personagens ---
         self.char_management_frame = tk.Frame(self, bg='#1a0869')
-        self.char_management_frame.place(x=420, y=120, width=350, height=80)
+        self.char_management_frame.place(x=490, y=120, width=450, height=80)
         self.create_char_management(self.char_management_frame)
 
-        # --- Lista de Personagens (coluna 2) ---
+        # --- Lista de Personagens ---
         self.char_list_frame = tk.Frame(self, bg='#1a0869')
-        self.char_list_frame.place(x=420, y=210, width=350, height=470)
+        self.char_list_frame.place(x=490, y=210, width=450, height=470)
         self.create_list_section(self.char_list_frame)
 
-        # --- Gerenciamento de Kits (coluna 3) ---
+        ### --- Kits (coluna 3) --- ###
+        # --- Gerenciamento de Kits ---
         self.kit_management_frame = tk.Frame(self, bg='#1a0869')
-        self.kit_management_frame.place(x=820, y=120, width=350, height=80)
+        self.kit_management_frame.place(x=960, y=120, width=450, height=80)
         self.create_kit_management(self.kit_management_frame)
 
-        # --- Lista de Kits (coluna 3) ---
+        # --- Lista de Kits ---
         self.kit_list_frame = tk.Frame(self, bg='#1a0869')
-        self.kit_list_frame.place(x=820, y=210, width=350, height=470)
+        self.kit_list_frame.place(x=960, y=210, width=450, height=470)
         self.create_kit_list_section(self.kit_list_frame)
-
-        # --- Gerenciamento de Items (coluna 4) ---
-        self.item_management_frame = tk.Frame(self, bg='#1a0869')
-        self.item_management_frame.place(x=1220, y=120, width=350, height=80)
-
-        self.create_item_management(self.item_management_frame)
-
-        # --- Lista de Items (coluna 4) ---
-        self.item_list_frame = tk.Frame(self, bg='#1a0869')
-        self.item_list_frame.place(x=1220, y=210, width=350, height=470)
 
 ### --- Grupos --- ###
     def clear_placeholder(self, event):
@@ -373,13 +477,13 @@ class CharacterSelectScreen(tk.Frame):
             widget.destroy()
 
         # Título
-        title_label = tk.Label(frame, text="Gerenciar Grupos", fg="white", bg="#1a0869", 
+        title_label = tk.Label(frame, text="Grupo de personagens", fg="white", bg="#1a0869", 
                             font=("Arial", 16, "bold"))
         title_label.place(x=10, y=5)
 
         # Frame para criação de novo grupo
         create_frame = tk.Frame(frame, bg='#1a0869')
-        create_frame.place(x=10, y=35, width=330, height=35)
+        create_frame.place(x=10, y=45, width=350, height=35)
 
         # Entry para nome do novo grupo
         self.new_group_entry = tk.Entry(create_frame, font=("Arial", 11), bg="white", fg="black")
@@ -389,8 +493,7 @@ class CharacterSelectScreen(tk.Frame):
         self.new_group_entry.bind("<FocusOut>", self.restore_placeholder)
 
         # Botão de criar grupo
-        create_group_btn = tk.Button(create_frame, text="Criar", bg="#006400", fg="white", 
-                                    font=("Arial", 10, "bold"), command=self.create_new_group)
+        create_group_btn = tk.Button(create_frame, text="Criar", bg="#006400", fg="white", font=("Arial", 10, "bold"), command=self.create_new_group)
         create_group_btn.pack(side="right", padx=2)
 
     def create_group_list_section(self, frame):
@@ -401,7 +504,7 @@ class CharacterSelectScreen(tk.Frame):
         label.place(x=10, y=10)
 
         canvas_frame = tk.Frame(frame, bg='#1a0869')
-        canvas_frame.place(x=10, y=40, width=330, height=420)
+        canvas_frame.place(x=10, y=40, width=430, height=420)
 
         canvas = tk.Canvas(canvas_frame, bg="#1a0869", highlightthickness=0)
         scrollbar = tk.Scrollbar(canvas_frame, orient="vertical", command=canvas.yview)
@@ -423,80 +526,20 @@ class CharacterSelectScreen(tk.Frame):
         else:
             for grupo in grupos:
                 grupo_frame = tk.Frame(inner_frame, bg="#1a0869", height=60)
-                grupo_frame.pack(fill="x", pady=2)
+                grupo_frame.pack(fill="x", pady=2, padx=5)  # Adicionado padx para espaçamento
 
                 # Contar personagens no grupo
                 num_personagens = len(D.GruposDePersonagens.get(grupo, []))
                 
                 grupo_button = tk.Button(grupo_frame,
                     text=f"{grupo} ({num_personagens} personagens)",
-                    bg="#1a0869", fg="white", font=("Arial", 12), anchor="w", justify="left", wraplength=240,
-                    command=lambda g=grupo: self.select_group(g), width=28)
-                grupo_button.pack(side="left", fill="x", expand=True, padx=(0, 5), ipady=5)
+                    bg="#1a0869", fg="white", font=("Arial", 12), anchor="w", justify="left", wraplength=300,
+                    command=lambda g=grupo: self.select_group(g), width=35)  # Aumentado width
+                grupo_button.pack(side="left", fill="x", expand=True, padx=(0, 5), ipady=8)  # Aumentado ipady
 
                 remove_button = tk.Button(grupo_frame, text="X", bg="red", fg="white", font=("Arial", 12, "bold"),
-                    command=lambda g=grupo: self.delete_group(g))
-                remove_button.pack(side="right", padx=5, ipady=5)
-
-    def create_list_section(self, frame):
-        for widget in frame.winfo_children():
-            widget.destroy()
-
-        # Mostrar grupo selecionado
-        grupo_atual = self.group_var.get()
-        label = tk.Label(frame, text=f"Personagens - {grupo_atual}", fg="white", bg="#1a0869", font=("Arial", 16, "bold"))
-        label.place(x=10, y=10)
-
-        canvas_frame = tk.Frame(frame, bg='#1a0869')
-        canvas_frame.place(x=10, y=40, width=330, height=420)
-
-        canvas = tk.Canvas(canvas_frame, bg="#1a0869", highlightthickness=0)
-        scrollbar = tk.Scrollbar(canvas_frame, orient="vertical", command=canvas.yview)
-        canvas.configure(yscrollcommand=scrollbar.set)
-
-        scrollbar.pack(side="right", fill="y")
-        canvas.pack(side="left", fill="both", expand=True)
-
-        inner_frame = tk.Frame(canvas, bg="#1a0869")
-        canvas.create_window((0, 0), window=inner_frame, anchor='nw')
-        inner_frame.bind("<Configure>", lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
-
-        grupo = self.group_var.get()
-        # Buscar no D.GruposDePersonagens
-        personagens = D.GruposDePersonagens.get(grupo, [])
-        
-        if grupo == "Sem grupos":
-            empty_label = tk.Label(inner_frame, text="Selecione um grupo para ver os personagens", 
-                                fg="gray", bg="#1a0869", font=("Arial", 12, "italic"))
-            empty_label.pack(pady=20)
-        else:
-            # Mostrar personagens existentes
-            for char in personagens:
-                if isinstance(char, CB.Personagem):
-                    char_frame = tk.Frame(inner_frame, bg="#1a0869", height=60)
-                    char_frame.pack(fill="x", pady=2)
-
-                    char_button = tk.Button(char_frame,
-                        text=f"{char.nome} - Nível {char.nivel} - XP:{char.XPAtual}/{char.XPlvlUp} - HP:{char.vidaAtual}/{char.vidaMax}",
-                        bg="#1a0869", fg="white", font=("Arial", 12), anchor="w", justify="left", wraplength=240,
-                        command=lambda c=char: self.controller.abrir_detalhes(c), width=28)
-                    char_button.pack(side="left", fill="x", expand=True, padx=(0, 5), ipady=5)
-
-                    remove_button = tk.Button(char_frame, text="X", bg="red", fg="white", font=("Arial", 12, "bold"),
-                        command=lambda c=char: self.remove_specific_character(c))
-                    remove_button.pack(side="right", padx=5, ipady=5)
-
-            # Adicionar caixa com botões de adicionar/gerar no final
-            add_frame = tk.Frame(inner_frame, bg="#2a2647", relief="solid", bd=1, height=60)
-            add_frame.pack(fill="x", pady=10)
-
-            add_char_btn = tk.Button(add_frame, text="Adicionar\nPersonagem", bg="#006400", fg="white", 
-                                    font=("Arial", 10, "bold"), command=self.add_character_to_current_group)
-            add_char_btn.pack(side="left", padx=10, pady=10)
-
-            generate_char_btn = tk.Button(add_frame, text="Gerar\nPersonagem", bg="#0b4f8f", fg="white", 
-                                        font=("Arial", 10, "bold"), command=self.gerar_NPC_to_current_group)
-            generate_char_btn.pack(side="right", padx=10, pady=10)
+                    command=lambda g=grupo: self.delete_group(g), width=3)  # Definido width
+                remove_button.pack(side="right", padx=5, ipady=8)  # Aumentado ipady
 
     def select_group(self, group_name):
         """Seleciona um grupo e atualiza a interface"""
@@ -546,23 +589,115 @@ class CharacterSelectScreen(tk.Frame):
 
 ### --- Personagens --- ###
     def create_char_management(self, frame):
-            for widget in frame.winfo_children():
-                widget.destroy()
+        for widget in frame.winfo_children():
+            widget.destroy()
 
-            # Título
-            title_label = tk.Label(frame, text="Gerenciar Personagens", fg="white", bg="#1a0869", 
-                                font=("Arial", 16, "bold"))
-            title_label.place(x=10, y=5)
+        # Título
+        title_label = tk.Label(frame, text="Personagens", fg="white", bg="#1a0869",font=("Arial", 16, "bold"))
+        title_label.place(x=10, y=5)
 
-            # Botão de gerar vários
-            gerar_varios_btn = tk.Button(frame, text="Gerar vários", bg="#1a0869", fg="white", 
-                                        font=("Arial", 12, "bold"), command=self.gerar_grupo_NPCs_to_current_group)
-            gerar_varios_btn.place(x=10, y=35, width=100, height=30)
+        # Botão de limpar grupo
+        limpar_btn = tk.Button(frame, text="Excluir todos", bg="#8B0000", fg="white", font=("Arial", 12, "bold"), command=self.limpar_grupo_atual)
+        limpar_btn.place(x=10, y=45, width=150, height=30)
 
-            # Botão de dar kits
-            dar_kits_btn = tk.Button(frame, text="Dar kits", bg="#8B4513", fg="white", 
-                                    font=("Arial", 12, "bold"), command=self.dar_kits_to_current_group)
-            dar_kits_btn.place(x=120, y=35, width=100, height=30)
+    def create_list_section(self, frame):
+        for widget in frame.winfo_children():
+            widget.destroy()
+
+        # Mostrar grupo selecionado
+        grupo_atual = self.group_var.get()
+        label = tk.Label(frame, text=f"Grupo: {grupo_atual}", fg="white", bg="#1a0869", font=("Arial", 16, "bold"))
+        label.place(x=10, y=10)
+
+        canvas_frame = tk.Frame(frame, bg='#1a0869')
+        canvas_frame.place(x=10, y=40, width=430, height=420)
+
+        canvas = tk.Canvas(canvas_frame, bg="#1a0869", highlightthickness=0)
+        scrollbar = tk.Scrollbar(canvas_frame, orient="vertical", command=canvas.yview)
+        canvas.configure(yscrollcommand=scrollbar.set)
+
+        scrollbar.pack(side="right", fill="y")
+        canvas.pack(side="left", fill="both", expand=True)
+
+        inner_frame = tk.Frame(canvas, bg="#1a0869")
+        canvas.create_window((0, 0), window=inner_frame, anchor='nw')
+        inner_frame.bind("<Configure>", lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
+
+        grupo = self.group_var.get()
+        # Buscar no D.GruposDePersonagens
+        personagens = D.GruposDePersonagens.get(grupo, [])
+        
+        if grupo == "Sem grupos":
+            empty_label = tk.Label(inner_frame, text="Selecione um grupo para ver os personagens", 
+                                fg="gray", bg="#1a0869", font=("Arial", 12, "italic"))
+            empty_label.pack(pady=20)
+        else:
+            # Mostrar personagens existentes
+            for char in personagens:
+                if isinstance(char, CB.Personagem):
+                    char_frame = tk.Frame(inner_frame, bg="#1a0869", height=60)
+                    char_frame.pack(fill="x", pady=2, padx=5)  # Adicionado padx
+
+                    char_button = tk.Button(char_frame,
+                        text=f"{char.nome} - Nível {char.nivel} - XP:{char.XPAtual}/{char.XPlvlUp} - HP:{char.vidaAtual}/{char.vidaMax}",
+                        bg="#1a0869", fg="white", font=("Arial", 12), anchor="w", justify="left", wraplength=300,
+                        command=lambda c=char: self.controller.abrir_detalhes(c), width=35)  # Aumentado width
+                    char_button.pack(side="left", fill="x", expand=True, padx=(0, 5), ipady=8)  # Aumentado ipady
+
+                    remove_button = tk.Button(char_frame, text="X", bg="red", fg="white", font=("Arial", 12, "bold"),
+                        command=lambda c=char: self.remove_specific_character(c), width=3)  # Definido width
+                    remove_button.pack(side="right", padx=5, ipady=8)  # Aumentado ipady
+
+            # Adicionar caixa com botões de adicionar/gerar no final (melhorada)
+            add_frame = tk.Frame(inner_frame, bg="#2a2647", relief="solid", bd=1, height=80)  # Aumentado height
+            add_frame.pack(fill="x", pady=10, padx=5)
+
+            # Botão Adicionar Personagem
+            add_char_btn = tk.Button(add_frame, text="Adicionar\nPersonagem", bg="#006400", fg="white", 
+                                    font=("Arial", 10, "bold"), command=self.add_character_to_current_group,
+                                    width=12, height=2)  # Definido width e height
+            add_char_btn.pack(side="left", padx=15, pady=15)
+
+            # Botão Gerar Vários (NOVO)
+            generate_multiple_btn = tk.Button(add_frame, text="Gerar\nVários", bg="#8B4513", fg="white", 
+                                            font=("Arial", 10, "bold"), command=self.gerar_varios_personagens,
+                                            width=12, height=2)  # Definido width e height
+            generate_multiple_btn.pack(side="left", padx=15, pady=15)
+
+            # Botão Gerar Personagem
+            generate_char_btn = tk.Button(add_frame, text="Gerar\nPersonagem", bg="#0b4f8f", fg="white", 
+                                        font=("Arial", 10, "bold"), command=self.gerar_NPC_to_current_group,
+                                        width=12, height=2)  # Definido width e height
+            generate_char_btn.pack(side="right", padx=15, pady=15)
+
+    def gerar_varios_personagens(self):
+        """Função placeholder para gerar vários personagens - sem funcionalidade ainda"""
+        messagebox.showinfo("Em desenvolvimento", "Funcionalidade 'Gerar Vários' ainda não implementada.")
+
+    def limpar_grupo_atual(self):
+        """Limpa todos os personagens do grupo selecionado"""
+        current_group = self.group_var.get()
+        
+        if current_group and current_group != "Sem grupos":
+            # Verificar se o grupo tem personagens
+            personagens = D.GruposDePersonagens.get(current_group, [])
+            
+            if not personagens:
+                messagebox.showinfo("Aviso", f"O grupo '{current_group}' já está vazio.")
+                return
+            
+            # Confirmar a ação
+            if messagebox.askyesno("Confirmar", 
+                                 f"Tem certeza que deseja limpar todos os personagens do grupo '{current_group}'?\n\n"
+                                 f"Esta ação irá remover {len(personagens)} personagem(s) e não pode ser desfeita!"):
+                # Limpar o grupo
+                D.GruposDePersonagens[current_group] = []
+                
+                # Atualizar a interface
+                self.create_list_section(self.char_list_frame)
+                messagebox.showinfo("Sucesso", f"Grupo '{current_group}' limpo com sucesso!")
+        else:
+            messagebox.showwarning("Aviso", "Selecione um grupo primeiro.")
 
     def add_character_to_current_group(self):
         current_group = self.group_var.get()
@@ -580,19 +715,11 @@ class CharacterSelectScreen(tk.Frame):
         else:
             messagebox.showwarning("Aviso", "Selecione ou crie um grupo primeiro.")
 
-    def gerar_grupo_NPCs_to_current_group(self):
-        current_group = self.group_var.get()
-        if current_group and current_group != "Sem grupos":
-            # Passar o grupo atual diretamente para a função
-            self.gerar_grupo_NPCs_with_group(current_group)
-        else:
-            messagebox.showwarning("Aviso", "Selecione ou crie um grupo primeiro.")
-
     def add_character_with_group(self, target_group):
         """Adiciona personagem diretamente ao grupo especificado sem mostrar seleção de grupo"""
         popup = tk.Toplevel(self)
         popup.title("Criar Novo Personagem")
-        popup.geometry("400x500")
+        popup.geometry("400x600")
         popup.config(bg="#130f26")
 
         # Mostrar grupo de destino (apenas informativo)
@@ -619,8 +746,17 @@ class CharacterSelectScreen(tk.Frame):
                 Presenca = int(entradas["Presença"].get())
                 Tatica = int(entradas["Tática"].get())
 
-                # Cria o personagem com as proficiências padrão
-                novo_personagem = CB.Personagem(nome, nivel, Forca, Agilidade, Vigor, Inteligencia, Presenca, Tatica, proficiencias_base=D.Proficiencias)
+                # Cria o personagem com as proficiências padrão usando a nova função
+                proficiencias_dados = D.carregar_proficiencias()
+                proficiencias_objetos = {}
+                for nome_prof, dados_prof in proficiencias_dados.items():
+                    proficiencias_objetos[nome_prof] = CB.Proficiencia(
+                        nome_prof, 
+                        dados_prof["atributo"], 
+                        nivel=0  # Nível inicial 0 para todas as proficiências
+                    )
+                
+                novo_personagem = CB.Personagem(nome, nivel, Forca, Agilidade, Vigor, Inteligencia, Presenca, Tatica, proficiencias_base=proficiencias_objetos)
 
                 # Adicionar ao grupo especificado
                 if target_group in D.GruposDePersonagens:
@@ -635,12 +771,10 @@ class CharacterSelectScreen(tk.Frame):
 
     def gerar_NPC_with_group(self, target_group):
         """Gera NPC diretamente no grupo especificado sem mostrar seleção de grupo"""
-        import random
-        from Dados import carregar_tipos_npcs_por_grupo, filtrar_proficiencias
 
         popup = tk.Toplevel(self)
         popup.title("Gerar NPC")
-        popup.geometry("400x300")
+        popup.geometry("400x400")
         popup.config(bg="#130f26")
 
         # Mostrar grupo de destino (apenas informativo)
@@ -649,13 +783,21 @@ class CharacterSelectScreen(tk.Frame):
 
         entradas = {}
 
-        # --- Carregar e organizar NPCs por grupo ---
-        npcs_por_grupo = carregar_tipos_npcs_por_grupo()
+        # --- Carregar NPCs usando a nova função ---
+        npcs_dados = D.carregar_npcs()
         
-        if not npcs_por_grupo:
+        if not npcs_dados:
             messagebox.showerror("Erro", "Não foi possível carregar os tipos de NPCs do banco de dados.")
             popup.destroy()
             return
+
+        # Organizar NPCs por grupo (facção)
+        npcs_por_grupo = {}
+        for classe, npc_data in npcs_dados.items():
+            grupo = npc_data.get("grupo", "Sem Grupo")
+            if grupo not in npcs_por_grupo:
+                npcs_por_grupo[grupo] = []
+            npcs_por_grupo[grupo].append(npc_data)
 
         # --- Grupo (Facção) ---
         tk.Label(popup, text="Grupo (Facção)", bg="#130f26", fg="white", font=("Arial", 12)).pack(pady=(10, 0))
@@ -693,7 +835,7 @@ class CharacterSelectScreen(tk.Frame):
         # --- Nível ---
         tk.Label(popup, text="Nível do NPC", bg="#130f26", fg="white", font=("Arial", 12)).pack(pady=(10, 0))
         nivel_entry = tk.Entry(popup, font=("Arial", 12), width=5, justify="center")
-        nivel_entry.insert(0, str(random.randint(1, 5)))
+        nivel_entry.insert(0, str(random.randint(1, 1)))
         nivel_entry.pack(pady=5)
         entradas["Nivel"] = nivel_entry
 
@@ -711,7 +853,7 @@ class CharacterSelectScreen(tk.Frame):
                 nivel = int(entradas["Nivel"].get())
                 nome = entradas["Nome"].get() or f"{classe_nome}_{random.randint(1, 50)}"
 
-                # Buscar NPC base
+                # Buscar NPC base usando a nova estrutura
                 npcs_grupo = npcs_por_grupo.get(grupo, [])
                 npc_base = next((npc for npc in npcs_grupo if npc["classe"] == classe_nome), None)
                 
@@ -722,11 +864,18 @@ class CharacterSelectScreen(tk.Frame):
                 npc = CB.NPC(grupo, npc_base["classe"], npc_base["forca"], npc_base["agilidade"],
                         npc_base["vigor"], npc_base["inteligencia"], npc_base["presenca"], npc_base["tatica"])
 
-                # Carregar proficiências
-                proficiencias = filtrar_proficiencias()
+                # Carregar proficiências usando a nova função
+                proficiencias_dados = D.carregar_proficiencias()
+                proficiencias_objetos = {}
+                for nome_prof, dados_prof in proficiencias_dados.items():
+                    proficiencias_objetos[nome_prof] = CB.Proficiencia(
+                        nome_prof, 
+                        dados_prof["atributo"], 
+                        nivel=0  # Nível inicial 0 para todas as proficiências
+                    )
                 
                 # Criar personagem
-                personagem = CB.Gerador(npc=npc, nivel=nivel, nome=nome, proficiencias_base=proficiencias)
+                personagem = CB.Gerador(npc=npc, nivel=nivel, nome=nome, proficiencias_base=proficiencias_objetos)
 
                 self.carregar_armas_e_armaduras(personagem)
                 
@@ -742,183 +891,6 @@ class CharacterSelectScreen(tk.Frame):
 
         tk.Button(popup, text="Confirmar", command=confirmar, bg="#0b8f33", fg="white",
                 font=("Arial", 12, "bold")).pack(pady=20)
-
-    def gerar_grupo_NPCs_with_group(self, target_group):
-        """Gera grupo de NPCs diretamente no grupo especificado sem mostrar seleção de grupo"""
-        import random
-
-        # Carrega dados dos NPCs
-        dados_npcs = D.ler_dados_npcs()
-        npcs_por_faccao = {}
-        for npc in dados_npcs:
-            faccao = npc["grupo"]
-            classe = npc["classe"]
-            atributos = (
-                classe,
-                npc["forca"],
-                npc["agilidade"],
-                npc["vigor"],
-                npc["inteligencia"],
-                npc["presenca"],
-                npc["tatica"]
-            )
-            if faccao not in npcs_por_faccao:
-                npcs_por_faccao[faccao] = []
-            npcs_por_faccao[faccao].append(atributos)
-
-        popup = tk.Toplevel()
-        popup.title("Gerar Grupo de NPCs")
-        popup.configure(bg="#130f26")
-        popup.geometry("500x550")
-
-        entradas = {}
-
-        # Cabeçalho com opções iniciais
-        header_frame = tk.Frame(popup, bg="#130f26")
-        header_frame.pack(pady=10)
-
-        # Mostrar grupo de destino (apenas informativo)
-        tk.Label(header_frame, text=f"Adicionando ao grupo: {target_group}", bg="#130f26", fg="white", 
-                font=("Arial", 12, "bold")).grid(row=0, column=0, columnspan=4, pady=5)
-
-        # Facção
-        tk.Label(header_frame, text="Facção:", bg="#130f26", fg="white").grid(row=1, column=0, padx=5, sticky="e")
-        faccao_var = tk.StringVar(value=list(npcs_por_faccao.keys())[0])
-        faccao_menu = ttk.Combobox(header_frame, textvariable=faccao_var, state="readonly", values=list(npcs_por_faccao.keys()), width=20)
-        faccao_menu.grid(row=1, column=1, padx=5)
-        entradas["Facção"] = faccao_var
-
-        # Quantidade
-        tk.Label(header_frame, text="Quantidade:", bg="#130f26", fg="white").grid(row=1, column=2, padx=5, sticky="e")
-        qtd_var = tk.StringVar(value="3")
-        qtd_entry = tk.Entry(header_frame, textvariable=qtd_var, width=5, justify="center")
-        qtd_entry.grid(row=1, column=3, padx=5)
-
-        # Área scrollável
-        canvas_frame = tk.Frame(popup, bg="#130f26")
-        canvas_frame.pack(fill="both", expand=True)
-
-        canvas = tk.Canvas(canvas_frame, bg="#130f26", highlightthickness=0)
-        scrollbar = tk.Scrollbar(canvas_frame, orient="vertical", command=canvas.yview)
-        scrollable_frame = tk.Frame(canvas, bg="#130f26")
-
-        scrollable_frame.bind("<Configure>", lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
-        canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
-        canvas.configure(yscrollcommand=scrollbar.set)
-
-        canvas.pack(side="left", fill="both", expand=True)
-        scrollbar.pack(side="right", fill="y")
-
-        slots = []
-
-        def gerar_slots(npcs_por_faccao=npcs_por_faccao):
-            for widget in scrollable_frame.winfo_children():
-                widget.destroy()
-            slots.clear()
-
-            faccao = faccao_var.get()
-            classes_disponiveis = [c[0] for c in npcs_por_faccao.get(faccao, [])]
-
-            try:
-                qtd = int(qtd_var.get())
-            except:
-                tk.messagebox.showerror("Erro", "Valores inválidos.")
-                return
-
-            if not classes_disponiveis:
-                tk.messagebox.showerror("Erro", f"Nenhuma classe disponível para a facção '{faccao}'.")
-                return
-
-            for i in range(qtd):
-                slot = {}
-                frame = tk.Frame(scrollable_frame, bg="#1f1b3a", bd=1, relief="solid", padx=5, pady=5)
-                frame.pack(padx=5, pady=5, fill="x")
-
-                tk.Label(frame, text=f"NPC {i+1}", bg="#1f1b3a", fg="white", font=("Arial", 10, "bold")).grid(row=0, column=0, columnspan=6, pady=(0, 5), sticky="w")
-
-                # Classe
-                tk.Label(frame, text="Classe", bg="#1f1b3a", fg="white").grid(row=1, column=0, padx=2, sticky="e")
-                classe_var = tk.StringVar(value=classes_disponiveis[0])
-                classe_menu = ttk.Combobox(frame, textvariable=classe_var, state="readonly", values=classes_disponiveis, width=20)
-                classe_menu.grid(row=1, column=1, padx=2)
-
-                # Nível
-                tk.Label(frame, text="Nível", bg="#1f1b3a", fg="white").grid(row=1, column=2, padx=2, sticky="e")
-                nivel_var = tk.StringVar(value="1")
-                nivel_entry = tk.Entry(frame, textvariable=nivel_var, width=5, justify="center")
-                nivel_entry.grid(row=1, column=3, padx=2)
-
-                # Nome (opcional)
-                tk.Label(frame, text="Nome (opcional)", bg="#1f1b3a", fg="white").grid(row=1, column=4, padx=2, sticky="e")
-                nome_var = tk.StringVar(value="")
-                nome_entry = tk.Entry(frame, textvariable=nome_var, width=15, justify="center")
-                nome_entry.grid(row=1, column=5, padx=2)
-
-                slot.update({
-                    "Classe": classe_var,
-                    "Nivel": nivel_var,
-                    "Nome": nome_var
-                })
-
-                slots.append(slot)
-
-        # Atualizar slots automaticamente ao trocar facção
-        faccao_var.trace_add("write", lambda *args: gerar_slots(npcs_por_faccao))
-
-        # Botões
-        tk.Button(popup, text="Gerar Slots", command=lambda:gerar_slots(npcs_por_faccao), font=("Arial", 11), bg="#0b4f8f", fg="white").pack(pady=(10, 10))
-        tk.Button(popup, text="Confirmar Geração", command=lambda: self.confirmar_geracao_with_group(slots, entradas, npcs_por_faccao, target_group), font=("Arial", 11), bg="#1a7837", fg="white").pack(pady=(0, 10))
-
-    def confirmar_geracao_with_group(self, slots, entradas, npcs_por_faccao, target_group):
-        """Confirma a geração de NPCs para um grupo específico"""
-        import random
-        try:
-            faccao = entradas["Facção"].get()
-
-            # Carregar os NPCs do JSON
-            npcs_disponiveis = D.carregar_npcs_json()
-
-            for i, slot in enumerate(slots):
-                classe_nome = slot["Classe"].get()
-                nivel = int(slot["Nivel"].get())
-                nome_customizado = slot["Nome"].get().strip()
-
-                # Buscar NPC correspondente pela facção e classe
-                npc_dict = next((n for n in npcs_disponiveis if n['faccao'] == faccao and n['classe'] == classe_nome), None)
-                if not npc_dict:
-                    raise ValueError(f"Classe '{classe_nome}' não encontrada na facção '{faccao}'.")
-
-                npc_base = CB.NPC(
-                    faccao=npc_dict['faccao'],
-                    classe=npc_dict['classe'],
-                    forca=int(npc_dict['forca']),
-                    agilidade=int(npc_dict['agilidade']),
-                    vigor=int(npc_dict['vigor']),
-                    inteligencia=int(npc_dict['inteligencia']),
-                    presenca=int(npc_dict['presenca']),
-                    tatica=int(npc_dict['tatica'])
-                )
-
-                # Definir nome
-                nome = nome_customizado if nome_customizado else f"{classe_nome}_{random.randint(1, 99)}"
-
-                # Criar personagem
-                personagem = CB.Gerador(npc=npc_base, kit=None, nivel=nivel, nome=nome, proficiencias_base=D.Proficiencias)
-
-                # Pós-processamento
-                self.carregar_armas_e_armaduras(personagem)
-
-                # Adicionar ao grupo especificado
-                if target_group in D.GruposDePersonagens:
-                    D.GruposDePersonagens[target_group].append(personagem)
-                else:
-                    raise ValueError(f"Grupo de destino '{target_group}' não encontrado.")
-
-            self.refresh()
-            tk.messagebox.showinfo("Sucesso", "NPCs gerados com sucesso!")
-
-        except Exception as e:
-            tk.messagebox.showerror("Erro", f"Ocorreu um erro ao gerar os NPCs:\n{e}")
 
     def remove_specific_character(self, character):
         selected_group = self.group_var.get()
@@ -934,55 +906,30 @@ class CharacterSelectScreen(tk.Frame):
 ### --- Personagens --- ###
 
 ### --- Kits --- ###
-    def clear_kit_placeholder(self, event):
-        if self.new_kit_entry.get() == "Nome do novo kit...":
-            self.new_kit_entry.delete(0, tk.END)
-            self.new_kit_entry.config(fg="black")
-
-    def restore_kit_placeholder(self, event):
-        if not self.new_kit_entry.get():
-            self.new_kit_entry.insert(0, "Nome do novo kit...")
-            self.new_kit_entry.config(fg="gray")
-
     def create_kit_management(self, frame):
         for widget in frame.winfo_children():
             widget.destroy()
 
         # Título
-        title_label = tk.Label(frame, text="Gerenciar Kits", fg="white", bg="#1a0869", 
-                            font=("Arial", 16, "bold"))
+        title_label = tk.Label(frame, text="Kits de itens", fg="white", bg="#1a0869", font=("Arial", 16, "bold"))
         title_label.place(x=10, y=5)
 
-        # Frame para criação de novo kit
-        create_frame = tk.Frame(frame, bg='#1a0869')
-        create_frame.place(x=10, y=35, width=330, height=35)
-
-        # Entry para nome do novo kit
-        self.new_kit_entry = tk.Entry(create_frame, font=("Arial", 11), bg="white", fg="black")
-        self.new_kit_entry.pack(side="left", fill="x", expand=True, padx=(0, 5))
-        self.new_kit_entry.insert(0, "Nome do novo kit...")
-        self.new_kit_entry.bind("<FocusIn>", self.clear_kit_placeholder)
-        self.new_kit_entry.bind("<FocusOut>", self.restore_kit_placeholder)
-
-        # Botão de criar kit
-        create_kit_btn = tk.Button(create_frame, text="Criar", bg="#006400", fg="white", 
-                                  font=("Arial", 10, "bold"), command=self.create_new_kit)
-        create_kit_btn.pack(side="right", padx=2)
-
-        #info_label = tk.Label(frame, text="Kits pré-definidos do sistema", fg="gray", bg="#1a0869", 
-        #                font=("Arial", 12, "italic"))
-        #info_label.place(x=10, y=35)
+        # Botão para refresh dos kits
+        refresh_kits_btn = tk.Button(frame, text="Atualizar lista", bg="#0b4f8f", fg="white", font=("Arial", 12, "bold"), command=self.refresh_kits)
+        refresh_kits_btn.place(x=10, y=45, width=150, height=30)
 
     def create_kit_list_section(self, frame):
-        """Versão atualizada que mostra resumo dos kits"""
         for widget in frame.winfo_children():
             widget.destroy()
 
-        label = tk.Label(frame, text="Kits", fg="white", bg="#1a0869", font=("Arial", 16, "bold"))
+        # Armazenar referência do frame atual para uso em outros métodos
+        self.current_frame = frame
+
+        label = tk.Label(frame, text="Kits Disponíveis", fg="white", bg="#1a0869", font=("Arial", 16, "bold"))
         label.place(x=10, y=10)
 
         canvas_frame = tk.Frame(frame, bg='#1a0869')
-        canvas_frame.place(x=10, y=40, width=330, height=420)
+        canvas_frame.place(x=10, y=40, width=460, height=420)
 
         canvas = tk.Canvas(canvas_frame, bg="#1a0869", highlightthickness=0)
         scrollbar = tk.Scrollbar(canvas_frame, orient="vertical", command=canvas.yview)
@@ -995,391 +942,259 @@ class CharacterSelectScreen(tk.Frame):
         canvas.create_window((0, 0), window=inner_frame, anchor='nw')
         inner_frame.bind("<Configure>", lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
 
-        if not hasattr(D, 'KitsDisponíveis'):
-            D.KitsDisponíveis = {}
-        
-        kits = list(D.KitsDisponíveis.keys())
+        # Carregar kits disponíveis
+        kits = D.KitsDisponíveis if hasattr(D, 'KitsDisponíveis') and D.KitsDisponíveis else {}
         
         if not kits:
             empty_label = tk.Label(inner_frame, text="Nenhum kit disponível", 
                                 fg="gray", bg="#1a0869", font=("Arial", 12, "italic"))
             empty_label.pack(pady=20)
         else:
-            for kit in kits:
-                kit_frame = tk.Frame(inner_frame, bg="#1a0869", height=60)
-                kit_frame.pack(fill="x", pady=2)
+            # Organizar kits por raridade
+            kits_por_raridade = {}
+            for nome, kit in kits.items():
+                raridade = kit.raridade
+                if raridade not in kits_por_raridade:
+                    kits_por_raridade[raridade] = []
+                kits_por_raridade[raridade].append((nome, kit))
+
+            # Mostrar kits organizados por raridade
+            for raridade in sorted(kits_por_raridade.keys()):
+                # Cabeçalho da raridade
+                raridade_frame = tk.Frame(inner_frame, bg="#2a2647", relief="solid", bd=1)
+                raridade_frame.pack(fill="x", pady=(10, 2), padx=5)
                 
-                kit_button = tk.Button(kit_frame,
-                    text=kit,
-                    bg="#1a0869", fg="white", font=("Arial", 12), anchor="w", justify="left", wraplength=240,
-                    command=lambda k=kit: self.select_kit(k), width=28)
-                kit_button.pack(side="left", fill="x", expand=True, padx=(0, 5), ipady=5)
+                raridade_label = tk.Label(raridade_frame, text=f"Raridade: {raridade}", 
+                                        fg="yellow", bg="#2a2647", font=("Arial", 12, "bold"))
+                raridade_label.pack(pady=3)
 
-                # Botão de excluir
-                remove_button = tk.Button(kit_frame, text="X", bg="red", fg="white", font=("Arial", 12, "bold"),
-                    command=lambda k=kit: self.delete_kit(k))
-                remove_button.pack(side="right", padx=5, ipady=5)
+                # Kits desta raridade
+                for nome_kit, kit_obj in kits_por_raridade[raridade]:
+                    kit_frame = tk.Frame(inner_frame, bg="#1a0869", height=80)
+                    kit_frame.pack(fill="x", pady=2, padx=5)
 
-    def select_kit(self, kit_name):
-        """Seleciona um kit e atualiza a interface"""
-        self.kit_var.set(kit_name)
-        self.refresh_items()
+                    # Contar itens no kit
+                    itens_kit = kit_obj.listar_itens()
+                    total_itens = sum(item["quantidade"] for item in itens_kit)
+                    tipos_itens = len(itens_kit)
 
-    def delete_kit(self, kit_name):
-        """Exclui um kit específico"""
-        if messagebox.askyesno("Confirmar", f"Tem certeza que deseja excluir o kit '{kit_name}'?\n\nTodos os items do kit serão perdidos!"):
-            # Remover kit do dicionário local
-            if hasattr(D, 'KitsDisponíveis') and kit_name in D.KitsDisponíveis:
-                del D.KitsDisponíveis[kit_name]
-                
-                # Se o kit excluído era o selecionado, selecionar outro
-                if self.kit_var.get() == kit_name:
-                    remaining_kits = list(D.KitsDisponíveis.keys()) if D.KitsDisponíveis else []
-                    if remaining_kits:
-                        self.kit_var.set(remaining_kits[0])
-                    else:
-                        self.kit_var.set("Sem kits")
-                
-                self.refresh_kits()
-                messagebox.showinfo("Sucesso", f"Kit '{kit_name}' excluído com sucesso!")
-            else:
-                messagebox.showerror("Erro", "Erro ao excluir o kit.")
+                    # Botão principal do kit - abre o popup de visualização
+                    kit_button = tk.Button(kit_frame,
+                        text=f"{nome_kit}\n{tipos_itens} tipos de itens ({total_itens} total)",
+                        bg="#1a0869", fg="white", font=("Arial", 11), anchor="w", justify="left",
+                        command=lambda k=kit_obj: self.show_kit_contents(k), wraplength=210, height=3)
+                    kit_button.pack(side="left", fill="x", expand=True, padx=(0, 5), pady=2)
 
-    def create_new_kit(self):
-        """Cria um novo kit vazio"""
-        kit_name = self.new_kit_entry.get().strip()
-        
-        # Validar nome do kit
-        if not kit_name or kit_name == "Nome do novo kit...":
-            messagebox.showwarning("Aviso", "Por favor, digite um nome para o kit.")
-            return
-        
-        # Verificar se D.KitsDisponíveis existe, senão criar
-        if not hasattr(D, 'KitsDisponíveis'):
-            D.KitsDisponíveis = {}
-        
-        # Verificar se o kit já existe
-        if kit_name in D.KitsDisponíveis:
-            messagebox.showwarning("Aviso", "Este kit já existe.")
-            return
-        
-        # Criar kit vazio com estrutura padrão
-        D.KitsDisponíveis[kit_name] = {
-            "Armas Brancas": [],
-            "Armas de Fogo": [],
-            "Proteções": [],
-            "Itens": [],
-            "Consumíveis": [],
-            "Explosivos": [],
-            "Munições": [],
-            "Melhorias": []
-        }
-        
-        # Limpar campo de entrada
-        self.new_kit_entry.delete(0, tk.END)
-        self.new_kit_entry.insert(0, "Nome do novo kit...")
-        self.new_kit_entry.config(fg="gray")
-        
-        # Selecionar o novo kit
-        self.kit_var.set(kit_name)
-        
-        # Atualizar interface
-        self.refresh_kits()
-        
-        messagebox.showinfo("Sucesso", f"Kit '{kit_name}' criado com sucesso!")
+                    # Frame para botão de ação
+                    actions_frame = tk.Frame(kit_frame, bg="#1a0869")
+                    actions_frame.pack(side="right", padx=5)
 
-    def clear_all_items_from_kit(self):
-        """Remove todos os itens do kit selecionado"""
-        current_kit = self.kit_var.get()
+                    # Botão de apagar kit
+                    delete_button = tk.Button(actions_frame, text="Apagar", bg="#DC143C", fg="white", 
+                                        font=("Arial", 9, "bold"), width=9,
+                                        command=lambda k=nome_kit: self.delete_kit(k))
+                    delete_button.pack(pady=1)
+
+    def show_kit_contents(self, kit_obj):
+        """Mostra popup com conteúdo do kit e opção de dar kit"""
+        # Encontrar a janela principal - ajustado para funcionar com diferentes classes
+        parent = self
+        while hasattr(parent, 'parent') and parent.parent:
+            parent = parent.parent
         
-        if current_kit == "Sem kits":
-            messagebox.showwarning("Aviso", "Selecione um kit primeiro.")
-            return
+        # Se não encontrou parent, usar a própria instância
+        if not hasattr(parent, 'winfo_toplevel'):
+            parent = self.winfo_toplevel() if hasattr(self, 'winfo_toplevel') else None
         
-        if not hasattr(D, 'KitsDisponíveis') or current_kit not in D.KitsDisponíveis:
-            messagebox.showwarning("Aviso", "Kit não encontrado.")
-            return
+        popup = tk.Toplevel(parent)
+        popup.title(f"Conteúdo do Kit: {kit_obj.nome}")
+        popup.geometry("450x600")
+        popup.configure(bg="#1a0869")
+        popup.resizable(False, False)
         
-        # Contar total de itens
-        total_itens = sum(len(categoria) for categoria in D.KitsDisponíveis[current_kit].values())
+        # Centralizar o popup
+        if parent:
+            popup.transient(parent)
+        popup.grab_set()
         
-        if total_itens == 0:
-            messagebox.showinfo("Info", "O kit já está vazio.")
-            return
+        # Título
+        title_label = tk.Label(popup, text=f"Kit: {kit_obj.nome}", 
+                            fg="white", bg="#1a0869", font=("Arial", 16, "bold"))
+        title_label.pack(pady=10)
         
-        # Confirmar ação
-        if messagebox.askyesno("Confirmar", 
-                            f"Tem certeza que deseja excluir todos os {total_itens} itens do kit '{current_kit}'?\n\n"
-                            "Esta ação não pode ser desfeita!"):
-            # Limpar todas as categorias
-            for categoria in D.KitsDisponíveis[current_kit].keys():
-                D.KitsDisponíveis[current_kit][categoria].clear()
-            
-            self.refresh_items()
-            messagebox.showinfo("Sucesso", f"Todos os itens foram removidos do kit '{current_kit}'!")
-
-    def validate_kit_name(self, kit_name):
-        """Valida se o nome do kit é válido"""
-        if not kit_name or kit_name.isspace():
-            return False, "Nome do kit não pode estar vazio."
+        # Informações do kit
+        info_frame = tk.Frame(popup, bg="#2a2647", relief="solid", bd=1)
+        info_frame.pack(pady=5, padx=15, fill="x")
         
-        if len(kit_name) > 50:
-            return False, "Nome do kit muito longo (máximo 50 caracteres)."
+        kit_info = tk.Label(info_frame, text=f"Raridade: {kit_obj.raridade}", 
+                        fg="yellow", bg="#2a2647", font=("Arial", 12, "bold"))
+        kit_info.pack(pady=5)
         
-        # Caracteres proibidos
-        forbidden_chars = ['/', '\\', ':', '*', '?', '"', '<', '>', '|']
-        if any(char in kit_name for char in forbidden_chars):
-            return False, "Nome do kit contém caracteres inválidos."
+        # Frame para o conteúdo com scroll
+        content_label = tk.Label(popup, text="Conteúdo do Kit:", 
+                                fg="white", bg="#1a0869", font=("Arial", 14, "bold"))
+        content_label.pack(pady=(10, 5))
         
-        return True, ""
-
-    def refresh_kits(self):
-        """Atualiza a lista de kits"""
-        self.create_kit_list_section(self.kit_list_frame)
-        self.create_item_list_section(self.item_list_frame)
-
-    def dar_kits_to_current_group(self):
-        current_group = self.group_var.get()
-        if current_group and current_group != "Sem grupos":
-            self.show_dar_kits_popup(current_group)
-        else:
-            messagebox.showwarning("Aviso", "Selecione um grupo primeiro.")
-
-    def show_dar_kits_popup(self, group_name):
-        """Mostra popup para dar kits aos personagens do grupo"""
-        # Verificar se há personagens no grupo
-        personagens = D.GruposDePersonagens.get(group_name, [])
-        if not personagens:
-            messagebox.showinfo("Info", "Não há personagens neste grupo.")
-            return
-
-        # Verificar se há kits disponíveis
-        if not hasattr(D, 'KitsDisponíveis') or not D.KitsDisponíveis:
-            messagebox.showwarning("Aviso", "Não há kits disponíveis no sistema.")
-            return
-
-        popup = tk.Toplevel(self)
-        popup.title(f"Dar Kits - Grupo: {group_name}")
-        popup.geometry("600x500")
-        popup.config(bg="#130f26")
-        popup.grab_set()  # Torna o popup modal
-
-        # --- HEADER ---
-        header_frame = tk.Frame(popup, bg="#130f26")
-        header_frame.pack(fill="x", padx=10, pady=10)
-
-        tk.Label(header_frame, text=f"Dar Kits aos Personagens - {group_name}", 
-                fg="white", bg="#130f26", font=("Arial", 16, "bold")).pack()
-
-        # --- ÁREA SCROLLÁVEL ---
-        canvas_frame = tk.Frame(popup, bg="#130f26")
-        canvas_frame.pack(fill="both", expand=True, padx=10, pady=10)
-
-        canvas = tk.Canvas(canvas_frame, bg="#1a0869", highlightthickness=0)
-        scrollbar = tk.Scrollbar(canvas_frame, orient="vertical", command=canvas.yview)
-        scrollable_frame = tk.Frame(canvas, bg="#1a0869")
-
-        scrollable_frame.bind("<Configure>", lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
-        canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
+        content_frame = tk.Frame(popup, bg="#1a0869")
+        content_frame.pack(fill="both", expand=True, padx=15, pady=(0, 10))
+        
+        canvas = tk.Canvas(content_frame, bg="#1a0869", highlightthickness=0)
+        scrollbar = tk.Scrollbar(content_frame, orient="vertical", command=canvas.yview)
         canvas.configure(yscrollcommand=scrollbar.set)
-
-        canvas.pack(side="left", fill="both", expand=True)
-        scrollbar.pack(side="right", fill="y")
-
-        # Lista de kits disponíveis
-        kits_disponiveis = ["Nenhum"] + list(D.KitsDisponíveis.keys())
         
-        # Dicionário para armazenar as seleções de kit para cada personagem
-        kit_selections = {}
-
-        # Criar uma linha para cada personagem
-        for i, personagem in enumerate(personagens):
-            if isinstance(personagem, CB.Personagem):
-                char_frame = tk.Frame(scrollable_frame, bg="#2a2647", relief="solid", bd=1)
-                char_frame.pack(fill="x", pady=5, padx=10)
-
-                # Nome do personagem
-                name_frame = tk.Frame(char_frame, bg="#2a2647")
-                name_frame.pack(fill="x", padx=10, pady=5)
-
-                tk.Label(name_frame, text=f"{personagem.nome} - Nível {personagem.nivel}", 
-                        fg="white", bg="#2a2647", font=("Arial", 12, "bold")).pack(side="left")
-
-                # Seleção de kit
-                kit_frame = tk.Frame(char_frame, bg="#2a2647")
-                kit_frame.pack(fill="x", padx=10, pady=(0, 10))
-
-                tk.Label(kit_frame, text="Kit:", fg="white", bg="#2a2647", 
-                        font=("Arial", 11)).pack(side="left", padx=(0, 10))
-
-                kit_var = tk.StringVar(value="Nenhum")
-                kit_menu = ttk.Combobox(kit_frame, textvariable=kit_var, 
-                                    state="readonly", values=kits_disponiveis, width=25)
-                kit_menu.pack(side="left")
-
-                kit_selections[personagem] = kit_var
-
-        def confirmar_kits():
-            """Confirma e aplica os kits selecionados"""
-            try:
-                kits_aplicados = 0
-                kits_com_erro = 0
-                relatorio_detalhado = []
+        scrollbar.pack(side="right", fill="y")
+        canvas.pack(side="left", fill="both", expand=True)
+        
+        inner_frame = tk.Frame(canvas, bg="#1a0869")
+        canvas.create_window((0, 0), window=inner_frame, anchor='nw')
+        
+        # Mostrar itens do kit
+        itens_kit = kit_obj.listar_itens()
+        if not itens_kit:
+            empty_label = tk.Label(inner_frame, text="Kit vazio", 
+                                fg="gray", bg="#1a0869", font=("Arial", 12, "italic"))
+            empty_label.pack(pady=20)
+        else:
+            for i, item in enumerate(itens_kit):
+                item_frame = tk.Frame(inner_frame, bg="#2a2647", relief="solid", bd=1)
+                item_frame.pack(fill="x", pady=2, padx=5)
                 
-                for personagem, kit_var in kit_selections.items():
-                    kit_selecionado = kit_var.get()
-                    
-                    if kit_selecionado != "Nenhum":
-                        # Entregar o kit
-                        if self.entregar_kit_para_personagem(kit_selecionado, personagem):
-                            kits_aplicados += 1
-                            # Contar itens do kit
-                            kit_data = D.KitsDisponíveis[kit_selecionado]
-                            total_itens = sum(sum(item.get('quantidade', 1) for item in categoria) for categoria in kit_data.values())
-                            relatorio_detalhado.append(f"✅ {personagem.nome}: Kit '{kit_selecionado}' entregue ({total_itens} itens)")
-                        else:
-                            relatorio_detalhado.append(f"❌ {personagem.nome}: Erro ao entregar kit '{kit_selecionado}'")
-                            kits_com_erro += 1
-                
-                popup.destroy()
-                
-                # Montar mensagem final
-                if kits_aplicados > 0 or kits_com_erro > 0:
-                    mensagem_final = f"RELATÓRIO DE ENTREGA DE KITS\n\n"
-                    mensagem_final += f"✅ Kits entregues com sucesso: {kits_aplicados}\n"
-                    if kits_com_erro > 0:
-                        mensagem_final += f"❌ Kits com erro: {kits_com_erro}\n"
-                    mensagem_final += "\nDetalhes:\n"
-                    mensagem_final += "\n".join(relatorio_detalhado)
-                    
-                    if kits_aplicados > 0:
-                        messagebox.showinfo("Relatório de Entrega", mensagem_final)
-                        self.refresh()  # Atualizar a interface
-                    else:
-                        messagebox.showwarning("Relatório de Entrega", mensagem_final)
-                else:
-                    messagebox.showinfo("Info", "Nenhum kit foi selecionado para entrega.")
-                    
-            except Exception as e:
-                messagebox.showerror("Erro", f"Erro ao processar kits:\n{e}")
+                item_label = tk.Label(item_frame, 
+                                    text=f"• {item['nome']} - Quantidade: {item['quantidade']}", 
+                                    fg="white", bg="#2a2647", font=("Arial", 11), anchor="w")
+                item_label.pack(pady=8, padx=15, fill="x")
+        
+        inner_frame.bind("<Configure>", lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
+        
+        # Frame para botões na parte inferior
+        buttons_frame = tk.Frame(popup, bg="#1a0869")
+        buttons_frame.pack(fill="x", padx=15, pady=15)
+        
+        # Botão "Dar Kit"
+        dar_button = tk.Button(buttons_frame, text="Dar Kit aos Personagens", bg="#228B22", fg="white", 
+                            font=("Arial", 12, "bold"), height=2,
+                            command=lambda: self.show_dar_kit_popup(kit_obj, popup))
+        dar_button.pack(fill="x", pady=(0, 10))
+        
+        # Botão "Fechar"
+        close_button = tk.Button(buttons_frame, text="Fechar", bg="#666666", fg="white", 
+                            font=("Arial", 11, "bold"), width=15,
+                            command=popup.destroy)
+        close_button.pack()
 
-        # --- BOTÕES ---
-        button_frame = tk.Frame(popup, bg="#130f26")
-        button_frame.pack(fill="x", padx=10, pady=10)
+    def show_dar_kit_popup(self, kit_obj, parent_popup=None):
+        """Mostra popup para dar kit com seleção de grupo, personagens e modo de aplicação"""
+        # Fechar popup pai se existir
+        if parent_popup:
+            parent_popup.destroy()
+        
+        # Encontrar a janela principal
+        parent = self
+        while hasattr(parent, 'parent') and parent.parent:
+            parent = parent.parent
+        
+        if not hasattr(parent, 'winfo_toplevel'):
+            parent = self.winfo_toplevel() if hasattr(self, 'winfo_toplevel') else None
+        
+        popup = tk.Toplevel(parent)
+        popup.title(f"Dar Kit: {kit_obj.nome}")
+        popup.geometry("580x750")  # Aumentei um pouco a altura
+        popup.config(bg="#130f26")
+        popup.resizable(False, False)
+        
+        if parent:
+            popup.transient(parent)
+        popup.grab_set()
 
-        tk.Button(button_frame, text="Cancelar", command=popup.destroy, 
-                bg="#8B0000", fg="white", font=("Arial", 12), width=15).pack(side="left")
+        # Título (fixo no topo)
+        header_frame = tk.Frame(popup, bg="#130f26")
+        header_frame.pack(fill="x", padx=15, pady=(15, 5))
+        
+        title_label = tk.Label(header_frame, text=f"Dar Kit: {kit_obj.nome}", 
+                            fg="white", bg="#130f26", font=("Arial", 16, "bold"))
+        title_label.pack()
 
-        tk.Button(button_frame, text="Confirmar", command=confirmar_kits, 
-                bg="#006400", fg="white", font=("Arial", 12), width=15).pack(side="right")
+        kit_info = tk.Label(header_frame, text=f"Raridade: {kit_obj.raridade}", 
+                        fg="yellow", bg="#130f26", font=("Arial", 12, "bold"))
+        kit_info.pack(pady=5)
 
-    def entregar_kit_para_personagem(self, kit_name, personagem):
-        """Entrega um kit para um personagem, criando novos itens no inventário baseado nos índices"""
-        try:
-            if kit_name not in D.KitsDisponíveis:
-                print(f"Kit '{kit_name}' não encontrado")
-                return False
+        # Frame principal com scroll para todo o conteúdo
+        main_canvas_frame = tk.Frame(popup, bg="#130f26")
+        main_canvas_frame.pack(fill="both", expand=True, padx=15, pady=5)
+
+        # Canvas e scrollbar principal
+        main_canvas = tk.Canvas(main_canvas_frame, bg="#130f26", highlightthickness=0)
+        main_scrollbar = tk.Scrollbar(main_canvas_frame, orient="vertical", command=main_canvas.yview)
+        main_canvas.configure(yscrollcommand=main_scrollbar.set)
+
+        main_scrollbar.pack(side="right", fill="y")
+        main_canvas.pack(side="left", fill="both", expand=True)
+
+        # Frame interno que conterá todo o conteúdo
+        scrollable_frame = tk.Frame(main_canvas, bg="#130f26")
+        main_canvas.create_window((0, 0), window=scrollable_frame, anchor='nw')
+
+        # --- Seleção de Grupo ---
+        grupo_frame = tk.Frame(scrollable_frame, bg="#1a0869", relief="solid", bd=2)
+        grupo_frame.pack(pady=10, padx=5, fill="x")
+
+        tk.Label(grupo_frame, text="1. Selecionar Grupo:", fg="white", bg="#1a0869", 
+                font=("Arial", 14, "bold")).pack(pady=8)
+
+        grupos_disponiveis = list(D.GruposDePersonagens.keys())
+        if not grupos_disponiveis:
+            tk.Label(grupo_frame, text="Nenhum grupo disponível", fg="gray", bg="#1a0869", 
+                    font=("Arial", 12, "italic")).pack(pady=10)
+            return
+
+        grupo_var = tk.StringVar(value=grupos_disponiveis[0])
+        grupo_menu = tk.OptionMenu(grupo_frame, grupo_var, *grupos_disponiveis)
+        grupo_menu.config(bg="#2a2647", fg="white", font=("Arial", 12), width=40, relief="solid")
+        grupo_menu.pack(pady=8)
+
+        # --- Modo de Aplicação ---
+        modo_frame = tk.Frame(scrollable_frame, bg="#1a0869", relief="solid", bd=2)
+        modo_frame.pack(pady=10, padx=5, fill="x")
+
+        tk.Label(modo_frame, text="2. Modo de Aplicação:", fg="white", bg="#1a0869", 
+                font=("Arial", 14, "bold")).pack(pady=8)
+
+        modo_var = tk.StringVar(value="basico")
+
+        modos = [
+            ("basico", "Básico", "Apenas adicionar itens ao inventário"),
+            ("equipar_protecoes", "Equipar Proteções", "Adicionar e equipar proteções automaticamente"),
+            ("equipar_arma", "Equipar Arma", "Adicionar e equipar uma arma aleatória do kit"),
+            ("equipar_tudo", "Equipar Tudo", "Equipar proteções e arma automaticamente")
+        ]
+
+        for valor, titulo, descricao in modos:
+            modo_item_frame = tk.Frame(modo_frame, bg="#2a2647", relief="solid", bd=1)
+            modo_item_frame.pack(fill="x", pady=3, padx=10)
             
-            kit_data = D.KitsDisponíveis[kit_name]
+            rb = tk.Radiobutton(modo_item_frame, text=titulo, variable=modo_var, value=valor,
+                            bg="#2a2647", fg="white", selectcolor="#1a0869", 
+                            font=("Arial", 11, "bold"), anchor="w")
+            rb.pack(fill="x", padx=10, pady=3)
             
-            # Mapeamento das tabelas para os pools de dados
-            mapeamento_tabelas = {
-                "Rangeds": "Ranged",
-                "Melees": "Melee",
-                "Protecoes": "Protecao",
-                "Itens": "Item",
-                "Consumiveis": "Consumivel",
-                "Explosivos": "Explosivo",
-                "Municoes": "Municao",
-                "Melhorias": "Melhoria"
-            }
-            
-            # Processar cada categoria do kit
-            for categoria, itens_indices in kit_data.items():
-                for item_indice in itens_indices:
-                    nome_item = item_indice.get('nome')
-                    tabela = item_indice.get('tabela')
-                    quantidade = item_indice.get('quantidade', 1)
-                    
-                    if not nome_item or not tabela:
-                        print(f"Índice inválido encontrado: {item_indice}")
-                        continue
-                    
-                    # Verificar se a tabela existe no mapeamento
-                    if tabela not in mapeamento_tabelas:
-                        print(f"Tabela '{tabela}' não encontrada no mapeamento")
-                        continue
-                    
-                    pool_nome = mapeamento_tabelas[tabela]
-                    
-                    # Verificar se o pool existe
-                    if not hasattr(D, 'Pools') or pool_nome not in D.Pools:
-                        print(f"Pool '{pool_nome}' não encontrado")
-                        continue
-                    
-                    pool_items = D.Pools[pool_nome]
-                    
-                    # Verificar se o item existe no pool
-                    if nome_item not in pool_items:
-                        print(f"Item '{nome_item}' não encontrado no pool '{pool_nome}'")
-                        continue
-                    
-                    # Obter o item do pool e criar nova instância
-                    item_template = pool_items[nome_item]
-                    
-                    # Criar nova instância do item
-                    if callable(item_template):
-                        item_obj = item_template()
-                    else:
-                        # Se não é callable, criar nova instância baseada na classe
-                        item_obj = item_template.__class__()
-                        # Copiar atributos do template
-                        for attr_name, attr_value in item_template.__dict__.items():
-                            setattr(item_obj, attr_name, attr_value)
-                    
-                    # Adicionar ao inventário do personagem
-                    personagem.inventario.gerenciar_item(
-                        item_objeto=item_obj, 
-                        quantidade=quantidade, 
-                        operacao="adicionar"
-                    )
-            
-            return True
-            
-        except Exception as e:
-            print(f"Erro ao entregar kit '{kit_name}': {e}")
+            desc_label = tk.Label(modo_item_frame, text=f"  └ {descricao}", 
+                                fg="lightgray", bg="#2a2647", font=("Arial", 9), anchor="w")
+            desc_label.pack(fill="x", padx=20, pady=(0, 5))
 
-    def recriar_item_do_indice(self, nome_item, classe_item):
-            """Recria um item a partir do nome e classe, procurando nos pools"""
-            try:
-                # Procurar o item nos pools
-                for pool_name, pool_items in D.Pools.items():
-                    if nome_item in pool_items:
-                        item_original = pool_items[nome_item]
-                        # Verificar se a classe confere
-                        if item_original.__class__.__name__ == classe_item:
-                            # Retornar uma nova instância do item
-                            return item_original.__class__(**item_original.__dict__)
-                
-                return None
-                
-            except Exception as e:
-                print(f"Erro ao recriar item {nome_item}: {e}")
-                return None
-### --- Kits --- ###
+        # --- Lista de Personagens ---
+        personagens_frame = tk.Frame(scrollable_frame, bg="#1a0869", relief="solid", bd=2)
+        personagens_frame.pack(pady=10, padx=5, fill="x")
 
-### --- Itens --- ###
-    def create_item_list_section(self, frame):
-        for widget in frame.winfo_children():
-            widget.destroy()
+        tk.Label(personagens_frame, text="3. Selecionar Personagens:", fg="white", bg="#1a0869", 
+                font=("Arial", 14, "bold")).pack(pady=8)
 
-        # Mostrar kit selecionado
-        kit_atual = self.kit_var.get()
-        label = tk.Label(frame, text=f"Items - {kit_atual}", fg="white", bg="#1a0869", font=("Arial", 16, "bold"))
-        label.place(x=10, y=10)
+        # Canvas para lista de personagens (scroll interno para personagens)
+        canvas_frame = tk.Frame(personagens_frame, bg='#1a0869')
+        canvas_frame.pack(pady=8, padx=10, fill="x")
 
-        canvas_frame = tk.Frame(frame, bg='#1a0869')
-        canvas_frame.place(x=10, y=40, width=330, height=420)
+        # Definir altura fixa para a lista de personagens
+        canvas_frame.config(height=200)
+        canvas_frame.pack_propagate(False)
 
         canvas = tk.Canvas(canvas_frame, bg="#1a0869", highlightthickness=0)
         scrollbar = tk.Scrollbar(canvas_frame, orient="vertical", command=canvas.yview)
@@ -1392,608 +1207,216 @@ class CharacterSelectScreen(tk.Frame):
         canvas.create_window((0, 0), window=inner_frame, anchor='nw')
         inner_frame.bind("<Configure>", lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
 
-        # Verificar se D.KitsDisponíveis existe
-        if not hasattr(D, 'KitsDisponíveis'):
-            D.KitsDisponíveis = {}
+        # Variáveis para checkboxes dos personagens
+        personagem_vars = {}
 
-        kit = self.kit_var.get()
-        
-        if kit == "Sem kits":
-            empty_label = tk.Label(inner_frame, text="Selecione um kit para ver os items", 
-                                fg="gray", bg="#1a0869", font=("Arial", 12, "italic"))
-            empty_label.pack(pady=20)
-        else:
-            # Obter itens do kit como índices
-            kit_data = D.KitsDisponíveis.get(kit, {})
-            
-            if not kit_data:
-                empty_label = tk.Label(inner_frame, text="Este kit está vazio", 
-                                    fg="gray", bg="#1a0869", font=("Arial", 12, "italic"))
-                empty_label.pack(pady=20)
-            else:
-                # Mostrar items por categoria
-                for categoria, itens in kit_data.items():
-                    if itens:  # Só mostra categorias com itens
-                        # Título da categoria
-                        categoria_label = tk.Label(inner_frame, text=f"=== {categoria} ===", 
-                                                fg="yellow", bg="#1a0869", font=("Arial", 12, "bold"))
-                        categoria_label.pack(pady=(10, 5))
-                        
-                        # Itens da categoria (como índices)
-                        for item_indice in itens:
-                            item_frame = tk.Frame(inner_frame, bg="#1a0869", height=60)
-                            item_frame.pack(fill="x", pady=2)
-
-                            # Exibir apenas nome e quantidade (simplificado)
-                            nome = item_indice.get('nome', 'Item desconhecido')
-                            quantidade = item_indice.get('quantidade', 1)
-                            
-                            item_text = f"{nome} (x{quantidade})"
-
-                            item_label = tk.Label(item_frame,
-                                text=item_text,
-                                bg="#1a0869", fg="white", font=("Arial", 12), anchor="w", justify="left")
-                            item_label.pack(side="left", fill="x", expand=True, padx=(0, 5), ipady=5)
-
-                            # Adicionar botão de remover
-                            remove_button = tk.Button(item_frame, text="X", bg="red", fg="white", font=("Arial", 12, "bold"),
-                                command=lambda i=item_indice, cat=categoria: self.remove_item_from_kit(i, cat))
-                            remove_button.pack(side="right", padx=5, ipady=5)
-
-            # Adicionar caixa com botão de adicionar item no final
-            add_frame = tk.Frame(inner_frame, bg="#2a2647", relief="solid", bd=1, height=60)
-            add_frame.pack(fill="x", pady=10)
-
-            add_item_btn = tk.Button(add_frame, text="Adicionar\nItem", bg="#006400", fg="white", 
-                                    font=("Arial", 10, "bold"), command=self.add_item_to_current_kit)
-            add_item_btn.pack(side="left", padx=10, pady=10)
-
-    def create_item_management(self, frame):
-        for widget in frame.winfo_children():
-            widget.destroy()
-
-        # Título
-        title_label = tk.Label(frame, text="Gerenciar Items", fg="white", bg="#1a0869", 
-                            font=("Arial", 16, "bold"))
-        title_label.place(x=10, y=5)
-
-        # Botão de excluir todos os items
-        clear_all_btn = tk.Button(frame, text="Excluir Todos", bg="#8B0000", fg="white", 
-                                font=("Arial", 12, "bold"), command=self.clear_all_items_from_kit)
-        clear_all_btn.place(x=10, y=35, width=120, height=30)
-
-        #info_label = tk.Label(frame, text="Visualização dos itens do kit", fg="gray", bg="#1a0869", 
-        #                font=("Arial", 12, "italic"))
-        #info_label.place(x=10, y=35)
-
-    def clear_all_items_from_kit(self):
-        """Remove todos os itens do kit selecionado"""
-        current_kit = self.kit_var.get()
-        
-        if current_kit == "Sem kits":
-            messagebox.showwarning("Aviso", "Selecione um kit primeiro.")
-            return
-        
-        if not hasattr(D, 'KitsDisponíveis') or current_kit not in D.KitsDisponíveis:
-            messagebox.showwarning("Aviso", "Kit não encontrado.")
-            return
-        
-        # Contar total de itens
-        total_itens = sum(len(categoria) for categoria in D.KitsDisponíveis[current_kit].values())
-        
-        if total_itens == 0:
-            messagebox.showinfo("Info", "O kit já está vazio.")
-            return
-        
-        # Confirmar ação
-        if messagebox.askyesno("Confirmar", 
-                            f"Tem certeza que deseja excluir todos os {total_itens} itens do kit '{current_kit}'?\n\n"
-                            "Esta ação não pode ser desfeita!"):
-            # Limpar todas as categorias
-            for categoria in D.KitsDisponíveis[current_kit].keys():
-                D.KitsDisponíveis[current_kit][categoria].clear()
-            
-            # Salvar no banco
-            D.salvar_kits_no_supabase()
-            
-            self.refresh_items()
-            messagebox.showinfo("Sucesso", f"Todos os itens foram removidos do kit '{current_kit}'!")
-
-    def show_item_selection_popup(self, kit_name):
-        """Mostra popup para seleção de item"""
-        popup = tk.Toplevel(self)
-        popup.title("Adicionar Item ao Kit")
-        popup.geometry("600x700")
-        popup.config(bg="#130f26")
-        popup.grab_set()  # Torna o popup modal
-
-        # Carrega os pools de dados
-        if not hasattr(D, 'Pools') or not D.Pools:
-            messagebox.showerror("Erro", "Pools de dados não carregados!")
-            popup.destroy()
-            return
-
-        # Variáveis de controle
-        selected_item = {"item": None, "pool": None}
-        
-        # --- HEADER ---
-        header_frame = tk.Frame(popup, bg="#130f26")
-        header_frame.pack(fill="x", padx=10, pady=10)
-
-        tk.Label(header_frame, text=f"Adicionar Item ao Kit: {kit_name}", 
-                fg="white", bg="#130f26", font=("Arial", 16, "bold")).pack()
-
-        # --- SELEÇÃO DE CATEGORIA ---
-        category_frame = tk.Frame(popup, bg="#130f26")
-        category_frame.pack(fill="x", padx=10, pady=5)
-
-        tk.Label(category_frame, text="Categoria:", fg="white", bg="#130f26", 
-                font=("Arial", 12)).pack(side="left")
-
-        categories = list(D.Pools.keys())
-        category_var = tk.StringVar(value=categories[0] if categories else "")
-        category_menu = ttk.Combobox(category_frame, textvariable=category_var, 
-                                state="readonly", values=categories, width=20)
-        category_menu.pack(side="left", padx=10)
-
-        # --- BUSCA ---
-        search_frame = tk.Frame(popup, bg="#130f26")
-        search_frame.pack(fill="x", padx=10, pady=5)
-
-        tk.Label(search_frame, text="Buscar:", fg="white", bg="#130f26", 
-                font=("Arial", 12)).pack(side="left")
-
-        search_var = tk.StringVar()
-        search_entry = tk.Entry(search_frame, textvariable=search_var, width=30)
-        search_entry.pack(side="left", padx=10)
-
-        # --- LISTA DE ITENS ---
-        list_frame = tk.Frame(popup, bg="#130f26")
-        list_frame.pack(fill="both", expand=True, padx=10, pady=10)
-
-        # Canvas com scrollbar
-        canvas = tk.Canvas(list_frame, bg="#1a0869", highlightthickness=0)
-        scrollbar = tk.Scrollbar(list_frame, orient="vertical", command=canvas.yview)
-        scrollable_frame = tk.Frame(canvas, bg="#1a0869")
-
-        scrollable_frame.bind("<Configure>", lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
-        canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
-        canvas.configure(yscrollcommand=scrollbar.set)
-
-        canvas.pack(side="left", fill="both", expand=True)
-        scrollbar.pack(side="right", fill="y")
-
-        # --- QUANTIDADE ---
-        quantity_frame = tk.Frame(popup, bg="#130f26")
-        quantity_frame.pack(fill="x", padx=10, pady=5)
-
-        tk.Label(quantity_frame, text="Quantidade:", fg="white", bg="#130f26", 
-                font=("Arial", 12)).pack(side="left")
-
-        quantity_var = tk.StringVar(value="1")
-        quantity_entry = tk.Entry(quantity_frame, textvariable=quantity_var, width=10)
-        quantity_entry.pack(side="left", padx=10)
-
-        def update_item_list():
-            """Atualiza a lista de itens baseada na categoria e busca"""
-            for widget in scrollable_frame.winfo_children():
+        def atualizar_personagens():
+            # Limpar frame
+            for widget in inner_frame.winfo_children():
                 widget.destroy()
+            personagem_vars.clear()
 
-            category = category_var.get()
-            search_term = search_var.get().lower()
+            grupo_selecionado = grupo_var.get()
+            personagens = D.GruposDePersonagens.get(grupo_selecionado, [])
 
-            if not category or category not in D.Pools:
-                return
-
-            items = D.Pools[category]
-            
-            # Filtrar por termo de busca se fornecido
-            if search_term:
-                items = {name: item for name, item in items.items() 
-                        if search_term in name.lower()}
-
-            if not items:
-                no_items_label = tk.Label(scrollable_frame, text="Nenhum item encontrado", 
-                                        fg="gray", bg="#1a0869", font=("Arial", 12))
-                no_items_label.pack(pady=20)
-                return
-
-            # Criar botões para cada item
-            for item_name, item_obj in items.items():
-                item_frame = tk.Frame(scrollable_frame, bg="#1a0869", relief="solid", bd=1)
-                item_frame.pack(fill="x", pady=2, padx=5)
-
-                # Informações do item
-                info_text = item_name
-                if hasattr(item_obj, 'dano'):
-                    info_text += f" | Dano: {item_obj.dano}"
-                if hasattr(item_obj, 'protecao'):
-                    info_text += f" | Proteção: {item_obj.protecao}"
-                if hasattr(item_obj, 'preco'):
-                    info_text += f" | Preço: {item_obj.preco}"
-
-                item_button = tk.Button(item_frame, text=info_text, 
-                                    bg="#2a2647", fg="white", font=("Arial", 11),
-                                    anchor="w", justify="left",
-                                    command=lambda name=item_name, obj=item_obj, pool=category: 
-                                    select_item(name, obj, pool))
-                item_button.pack(fill="x", padx=5, pady=2)
-
-        def select_item(item_name, item_obj, pool_name):
-            """Seleciona um item"""
-            selected_item["item"] = item_obj
-            selected_item["pool"] = pool_name
-            selected_item["name"] = item_name
-
-            # Atualizar interface para mostrar seleção
-            for widget in scrollable_frame.winfo_children():
-                for child in widget.winfo_children():
-                    if isinstance(child, tk.Button):
-                        if child.cget("text").startswith(item_name):
-                            child.config(bg="#006400")  # Verde para selecionado
-                        else:
-                            child.config(bg="#2a2647")  # Cor normal
-
-        def confirm_add(self):
-            """Confirma a adição do item ao kit - função dentro do popup"""
-            if not selected_item["item"]:
-                messagebox.showwarning("Aviso", "Selecione um item primeiro!")
-                return
-
-            # Validar quantidade
-            try:
-                quantidade = int(quantity_var.get())
-                if quantidade <= 0:
-                    messagebox.showwarning("Aviso", "Quantidade deve ser maior que 0!")
-                    return
-            except ValueError:
-                messagebox.showwarning("Aviso", "Quantidade deve ser um número válido!")
-                return
-
-            # Determinar categoria do item baseado no pool
-            categoria_map = {
-                "Ranged": "Armas de Fogo",
-                "Melee": "Armas Brancas", 
-                "Protecao": "Proteções",
-                "Item": "Itens",
-                "Consumivel": "Consumíveis",
-                "Explosivo": "Explosivos",
-                "Municao": "Munições",
-                "Melhoria": "Melhorias"
-            }
-            
-            categoria = categoria_map.get(selected_item["pool"], "Itens")
-            
-            # Mapear pool para tabela
-            tabela_map = {
-                "Ranged": "Rangeds",
-                "Melee": "Melees",
-                "Protecao": "Protecoes", 
-                "Item": "Itens",
-                "Consumivel": "Consumiveis",
-                "Explosivo": "Explosivos",
-                "Municao": "Municoes",
-                "Melhoria": "Melhorias"
-            }
-            
-            tabela = tabela_map.get(selected_item["pool"], "Itens")
-            
-            # Criar índice do item (apenas nome, tabela e quantidade)
-            item_indice = {
-                "nome": selected_item["name"],
-                "tabela": tabela,
-                "quantidade": quantidade
-            }
-            
-            # Verificar se o kit existe
-            if kit_name not in D.KitsDisponíveis:
-                messagebox.showerror("Erro", "Kit não encontrado!")
-                return
-            
-            # Verificar se a categoria existe no kit
-            if categoria not in D.KitsDisponíveis[kit_name]:
-                D.KitsDisponíveis[kit_name][categoria] = []
-            
-            # Verificar se o item já existe no kit (mesmo nome e tabela)
-            item_existente = None
-            for item in D.KitsDisponíveis[kit_name][categoria]:
-                if item.get("nome") == selected_item["name"] and item.get("tabela") == tabela:
-                    item_existente = item
-                    break
-            
-            if item_existente:
-                # Se já existe, aumentar a quantidade
-                item_existente["quantidade"] = item_existente.get("quantidade", 1) + quantidade
-                mensagem = f"Quantidade de '{selected_item['name']}' aumentada para {item_existente['quantidade']}!"
+            if not personagens:
+                tk.Label(inner_frame, text="Nenhum personagem no grupo selecionado", 
+                        fg="gray", bg="#1a0869", font=("Arial", 12, "italic")).pack(pady=20)
             else:
-                # Se não existe, adicionar novo índice
-                D.KitsDisponíveis[kit_name][categoria].append(item_indice)
-                mensagem = f"{quantidade}x '{selected_item['name']}' adicionado(s) ao kit na categoria '{categoria}'!"
-            
-            messagebox.showinfo("Sucesso", mensagem)
-            
-            # Limpar seleção
-            selected_item["item"] = None
-            selected_item["pool"] = None
-            selected_item["name"] = None
-            quantity_var.set("1")
-            
-            # Resetar cores dos botões
-            for widget in scrollable_frame.winfo_children():
-                for child in widget.winfo_children():
-                    if isinstance(child, tk.Button):
-                        child.config(bg="#2a2647")
+                # Botão para selecionar/deselecionar todos
+                select_all_frame = tk.Frame(inner_frame, bg="#2a2647", relief="solid", bd=2)
+                select_all_frame.pack(fill="x", pady=5, padx=3)
+
+                select_all_var = tk.BooleanVar(value=True)
+                
+                def toggle_all():
+                    valor = select_all_var.get()
+                    for var in personagem_vars.values():
+                        var.set(valor)
+
+                tk.Checkbutton(select_all_frame, text="Selecionar/Deselecionar Todos", 
+                            variable=select_all_var, command=toggle_all,
+                            bg="#2a2647", fg="yellow", selectcolor="#1a0869", 
+                            font=("Arial", 11, "bold")).pack(pady=5)
+
+                # Lista de personagens
+                for char in personagens:
+                    if isinstance(char, CB.Personagem):
+                        char_frame = tk.Frame(inner_frame, bg="#2a2647", relief="solid", bd=1)
+                        char_frame.pack(fill="x", pady=2, padx=3)
+
+                        char_var = tk.BooleanVar(value=True)  # Selecionado por padrão
+                        personagem_vars[char] = char_var
+
+                        # Informações do personagem
+                        char_info = f"{char.nome} | Nível {char.nivel} | HP: {char.vidaAtual}/{char.vidaMax}"
                         
-            self.refresh_items()
+                        tk.Checkbutton(char_frame, text=char_info, variable=char_var, 
+                                    bg="#2a2647", fg="white", selectcolor="#1a0869", 
+                                    font=("Arial", 10), anchor="w").pack(fill="x", padx=10, pady=5)
 
-        # --- BOTÕES ---
+            # Atualizar scroll do canvas de personagens
+            canvas.update_idletasks()
+            canvas.configure(scrollregion=canvas.bbox("all"))
+            
+            # Atualizar scroll principal
+            scrollable_frame.update_idletasks()
+            main_canvas.configure(scrollregion=main_canvas.bbox("all"))
+
+        # Atualizar personagens quando o grupo mudar
+        grupo_var.trace_add("write", lambda *_: atualizar_personagens())
+        atualizar_personagens()
+
+        # Configurar scroll do frame principal
+        def configure_scroll(event):
+            main_canvas.configure(scrollregion=main_canvas.bbox("all"))
+        
+        scrollable_frame.bind("<Configure>", configure_scroll)
+
+        # --- Botões de Ação (fixos na parte inferior) ---
         button_frame = tk.Frame(popup, bg="#130f26")
-        button_frame.pack(fill="x", padx=10, pady=10)
+        button_frame.pack(fill="x", padx=15, pady=15)
 
-        tk.Button(button_frame, text="Cancelar", command=popup.destroy, 
-                bg="#8B0000", fg="white", font=("Arial", 12), width=15).pack(side="left")
+        def aplicar_kit():
+            personagens_selecionados = [char for char, var in personagem_vars.items() if var.get()]
+            
+            if not personagens_selecionados:
+                messagebox.showwarning("Aviso", "Selecione pelo menos um personagem.")
+                return
 
-        tk.Button(button_frame, text="Adicionar ao Kit", command=confirm_add, 
-                bg="#006400", fg="white", font=("Arial", 12), width=15).pack(side="right")
+            modo = modo_var.get()
+            modo_texto = next(titulo for valor, titulo, _ in modos if valor == modo)
+            
+            # Confirmar ação
+            confirmacao = f"""Confirmar aplicação do kit:
 
-        # --- BIND EVENTS ---
-        category_var.trace("w", lambda *args: update_item_list())
-        search_var.trace("w", lambda *args: update_item_list())
+    Kit: {kit_obj.nome}
+    Raridade: {kit_obj.raridade}
+    Personagens: {len(personagens_selecionados)} selecionado(s)
+    Modo: {modo_texto}
 
-        # Inicializar lista
-        update_item_list()
+    Deseja continuar?"""
+            
+            if not messagebox.askyesno("Confirmar Aplicação", confirmacao):
+                return
 
-    def add_item_to_current_kit(self):
-        """Adiciona um item ao kit atualmente selecionado"""
-        current_kit = self.kit_var.get()
-        
-        if current_kit == "Sem kits":
-            messagebox.showwarning("Aviso", "Selecione um kit primeiro.")
-            return
-        
-        if not hasattr(D, 'KitsDisponíveis') or current_kit not in D.KitsDisponíveis:
-            messagebox.showwarning("Aviso", "Kit não encontrado.")
-            return
-        
-        # Mostrar popup de seleção de item
-        self.show_item_selection_popup(current_kit)
+            try:
+                sucessos = 0
+                falhas = []
+                detalhes_sucesso = []
+                
+                for char in personagens_selecionados:
+                    try:
+                        relatorio = char.receber_kit_avancado(kit_obj, modo)
+                        if relatorio["sucesso"]:
+                            sucessos += 1
+                            if relatorio.get("detalhes"):
+                                detalhes_sucesso.append(f"{char.nome}: {relatorio['detalhes']}")
+                        else:
+                            falhas.append(f"{char.nome}: {', '.join(relatorio.get('erros', ['Erro desconhecido']))}")
+                    except Exception as e:
+                        falhas.append(f"{char.nome}: {str(e)}")
 
-    def remove_item_from_kit(self, item_indice, categoria):
-        """Remove um item específico do kit"""
-        selected_kit = self.kit_var.get()
-        
-        if selected_kit not in D.KitsDisponíveis:
-            return
-        
-        if categoria not in D.KitsDisponíveis[selected_kit]:
-            return
-        
-        # Remover o item índice da lista
+                # Mostrar resultado detalhado
+                if not falhas:
+                    resultado = f"✅ Kit '{kit_obj.nome}' aplicado com sucesso!\n\n"
+                    resultado += f"Personagens afetados: {sucessos}\n"
+                    resultado += f"Modo: {modo_texto}\n\n"
+                    if detalhes_sucesso:
+                        resultado += "Detalhes:\n" + "\n".join(detalhes_sucesso[:3])
+                        if len(detalhes_sucesso) > 3:
+                            resultado += f"\n... e mais {len(detalhes_sucesso) - 3} aplicação(ões)"
+                            
+                    messagebox.showinfo("Sucesso Total", resultado)
+                else:
+                    resultado = f"Resultado da aplicação do kit '{kit_obj.nome}':\n\n"
+                    resultado += f"✅ Sucessos: {sucessos}\n❌ Falhas: {len(falhas)}\n\n"
+                    
+                    if falhas:
+                        resultado += "Detalhes das falhas:\n"
+                        resultado += "\n".join(falhas[:3])
+                        if len(falhas) > 3:
+                            resultado += f"\n... e mais {len(falhas) - 3} falha(s)"
+                            
+                    messagebox.showwarning("Resultado Parcial", resultado)
+                
+                popup.destroy()
+                
+            except Exception as e:
+                messagebox.showerror("Erro", f"Erro crítico ao aplicar kit:\n{str(e)}")
+
+        # Botões
+        tk.Button(button_frame, text="✅ Aplicar Kit", command=aplicar_kit, 
+                bg="#228B22", fg="white", font=("Arial", 13, "bold"), 
+                width=18, height=2).pack(side="left", padx=10)
+
+        tk.Button(button_frame, text="❌ Cancelar", command=popup.destroy, 
+                bg="#8B0000", fg="white", font=("Arial", 13, "bold"), 
+                width=18, height=2).pack(side="left", padx=10)
+
+    def refresh_kits(self):
+        """Recarrega todos os kits do banco de dados"""
         try:
-            D.KitsDisponíveis[selected_kit][categoria].remove(item_indice)
-            self.refresh_items()
-        except ValueError:
-            pass
+            D.refresh_kits()  # Chama a função do módulo D para recarregar
+            
+            # Atualizar a lista de kits na interface
+            self.create_kit_list_section(self.current_frame if hasattr(self, 'current_frame') else self.kit_list_frame)
+            
+            # Atualizar o kit selecionado se existir
+            if hasattr(self, 'kit_var'):
+                kits_keys = list(D.KitsDisponíveis.keys()) if hasattr(D, 'KitsDisponíveis') and D.KitsDisponíveis else []
+                if kits_keys:
+                    if self.kit_var.get() not in kits_keys:
+                        self.kit_var.set(kits_keys[0])
+                else:
+                    self.kit_var.set("Sem kits")
+                    
+            messagebox.showinfo("Sucesso", "Kits atualizados com sucesso!")
+            
+        except Exception as e:
+            messagebox.showerror("Erro", f"Erro ao atualizar kits: {str(e)}")
 
-    def view_item_details(self, item_indice):
-        """Visualizar detalhes do item índice"""
-        nome = item_indice.get('nome', 'Desconhecido')
-        classe = item_indice.get('classe', 'Desconhecida')
-        quantidade = item_indice.get('quantidade', 1)
+    def delete_kit(self, kit_name):
+        """Apaga um kit específico"""
+        from tkinter import messagebox
         
-        details = f"Item: {nome}\n"
-        details += f"Classe: {classe}\n"
-        details += f"Quantidade: {quantidade}\n"
+        result = messagebox.askyesno("Confirmar Exclusão", 
+                                f"Tem certeza que deseja apagar o kit '{kit_name}'?\n\n⚠️ Esta ação não pode ser desfeita!")
         
-        messagebox.showinfo("Detalhes do Item", details)
+        if result:
+            try:
+                # Remover o kit do dicionário
+                if hasattr(D, 'KitsDisponíveis') and kit_name in D.KitsDisponíveis:
+                    del D.KitsDisponíveis[kit_name]
+                    
+                    # Atualizar a interface
+                    frame_to_update = self.current_frame if hasattr(self, 'current_frame') else (
+                        self.kit_list_frame if hasattr(self, 'kit_list_frame') else None
+                    )
+                    
+                    if frame_to_update:
+                        self.create_kit_list_section(frame_to_update)
+                    
+                    messagebox.showinfo("Sucesso", f"Kit '{kit_name}' foi apagado com sucesso! 🗑️")
+                else:
+                    messagebox.showerror("Erro", f"Kit '{kit_name}' não encontrado!")
+                    
+            except Exception as e:
+                messagebox.showerror("Erro", f"Erro ao apagar o kit:\n{str(e)}")
 
-    def refresh_items(self, *args):
-        """Atualiza apenas a lista de items"""
-        self.create_item_list_section(self.item_list_frame)
-### --- Itens --- ###
+### --- Kits --- ###
 
 # --- Refresh --- #
     def refresh_all(self):
         """Atualiza todas as listas"""
         self.create_group_list_section(self.group_list_frame)
         self.create_list_section(self.char_list_frame)
+        self.create_kit_management(self.kit_management_frame)
         self.create_kit_list_section(self.kit_list_frame)
-        self.create_item_management(self.item_management_frame)
-        self.create_item_list_section(self.item_list_frame)
 
     def refresh(self, *args):
         self.refresh_all()
 # --- Refresh --- #
-
-# --- Criação e Geração de personagens --- #
-    def add_character(self, title):
-        # Verificar se existem grupos disponíveis
-        grupos_disponiveis = list(D.GruposDePersonagens.keys())
-        
-        if not grupos_disponiveis:
-            messagebox.showwarning("Aviso", "Nenhum grupo disponível!\n\nCrie um grupo primeiro antes de adicionar personagens.")
-            return
-        
-        popup = tk.Toplevel(self)
-        popup.title("Criar Novo Personagem")
-        popup.geometry("400x550")
-        popup.config(bg="#130f26")
-
-        # Usar self.group_var ao invés de criar uma nova variável local
-        tk.Label(popup, text="Inserir em:", bg="#130f26", fg="white", font=("Arial", 12)).pack(pady=(10, 0))
-
-        # Modificando o Combobox para usar self.group_var e valores corretos
-        lista_menu = ttk.Combobox(popup, textvariable=self.group_var, state="readonly", 
-                                values=grupos_disponiveis, font=("Arial", 11))
-        lista_menu.pack(pady=(0, 10))
-
-        campos = ["Nome", "Nível", "Força", "Agilidade", "Vigor", "Inteligência", "Presença", "Tática"]
-        entradas = {}
-
-        for i, campo in enumerate(campos):
-            tk.Label(popup, text=campo, bg="#130f26", fg="white", font=("Arial", 12)).pack(pady=(5 if i else 10, 0))
-            entrada = tk.Entry(popup, font=("Arial", 12))
-            entrada.pack()
-            entradas[campo] = entrada
-
-        def confirmar():
-            try:
-                nome = entradas["Nome"].get()
-                nivel = int(entradas["Nível"].get())
-                Forca = int(entradas["Força"].get())
-                Agilidade = int(entradas["Agilidade"].get())
-                Vigor = int(entradas["Vigor"].get())
-                Inteligencia = int(entradas["Inteligência"].get())
-                Presenca = int(entradas["Presença"].get())
-                Tatica = int(entradas["Tática"].get())
-
-                # Cria o personagem com as proficiências padrão (todas com valor 0)
-                novo_personagem = CB.Personagem(nome, nivel, Forca, Agilidade, Vigor, Inteligencia, Presenca, Tatica, proficiencias_base=D.Proficiencias)
-
-                destino = self.group_var.get()
-                if destino in D.GruposDePersonagens:
-                    D.GruposDePersonagens[destino].append(novo_personagem)
-
-                popup.destroy()
-                self.refresh()
-            except ValueError:
-                messagebox.showerror("Erro", "Preencha todos os campos corretamente!")
-
-        tk.Button(popup, text="Confirmar", command=confirmar, bg="#1a0869", fg="white", font=("Arial", 14), width=20).pack(pady=20)
-
-    def remove_specific_character(self, character):
-        selected_group = self.group_var.get()
-        print(f"Removendo personagem: {character.nome} do grupo {selected_group}")
-        
-        if selected_group in D.GruposDePersonagens:
-            try:
-                D.GruposDePersonagens[selected_group].remove(character)
-            except ValueError:
-                print("Personagem não encontrado no grupo.")
-        
-        self.refresh()
-
-    def gerar_NPC(self, title):
-        import random
-        import tkinter as tk
-        from tkinter import ttk, messagebox
-        from Dados import carregar_tipos_npcs_por_grupo, filtrar_proficiencias, GruposDePersonagens
-
-        # Verificar se existem grupos disponíveis em D.GruposDePersonagens
-        grupos_disponiveis = list(D.GruposDePersonagens.keys())
-        
-        if not grupos_disponiveis:
-            messagebox.showwarning("Aviso", "Nenhum grupo disponível!\n\nCrie um grupo primeiro antes de gerar NPCs.")
-            return
-
-        popup = tk.Toplevel(self)
-        popup.title("Gerar NPC")
-        popup.geometry("400x350")
-        popup.config(bg="#130f26")
-
-        entradas = {}
-
-        # --- Carregar e organizar NPCs por grupo (usando banco de dados) ---
-        npcs_por_grupo = carregar_tipos_npcs_por_grupo()
-        
-        if not npcs_por_grupo:
-            messagebox.showerror("Erro", "Não foi possível carregar os tipos de NPCs do banco de dados.")
-            popup.destroy()
-            return
-
-        # --- Grupo de Destino (usar D.GruposDePersonagens) ---
-        tk.Label(popup, text="Inserir em:", bg="#130f26", fg="white", font=("Arial", 12)).pack(pady=(10, 0))
-        grupo_destino_var = tk.StringVar(value=grupos_disponiveis[0])
-        grupo_destino_menu = ttk.Combobox(popup, textvariable=grupo_destino_var, state="readonly",
-                                        values=grupos_disponiveis, font=("Arial", 11))
-        grupo_destino_menu.pack(pady=(0, 10))
-        entradas["GrupoDestino"] = grupo_destino_var
-
-        # --- Grupo (Facção) ---
-        tk.Label(popup, text="Grupo (Facção)", bg="#130f26", fg="white", font=("Arial", 12)).pack(pady=(10, 0))
-        grupos_npcs = list(npcs_por_grupo.keys())
-        grupo_var = tk.StringVar(value=grupos_npcs[0] if grupos_npcs else "")
-        grupo_menu = tk.OptionMenu(popup, grupo_var, *grupos_npcs)
-        grupo_menu.config(bg="#1a0869", fg="white", font=("Arial", 12), width=30)
-        grupo_menu.pack(pady=5)
-        entradas["Grupo"] = grupo_var
-
-        # --- Classe do NPC ---
-        tk.Label(popup, text="Classe do NPC", bg="#130f26", fg="white", font=("Arial", 12)).pack(pady=(10, 0))
-        classe_var = tk.StringVar()
-        classe_menu = tk.OptionMenu(popup, classe_var, "")
-        classe_menu.config(bg="#1a0869", fg="white", font=("Arial", 12), width=30)
-        classe_menu.pack(pady=5)
-        entradas["Classe"] = classe_var
-
-        def atualizar_classes(*_):
-            grupo_escolhido = grupo_var.get()
-            npcs_grupo = npcs_por_grupo.get(grupo_escolhido, [])
-            classes = [npc["classe"] for npc in npcs_grupo]  # Agora é dict, não objeto
-            menu = classe_menu["menu"]
-            menu.delete(0, "end")
-            if classes:
-                classe_var.set(classes[0])
-                for c in classes:
-                    menu.add_command(label=c, command=lambda value=c: classe_var.set(value))
-            else:
-                classe_var.set("")
-
-        grupo_var.trace_add("write", atualizar_classes)
-        atualizar_classes()
-
-        # --- Nível ---
-        tk.Label(popup, text="Nível do NPC", bg="#130f26", fg="white", font=("Arial", 12)).pack(pady=(10, 0))
-        nivel_entry = tk.Entry(popup, font=("Arial", 12), width=5, justify="center")
-        nivel_entry.insert(0, str(random.randint(1, 5)))
-        nivel_entry.pack(pady=5)
-        entradas["Nivel"] = nivel_entry
-
-        # --- Nome ---
-        tk.Label(popup, text="Nome do NPC (opcional)", bg="#130f26", fg="white", font=("Arial", 12)).pack(pady=(10, 0))
-        nome_entry = tk.Entry(popup, font=("Arial", 12), width=25, justify="center")
-        nome_entry.pack(pady=5)
-        entradas["Nome"] = nome_entry
-
-        # --- Confirmar ---
-        def confirmar():
-            try:
-                grupo = entradas["Grupo"].get()
-                classe_nome = entradas["Classe"].get()
-                nivel = int(entradas["Nivel"].get())
-                destino = entradas["GrupoDestino"].get()
-                nome = entradas["Nome"].get() or f"{classe_nome}_{random.randint(1, 50)}"
-
-                # Buscar NPC base (agora é dict do banco de dados)
-                npcs_grupo = npcs_por_grupo.get(grupo, [])
-                npc_base = next((npc for npc in npcs_grupo if npc["classe"] == classe_nome), None)
-                
-                if not npc_base:
-                    raise ValueError("Classe não encontrada no grupo.")
-
-                # Criar NPC usando dados do banco (assumindo que as chaves são as mesmas)
-                npc = CB.NPC(grupo, npc_base["classe"], npc_base["forca"], npc_base["agilidade"],
-                        npc_base["vigor"], npc_base["inteligencia"], npc_base["presenca"], npc_base["tatica"])
-
-                # Carregar proficiências do banco de dados
-                proficiencias = filtrar_proficiencias()  # Carrega todas as proficiências
-                
-                # Criar personagem sem kit
-                personagem = CB.Gerador(npc=npc, nivel=nivel, nome=nome, proficiencias_base=proficiencias)
-
-                self.carregar_armas_e_armaduras(personagem)
-                # Usar D.GruposDePersonagens
-                if destino in D.GruposDePersonagens:
-                    D.GruposDePersonagens[destino].append(personagem)
-
-                self.refresh()
-                popup.destroy()
-
-            except Exception as e:
-                messagebox.showerror("Erro", f"Ocorreu um erro ao gerar o NPC:\n{e}")
-
-        tk.Button(popup, text="Confirmar", command=confirmar, bg="#0b8f33", fg="white",
-                font=("Arial", 12, "bold")).pack(pady=20)
 
     def carregar_armas_e_armaduras(self, personagem):
         for entrada in personagem.inventario.itens:
@@ -2025,193 +1448,7 @@ class CharacterSelectScreen(tk.Frame):
                 if not sucesso:
                     print(f"[AVISO] Não foi possível equipar {item.nome} na região {item.regiao}")
 
-    def gerar_grupo_NPCs(self, title):
-        import random
-
-        grupos_disponiveis = list(D.GruposDePersonagens.keys())
-        
-        if not grupos_disponiveis:
-            messagebox.showwarning("Aviso", "Nenhum grupo disponível!\n\nCrie um grupo primeiro antes de gerar grupos de NPCs.")
-            return
-
-        # Carrega dados dos NPCs
-        dados_npcs = D.ler_dados_npcs()
-        npcs_por_faccao = {}
-        for npc in dados_npcs:
-            faccao = npc["grupo"]
-            classe = npc["classe"]
-            atributos = (
-                classe,
-                npc["forca"],
-                npc["agilidade"],
-                npc["vigor"],
-                npc["inteligencia"],
-                npc["presenca"],
-                npc["tatica"]
-            )
-            if faccao not in npcs_por_faccao:
-                npcs_por_faccao[faccao] = []
-            npcs_por_faccao[faccao].append(atributos)
-
-        popup = tk.Toplevel()
-        popup.title("Gerar Grupo de NPCs")
-        popup.configure(bg="#130f26")
-        popup.geometry("500x550")
-
-        entradas = {}
-
-        # Cabeçalho com opções iniciais
-        header_frame = tk.Frame(popup, bg="#130f26")
-        header_frame.pack(pady=10)
-
-        # Grupo de destino
-        tk.Label(header_frame, text="Inserir em:", bg="#130f26", fg="white").grid(row=0, column=0, padx=5, sticky="e")
-        destino_var = tk.StringVar(value=grupos_disponiveis[0])
-        destino_menu = ttk.Combobox(header_frame, textvariable=destino_var, state="readonly", values=grupos_disponiveis, width=20)
-        destino_menu.grid(row=0, column=1, padx=5)
-        entradas["Destino"] = destino_var
-
-        # Facção
-        tk.Label(header_frame, text="Facção:", bg="#130f26", fg="white").grid(row=0, column=2, padx=5, sticky="e")
-        faccao_var = tk.StringVar(value=list(npcs_por_faccao.keys())[0])
-        faccao_menu = ttk.Combobox(header_frame, textvariable=faccao_var, state="readonly", values=list(npcs_por_faccao.keys()), width=20)
-        faccao_menu.grid(row=0, column=3, padx=5)
-        entradas["Facção"] = faccao_var
-
-        # Quantidade
-        tk.Label(header_frame, text="Quantidade:", bg="#130f26", fg="white").grid(row=1, column=0, padx=5, pady=5, sticky="e")
-        qtd_var = tk.StringVar(value="3")
-        qtd_entry = tk.Entry(header_frame, textvariable=qtd_var, width=5, justify="center")
-        qtd_entry.grid(row=1, column=1, padx=5, pady=5)
-
-        # Área scrollável
-        canvas_frame = tk.Frame(popup, bg="#130f26")
-        canvas_frame.pack(fill="both", expand=True)
-
-        canvas = tk.Canvas(canvas_frame, bg="#130f26", highlightthickness=0)
-        scrollbar = tk.Scrollbar(canvas_frame, orient="vertical", command=canvas.yview)
-        scrollable_frame = tk.Frame(canvas, bg="#130f26")
-
-        scrollable_frame.bind("<Configure>", lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
-        canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
-        canvas.configure(yscrollcommand=scrollbar.set)
-
-        canvas.pack(side="left", fill="both", expand=True)
-        scrollbar.pack(side="right", fill="y")
-
-        slots = []
-
-        def gerar_slots(npcs_por_faccao=npcs_por_faccao):
-            for widget in scrollable_frame.winfo_children():
-                widget.destroy()
-            slots.clear()
-
-            faccao = faccao_var.get()
-            classes_disponiveis = [c[0] for c in npcs_por_faccao.get(faccao, [])]
-
-            try:
-                qtd = int(qtd_var.get())
-            except:
-                tk.messagebox.showerror("Erro", "Valores inválidos.")
-                return
-
-            if not classes_disponiveis:
-                tk.messagebox.showerror("Erro", f"Nenhuma classe disponível para a facção '{faccao}'.")
-                return
-
-            for i in range(qtd):
-                slot = {}
-                frame = tk.Frame(scrollable_frame, bg="#1f1b3a", bd=1, relief="solid", padx=5, pady=5)
-                frame.pack(padx=5, pady=5, fill="x")
-
-                tk.Label(frame, text=f"NPC {i+1}", bg="#1f1b3a", fg="white", font=("Arial", 10, "bold")).grid(row=0, column=0, columnspan=6, pady=(0, 5), sticky="w")
-
-                # Classe
-                tk.Label(frame, text="Classe", bg="#1f1b3a", fg="white").grid(row=1, column=0, padx=2, sticky="e")
-                classe_var = tk.StringVar(value=classes_disponiveis[0])
-                classe_menu = ttk.Combobox(frame, textvariable=classe_var, state="readonly", values=classes_disponiveis, width=20)
-                classe_menu.grid(row=1, column=1, padx=2)
-
-                # Nível
-                tk.Label(frame, text="Nível", bg="#1f1b3a", fg="white").grid(row=1, column=2, padx=2, sticky="e")
-                nivel_var = tk.StringVar(value="1")
-                nivel_entry = tk.Entry(frame, textvariable=nivel_var, width=5, justify="center")
-                nivel_entry.grid(row=1, column=3, padx=2)
-
-                # Nome (opcional)
-                tk.Label(frame, text="Nome (opcional)", bg="#1f1b3a", fg="white").grid(row=1, column=4, padx=2, sticky="e")
-                nome_var = tk.StringVar(value="")
-                nome_entry = tk.Entry(frame, textvariable=nome_var, width=15, justify="center")
-                nome_entry.grid(row=1, column=5, padx=2)
-
-                slot.update({
-                    "Classe": classe_var,
-                    "Nivel": nivel_var,
-                    "Nome": nome_var
-                })
-
-                slots.append(slot)
-
-        # Atualizar slots automaticamente ao trocar facção
-        faccao_var.trace_add("write", lambda *args: gerar_slots(npcs_por_faccao))
-
-        # Botões
-        tk.Button(popup, text="Gerar Slots", command=lambda:gerar_slots(npcs_por_faccao), font=("Arial", 11), bg="#0b4f8f", fg="white").pack(pady=(10, 10))
-        tk.Button(popup, text="Confirmar Geração", command=lambda: self.confirmar_geracao(slots, entradas, npcs_por_faccao), font=("Arial", 11), bg="#1a7837", fg="white").pack(pady=(0, 10))
-
-    def confirmar_geracao(self, slots, entradas, npcs_por_faccao):
-        import random
-        try:
-            faccao = entradas["Facção"].get()
-            destino = entradas["Destino"].get()
-
-            # Carregar os NPCs do JSON
-            npcs_disponiveis = D.carregar_npcs_json()
-
-            for i, slot in enumerate(slots):
-                classe_nome = slot["Classe"].get()
-                nivel = int(slot["Nivel"].get())
-                nome_customizado = slot["Nome"].get().strip()
-
-                # Buscar NPC correspondente pela facção e classe
-                npc_dict = next((n for n in npcs_disponiveis if n['faccao'] == faccao and n['classe'] == classe_nome), None)
-                if not npc_dict:
-                    raise ValueError(f"Classe '{classe_nome}' não encontrada na facção '{faccao}'.")
-
-                npc_base = CB.NPC(
-                    faccao=npc_dict['faccao'],
-                    classe=npc_dict['classe'],
-                    forca=int(npc_dict['forca']),
-                    agilidade=int(npc_dict['agilidade']),
-                    vigor=int(npc_dict['vigor']),
-                    inteligencia=int(npc_dict['inteligencia']),
-                    presenca=int(npc_dict['presenca']),
-                    tatica=int(npc_dict['tatica'])
-                )
-
-                # Definir nome (usar customizado ou gerar automaticamente)
-                nome = nome_customizado if nome_customizado else f"{classe_nome}_{random.randint(1, 99)}"
-
-                # Criar personagem sem kit
-                personagem = CB.Gerador(npc=npc_base, kit=None, nivel=nivel, nome=nome, proficiencias_base=D.Proficiencias)
-
-                # Pós-processamento
-                self.carregar_armas_e_armaduras(personagem)
-
-                # Adicionar ao grupo
-                if destino in D.GruposDePersonagens:
-                    D.GruposDePersonagens[destino].append(personagem)
-                else:
-                    raise ValueError(f"Grupo de destino '{destino}' não encontrado.")
-
-            self.refresh()
-            tk.messagebox.showinfo("Sucesso", "NPCs gerados com sucesso!")
-
-        except Exception as e:
-            tk.messagebox.showerror("Erro", f"Ocorreu um erro ao gerar os NPCs:\n{e}")
-# --- Criação e Geração de personagens --- #
-
-    def Voltar(self):
+    def TelaInicial(self):
         self.controller.TelaInicial()
 
     def TelaDeCombate(self):
@@ -2547,7 +1784,7 @@ class CharacterDetailsScreen(tk.Frame):
                 if item_id:
                     texto_item = item_nome
                 else:
-                    texto_item = f"{item_nome} x{quantidade}"
+                    texto_item = f"{item_nome} x {quantidade}"
 
                 btn_item = tk.Button(frame_item, text=texto_item, bg="#2a0d89", fg="white",
                     font=("Arial", 13), anchor='w', relief=tk.FLAT,borderwidth=0, highlightthickness=0, width=35,
@@ -2555,32 +1792,31 @@ class CharacterDetailsScreen(tk.Frame):
                 btn_item.pack(side="left", fill='x', expand=True)
 
                 if item_id:
-                    # Botão de melhorias para todos os itens com ID
                     btn_melhorias = tk.Button(frame_item, text="Upgrades", command=lambda i=item_obj: self.abrir_popup_melhorias_item(i), bg="#8B4513", fg="white", font=("Arial", 8), width=8)
-                    btn_melhorias.pack(side="right", padx=5)
+                    btn_melhorias.pack(side="right", padx=4)
                     
                     if isinstance(item_obj, (CB.Melee)):
                         btn_equipar = tk.Button(frame_item, text="Equip", command=lambda i=item_obj: self._equipar_item(i), bg="#2a0d89", fg="white", font=("Arial", 8), width=6)
-                        btn_equipar.pack(side="right", padx=5)
+                        btn_equipar.pack(side="right", padx=4)
                         btn_remover = tk.Button(frame_item,text="Discard",command=lambda i=item_obj: self._remover_item_do_inventario(i),bg="#2a0d89",fg="white",font=("Arial", 8))     
-                        btn_remover.pack(side="right", padx=5)
+                        btn_remover.pack(side="right", padx=4)
                         self.item_widgets.append(btn_equipar)
                     elif isinstance(item_obj, (CB.Ranged)):
                         btn_equipar = tk.Button(frame_item, text="Equip", command=lambda i=item_obj: self._equipar_item(i), bg="#2a0d89", fg="white", font=("Arial", 8), width=6)
-                        btn_equipar.pack(side="right", padx=5)
+                        btn_equipar.pack(side="right", padx=4)
                         btn_unload = tk.Button(frame_item, text="Unload", command=lambda i=item_obj: self.descarregar_municao_ranged(i), bg="#2a0d89", fg="white", font=("Arial", 8), width=6)
-                        btn_unload.pack(side="right", padx=5)
+                        btn_unload.pack(side="right", padx=4)
                         btn_remover = tk.Button(frame_item,text="Discard",command=lambda i=item_obj: self._remover_item_do_inventario(i),bg="#2a0d89",fg="white",font=("Arial", 8))     
-                        btn_remover.pack(side="right", padx=5)
+                        btn_remover.pack(side="right", padx=4)
                         self.item_widgets.extend([btn_equipar, btn_unload])
                     elif isinstance(item_obj, (CB.Protecao)):
                         print(f"Item {item_nome} é uma Protecao!")
                         regiao = getattr(item_obj, "regiao", None)
                         if regiao:
                             btn_equipar = tk.Button(frame_item, text="Equip", command=lambda i=item_obj: self._equipar_protecao(i), bg="#2a0d89", fg="white", font=("Arial", 8), width=6)
-                            btn_equipar.pack(side="right", padx=5)
+                            btn_equipar.pack(side="right", padx=4)
                             btn_remover = tk.Button(frame_item,text="Discard",command=lambda i=item_obj: self._remover_item_do_inventario(i),bg="#2a0d89",fg="white",font=("Arial", 8))     
-                            btn_remover.pack(side="right", padx=5)
+                            btn_remover.pack(side="right", padx=4)
                             self.item_widgets.append(btn_equipar)
                     else:
                         btn_remover = tk.Button(
@@ -2668,14 +1904,16 @@ class CharacterDetailsScreen(tk.Frame):
                 "Rosto": self.character.Rosto,
                 "Torso": self.character.Torso,
                 "Braços": self.character.Braços,
-                "Pernas": self.character.Pernas}
+                "Pernas": self.character.Pernas
+            }
 
             for regiao, protecao in regioes.items():
                 frame_linha = tk.Frame(self.frame_lista_protecoes, bg='#1a0869')
                 frame_linha.pack(fill='x', pady=5)
                 self.protecao_widgets.append(frame_linha)
 
-                nome_protecao = protecao.nome if protecao else "Nenhuma"
+                # Obtém o nome da proteção de forma segura
+                nome_protecao = self.obter_nome_protecao(protecao)
                 label_texto = f"{regiao}: {nome_protecao}"
                 label = tk.Label(frame_linha, text=label_texto, font=("Arial", 14), bg='#2a0d89', fg='white', width=25, anchor='w')
                 label.pack(side='left', padx=10)
@@ -2705,11 +1943,15 @@ class CharacterDetailsScreen(tk.Frame):
     # proficiencias #
     def incrementar_proficiencia(self, prof):
         prof.nivel += 1
-        self.refresh()
+        self.character.recalcularAtributos()
+        self.refresh_info_basica()
+        self.refresh_proficiencias()
     
     def decrementar_proficiencia(self, prof):
         prof.nivel -= 1
-        self.refresh()
+        self.character.recalcularAtributos()
+        self.refresh_info_basica()
+        self.refresh_proficiencias()
     # proficiencias #
     
     # inventário #
@@ -2727,20 +1969,21 @@ class CharacterDetailsScreen(tk.Frame):
         popup.configure(bg="#1a0869")
         popup.geometry("370x500")
 
-        categorias = {
-            "Armas de Fogo": D.Rangeds,
-            "Armas Corpo a Corpo": D.Melees,
-            "Proteções": D.Protecoes,
-            "Melhorias": D.Melhorias,
-            "Munições": D.Municoes,
-            "Consumíveis": D.Consumiveis,
-            "Explosivos": D.Explosivos,
-            "Itens": D.Items
+        # Carrega os dados das tabelas usando as novas funções
+        dados_tabelas = {
+            "Armas de Fogo": D.carregar_rangeds(),
+            "Armas Corpo a Corpo": D.carregar_melees(),
+            "Proteções": D.carregar_protecoes(),
+            "Melhorias": D.carregar_melhorias(),
+            "Munições": D.carregar_municoes(),
+            "Consumíveis": D.carregar_consumiveis(),
+            "Explosivos": D.carregar_explosivos(),
+            "Itens": D.carregar_itens()
         }
 
         tk.Label(popup, text="Categoria:", bg="#1a0869", fg="white", font=("Arial", 16)).pack(pady=5)
         categoria_var = tk.StringVar()
-        categoria_menu = ttk.Combobox(popup, textvariable=categoria_var, values=list(categorias.keys()))
+        categoria_menu = ttk.Combobox(popup, textvariable=categoria_var, values=list(dados_tabelas.keys()))
         categoria_menu.pack(pady=(0, 10))
 
         # Área de scroll
@@ -2759,7 +2002,8 @@ class CharacterDetailsScreen(tk.Frame):
         scrollbar.pack(side="right", fill="y")
 
         # Botão Voltar
-        btn_voltar = tk.Button( popup, text="Voltar", command=popup.destroy, bg="#a00c0c", fg="white", font=("Arial", 12))
+        btn_voltar = tk.Button(popup, text="Voltar", command=popup.destroy, 
+                            bg="#a00c0c", fg="white", font=("Arial", 12))
         btn_voltar.pack(pady=10, side="bottom")
 
         quantidade_widgets = {}
@@ -2770,54 +2014,163 @@ class CharacterDetailsScreen(tk.Frame):
             quantidade_widgets.clear()
 
             categoria = categoria_var.get()
-            if not categoria:
+            if not categoria or categoria not in dados_tabelas:
                 return
 
-            for nome_item, item_func in categorias[categoria].items():
-                item_obj = item_func() if callable(item_func) else item_func
-
+            # Agora iteramos sobre o dicionário de itens da categoria
+            itens_categoria = dados_tabelas[categoria]
+            
+            for nome_item, item_data in itens_categoria.items():
                 frame_item = tk.Frame(scrollable_frame, bg="#1a0869")
                 frame_item.pack(fill="x", pady=2)
 
-                # Campo de quantidade se for stackável
-                if not hasattr(item_obj, "Id"):
+                # Campo de quantidade para itens stackáveis
+                # Verifica se o item não tem "id" (indicando que é stackável)
+                if "id" not in item_data:
                     qtd_var = tk.StringVar(value="1")
-                    qtd_entry = tk.Entry(frame_item, textvariable=qtd_var, width=5, font=("Arial", 12))
+                    qtd_entry = tk.Entry(frame_item, textvariable=qtd_var, 
+                                    width=5, font=("Arial", 12))
                     qtd_entry.pack(side="right", padx=5)
                     quantidade_widgets[nome_item] = qtd_var
 
-                btn_item = tk.Button( frame_item, text=nome_item,
-                    bg="#0e3386", fg="white", width=28, font=("Arial", 12),
-                    command=lambda n=nome_item: adicionar_item(categoria, n))
+                btn_item = tk.Button(frame_item, text=nome_item,
+                                bg="#0e3386", fg="white", width=28, font=("Arial", 12),
+                                command=lambda n=nome_item: adicionar_item(categoria, n))
                 btn_item.pack(side="left", padx=5)
 
         def adicionar_item(categoria, nome_item):
-            item_obj = categorias[categoria][nome_item]
-            item_obj = item_obj() if callable(item_obj) else item_obj
-            quantidade = 1
-
-            if not hasattr(item_obj, "Id"):
-                qtd_str = quantidade_widgets.get(nome_item).get()
-                try:
-                    quantidade = int(qtd_str)
-                    if quantidade <= 0:
-                        raise ValueError
-                except ValueError:
-                    tk.messagebox.showerror("Erro", "Quantidade inválida.")
+            try:
+                # Pega os dados do item diretamente da categoria carregada
+                item_data = dados_tabelas[categoria][nome_item]
+                
+                # Cria o objeto do item baseado na categoria
+                item_obj = criar_item_por_categoria(categoria, item_data)
+                
+                if item_obj is None:
+                    tk.messagebox.showerror("Erro", f"Erro ao criar item '{nome_item}'.")
                     return
+                
+                quantidade = 1
 
-            self.character.inventario.gerenciar_item(item_objeto=item_obj, quantidade=quantidade, operacao="adicionar")
-            self.refresh()
+                # Verifica se é um item stackável (sem ID único)
+                if not hasattr(item_obj, "Id"):
+                    if nome_item in quantidade_widgets:
+                        qtd_str = quantidade_widgets[nome_item].get()
+                        try:
+                            quantidade = int(qtd_str)
+                            if quantidade <= 0:
+                                raise ValueError("Quantidade deve ser maior que zero")
+                        except ValueError:
+                            tk.messagebox.showerror("Erro", "Quantidade inválida.")
+                            return
+
+                # Adiciona o item ao inventário
+                self.character.inventario.gerenciar_item(item_objeto=item_obj, 
+                                                    quantidade=quantidade, 
+                                                    operacao="adicionar")
+                self.refresh()
+                
+                # Feedback para o usuário
+                tk.messagebox.showinfo("Sucesso", f"'{nome_item}' adicionado ao inventário!")
+                
+            except Exception as e:
+                tk.messagebox.showerror("Erro", f"Erro ao adicionar item: {str(e)}")
+
+        def criar_item_por_categoria(categoria, item_data):
+            """Cria um objeto de item baseado na categoria e dados"""
+            try:
+                if categoria == "Armas de Fogo":
+                    from Codigos import Ranged
+                    return Ranged(
+                        nome=item_data.get("nome", "Arma de Fogo"),
+                        peso=item_data.get("peso", 2.0),
+                        classe=item_data.get("classe", "Pistola"),
+                        acao=item_data.get("acao", "Semi"),
+                        raridade=item_data.get("raridade", "Comum"),
+                        calibre=item_data.get("calibre", ".22"),
+                        capacidade=item_data.get("capacidade", 10)
+                    )
+                    
+                elif categoria == "Armas Corpo a Corpo":
+                    from Codigos import Melee
+                    return Melee(
+                        nome=item_data.get("nome", "Arma Branca"),
+                        peso=item_data.get("peso", 1.0),
+                        classe=item_data.get("classe", "Faca"),
+                        tipo_dano=item_data.get("tipo_dano", "Cortante"),
+                        raridade=item_data.get("raridade", "Comum")
+                    )
+                    
+                elif categoria == "Proteções":
+                    from Codigos import Protecao
+                    return Protecao(
+                        nome=item_data.get("nome", "Proteção"),
+                        peso=item_data.get("peso", 1.0),
+                        nivelBalistico=item_data.get("nivelBalistico", 1),
+                        absorcaoFisica=item_data.get("absorcaoFisica", 1),
+                        absorcaoBalistica=item_data.get("absorcaoBalistica", 1),
+                        regiao=item_data.get("regiao", "Torso")
+                    )
+                    
+                elif categoria == "Melhorias":
+                    from Codigos import Melhoria
+                    return Melhoria(
+                        nome=item_data.get("nome", "Melhoria"),
+                        peso=item_data.get("peso", 0.1),
+                        tipo=item_data.get("tipo", "ranged"),
+                        modificadores=item_data.get("modificadores", {})
+                    )
+                    
+                elif categoria == "Munições":
+                    from Codigos import Municao
+                    return Municao(
+                        nome=item_data.get("nome", "Munição"),
+                        calibre=item_data.get("calibre", ".22"),
+                        perfuracao=item_data.get("perfuracao", 1),
+                        dano=item_data.get("dano", 5)
+                    )
+                    
+                elif categoria == "Consumíveis":
+                    from Codigos import Consumivel
+                    return Consumivel(
+                        nome=item_data.get("nome", "Consumível"),
+                        peso=item_data.get("peso", 1.0),
+                        cura=item_data.get("cura", 0),
+                        energia=item_data.get("energia", 0)
+                    )
+                    
+                elif categoria == "Explosivos":
+                    from Codigos import Explosivo
+                    return Explosivo(
+                        nome=item_data.get("nome", "Explosivo"),
+                        peso=item_data.get("peso", 1.0),
+                        raio=item_data.get("raio", 1),
+                        dano=item_data.get("dano", 10),
+                        tipo_dano=item_data.get("tipo_dano", 1)
+                    )
+                    
+                elif categoria == "Itens":
+                    from Codigos import Item
+                    return Item(
+                        nome=item_data.get("nome", "Item"),
+                        peso=item_data.get("peso", 1.0)
+                    )
+                    
+                else:
+                    return None
+                    
+            except Exception as e:
+                print(f"❌ Erro ao criar item da categoria {categoria}: {e}")
+                return None
 
         categoria_var.trace_add("write", exibir_itens)
-    
+
     def remover_protecao(self, regiao):
         try:
             # Acessa a proteção atual do personagem naquela região
             protecao_atual = getattr(self.character, regiao, None)
 
             if not protecao_atual:
-                print(f"Nenhuma proteção equipada na região: {regiao}")
                 return
 
             # Retorna o item ao inventário do personagem
@@ -2829,7 +2182,6 @@ class CharacterDetailsScreen(tk.Frame):
             # Recalcula peso e atualiza interface
             self.character.calcular_peso_total()
             self.refresh()
-            print(f"Proteção removida da região: {regiao}")
 
         except Exception as e:
             print("Erro ao remover proteção:", e)
@@ -2995,6 +2347,22 @@ class CharacterDetailsScreen(tk.Frame):
                 tk.Label(linha, text=f"{chave}:", font=("Arial", 12, "bold"), fg="white", bg="#130f26").pack(side="left")
                 tk.Label(linha, text=f" {valor}", font=("Arial", 12), fg="white", bg="#130f26").pack(side="left")
     
+    def obter_nome_protecao(self, protecao):
+        """Obtém o nome da proteção de forma segura"""
+        if not protecao:
+            return "Nenhuma"
+        
+        # Se é um dicionário, pega o nome diretamente
+        if isinstance(protecao, dict):
+            return protecao.get("nome", "Desconhecida")
+        
+        # Se é um objeto, pega o atributo nome
+        if hasattr(protecao, 'nome'):
+            return protecao.nome
+        
+        # Fallback
+        return str(protecao)
+
     def _equipar_item(self, item):
         try:
             sucesso = self.character.equipar_item(item)
@@ -4279,16 +3647,15 @@ class CombatSystemScreen(tk.Frame):
     def create_list_section_with_group(self, grupo_nome, x, y):
         """Cria uma seção de lista para um grupo específico"""
         if not grupo_nome or grupo_nome not in D.GruposDePersonagens:
-            # Criar frame vazio se não há grupo selecionado
             frame = tk.Frame(self, bg='#1a0869')
-            frame.place(x=x, y=y, width=350, height=550)
+            frame.place(x=x, y=y, width=400, height=550)
             tk.Label(frame, text="Nenhum grupo selecionado", fg="gray", bg="#1a0869", font=("Arial", 14)).pack(pady=200)
             return frame
         
         data_list = D.GruposDePersonagens[grupo_nome]
         
         frame = tk.Frame(self, bg='#1a0869')
-        frame.place(x=x, y=y, width=350, height=550)
+        frame.place(x=x, y=y, width=400, height=550)
 
         label = tk.Label(frame, text=grupo_nome, fg="white", bg="#1a0869", font=("Arial", 16, "bold"))
         label.pack()
@@ -4312,40 +3679,43 @@ class CombatSystemScreen(tk.Frame):
         inner_frame.bind("<Configure>", lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
 
         for char in data_list:
-            char_frame = tk.Frame(inner_frame, bg="#220866", bd=2, relief="groove", width=400)
-            char_frame.pack(fill="x", padx=5, pady=5)
+            char_frame = tk.Frame(inner_frame, bg="#220866", bd=2, relief="groove")
+            char_frame.pack(fill="x", padx=10, pady=5)  # padx=5 para deixar 5px de margem de cada lado
+            char_frame.pack_propagate(False)  # Impede que o frame se redimensione baseado no conteúdo
+            char_frame.configure(width=360, height=150)
 
-            info = f"{char.nome} || Nv {char.nivel} || XP: {char.XPAtual}/{char.XPlvlUp}\n"
-            info += f"PV: {char.vidaAtual}/{char.vidaMax} || PE: {char.PeAtual}/{char.PeMax}\n"
-            info += f"Bloqueio: {char.bloqueio} | Esquiva: {char.esquiva}"
-            tk.Label(char_frame, text=info, bg="#220866", fg="white", font=("Arial", 10), justify="left").pack(anchor="w", padx=5, pady=2)
+            info = f"{char.nome}   ||  Nv {char.nivel}   ||  XP:  {char.XPAtual}/{char.XPlvlUp}\n"
+            info += f"PV: {char.vidaAtual}/{char.vidaMax}    ||   PE: {char.PeAtual}/{char.PeMax}\n"
+            info += f"Bloqueio: {char.bloqueio}   |   Esquiva: {char.esquiva}"
+            tk.Label(char_frame, text=info, bg="#220866", fg="white", font=("Arial", 12), justify="left").pack(anchor="w", padx=10, pady=5)
 
             # Linha com dois botões
             botoes_frame = tk.Frame(char_frame, bg="#220866")
-            botoes_frame.pack(pady=2)
+            botoes_frame.pack(pady=5)
 
-            tk.Button(botoes_frame, text="Abrir Detalhes", bg="#1a0869", fg="white", font=("Arial", 9),command=lambda c=char: self.controller.abrir_detalhes(c)).pack(side="left", padx=5)
+            tk.Button(botoes_frame, text="Abrir Detalhes", bg="#1a0869", fg="white", font=("Arial", 12), 
+                    command=lambda c=char: self.controller.abrir_detalhes(c)).pack(side="left", padx=10)
 
-            tk.Button(botoes_frame, text="Abrir ações", bg="#3a0a80", fg="white", font=("Arial", 9), command=lambda c=char: self.abrir_popup_acoes(c)).pack(side="left", padx=5)
+            tk.Button(botoes_frame, text="Abrir ações", bg="#3a0a80", fg="white", font=("Arial", 12), 
+                    command=lambda c=char: self.abrir_popup_acoes(c)).pack(side="left", padx=10)
 
             valor_var = tk.IntVar(value=1)
             controle_frame = tk.Frame(char_frame, bg="#220866")
             controle_frame.pack(pady=2)
 
             entry = tk.Entry(controle_frame, textvariable=valor_var, width=3, font=("Arial", 10))
-            entry.grid(row=0, column=2, padx=5)
+            entry.grid(row=0, column=2, padx=10)
 
             # PV
             tk.Button(controle_frame, text="+PV", command=lambda c=char, v=valor_var: self.aplicar_cura(c, v),
-                    width=3, font=("Arial", 8)).grid(row=0, column=0)
+                    width=4, font=("Arial", 10)).grid(row=0, column=0)
             tk.Button(controle_frame, text="-PV", command=lambda c=char, v=valor_var: self.aplicar_dano(c, v),
-                    width=3, font=("Arial", 8)).grid(row=0, column=1)
-
+                    width=4, font=("Arial", 10)).grid(row=0, column=1)
             # PE
             tk.Button(controle_frame, text="+PE", command=lambda c=char, v=valor_var: self.aplicar_ganho_energia(c, v),
-                    width=3, font=("Arial", 8)).grid(row=0, column=3)
+                    width=4, font=("Arial", 10)).grid(row=0, column=3)
             tk.Button(controle_frame, text="-PE", command=lambda c=char, v=valor_var: self.aplicar_gasto_energia(c, v),
-                    width=3, font=("Arial", 8)).grid(row=0, column=4)
+                    width=4, font=("Arial", 10)).grid(row=0, column=4)
 
         return frame
 
@@ -4375,6 +3745,8 @@ class CombatSystemScreen(tk.Frame):
         if isinstance(valor, int) and valor > 0:
             personagem.GanharEnergia(valor)
             self.refresh()
+
+    ### CORREÇÃO DO MÉTODO REFRESH (adicionar antes dos outros métodos)
 
     def refresh(self):
         """Atualiza as listas de personagens nas interfaces e as comboboxes de grupos"""
@@ -4407,16 +3779,16 @@ class CombatSystemScreen(tk.Frame):
             self.frame_lista_esquerda.destroy()
             self.frame_lista_esquerda = self.create_list_section_with_group(self.grupo_esquerdo, x=50, y=150)
         
-        # Atualizar lista direita se existe
+        # Atualizar lista direita se existe - COORDENADA CORRIGIDA
         if hasattr(self, 'frame_lista_direita') and self.frame_lista_direita:
             self.frame_lista_direita.destroy()
-            self.frame_lista_direita = self.create_list_section_with_group(self.grupo_direito, x=1150, y=150)
+            self.frame_lista_direita = self.create_list_section_with_group(self.grupo_direito, x=1150 , y=150)
 
     def abrir_popup_acoes(self, personagem):
         popup = tk.Toplevel(self)
         popup.title(f"Ações - {personagem.nome}")
         popup.configure(bg="#1a0869")
-        popup.geometry("350x400")
+        popup.geometry("350x500")  # Aumentado a altura
         popup.resizable(False, False)
         
         tk.Label(popup, text=f"Ações disponíveis para {personagem.nome}", 
@@ -4436,6 +3808,21 @@ class CombatSystemScreen(tk.Frame):
             popup.destroy()
             self.abrir_popup_loot_com_origem(personagem)
         
+        # Função para trocar arma
+        def trocar_arma():
+            popup.destroy()
+            self.abrir_popup_trocar_arma(personagem)
+        
+        # Função para recarregar arma
+        def recarregar_arma():
+            popup.destroy()
+            self.abrir_popup_recarregar_arma(personagem)
+        
+        # Função para descarregar arma
+        def descarregar_arma():
+            popup.destroy()
+            self.abrir_popup_descarregar_arma(personagem)
+        
         # Botões de ação
         tk.Button(botoes_frame, text="Atacar", command=abrir_menu_ataque, 
                 bg="#8B0000", fg="white", font=("Arial", 12), width=15, height=2).pack(pady=5)
@@ -4443,13 +3830,13 @@ class CombatSystemScreen(tk.Frame):
         tk.Button(botoes_frame, text="Pilhar", command=pilhar,
                 bg="#4B0082", fg="white", font=("Arial", 12), width=15, height=2).pack(pady=5)
         
-        tk.Button(botoes_frame, text="Recarregar", command=lambda: print(f"Recarregar - {personagem.nome}"),
+        tk.Button(botoes_frame, text="Recarregar", command=recarregar_arma,
                 bg="#006400", fg="white", font=("Arial", 12), width=15, height=2).pack(pady=5)
         
-        tk.Button(botoes_frame, text="Descarregar", command=lambda: print(f"Descarregar - {personagem.nome}"),
+        tk.Button(botoes_frame, text="Descarregar", command=descarregar_arma,
                 bg="#FF8C00", fg="white", font=("Arial", 12), width=15, height=2).pack(pady=5)
         
-        tk.Button(botoes_frame, text="Trocar Arma", command=lambda: print(f"Trocar Arma - {personagem.nome}"),
+        tk.Button(botoes_frame, text="Trocar Arma", command=trocar_arma,
                 bg="#2F4F4F", fg="white", font=("Arial", 12), width=15, height=2).pack(pady=5)
         
         # Botão de fechar
@@ -4481,6 +3868,8 @@ class CombatSystemScreen(tk.Frame):
             popup.destroy()
             self.abrir_popup_ataque_ranged(atacante_pre_selecionado)
         
+        
+        
         # Botões de tipo de ataque
         tk.Button(botoes_frame, text="Ataque Melee", command=ataque_melee,
                 bg="#8B0000", fg="white", font=("Arial", 12), width=20, height=2).pack(pady=5)
@@ -4488,11 +3877,11 @@ class CombatSystemScreen(tk.Frame):
         tk.Button(botoes_frame, text="Ataque Ranged", command=ataque_ranged,
                 bg="#006400", fg="white", font=("Arial", 12), width=20, height=2).pack(pady=5)
         
-        tk.Button(botoes_frame, text="Ataque Explosivo", command=lambda: print("Funcionalidade não implementada"),
+        tk.Button(botoes_frame, text="Ataque arma especial", command=lambda: print("Funcionalidade não implementada"),
                 bg="#FF8C00", fg="white", font=("Arial", 12), width=20, height=2, state="disabled").pack(pady=5)
         
-        tk.Button(botoes_frame, text="Ataque Mágico", command=lambda: print("Funcionalidade não implementada"),
-                bg="#4B0082", fg="white", font=("Arial", 12), width=20, height=2, state="disabled").pack(pady=5)
+        tk.Button(botoes_frame, text="Ataque de Poder/Magia", command=lambda: print("Funcionalidade não implementada"),
+          bg="#800080", fg="white", font=("Arial", 12), width=20, height=2, state="disabled").pack(pady=5)
         
         # Botão de fechar
         tk.Button(popup, text="Fechar", command=popup.destroy, 
@@ -4529,7 +3918,7 @@ class CombatSystemScreen(tk.Frame):
         # Arma
         arma_frame = tk.Frame(main_frame, bg="#1a1a2e")
         arma_frame.pack(fill="x", pady=5)
-        tk.Label(arma_frame, text="Arma Melee:", bg="#1a1a2e", fg="white", font=("Arial", 12)).pack(side="left")
+        tk.Label(arma_frame, text="Arma Melee:", bg="#1a1a2e", fg="white", font=("Arial", 12)).pack(side="right")
         arma_var = tk.StringVar()
         arma_menu = ttk.Combobox(arma_frame, textvariable=arma_var, state="readonly", width=30)
         arma_menu.pack(side="right")
@@ -4538,9 +3927,9 @@ class CombatSystemScreen(tk.Frame):
         regiao_frame = tk.Frame(main_frame, bg="#1a1a2e")
         regiao_frame.pack(fill="x", pady=5)
         tk.Label(regiao_frame, text="Região do Corpo:", bg="#1a1a2e", fg="white", font=("Arial", 12)).pack(side="left")
-        regiao_var = tk.StringVar(value="Aleatório")
+        regiao_var = tk.StringVar(value="Aleatoria")
         regiao_menu = ttk.Combobox(regiao_frame, textvariable=regiao_var, state="readonly", width=30,
-                                  values=["Aleatório", "Cabeça", "Rosto", "Torso", "Pernas", "Braços"])
+                                values=["Aleatoria", "Cabeça", "Rosto", "Torso", "Pernas", "Braços"])
         regiao_menu.pack(side="right")
 
         # Tipo de Ataque
@@ -4552,19 +3941,33 @@ class CombatSystemScreen(tk.Frame):
                                 values=["simples", "forte", "investida", "arremesso"])
         tipo_menu.pack(side="right")
 
-        # Buff/Debuff de Acerto
-        acerto_frame = tk.Frame(main_frame, bg="#1a1a2e")
-        acerto_frame.pack(fill="x", pady=5)
-        tk.Label(acerto_frame, text="Buff/Debuff de Acerto:", bg="#1a1a2e", fg="white", font=("Arial", 12)).pack(side="left")
+        # Buff de Acerto
+        buff_acerto_frame = tk.Frame(main_frame, bg="#1a1a2e")
+        buff_acerto_frame.pack(fill="x", pady=5)
+        tk.Label(buff_acerto_frame, text="Buff de Acerto:", bg="#1a1a2e", fg="white", font=("Arial", 12)).pack(side="left")
         buff_acerto_var = tk.IntVar(value=0)
-        tk.Entry(acerto_frame, textvariable=buff_acerto_var, font=("Arial", 12), width=10, justify="center").pack(side="right")
+        tk.Entry(buff_acerto_frame, textvariable=buff_acerto_var, font=("Arial", 12), width=10, justify="center").pack(side="right")
 
-        # Buff/Debuff de Dano
-        dano_frame = tk.Frame(main_frame, bg="#1a1a2e")
-        dano_frame.pack(fill="x", pady=5)
-        tk.Label(dano_frame, text="Buff/Debuff de Dano:", bg="#1a1a2e", fg="white", font=("Arial", 12)).pack(side="left")
+        # Debuff de Acerto
+        debuff_acerto_frame = tk.Frame(main_frame, bg="#1a1a2e")
+        debuff_acerto_frame.pack(fill="x", pady=5)
+        tk.Label(debuff_acerto_frame, text="Debuff de Acerto:", bg="#1a1a2e", fg="white", font=("Arial", 12)).pack(side="left")
+        debuff_acerto_var = tk.IntVar(value=0)
+        tk.Entry(debuff_acerto_frame, textvariable=debuff_acerto_var, font=("Arial", 12), width=10, justify="center").pack(side="right")
+
+        # Buff de Dano
+        buff_dano_frame = tk.Frame(main_frame, bg="#1a1a2e")
+        buff_dano_frame.pack(fill="x", pady=5)
+        tk.Label(buff_dano_frame, text="Buff de Dano:", bg="#1a1a2e", fg="white", font=("Arial", 12)).pack(side="left")
         buff_dano_var = tk.IntVar(value=0)
-        tk.Entry(dano_frame, textvariable=buff_dano_var, font=("Arial", 12), width=10, justify="center").pack(side="right")
+        tk.Entry(buff_dano_frame, textvariable=buff_dano_var, font=("Arial", 12), width=10, justify="center").pack(side="right")
+
+        # Debuff de Dano
+        debuff_dano_frame = tk.Frame(main_frame, bg="#1a1a2e")
+        debuff_dano_frame.pack(fill="x", pady=5)
+        tk.Label(debuff_dano_frame, text="Debuff de Dano:", bg="#1a1a2e", fg="white", font=("Arial", 12)).pack(side="left")
+        debuff_dano_var = tk.IntVar(value=0)
+        tk.Entry(debuff_dano_frame, textvariable=debuff_dano_var, font=("Arial", 12), width=10, justify="center").pack(side="right")
 
         # Rolagem
         rolagem_frame = tk.Frame(main_frame, bg="#1a1a2e")
@@ -4573,11 +3976,18 @@ class CombatSystemScreen(tk.Frame):
         rolagem_var = tk.IntVar(value=0)
         tk.Entry(rolagem_frame, textvariable=rolagem_var, font=("Arial", 12), width=10, justify="center").pack(side="left", padx=10)
         tk.Button(rolagem_frame, text="Rolar Dado", command=lambda: executar_rolagem_ataque(),
-                 bg="#0077b6", fg="white", font=("Arial", 11)).pack(side="right")
+                bg="#0077b6", fg="white", font=("Arial", 11)).pack(side="right")
 
         # Label de resultado da rolagem
         resultado_rolagem_label = tk.Label(main_frame, text="", bg="#1a1a2e", fg="lightblue", font=("Arial", 10))
         resultado_rolagem_label.pack(pady=5)
+
+        # Label de resultado
+        resultado_label = tk.Label(main_frame, text="", bg="#1a1a2e", fg="lightgreen", font=("Arial", 11), wraplength=450)
+        resultado_label.pack(pady=10)
+
+        # Inicializar dicionário para mapear armas
+        arma_id_por_nome = {}
 
         def executar_rolagem_ataque():
             atacante = atacante_pre_selecionado
@@ -4590,87 +4000,134 @@ class CombatSystemScreen(tk.Frame):
                 text=f"Rolagem com Força ({atributo_base // 2}x D20): {rolagens} → Melhor: {melhor}"
             )
 
-        # Função para determinar região aleatória
-        def obter_regiao_final():
-            if regiao_var.get() == "Aleatório":
-                rand = random.randint(1, 100)
-                if rand <= 10:
-                    return "Cabeça"
-                elif rand <= 30:
-                    return "Torso"
-                elif rand <= 50:
-                    return "Pernas"
-                else:
-                    return "Braços"
-            return regiao_var.get()
-
         # Atualizar armas melee
         def atualizar_armas_melee(*_):
-            self.arma_id_por_nome = {}
+            nonlocal arma_id_por_nome
+            arma_id_por_nome = {}
             atacante = atacante_pre_selecionado
             armas_melee = []
-            self.arma_id_por_nome.clear()
             
-            for i in atacante.equipados.itens:
-                item = i["item"]
-                if isinstance(item, CB.Melee):
-                    entrada = f"{item.nome} (ID: {item.Id})"
-                    armas_melee.append(entrada)
-                    self.arma_id_por_nome[entrada] = item.Id
+            # Debug: verificar se existe equipados
+            if not hasattr(atacante, 'equipados'):
+                resultado_label.config(text="Debug: Atacante não possui atributo 'equipados'", fg="yellow")
+                return
+                
+            # Verificar itens equipados primeiro
+            if hasattr(atacante.equipados, 'itens'):
+                for i in atacante.equipados.itens:
+                    item = i["item"] if isinstance(i, dict) else i
+                    if isinstance(item, CB.Melee):
+                        entrada = f"{item.nome} (ID: {item.Id})"
+                        armas_melee.append(entrada)
+                        arma_id_por_nome[entrada] = item.Id
+            
+            # Se não encontrou em equipados, verificar inventário
+            if not armas_melee and hasattr(atacante, 'inventario'):
+                if hasattr(atacante.inventario, 'itens'):
+                    for i in atacante.inventario.itens:
+                        item = i["item"] if isinstance(i, dict) else i
+                        if isinstance(item, CB.Melee):
+                            entrada = f"{item.nome} (ID: {item.Id})"
+                            armas_melee.append(entrada)
+                            arma_id_por_nome[entrada] = item.Id
 
             arma_menu['values'] = armas_melee
             if armas_melee:
                 arma_var.set(armas_melee[0])
+            else:
+                resultado_label.config(text="Nenhuma arma melee encontrada nos equipados ou inventário.", fg="yellow")
 
         # Confirmar ataque
         def confirmar_ataque_melee():
-            alvo_nome = alvo_var.get()
-            entrada_arma = arma_var.get()
-            rolagem = rolagem_var.get()
-            buff_dano = buff_dano_var.get()
-            buff_acerto = buff_acerto_var.get()
-            regiao = obter_regiao_final()
-            tipo = tipo_var.get()
+            try:
+                alvo_nome = alvo_var.get().strip()
+                entrada_arma = arma_var.get().strip()
+                rolagem = rolagem_var.get()
+                buff_dano = buff_dano_var.get()
+                debuff_dano = debuff_dano_var.get()
+                buff_acerto = buff_acerto_var.get()
+                debuff_acerto = debuff_acerto_var.get()
+                regiao = regiao_var.get()
+                tipo = tipo_var.get()
 
-            atacante = atacante_pre_selecionado
-            alvo = next((p for p in todos_personagens if p.nome == alvo_nome), None)
-            arma_id = self.arma_id_por_nome.get(entrada_arma)
-            arma = next((i["item"] for i in atacante.inventario.itens if isinstance(i["item"], CB.Melee) and i["item"].Id == arma_id), None)
+                # Verificações detalhadas com debug
+                if not alvo_nome:
+                    resultado_label.config(text="Debug: Nenhum alvo selecionado.", fg="red")
+                    return
+                    
+                if not entrada_arma:
+                    resultado_label.config(text="Debug: Nenhuma arma selecionada.", fg="red")
+                    return
 
-            if not alvo or not arma:
-                resultado_label.config(text="Erro: alvo ou arma inválido(s).", fg="red")
-                return
+                atacante = atacante_pre_selecionado
+                
+                # Buscar alvo
+                alvo = None
+                for p in todos_personagens:
+                    if p.nome.strip() == alvo_nome:
+                        alvo = p
+                        break
+                
+                if not alvo:
+                    resultado_label.config(text=f"Debug: Alvo '{alvo_nome}' não encontrado. Personagens disponíveis: {[p.nome for p in todos_personagens]}", fg="red")
+                    return
 
-            resultado = CB.acerto_melee(
-                atacante=atacante,
-                alvo=alvo,
-                rolagem=rolagem,
-                id_arma=arma.Id,
-                regiao=regiao,
-                debuff=buff_dano,
-                tipo_ataque=tipo
-            )
-            
-            # Adicionar ao log
-            self.adicionar_log(f"Ataque Melee: {atacante.nome} → {alvo.nome} ({regiao})", "orange")
-            self.adicionar_log(resultado, "lightgreen")
-            
-            self.refresh()
-            popup.destroy()
+                # Buscar arma
+                arma_id = arma_id_por_nome.get(entrada_arma)
+                if not arma_id:
+                    resultado_label.config(text=f"Debug: ID da arma '{entrada_arma}' não encontrado. Armas disponíveis: {list(arma_id_por_nome.keys())}", fg="red")
+                    return
 
-        # Label de resultado
-        resultado_label = tk.Label(main_frame, text="", bg="#1a1a2e", fg="lightgreen", font=("Arial", 11))
-        resultado_label.pack(pady=10)
+                # Buscar a arma pelo ID
+                arma = None
+                
+                # Procurar primeiro nos equipados
+                if hasattr(atacante, 'equipados') and hasattr(atacante.equipados, 'itens'):
+                    for i in atacante.equipados.itens:
+                        item = i["item"] if isinstance(i, dict) else i
+                        if isinstance(item, CB.Melee) and item.Id == arma_id:
+                            arma = item
+                            break
+
+                if not arma:
+                    resultado_label.config(text=f"Debug: Arma com ID {arma_id} não encontrada no inventário do atacante.", fg="red")
+                    return
+                
+                resultado = CB.acerto_melee(
+                    atacante=atacante,
+                    alvo=alvo,
+                    rolagem=rolagem,
+                    id_arma=arma.Id,
+                    regiao=regiao,
+                    tipo_ataque=tipo,
+                    BuffDano=buff_dano,
+                    DebuffDano=debuff_dano,
+                    BuffAcerto=buff_acerto,
+                    DebuffAcerto=debuff_acerto
+                )
+                
+
+                self.adicionar_log(f"Ataque Melee: {atacante.nome} → {alvo.nome} ({regiao})", "orange")
+                self.adicionar_log(f"Resultado: {resultado}", "lightgreen")
+                resultado_label.config(text="Ataque executado com sucesso!", fg="lightgreen")
+                self.refresh()
+
+            except Exception as e:
+                erro_completo = f"Erro detalhado: {str(e)}\nTipo: {type(e).__name__}"
+                resultado_label.config(text=erro_completo, fg="red")
+                self.adicionar_log(f"ERRO na execução do ataque: {erro_completo}", "red")
+                import traceback
+                traceback.print_exc()
 
         # Botões
         botoes_frame = tk.Frame(main_frame, bg="#1a1a2e")
         botoes_frame.pack(pady=20)
         
         tk.Button(botoes_frame, text="Confirmar Ataque", command=confirmar_ataque_melee,
-                 bg="#38b000", fg="white", font=("Arial", 12), width=15).pack(side="left", padx=5)
+                bg="#38b000", fg="white", font=("Arial", 12), width=15).pack(side="left", padx=5)
         
         tk.Button(botoes_frame, text="Cancelar", command=popup.destroy,
-                 bg="#8B0000", fg="white", font=("Arial", 12), width=15).pack(side="right", padx=5)
+                bg="#8B0000", fg="white", font=("Arial", 12), width=15).pack(side="right", padx=5)
 
         # Inicializar armas
         atualizar_armas_melee()
@@ -4715,9 +4172,9 @@ class CombatSystemScreen(tk.Frame):
         regiao_frame = tk.Frame(main_frame, bg="#1a1a2e")
         regiao_frame.pack(fill="x", pady=5)
         tk.Label(regiao_frame, text="Região do Corpo:", bg="#1a1a2e", fg="white", font=("Arial", 12)).pack(side="left")
-        regiao_var = tk.StringVar(value="Aleatório")
+        regiao_var = tk.StringVar(value="Aleatória")
         regiao_menu = ttk.Combobox(regiao_frame, textvariable=regiao_var, state="readonly", width=30,
-                                  values=["Aleatório", "Cabeça", "Rosto", "Torso", "Pernas", "Braços"])
+                          values=["Aleatória", "Cabeça", "Rosto", "Torso", "Pernas", "Braços"])
         regiao_menu.pack(side="right")
 
         # Quantidade de Disparos
@@ -4731,7 +4188,7 @@ class CombatSystemScreen(tk.Frame):
         distancia_frame = tk.Frame(main_frame, bg="#1a1a2e")
         distancia_frame.pack(fill="x", pady=5)
         tk.Label(distancia_frame, text="Distância até o alvo:", bg="#1a1a2e", fg="white", font=("Arial", 12)).pack(side="left")
-        distancia_var = tk.IntVar(value=10)
+        distancia_var = tk.IntVar(value=1)
         tk.Entry(distancia_frame, textvariable=distancia_var, font=("Arial", 12), width=10, justify="center").pack(side="right")
 
         # Buff/Debuff de Acerto
@@ -4774,19 +4231,10 @@ class CombatSystemScreen(tk.Frame):
 
         # Função para determinar região aleatória
         def obter_regiao_final():
-            if regiao_var.get() == "Aleatório":
-                rand = random.randint(1, 100)
-                if rand <= 10:
-                    return "Cabeça"
-                elif rand <= 30:
-                    return "Torso"
-                elif rand <= 50:
-                    return "Pernas"
-                else:
-                    return "Braços"
+            if regiao_var.get() == "Aleatória":
+                return "Aleatorio"
             return regiao_var.get()
 
-        # Atualizar armas ranged
         def atualizar_armas_ranged(*_):
             self.arma_id_por_nome = {}
             atacante = atacante_pre_selecionado
@@ -4818,7 +4266,7 @@ class CombatSystemScreen(tk.Frame):
             atacante = atacante_pre_selecionado
             alvo = next((p for p in todos_personagens if p.nome == alvo_nome), None)
             arma_id = self.arma_id_por_nome.get(entrada_arma)
-            arma = next((i["item"] for i in atacante.inventario.itens if isinstance(i["item"], CB.Ranged) and i["item"].Id == arma_id), None)
+            arma = next((i["item"] for i in atacante.equipados.itens if isinstance(i["item"], CB.Ranged) and i["item"].Id == arma_id), None)
 
             if not alvo or not arma:
                 resultado_label.config(text="Erro: alvo ou arma inválido(s).", fg="red")
@@ -4827,12 +4275,13 @@ class CombatSystemScreen(tk.Frame):
             resultado = CB.acerto_ranged(
                 atacante=atacante,
                 alvo=alvo,
-                rolagem=rolagem,
+                Rolagem=rolagem,
                 id_arma=arma.Id,
-                regiao=regiao,
-                buff=buff_dano,
+                distancia=distancia,
                 disparos=disparos,
-                distancia=distancia
+                regiao=regiao,
+                BuffDano=buff_dano,
+                BuffAcerto=buff_acerto
             )
             
             # Adicionar ao log
@@ -4968,238 +4417,345 @@ class CombatSystemScreen(tk.Frame):
 
         tk.Button(popup, text="Fechar", command=popup.destroy, font=("Arial", 12), bg="#004080", fg="white").pack(pady=(0, 10))
 
-    def abrir_popup_ataque_com_atacante(self, atacante_pre_selecionado):
-        """Abre o popup de ataque com o atacante já pré-selecionado"""
-        import random
+    def abrir_popup_trocar_arma(self, personagem):
+        """Abre popup para trocar armas entre equipadas e inventário"""
         popup = tk.Toplevel(self)
-        popup.title("Ataque")
-        popup.geometry("700x550")
-        popup.configure(bg="#1a1a2e")
-        popup.resizable(False,False)
-
-        todos_personagens = self.get_all_personagens()
-        personagens_names = [p.nome for p in todos_personagens]
-
-        y = 10
-
-        # Atacante (pré-selecionado)
-        tk.Label(popup, text="Atacante:", bg="#1a1a2e", fg="white", font=("Arial", 12)).place(x=20, y=y)
-        atacante_var = tk.StringVar(value=atacante_pre_selecionado.nome)
-        atacante_menu = ttk.Combobox(popup, textvariabile=atacante_var, state="readonly", values=personagens_names)
-        y += 25
-        atacante_menu.place(x=20, y=y, width=200)
-
-        # Alvo
-        y += 35
-        tk.Label(popup, text="Alvo:", bg="#1a1a2e", fg="white", font=("Arial", 12)).place(x=20, y=y)
-        alvo_var = tk.StringVar()
-        y += 25
-        alvo_menu = ttk.Combobox(popup, textvariable=alvo_var, state="readonly", values=personagens_names)
-        alvo_menu.place(x=20, y=y, width=200)
-
-        # Arma
-        y += 35
-        tk.Label(popup, text="Arma:", bg="#1a1a2e", fg="white", font=("Arial", 12)).place(x=20, y=y)
-        arma_var = tk.StringVar()
-        y += 25
-        arma_menu = ttk.Combobox(popup, textvariable=arma_var, state="readonly")
-        arma_menu.place(x=20, y=y, width=200)
-
-        arma_tipo_label = tk.Label(popup, text="", bg="#1a1a2e", fg="#bbbbbb", font=("Arial", 10, "italic"))
-        y += 30
-        arma_tipo_label.place(x=20, y=y)
-
-        # Buff/Debuff
-        y += 30
-        tk.Label(popup, text="Debuff/Buff(+ para debuff / - para buff):", bg="#1a1a2e", fg="white", font=("Arial", 12)).place(x=20, y=y)
-        buff_var = tk.IntVar(value=0)
-        y += 25
-        tk.Entry(popup, textvariable=buff_var, font=("Arial", 12), width=10, justify="center").place(x=20, y=y)
-
-        # Região do corpo
-        y_regiao = y + 40
-        regiao_frame = tk.Frame(popup, bg="#1a1a2e")
-        tk.Label(regiao_frame, text="Região do Corpo:", bg="#1a1a2e", fg="white", font=("Arial", 12)).pack()
-        regiao_var = tk.StringVar(value="Torso")
-        ttk.Combobox(regiao_frame, textvariable=regiao_var, state="readonly",
-                    values=["Cabeça", "Rosto", "Torso", "Pernas", "Braços"]).pack()
-        regiao_frame.place(x=20, y=y_regiao)
-        regiao_frame.place_forget()
-
-        # Corpo a Corpo
-        y_corpo = y_regiao + 50
-        corpo_a_corpo_frame = tk.Frame(popup, bg="#1a1a2e")
-        tk.Label(corpo_a_corpo_frame, text="Tipo de Ataque:", bg="#1a1a2e", fg="white", font=("Arial", 12)).pack()
-        tipo_var = tk.StringVar(value="simples")
-        ttk.Combobox(corpo_a_corpo_frame, textvariable=tipo_var, state="readonly",
-                    values=["simples", "forte", "investida", "arremesso"]).pack()
-        corpo_a_corpo_frame.place(x=20, y=y_corpo)
-        corpo_a_corpo_frame.place_forget()
-
-        # Ranged
-        y_ranged = y_regiao + 50
-        ranged_frame = tk.Frame(popup, bg="#1a1a2e")
-        tk.Label(ranged_frame, text="Disparos:", bg="#1a1a2e", fg="white", font=("Arial", 12)).pack()
-        disparos_var = tk.IntVar(value=1)
-        tk.Entry(ranged_frame, textvariable=disparos_var, font=("Arial", 12), width=10, justify="center").pack()
-
-        tk.Label(ranged_frame, text="Distância até o alvo:", bg="#1a1a2e", fg="white", font=("Arial", 12)).pack(pady=(10, 0))
-        distancia_var = tk.IntVar(value=10)
-        tk.Entry(ranged_frame, textvariable=distancia_var, font=("Arial", 12), width=10, justify="center").pack()
-        ranged_frame.place(x=20, y=y_ranged)
-        ranged_frame.place_forget()
-
-        # Lógica do ataque — DEFINIDA ANTES do botão
-        def confirmar_ataque():
-            atacante_nome = atacante_var.get()
-            alvo_nome = alvo_var.get()
-            entrada_arma = arma_var.get()
-            rolagem = rolagem_var.get()
-            buff = buff_var.get()
-            regiao = regiao_var.get()
-            disparos = disparos_var.get()
-            distancia = distancia_var.get()
-            tipo = tipo_var.get()
-
-            atacante = next((p for p in todos_personagens if p.nome == atacante_nome), None)
-            alvo = next((p for p in todos_personagens if p.nome == alvo_nome), None)
-            arma_id = self.arma_id_por_nome.get(entrada_arma)
-            arma = next((i["item"] for i in atacante.inventario.itens if isinstance(i["item"], (CB.Melee, CB.Ranged)) and i["item"].Id == arma_id), None)
-
-            if not atacante or not alvo or not arma:
-                resultado_label.config(text="Erro: atacante, alvo ou arma inválido(s).", fg="red")
-                return
-
-            if isinstance(arma, CB.Melee):
-                resultado = CB.acerto_melee(
-                    atacante=atacante,
-                    alvo=alvo,
-                    rolagem=rolagem,
-                    id_arma=arma.Id,
-                    regiao=regiao,
-                    debuff=buff,
-                    tipo_ataque=tipo
-                )
-            elif isinstance(arma, CB.Ranged):
-                resultado = CB.acerto_ranged(
-                    atacante=atacante,
-                    alvo=alvo,
-                    rolagem=rolagem,
-                    id_arma=arma.Id,
-                    regiao=regiao,
-                    buff=buff,
-                    disparos=disparos,
-                    distancia=distancia
-                )
-            else:
-                resultado = "Tipo de arma inválido."
-            self.refresh()
-            resultado_label.config(text=resultado, fg="lightgreen")
-
-        # Arma listener
-        def atualizar_armas(*_):
-            self.arma_id_por_nome = {}
-            nome_atacante = atacante_var.get()
-            atacante = next((p for p in todos_personagens if p.nome == nome_atacante), None)
-            if not atacante:
-                arma_menu['values'] = []
-                return
-
-            armas_validas = []
-            self.arma_id_por_nome.clear()
-            for i in atacante.inventario.itens:
-                item = i["item"]
-                if isinstance(item, CB.Melee) or isinstance(item, CB.Ranged):
-                    entrada = f"{item.nome} (ID: {item.Id})"
-                    armas_validas.append(entrada)
-                    self.arma_id_por_nome[entrada] = item.Id
-
-            arma_menu['values'] = armas_validas
-            if armas_validas:
-                arma_var.set(armas_validas[0])
-                verificar_arma()
-
-        def verificar_arma(*_):
-            nome_atacante = atacante_var.get()
-            atacante = next((p for p in todos_personagens if p.nome == nome_atacante), None)
-            entrada_arma = arma_var.get()
-            if not atacante or entrada_arma not in self.arma_id_por_nome:
-                return
-
-            arma_id = self.arma_id_por_nome[entrada_arma]
-            arma = next((i["item"] for i in atacante.inventario.itens if isinstance(i["item"], (CB.Melee, CB.Ranged)) and i["item"].Id == arma_id), None)
-
-            corpo_a_corpo_frame.place_forget()
-            ranged_frame.place_forget()
-            regiao_frame.place_forget()
-
-            if arma:
-                if isinstance(arma, CB.Melee):
-                    arma_tipo_label.config(text="Tipo da arma: Corpo a Corpo")
-                    regiao_frame.place(x=20, y=y_regiao)
-                    corpo_a_corpo_frame.place(x=20, y=y_corpo)
-                elif isinstance(arma, CB.Ranged):
-                    arma_tipo_label.config(text="Tipo da arma: À Distância")
-                    regiao_frame.place(x=20, y=y_regiao)
-                    ranged_frame.place(x=20, y=y_ranged)
+        popup.title(f"Trocar Arma - {personagem.nome}")
+        popup.configure(bg="#1a0869")
+        popup.geometry("600x400")
+        popup.resizable(False, False)
+        
+        # Frame principal dividido em duas colunas
+        main_frame = tk.Frame(popup, bg="#1a0869")
+        main_frame.pack(fill="both", expand=True, padx=10, pady=10)
+        
+        # Coluna esquerda - Armas Equipadas
+        equipadas_frame = tk.LabelFrame(main_frame, text="Armas Equipadas", 
+                                    bg="#1a0869", fg="white", font=("Arial", 12, "bold"))
+        equipadas_frame.pack(side="left", fill="both", expand=True, padx=5)
+        
+        # Coluna direita - Armas no Inventário
+        inventario_frame = tk.LabelFrame(main_frame, text="Armas no Inventário", 
+                                        bg="#1a0869", fg="white", font=("Arial", 12, "bold"))
+        inventario_frame.pack(side="right", fill="both", expand=True, padx=5)
+        
+        def atualizar_listas():
+            # Limpar frames
+            for widget in equipadas_frame.winfo_children():
+                if isinstance(widget, tk.Frame):
+                    widget.destroy()
+            for widget in inventario_frame.winfo_children():
+                if isinstance(widget, tk.Frame):
+                    widget.destroy()
+            
+            # Armas equipadas - usar listar_itens() do equipados
+            try:
+                itens_equipados = personagem.equipados.listar_itens()
+                armas_equipadas = [item for item in itens_equipados 
+                                if isinstance(item["objeto"], (CB.Ranged, CB.Melee))]
+                
+                for item in armas_equipadas:
+                    arma = item["objeto"]
+                    item_frame = tk.Frame(equipadas_frame, bg="#220866", bd=1, relief="solid")
+                    item_frame.pack(fill="x", padx=5, pady=2)
+                    
+                    tk.Label(item_frame, text=arma.nome, bg="#220866", fg="white", 
+                            font=("Arial", 10)).pack(side="left", padx=5)
+                    
+                    tk.Button(item_frame, text="→", command=lambda a=arma: mover_para_inventario(a),
+                            bg="#8B0000", fg="white", width=3).pack(side="right", padx=2)
+            except Exception as e:
+                print(f"Erro ao listar armas equipadas: {e}")
+            
+            # Armas no inventário
+            try:
+                itens_inventario = personagem.inventario.listar_itens()
+                armas_inventario = [item for item in itens_inventario 
+                                if isinstance(item["objeto"], (CB.Ranged, CB.Melee))]
+                
+                for item in armas_inventario:
+                    arma = item["objeto"]
+                    quantidade = item["quantidade"]
+                    
+                    item_frame = tk.Frame(inventario_frame, bg="#220866", bd=1, relief="solid")
+                    item_frame.pack(fill="x", padx=5, pady=2)
+                    
+                    texto = f"{arma.nome} ({quantidade}x)" if quantidade > 1 else arma.nome
+                    tk.Label(item_frame, text=texto, bg="#220866", fg="white", 
+                            font=("Arial", 10)).pack(side="left", padx=5)
+                    
+                    tk.Button(item_frame, text="←", command=lambda a=arma: mover_para_equipados(a),
+                            bg="#006400", fg="white", width=3).pack(side="right", padx=2)
+            except Exception as e:
+                print(f"Erro ao listar armas do inventário: {e}")
+        
+        def mover_para_inventario(arma):
+            try:
+                sucesso = personagem.desequipar_item(arma)
+                if sucesso:
+                    atualizar_listas()
                 else:
-                    arma_tipo_label.config(text="Tipo de item inválido")
+                    print("Não foi possível desequipar a arma.")
+            except Exception as e:
+                print(f"Erro ao desequipar arma: {e}")
+        
+        def mover_para_equipados(arma):
+            try:
+                sucesso = personagem.equipar_item(arma)
+                if sucesso:
+                    atualizar_listas()
+                else:
+                    print("Não foi possível equipar a arma.")
+            except Exception as e:
+                print(f"Erro ao equipar arma: {e}")
+        
+        # Inicializar listas
+        atualizar_listas()
+        
+        # Botão fechar
+        tk.Button(popup, text="Fechar", command=popup.destroy, 
+                bg="#3a0a80", fg="white", font=("Arial", 12)).pack(pady=10)
 
-        atacante_var.trace_add("write", atualizar_armas)
-        arma_var.trace_add("write", verificar_arma)
+    def abrir_popup_recarregar_arma(self, personagem):
+        """Abre popup para recarregar armas Ranged"""
+        # Verificar se há armas Ranged equipadas
+        try:
+            itens_equipados = personagem.equipados.listar_itens()
+            armas_ranged = [item["objeto"] for item in itens_equipados 
+                        if isinstance(item["objeto"], CB.Ranged)]
+        except Exception as e:
+            print(f"Erro ao listar armas equipadas: {e}")
+            armas_ranged = []
+        
+        if not armas_ranged:
+            # Abrir popup de trocar arma se não houver armas ranged equipadas
+            self.abrir_popup_trocar_arma(personagem)
+            return
+        
+        popup = tk.Toplevel(self)
+        popup.title(f"Recarregar Arma - {personagem.nome}")
+        popup.configure(bg="#1a0869")
+        popup.geometry("400x300")
+        popup.resizable(False, False)
+        
+        tk.Label(popup, text="Escolha a arma para recarregar:", 
+                bg="#1a0869", fg="white", font=("Arial", 12, "bold")).pack(pady=10)
+        
+        def escolher_arma(arma_selecionada):
+            popup.destroy()
+            self.abrir_popup_escolher_municao(personagem, arma_selecionada)
+        
+        # Mostrar armas disponíveis
+        for arma in armas_ranged:
+            info_texto = f"{arma.nome} - {arma.munições}/{arma.capacidade}"
+            tk.Button(popup, text=info_texto, command=lambda a=arma: escolher_arma(a),
+                    bg="#006400", fg="white", font=("Arial", 11), width=30, height=2).pack(pady=5)
+        
+        tk.Button(popup, text="Cancelar", command=popup.destroy, 
+                bg="#8B0000", fg="white", font=("Arial", 11)).pack(pady=10)
 
-        # Rolagem
-        y_rolagem = y_ranged + 120
-        acao_frame = tk.Frame(popup, bg="#1a1a2e")
-        acao_frame.place(x=20, y=y_rolagem)
+    def abrir_popup_escolher_municao(self, personagem, arma):
+        """Popup para escolher munição e quantidade para recarregar"""
+        popup = tk.Toplevel(self)
+        popup.title("Escolher Munição")
+        popup.configure(bg="#1a0869")
+        popup.geometry("400x300")
+        popup.resizable(False, False)
+        
+        tk.Label(popup, text=f"Recarregando: {arma.nome}", 
+                bg="#1a0869", fg="white", font=("Arial", 12, "bold")).pack(pady=10)
+        
+        tk.Label(popup, text=f"Munições atuais: {arma.munições}/{arma.capacidade}",
+                bg="#1a0869", fg="white", font=("Arial", 10)).pack(pady=5)
+        
+        # Buscar munições compatíveis
+        itens_inventario = personagem.inventario.listar_itens()
+        municoes_compativeis = [
+            item for item in itens_inventario
+            if isinstance(item["objeto"], CB.Municao) and item["objeto"].calibre == arma.calibre
+        ]
+        
+        if not municoes_compativeis:
+            tk.Label(popup, text="Sem munições compatíveis!", 
+                    bg="#1a0869", fg="red", font=("Arial", 12)).pack(pady=20)
+            tk.Button(popup, text="Fechar", command=popup.destroy).pack()
+            return
+        
+        tk.Label(popup, text="Escolha a munição:", bg="#1a0869", fg="white", font=("Arial", 10)).pack()
+        
+        # Dropdown de munições
+        nomes_municoes = [f"{item['objeto'].nome} (x{item['quantidade']})" for item in municoes_compativeis]
+        municao_var = tk.StringVar(value=nomes_municoes[0])
+        dropdown = tk.OptionMenu(popup, municao_var, *nomes_municoes)
+        dropdown.pack(pady=5)
+        
+        # Quantidade
+        tk.Label(popup, text="Quantidade:", bg="#1a0869", fg="white", font=("Arial", 10)).pack()
+        quantidade_var = tk.IntVar(value=1)
+        spinbox = tk.Spinbox(popup, from_=1, to=100, textvariable=quantidade_var, width=5)
+        spinbox.pack()
+        
+        def recarregar_quantidade():
+            try:
+                index = nomes_municoes.index(municao_var.get())
+                item_escolhido = municoes_compativeis[index]
+                municao_obj = item_escolhido["objeto"]
+                quantidade = quantidade_var.get()
+                
+                carregado = arma.carregar_municao(municao_obj, quantidade)
+                if carregado > 0:
+                    self._remover_item_do_inventario(municao_obj, carregado)
+                    popup.destroy()
+                else:
+                    tk.Label(popup, text="Erro ao carregar!", fg="red").pack()
+            except Exception as e:
+                print(f"Erro: {e}")
+        
+        def recarregar_tudo():
+            try:
+                index = nomes_municoes.index(municao_var.get())
+                item_escolhido = municoes_compativeis[index]
+                municao_obj = item_escolhido["objeto"]
+                
+                espaco_restante = arma.capacidade - arma.munições
+                quantidade_disponivel = item_escolhido["quantidade"]
+                quantidade_a_carregar = min(espaco_restante, quantidade_disponivel)
+                
+                if quantidade_a_carregar > 0:
+                    carregado = arma.carregar_municao(municao_obj, quantidade_a_carregar)
+                    if carregado > 0:
+                        self._remover_item_do_inventario(municao_obj, carregado)
+                        popup.destroy()
+            except Exception as e:
+                print(f"Erro: {e}")
+        
+        # Botões
+        botoes_frame = tk.Frame(popup, bg="#1a0869")
+        botoes_frame.pack(pady=20)
+        
+        tk.Button(botoes_frame, text="Carregar Qtd", command=recarregar_quantidade,
+                bg="#006400", fg="white").pack(side="left", padx=10)
+        tk.Button(botoes_frame, text="Carregar Tudo", command=recarregar_tudo,
+                bg="#004080", fg="white").pack(side="left", padx=10)
+        tk.Button(botoes_frame, text="Cancelar", command=popup.destroy,
+                bg="#8B0000", fg="white").pack(side="left", padx=10)
 
-        tk.Label(acao_frame, text="Valor do Dado:", bg="#1a1a2e", fg="white", font=("Arial", 12)).grid(row=0, column=0, padx=5)
-        rolagem_var = tk.IntVar(value=0)
-        tk.Entry(acao_frame, textvariable=rolagem_var, font=("Arial", 12), width=6, justify="center").grid(row=0, column=1, padx=5)
-
-        def executar_rolagem_ataque():
-            nome_atacante = atacante_var.get()
-            atacante = next((p for p in todos_personagens if p.nome == nome_atacante), None)
-            entrada_arma = arma_var.get()
-            if not hasattr(self, "arma_id_por_nome") or entrada_arma not in self.arma_id_por_nome:
+    def abrir_popup_descarregar_arma(self, personagem):
+        """Abre popup para descarregar armas Ranged"""
+        # Verificar se há armas Ranged equipadas com munição
+        try:
+            itens_equipados = personagem.equipados.listar_itens()
+            armas_ranged = [item["objeto"] for item in itens_equipados 
+                        if isinstance(item["objeto"], CB.Ranged) and item["objeto"].munições > 0]
+        except Exception as e:
+            print(f"Erro ao listar armas equipadas: {e}")
+            armas_ranged = []
+        
+        if not armas_ranged:
+            # Verificar se há armas ranged equipadas mas vazias
+            try:
+                armas_vazias = [item["objeto"] for item in itens_equipados 
+                            if isinstance(item["objeto"], CB.Ranged)]
+            except:
+                armas_vazias = []
+                
+            if not armas_vazias:
+                self.abrir_popup_trocar_arma(personagem)
                 return
-            arma_id = self.arma_id_por_nome.get(entrada_arma)
-            arma = next((i["item"] for i in atacante.inventario.itens if isinstance(i["item"], (CB.Melee, CB.Ranged)) and i["item"].Id == arma_id), None)
-
-            if not atacante or not arma:
-                resultado_label.config(text="Erro ao localizar atacante ou arma.")
-                return
-
-            if isinstance(arma, CB.Melee):
-                atributo_base = atacante.Forca
-                texto_attr = "Força"
-            elif isinstance(arma, CB.Ranged):
-                atributo_base = atacante.Tatica
-                texto_attr = "Tática"
             else:
-                resultado_label.config(text="Tipo de arma inválido.")
+                popup = tk.Toplevel(self)
+                popup.title("Aviso")
+                popup.configure(bg="#1a0869")
+                popup.geometry("300x150")
+                tk.Label(popup, text="Nenhuma arma com munição encontrada!", 
+                        bg="#1a0869", fg="red", font=("Arial", 12)).pack(pady=50)
+                tk.Button(popup, text="OK", command=popup.destroy).pack()
                 return
+        
+        popup = tk.Toplevel(self)
+        popup.title(f"Descarregar Arma - {personagem.nome}")
+        popup.configure(bg="#1a0869")
+        popup.geometry("400x300")
+        popup.resizable(False, False)
+        
+        tk.Label(popup, text="Escolha a arma para descarregar:", 
+                bg="#1a0869", fg="white", font=("Arial", 12, "bold")).pack(pady=10)
+        
+        def escolher_arma(arma_selecionada):
+            popup.destroy()
+            self.abrir_popup_descarregar_quantidade(personagem, arma_selecionada)
+        
+        # Mostrar armas disponíveis
+        for arma in armas_ranged:
+            info_texto = f"{arma.nome} - {arma.munições} munições"
+            tk.Button(popup, text=info_texto, command=lambda a=arma: escolher_arma(a),
+                    bg="#FF8C00", fg="white", font=("Arial", 11), width=30, height=2).pack(pady=5)
+        
+        tk.Button(popup, text="Cancelar", command=popup.destroy, 
+                bg="#8B0000", fg="white", font=("Arial", 11)).pack(pady=10)
 
-            rolagens = [random.randint(1, 20) for _ in range(max(1, atributo_base // 2))]
-            melhor = max(rolagens) if rolagens else 0
-
-            rolagem_var.set(melhor)
-            resultado_label.config(
-                text=f"Rolagem com {texto_attr} ({atributo_base // 2}x D20):\n"
-                    f"{rolagens} → Melhor: {melhor}"
-            )
-
-        tk.Button(acao_frame, text="Rolar Dado", command=executar_rolagem_ataque,
-                bg="#0077b6", fg="white", font=("Arial", 11)).grid(row=0, column=2, padx=10)
-
-        resultado_label = tk.Label(popup, text="", bg="#1a1a2e", fg="lightgreen", font=("Arial", 11))
-        resultado_label.place(x=300, y=20)
-
-        # Confirmar
-        y_rolagem += 60
-        tk.Button(popup, text="Confirmar Ataque", command=confirmar_ataque,
-                bg="#38b000", fg="white", font=("Arial", 12), width=20).place(x=100, y=y_rolagem)
-
+    def abrir_popup_descarregar_quantidade(self, personagem, arma):
+        """Popup para escolher quantidade a descarregar"""
+        popup = tk.Toplevel(self)
+        popup.title("Descarregar Munição")
+        popup.configure(bg="#1a0869")
+        popup.geometry("350x250")
+        popup.resizable(False, False)
+        
+        tk.Label(popup, text=f"Descarregando: {arma.nome}", 
+                bg="#1a0869", fg="white", font=("Arial", 12, "bold")).pack(pady=10)
+        
+        tk.Label(popup, text=f"Munições na arma: {arma.munições}",
+                bg="#1a0869", fg="white", font=("Arial", 10)).pack(pady=5)
+        
+        tk.Label(popup, text="Quantidade a descarregar:", 
+                bg="#1a0869", fg="white", font=("Arial", 10)).pack(pady=10)
+        
+        quantidade_var = tk.IntVar(value=1)
+        spinbox = tk.Spinbox(popup, from_=1, to=arma.munições, textvariable=quantidade_var, width=5)
+        spinbox.pack()
+        
+        def descarregar_quantidade():
+            try:
+                quantidade = quantidade_var.get()
+                municoes = arma.descarregar_municao(quantidade=quantidade)
+                if municoes:
+                    for municao in municoes:
+                        personagem.inventario.adicionar_item_objeto(municao)
+                    popup.destroy()
+            except Exception as e:
+                print(f"Erro: {e}")
+        
+        def descarregar_tudo():
+            try:
+                municoes = arma.descarregar_municao(quantidade=arma.munições)
+                if municoes:
+                    for municao in municoes:
+                        personagem.inventario.adicionar_item_objeto(municao)
+                    popup.destroy()
+            except Exception as e:
+                print(f"Erro: {e}")
+        
+        # Botões
+        botoes_frame = tk.Frame(popup, bg="#1a0869")
+        botoes_frame.pack(pady=30)
+        
+        tk.Button(botoes_frame, text="Descarregar Qtd", command=descarregar_quantidade,
+                bg="#FF8C00", fg="white").pack(side="left", padx=10)
+        tk.Button(botoes_frame, text="Descarregar Tudo", command=descarregar_tudo,
+                bg="#8B0000", fg="white").pack(side="left", padx=10)
+        tk.Button(botoes_frame, text="Cancelar", command=popup.destroy,
+                bg="#006400", fg="white").pack(side="left", padx=10)
+    
+    def _remover_item_do_inventario(self, item, quantidade=1):
+        """Helper function para remover itens do inventário do personagem"""
+        try:
+            self.character.inventario.remover_item(item, quantidade)
+            return True
+        except Exception as e:
+            print(f"Erro ao remover item do inventário: {e}")
+            return False
+    
     def TelaInicial(self):
         self.controller.TelaInicial()
 
@@ -5221,45 +4777,1219 @@ class RegrasItensScreen(tk.Frame):
         self.controller = controller
         self.place(x=0, y=0, width=1600, height=900)
         self.config(bg='#130f26')
+        
+        # Dados atuais selecionados
+        self.tabela_atual = None
+        self.dados_atuais = {}
+        self.item_selecionado = None
+        
+        # Mapeamento de tabelas para suas configurações
+        self.configuracoes_tabelas = {
+            "Itens": {
+                "tabela_db": "Itens",
+                "classe": CB.Item,
+                "campos": ["nome", "peso"]
+            },
+            "Ranged": {
+                "tabela_db": "Rangeds", 
+                "classe": CB.Ranged,
+                "campos": ["nome", "peso", "classe", "acao", "raridade", "calibre", "capacidade"]
+            },
+            "Melee": {
+                "tabela_db": "Melees",
+                "classe": CB.Melee, 
+                "campos": ["nome", "peso", "classe", "tipo_dano", "raridade"]
+            },
+            "Proteção": {
+                "tabela_db": "Protecoes",
+                "classe": CB.Protecao,
+                "campos": ["nome", "peso", "nivelBalistico", "absorcaoFisica", "absorcaoBalistica", "regiao"]
+            },
+            "Munições": {
+                "tabela_db": "Municoes",
+                "classe": CB.Municao,
+                "campos": ["nome", "calibre", "dano", "perfuracao"]
+            },
+            "Explosivos": {
+                "tabela_db": "Explosivos", 
+                "classe": CB.Explosivo,
+                "campos": ["nome", "peso", "raio", "dano", "tipo_dano"]
+            },
+            "Consumíveis": {
+                "tabela_db": "Consumiveis",
+                "classe": CB.Consumivel, 
+                "campos": ["nome", "peso", "cura", "energia"]
+            },
+            "Melhorias": {
+                "tabela_db": "Melhorias",
+                "classe": CB.Melhoria,
+                "campos": ["nome", "peso", "tipo", "modificadores"]
+            },
+            "Proficiências": {
+                "tabela_db": "Proficiencias",
+                "classe": CB.Proficiencia,
+                "campos": ["nome", "atributo", "nivel"]
+            },
+            "NPCs": {
+                "tabela_db": "NPCs", 
+                "classe": dict,
+                "campos": ["grupo", "classe", "forca", "agilidade", "vigor", "inteligencia", "tatica", "presenca"]
+            },
+            # Tabelas não implementadas ainda
+            "Kits": {
+            "tabela_db": "kits",
+            "classe": CB.Kits,
+            "campos": ["nome", "raridade", "inventario_resumo"]  # Campo especial para mostrar resumo do inventário
+            },
+            "Efeitos": {
+                "tabela_db": "Efeitos",
+                "classe": None,
+                "campos": []  # TODO: Implementar quando a tabela existir
+            },
+            "Habilidades": {
+                "tabela_db": "Habilidades",
+                "classe": None,
+                "campos": []  # TODO: Implementar quando a tabela existir
+            }
+        }
+        
+        self.setup_ui()
+        self.setup_styles()
 
+    def carregar_dados_kits(self):
+        """Carrega dados específicos para kits"""
+        kits_dict = D.carregar_kits_db()  # D é o módulo de dados
+        data = []
+        
+        for nome, kit in kits_dict.items():
+            # Garante que o inventário seja carregado corretamente
+            try:
+                # Força o carregamento do inventário se não estiver carregado
+                if not hasattr(kit, 'inventario') or kit.inventario is None:
+                    # Tenta recarregar o kit completo do banco
+                    kit_completo = D.carregar_kit_completo_db(nome)  # Função que deve existir no módulo D
+                    if kit_completo and hasattr(kit_completo, 'inventario'):
+                        kit = kit_completo
+                
+                inventario_resumo = self.gerar_resumo_inventario(kit)
+            except Exception as e:
+                print(f"Erro ao carregar inventário do kit {nome}: {e}")
+                inventario_resumo = "Erro ao carregar inventário"
+            
+            data.append({
+                "nome": nome,
+                "raridade": kit.raridade,
+                "inventario_resumo": inventario_resumo,
+                "_kit_objeto": kit,  # Armazena referência ao objeto completo
+                "_dados_completos": {
+                    "nome": kit.nome,
+                    "raridade": kit.raridade,
+                    "Id": getattr(kit, 'Id', None),
+                    "inventario": self.inventario_para_dict(kit.inventario) if hasattr(kit, 'inventario') and kit.inventario else {}
+                }
+            })
+        
+        return data
+
+    def gerar_resumo_inventario(self, kit):
+        """Gera um resumo textual do inventário do kit"""
+        if not hasattr(kit, 'inventario') or not kit.inventario:
+            return "Inventário vazio"
+        
+        try:
+            # Se o inventário tem método listar_itens, usa ele
+            if hasattr(kit, 'listar_itens'):
+                itens_info = kit.listar_itens()
+                if not itens_info:
+                    return "Inventário vazio"
+                
+                # Gera resumo mais detalhado
+                tipos_count = {}
+                total_itens = 0
+                
+                for item_info in itens_info:
+                    total_itens += item_info.get('quantidade', 1)
+                    
+                    # Obtém o tipo real do objeto, não do campo 'tipo'
+                    item_obj = item_info.get('objeto')
+                    if item_obj:
+                        # Determina o tipo baseado na classe do objeto
+                        if isinstance(item_obj, CB.Melee):
+                            tipo_display = 'Arma C.a.C.'
+                        elif isinstance(item_obj, CB.Ranged):
+                            tipo_display = 'Arma de Fogo'
+                        elif isinstance(item_obj, CB.Protecao):
+                            tipo_display = 'Proteção'
+                        elif isinstance(item_obj, CB.Consumivel):
+                            tipo_display = 'Consumível'
+                        elif isinstance(item_obj, CB.Explosivo):
+                            tipo_display = 'Explosivo'
+                        elif isinstance(item_obj, CB.Municao):
+                            tipo_display = 'Munição'
+                        elif isinstance(item_obj, CB.Melhoria):
+                            tipo_display = 'Melhoria'
+                        else:
+                            tipo_display = 'Item'
+                    else:
+                        tipo_display = 'Item'
+                    
+                    tipos_count[tipo_display] = tipos_count.get(tipo_display, 0) + item_info.get('quantidade', 1)
+                
+                # Cria resumo baseado nos tipos
+                if len(tipos_count) == 1:
+                    tipo, qtd = next(iter(tipos_count.items()))
+                    return f"{qtd} {tipo}{'s' if qtd > 1 else ''}"
+                else:
+                    resumo_parts = []
+                    for tipo, qtd in tipos_count.items():
+                        resumo_parts.append(f"{qtd} {tipo}{'s' if qtd > 1 else ''}")
+                    return ", ".join(resumo_parts)
+            
+            # Fallback: tenta contar itens diretamente
+            elif hasattr(kit.inventario, 'itens'):
+                total_itens = len(kit.inventario.itens)
+                return f"{total_itens} item(s) no inventário"
+            
+            # Se tem slots
+            elif hasattr(kit.inventario, 'slots'):
+                slots_ocupados = sum(1 for slot in kit.inventario.slots.values() 
+                                if hasattr(slot, 'item') and slot.item)
+                return f"{slots_ocupados} slot(s) ocupado(s)"
+            
+            else:
+                return "Inventário presente"
+                
+        except Exception as e:
+            print(f"Erro ao gerar resumo do inventário: {e}")
+            return "Erro ao ler inventário"
+
+    def inventario_para_dict(self, inventario):
+        """Converte inventário para dicionário para visualização"""
+        if not inventario:
+            return {}
+        
+        try:
+            # Se tem método listar_itens, usa ele para gerar estrutura limpa
+            if hasattr(inventario, 'listar_itens'):
+                # Precisa usar o kit para chamar listar_itens
+                kit = self.get_kit_atual()
+                if kit and hasattr(kit, 'listar_itens'):
+                    itens_info = kit.listar_itens()
+                    inventario_dict = {}
+                    for i, item_info in enumerate(itens_info):
+                        item_obj = item_info.get("objeto")
+                        
+                        # Determina se tem ID baseado no objeto real
+                        tem_id = hasattr(item_obj, 'Id') and item_obj.Id is not None
+                        
+                        # Determina o tipo real do objeto
+                        if isinstance(item_obj, CB.Melee):
+                            tipo = 'melee'
+                        elif isinstance(item_obj, CB.Ranged):
+                            tipo = 'ranged'
+                        elif isinstance(item_obj, CB.Protecao):
+                            tipo = 'protecao'
+                        elif isinstance(item_obj, CB.Consumivel):
+                            tipo = 'consumivel'
+                        elif isinstance(item_obj, CB.Explosivo):
+                            tipo = 'explosivo'
+                        elif isinstance(item_obj, CB.Municao):
+                            tipo = 'municao'
+                        elif isinstance(item_obj, CB.Melhoria):
+                            tipo = 'melhoria'
+                        else:
+                            tipo = 'item'
+                        
+                        inventario_dict[f"item_{i+1}"] = {
+                            "nome": item_info.get("nome", ""),
+                            "quantidade": item_info.get("quantidade", 1),
+                            "tipo": tipo,
+                            "tem_id": tem_id
+                        }
+                    return inventario_dict
+            
+            # Fallback: usa to_dict se disponível
+            elif hasattr(inventario, 'to_dict'):
+                return inventario.to_dict()
+            
+            # Último recurso: converte __dict__
+            else:
+                return vars(inventario)
+                
+        except Exception as e:
+            print(f"Erro ao converter inventário para dict: {e}")
+            return {"erro": str(e)}
+
+    def atualizar_visualizacao_inventario(self):
+        """Atualiza a visualização do inventário no campo de texto"""
+        if "inventario" not in self.campos_entrada:
+            return
+        
+        kit = self.get_kit_atual()
+        if not kit:
+            return
+        
+        text_widget = self.campos_entrada["inventario"]
+        text_widget.delete("1.0", "end")
+        
+        try:
+            # Agora o inventário vem do banco, então mostra os dados atuais
+            if hasattr(kit, 'inventario') and kit.inventario:
+                # Usa o método listar_itens se disponível para uma visualização mais limpa
+                if hasattr(kit, 'listar_itens'):
+                    itens_info = kit.listar_itens()
+                    if itens_info:
+                        inventario_texto = "=== INVENTÁRIO DO KIT ===\n\n"
+                        for i, item_info in enumerate(itens_info, 1):
+                            nome = item_info.get('nome', 'Item sem nome')
+                            quantidade = item_info.get('quantidade', 1)
+                            item_obj = item_info.get('objeto')
+                            
+                            # Determina o tipo real e se tem ID baseado no objeto
+                            tem_id = hasattr(item_obj, 'Id') and item_obj.Id is not None
+                            
+                            if isinstance(item_obj, CB.Melee):
+                                tipo = 'melee'
+                            elif isinstance(item_obj, CB.Ranged):
+                                tipo = 'ranged'
+                            elif isinstance(item_obj, CB.Protecao):
+                                tipo = 'protecao'
+                            elif isinstance(item_obj, CB.Consumivel):
+                                tipo = 'consumivel'
+                            elif isinstance(item_obj, CB.Explosivo):
+                                tipo = 'explosivo'
+                            elif isinstance(item_obj, CB.Municao):
+                                tipo = 'municao'
+                            elif isinstance(item_obj, CB.Melhoria):
+                                tipo = 'melhoria'
+                            else:
+                                tipo = 'item'
+                            
+                            inventario_texto += f"{i}. {nome}\n"
+                            inventario_texto += f"   Quantidade: {quantidade}\n"
+                            inventario_texto += f"   Tipo: {tipo.capitalize()}\n"
+                            
+                            if tem_id:
+                                inventario_texto += f"   Item único (ID: {item_obj.Id})\n"
+                            
+                            # Informações específicas por tipo usando o objeto real
+                            if isinstance(item_obj, CB.Melee):
+                                if hasattr(item_obj, 'peso'):
+                                    inventario_texto += f"   Peso: {item_obj.peso}\n"
+                                if hasattr(item_obj, 'tipo_dano'):
+                                    inventario_texto += f"   Tipo de Dano: {item_obj.tipo_dano}\n"
+                                if hasattr(item_obj, 'classe'):
+                                    inventario_texto += f"   Classe: {item_obj.classe}\n"
+                                if hasattr(item_obj, 'raridade'):
+                                    inventario_texto += f"   Raridade: {item_obj.raridade}\n"
+                                if hasattr(item_obj, 'dano_simples'):
+                                    inventario_texto += f"   Dano Simples: {item_obj.dano_simples}\n"
+                                    
+                            elif isinstance(item_obj, CB.Ranged):
+                                if hasattr(item_obj, 'peso'):
+                                    inventario_texto += f"   Peso: {item_obj.peso}\n"
+                                if hasattr(item_obj, 'calibre'):
+                                    inventario_texto += f"   Calibre: {item_obj.calibre}\n"
+                                if hasattr(item_obj, 'acao'):
+                                    inventario_texto += f"   Ação: {item_obj.acao}\n"
+                                if hasattr(item_obj, 'capacidade'):
+                                    inventario_texto += f"   Capacidade: {item_obj.capacidade}\n"
+                                if hasattr(item_obj, 'raridade'):
+                                    inventario_texto += f"   Raridade: {item_obj.raridade}\n"
+                                    
+                            elif isinstance(item_obj, CB.Protecao):
+                                if hasattr(item_obj, 'peso'):
+                                    inventario_texto += f"   Peso: {item_obj.peso}\n"
+                                if hasattr(item_obj, 'nivelBalistico'):
+                                    inventario_texto += f"   Nível Balístico: {item_obj.nivelBalistico}\n"
+                                if hasattr(item_obj, 'regiao'):
+                                    inventario_texto += f"   Região: {item_obj.regiao}\n"
+                                if hasattr(item_obj, 'absorcaoFisica'):
+                                    inventario_texto += f"   Absorção Física: {item_obj.absorcaoFisica}\n"
+                                if hasattr(item_obj, 'absorcaoBalistica'):
+                                    inventario_texto += f"   Absorção Balística: {item_obj.absorcaoBalistica}\n"
+                                    
+                            elif isinstance(item_obj, CB.Consumivel):
+                                if hasattr(item_obj, 'peso'):
+                                    inventario_texto += f"   Peso: {item_obj.peso}\n"
+                                if hasattr(item_obj, 'cura'):
+                                    inventario_texto += f"   Cura: {item_obj.cura}\n"
+                                if hasattr(item_obj, 'energia'):
+                                    inventario_texto += f"   Energia: {item_obj.energia}\n"
+                                    
+                            elif isinstance(item_obj, CB.Municao):
+                                if hasattr(item_obj, 'calibre'):
+                                    inventario_texto += f"   Calibre: {item_obj.calibre}\n"
+                                if hasattr(item_obj, 'dano'):
+                                    inventario_texto += f"   Dano: {item_obj.dano}\n"
+                                if hasattr(item_obj, 'perfuracao'):
+                                    inventario_texto += f"   Perfuração: {item_obj.perfuracao}\n"
+                            
+                            elif isinstance(item_obj, CB.Explosivo):
+                                if hasattr(item_obj, 'peso'):
+                                    inventario_texto += f"   Peso: {item_obj.peso}\n"
+                                if hasattr(item_obj, 'raio'):
+                                    inventario_texto += f"   Raio: {item_obj.raio}\n"
+                                if hasattr(item_obj, 'dano'):
+                                    inventario_texto += f"   Dano: {item_obj.dano}\n"
+                                if hasattr(item_obj, 'tipo_dano'):
+                                    inventario_texto += f"   Tipo de Dano: {item_obj.tipo_dano}\n"
+                            
+                            elif isinstance(item_obj, CB.Melhoria):
+                                if hasattr(item_obj, 'peso'):
+                                    inventario_texto += f"   Peso: {item_obj.peso}\n"
+                                if hasattr(item_obj, 'tipo'):
+                                    inventario_texto += f"   Tipo: {item_obj.tipo}\n"
+                                if hasattr(item_obj, 'modificadores'):
+                                    inventario_texto += f"   Modificadores: {item_obj.modificadores}\n"
+                            
+                            else:
+                                # Item genérico
+                                if hasattr(item_obj, 'peso'):
+                                    inventario_texto += f"   Peso: {item_obj.peso}\n"
+                            
+                            inventario_texto += "\n"
+                        
+                        text_widget.insert("1.0", inventario_texto)
+                    else:
+                        text_widget.insert("1.0", "Inventário vazio")
+                else:
+                    # Fallback: mostra como JSON mas com dados mais detalhados
+                    inventario_dict = self.inventario_para_dict(kit.inventario)
+                    inventario_str = json.dumps(inventario_dict, indent=2, ensure_ascii=False)
+                    text_widget.insert("1.0", inventario_str)
+            else:
+                text_widget.insert("1.0", "Inventário não inicializado")
+                
+        except Exception as e:
+            text_widget.insert("1.0", f"Erro ao carregar inventário: {e}")
+            print(f"Erro na visualização do inventário: {e}")
+            import traceback
+            print(f"Traceback completo: {traceback.format_exc()}")
+
+    def get_kit_atual(self):
+        """Obtém o kit atualmente selecionado"""
+        if not self.item_selecionado or self.item_selecionado not in self.dados_atuais:
+            return None
+        
+        dados_item = self.dados_atuais[self.item_selecionado]
+        return dados_item.get("_kit_objeto")
+
+    def abrir_popup_adicionar_item_kit(self):
+        """Abre popup para adicionar item ao kit"""
+        kit = self.get_kit_atual()
+        if not kit:
+            messagebox.showwarning("Aviso", "Nenhum kit selecionado!")
+            return
+        
+        popup = tk.Toplevel()
+        popup.title("Adicionar Item ao Kit")
+        popup.configure(bg="#1a0869")
+        popup.geometry("370x500")
+
+        categorias = {
+            "Armas de Fogo": D.Rangeds,
+            "Armas Corpo a Corpo": D.Melees,
+            "Proteções": D.Protecoes,
+            "Melhorias": D.Melhorias,
+            "Munições": D.Municoes,
+            "Consumíveis": D.Consumiveis,
+            "Explosivos": D.Explosivos,
+            "Itens": D.Items
+        }
+
+        tk.Label(popup, text="Categoria:", bg="#1a0869", fg="white", font=("Arial", 16)).pack(pady=5)
+        categoria_var = tk.StringVar()
+        categoria_menu = ttk.Combobox(popup, textvariable=categoria_var, values=list(categorias.keys()))
+        categoria_menu.pack(pady=(0, 10))
+
+        # Área de scroll
+        frame_scroll = tk.Frame(popup, bg="#1a0869")
+        frame_scroll.pack(expand=True, fill="both", padx=10, pady=10)
+
+        canvas = tk.Canvas(frame_scroll, bg="#1a0869", highlightthickness=0, width=300, height=300)
+        scrollbar = tk.Scrollbar(frame_scroll, orient="vertical", command=canvas.yview)
+        scrollable_frame = tk.Frame(canvas, bg="#1a0869")
+
+        scrollable_frame.bind("<Configure>", lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
+        canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
+        canvas.configure(yscrollcommand=scrollbar.set)
+
+        canvas.pack(side="left", fill="both", expand=True)
+        scrollbar.pack(side="right", fill="y")
+
+        # Botão Voltar
+        btn_voltar = tk.Button(popup, text="Voltar", command=popup.destroy, 
+                            bg="#a00c0c", fg="white", font=("Arial", 12))
+        btn_voltar.pack(pady=10, side="bottom")
+
+        quantidade_widgets = {}
+
+        def exibir_itens(*args):
+            for widget in scrollable_frame.winfo_children():
+                widget.destroy()
+            quantidade_widgets.clear()
+
+            categoria = categoria_var.get()
+            if not categoria:
+                return
+
+            for nome_item, item_func in categorias[categoria].items():
+                item_obj = item_func() if callable(item_func) else item_func
+
+                frame_item = tk.Frame(scrollable_frame, bg="#1a0869")
+                frame_item.pack(fill="x", pady=2)
+
+                # Campo de quantidade se for stackável
+                if not hasattr(item_obj, "Id"):
+                    qtd_var = tk.StringVar(value="1")
+                    qtd_entry = tk.Entry(frame_item, textvariable=qtd_var, width=5, font=("Arial", 12))
+                    qtd_entry.pack(side="right", padx=5)
+                    quantidade_widgets[nome_item] = qtd_var
+
+                btn_item = tk.Button(frame_item, text=nome_item,
+                    bg="#0e3386", fg="white", width=28, font=("Arial", 12),
+                    command=lambda n=nome_item: adicionar_item(categoria, n))
+                btn_item.pack(side="left", padx=5)
+
+        def adicionar_item(categoria, nome_item):
+            item_obj = categorias[categoria][nome_item]
+            item_obj = item_obj() if callable(item_obj) else item_obj
+            quantidade = 1
+
+            if not hasattr(item_obj, "Id"):
+                qtd_str = quantidade_widgets.get(nome_item).get()
+                try:
+                    quantidade = int(qtd_str)
+                    if quantidade <= 0:
+                        raise ValueError
+                except ValueError:
+                    messagebox.showerror("Erro", "Quantidade inválida.")
+                    return
+
+            try:
+                # Adiciona o item ao inventário
+                kit.inventario.gerenciar_item(item_objeto=item_obj, quantidade=quantidade, operacao="adicionar")
+                
+                # Salva o kit atualizado no banco (agora com inventário)
+                if D.salvar_kit_no_banco(kit):
+                    self.atualizar_visualizacao_inventario()
+                    # Atualiza os dados locais
+                    D.refresh_kits()
+                    messagebox.showinfo("Sucesso", f"Item '{nome_item}' adicionado ao kit e salvo no banco!")
+                else:
+                    messagebox.showerror("Erro", "Item adicionado mas falha ao salvar no banco!")
+                    
+            except Exception as e:
+                messagebox.showerror("Erro", f"Erro ao adicionar item: {e}")
+
+        categoria_var.trace_add("write", exibir_itens)
+
+    def abrir_popup_remover_item_kit(self):
+        """Abre popup para remover item do kit"""
+        kit = self.get_kit_atual()
+        if not kit:
+            messagebox.showwarning("Aviso", "Nenhum kit selecionado!")
+            return
+        
+        # Obter lista de itens no inventário
+        try:
+            itens_info = kit.listar_itens() if hasattr(kit, 'listar_itens') else []
+        except:
+            itens_info = []
+            
+        if not itens_info:
+            messagebox.showinfo("Info", "O inventário do kit está vazio!")
+            return
+        
+        popup = tk.Toplevel()
+        popup.title("Remover Item do Kit")
+        popup.configure(bg="#1a0869")
+        popup.geometry("400x500")
+
+        tk.Label(popup, text="Itens no Kit:", bg="#1a0869", fg="white", font=("Arial", 16)).pack(pady=10)
+
+        # Área de scroll
+        frame_scroll = tk.Frame(popup, bg="#1a0869")
+        frame_scroll.pack(expand=True, fill="both", padx=10, pady=10)
+
+        canvas = tk.Canvas(frame_scroll, bg="#1a0869", highlightthickness=0, width=350, height=350)
+        scrollbar = tk.Scrollbar(frame_scroll, orient="vertical", command=canvas.yview)
+        scrollable_frame = tk.Frame(canvas, bg="#1a0869")
+
+        scrollable_frame.bind("<Configure>", lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
+        canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
+        canvas.configure(yscrollcommand=scrollbar.set)
+
+        canvas.pack(side="left", fill="both", expand=True)
+        scrollbar.pack(side="right", fill="y")
+
+        quantidade_widgets = {}
+
+        def remover_item(nome_item, tem_id):
+            try:
+                if tem_id:
+                    # Item único - remover diretamente
+                    quantidade = 1
+                else:
+                    # Item stackável - obter quantidade
+                    qtd_str = quantidade_widgets[nome_item].get()
+                    try:
+                        quantidade = int(qtd_str)
+                        if quantidade <= 0:
+                            raise ValueError
+                    except ValueError:
+                        messagebox.showerror("Erro", "Quantidade inválida.")
+                        return
+
+                # Encontrar o objeto do item no inventário
+                item_obj = None
+                if hasattr(kit.inventario, 'slots'):
+                    for slot in kit.inventario.slots.values():
+                        if hasattr(slot, 'item') and slot.item and slot.item.nome == nome_item:
+                            item_obj = slot.item
+                            break
+                elif hasattr(kit.inventario, 'itens'):
+                    for item in kit.inventario.itens:
+                        if hasattr(item, 'nome') and item.nome == nome_item:
+                            item_obj = item
+                            break
+
+                if item_obj:
+                    kit.inventario.gerenciar_item(item_objeto=item_obj, quantidade=quantidade, operacao="remover")
+                    
+                    # Salva o kit atualizado no banco
+                    if D.salvar_kit_no_banco(kit):
+                        self.atualizar_visualizacao_inventario()
+                        # Atualiza os dados locais
+                        D.refresh_kits()
+                        messagebox.showinfo("Sucesso", f"Item '{nome_item}' removido do kit e salvo no banco!")
+                        popup.destroy()
+                        # Reabrir popup atualizado se ainda há itens
+                        self.abrir_popup_remover_item_kit()
+                    else:
+                        messagebox.showerror("Erro", "Item removido mas falha ao salvar no banco!")
+                else:
+                    messagebox.showerror("Erro", f"Item '{nome_item}' não encontrado no inventário!")
+                    
+            except Exception as e:
+                messagebox.showerror("Erro", f"Erro ao remover item: {e}")
+
+        # Exibir itens
+        for item_info in itens_info:
+            nome = item_info["nome"]
+            quantidade_atual = item_info["quantidade"]
+            tem_id = item_info.get("tem_id", False)
+
+            frame_item = tk.Frame(scrollable_frame, bg="#1a0869")
+            frame_item.pack(fill="x", pady=2)
+
+            # Mostrar nome e quantidade atual
+            info_text = f"{nome} (Qtd: {quantidade_atual})"
+            tk.Label(frame_item, text=info_text, bg="#1a0869", fg="white", 
+                    font=("Arial", 10)).pack(side="left", padx=5)
+
+            if not tem_id:
+                # Campo para quantidade a remover
+                qtd_var = tk.StringVar(value="1")
+                qtd_entry = tk.Entry(frame_item, textvariable=qtd_var, width=5, font=("Arial", 10))
+                qtd_entry.pack(side="right", padx=5)
+                quantidade_widgets[nome] = qtd_var
+
+            # Botão remover
+            btn_remover = tk.Button(frame_item, text="Remover",
+                bg="#e74c3c", fg="white", font=("Arial", 10),
+                command=lambda n=nome, t=tem_id: remover_item(n, t))
+            btn_remover.pack(side="right", padx=5)
+
+        # Botão Voltar
+        btn_voltar = tk.Button(popup, text="Voltar", command=popup.destroy, 
+                            bg="#a00c0c", fg="white", font=("Arial", 12))
+        btn_voltar.pack(pady=10, side="bottom")
+
+    def setup_styles(self):
         style = ttk.Style()
         style.theme_use("default")
-        style.configure("CustomCombobox.TCombobox", foreground="black", background="black", fieldbackground="black", bordercolor="black", arrowcolor="black", font=("Arial", 14), padding=6, borderwidth=2, relief="flat")
+        
+        # Configurações para Combobox
+        style.configure("CustomCombobox.TCombobox", 
+                       foreground="white", 
+                       background="#2a1f4a", 
+                       fieldbackground="#2a1f4a", 
+                       bordercolor="#1a0869", 
+                       arrowcolor="white", 
+                       font=("Arial", 12))
+        
+        # Configurações para Treeview
+        style.configure("Custom.Treeview",
+                       background="#2a1f4a",
+                       foreground="white",
+                       rowheight=25,
+                       fieldbackground="#2a1f4a")
+        style.map("Custom.Treeview",
+                 background=[('selected', '#1a0869')])
+        
+        # Configurações para Entry
+        style.configure("Custom.TEntry",
+                       fieldbackground="#2a1f4a",
+                       bordercolor="#1a0869",
+                       foreground="white")
 
-        # Título
+    def setup_ui(self):
+        # Botões de navegação
         tk.Button(self, text="Tela inicial", height=2, command=self.TelaInicial,
-                bg="#1a0869", fg="white", font=("Arial", 20)).place(x=20, y=10, width=350, height=75)
+                bg="#1a0869", fg="white", font=("Arial", 16)).place(x=20, y=10, width=250, height=50)
         
         tk.Button(self, text="Seleção", height=2, command=self.TelaDeSelecao,
-                bg="#1a0869", fg="white", font=("Arial", 20)).place(x=385, y=10, width=350, height=75)
+                bg="#1a0869", fg="white", font=("Arial", 16)).place(x=280, y=10, width=250, height=50)
 
         tk.Button(self, text="Combate", height=2, command=self.TelaDeCombate,
-                bg="#1a0869", fg="white", font=("Arial", 20)).place(x=870, y=10, width=350, height=75)
+                bg="#1a0869", fg="white", font=("Arial", 16)).place(x=540, y=10, width=250, height=50)
         
-        tk.Label(self, text="Informações", fg="white", bg="#1a0869",
-                font=("Arial", 20, "bold"), width=20, height=2).place(x=1235, y=10, width=350, height=75)
+        tk.Label(self, text="Administração de Dados", fg="white", bg="#1a0869",
+                font=("Arial", 16, "bold")).place(x=800, y=10, width=250, height=50)
 
-        # Lista de dados #
-        tk.Label(self, text="Lista de Conteúdo", bg="#3d0586", fg="white", font=("Arial", 18, "bold"), width=30).place(x=50, y=100)
-        self.lista_tipo_var = tk.StringVar(value="NPCs")
-        tipo_combobox = ttk.Combobox(self, textvariable=self.lista_tipo_var, values=["NPCs", "Itens", "Kits", "Proficiências"], state="readonly", width=79, style="CustomCombobox.TCombobox")
-        tipo_combobox.place(x=50, y=145)
-        self.lista_tipo_var.trace_add("write", self.atualizar_lista_conteudo)
+        # Seção de seleção de tabela
+        tk.Label(self, text="Selecionar Tabela:", fg="white", bg="#130f26",
+                font=("Arial", 14, "bold")).place(x=20, y=80)
+        
+        self.combo_tabelas = ttk.Combobox(self, style="CustomCombobox.TCombobox", 
+                                         values=list(self.configuracoes_tabelas.keys()),
+                                         state="readonly", font=("Arial", 12))
+        self.combo_tabelas.place(x=20, y=110, width=300, height=35)
+        self.combo_tabelas.bind('<<ComboboxSelected>>', self.on_tabela_selecionada)
 
-        lista_canvas_frame = tk.Frame(self, bg="#130f26")
-        lista_canvas_frame.place(x=50, y=180, width=500, height=650)
+        # Botão para atualizar dados
+        tk.Button(self, text="Atualizar Dados", command=self.atualizar_dados,
+                bg="#2a1f4a", fg="white", font=("Arial", 12)).place(x=340, y=110, width=150, height=35)
 
-        self.lista_canvas = tk.Canvas(lista_canvas_frame, bg="#14014a", highlightbackground="#4e00b3", highlightthickness=2)
-        lista_scrollbar = tk.Scrollbar(lista_canvas_frame, orient="vertical", command=self.lista_canvas.yview)
-        self.lista_canvas.configure(yscrollcommand=lista_scrollbar.set)
+        # Lista de itens
+        tk.Label(self, text="Itens da Tabela:", fg="white", bg="#130f26",
+                font=("Arial", 14, "bold")).place(x=20, y=160)
 
-        lista_scrollbar.pack(side="right", fill="y")
-        self.lista_canvas.pack(side="left", fill="both", expand=True)
+        # Frame para Treeview com scrollbars
+        tree_frame = tk.Frame(self, bg="#130f26")
+        tree_frame.place(x=20, y=190, width=800, height=400)
 
-        self.lista_inner_frame = tk.Frame(self.lista_canvas, bg="#14014a")
-        self.lista_canvas.create_window((0, 0), window=self.lista_inner_frame, anchor="nw")
-        self.lista_inner_frame.bind("<Configure>", lambda e: self.lista_canvas.configure(scrollregion=self.lista_canvas.bbox("all")))
-        # Lista de dados #
+        # Treeview
+        self.tree = ttk.Treeview(tree_frame, style="Custom.Treeview")
+        self.tree.bind('<<TreeviewSelect>>', self.on_item_selecionado)
+
+        # Scrollbars
+        v_scroll = ttk.Scrollbar(tree_frame, orient="vertical", command=self.tree.yview)
+        h_scroll = ttk.Scrollbar(tree_frame, orient="horizontal", command=self.tree.xview)
+        self.tree.configure(yscrollcommand=v_scroll.set, xscrollcommand=h_scroll.set)
+
+        # Grid do Treeview
+        self.tree.grid(row=0, column=0, sticky="nsew")
+        v_scroll.grid(row=0, column=1, sticky="ns")
+        h_scroll.grid(row=1, column=0, sticky="ew")
+
+        tree_frame.grid_rowconfigure(0, weight=1)
+        tree_frame.grid_columnconfigure(0, weight=1)
+
+        # Botões de ação
+        tk.Button(self, text="Novo Item", command=self.novo_item,
+                bg="#0d7377", fg="white", font=("Arial", 14)).place(x=20, y=610, width=150, height=40)
+        
+        tk.Button(self, text="Editar Item", command=self.editar_item,
+                bg="#f39c12", fg="white", font=("Arial", 14)).place(x=180, y=610, width=150, height=40)
+        
+        tk.Button(self, text="Remover Item", command=self.remover_item,
+                bg="#e74c3c", fg="white", font=("Arial", 14)).place(x=340, y=610, width=150, height=40)
+
+        # Seção de edição/criação
+        tk.Label(self, text="Detalhes do Item:", fg="white", bg="#130f26",
+                font=("Arial", 14, "bold")).place(x=850, y=160)
+
+        # Frame scrollável para campos
+        self.canvas_campos = tk.Canvas(self, bg="#2a1f4a", width=720, height=430)
+        self.canvas_campos.place(x=850, y=190)
+
+        self.frame_campos = tk.Frame(self.canvas_campos, bg="#2a1f4a")
+        self.scrollbar_campos = ttk.Scrollbar(self, orient="vertical", command=self.canvas_campos.yview)
+        self.canvas_campos.configure(yscrollcommand=self.scrollbar_campos.set)
+
+        self.scrollbar_campos.place(x=1570, y=190, height=430)
+        self.canvas_campos.create_window((0, 0), window=self.frame_campos, anchor="nw")
+
+        # Botões de ação para edição
+        tk.Button(self, text="Salvar", command=self.salvar_item,
+                bg="#27ae60", fg="white", font=("Arial", 14)).place(x=850, y=640, width=150, height=40)
+        
+        tk.Button(self, text="Cancelar", command=self.cancelar_edicao,
+                bg="#95a5a6", fg="white", font=("Arial", 14)).place(x=1010, y=640, width=150, height=40)
+
+        # Dicionário para armazenar os widgets de entrada
+        self.campos_entrada = {}
+
+    def atualizar_dados(self):
+        """Atualiza os dados da tabela atual"""
+        if not self.tabela_atual:
+            messagebox.showwarning("Aviso", "Selecione uma tabela primeiro!")
+            return
+        
+        # Recarrega os dados da tabela atual
+        self.carregar_dados_tabela()
+        messagebox.showinfo("Sucesso", f"Dados da tabela '{self.tabela_atual}' atualizados!")
+
+    def on_tabela_selecionada(self, event=None):
+        """Chamado quando uma tabela é selecionada no combobox"""
+        self.tabela_atual = self.combo_tabelas.get()
+        self.carregar_dados_tabela()
+        self.limpar_campos_edicao()
+
+    def carregar_dados_tabela(self):
+        """Carrega os dados da tabela selecionada"""
+        if not self.tabela_atual:
+            return
+        
+        try:
+            config = self.configuracoes_tabelas[self.tabela_atual]
+            
+            # Verifica se a tabela está implementada
+            if not config["campos"]:
+                messagebox.showwarning("Aviso", f"Tabela '{self.tabela_atual}' ainda não implementada!")
+                self.dados_atuais = {}
+                self.atualizar_treeview()
+                return
+            
+
+            if self.tabela_atual == "NPCs":
+                data = D.carregar_tipos_npcs_db()
+            elif self.tabela_atual == "Proficiências":
+                profs_dict = D.carregar_proficiencias_db()
+                data = []
+                for nome, prof in profs_dict.items():
+                    data.append({
+                        "nome": nome,
+                        "atributo": prof.atributo,
+                        "nivel": prof.nivel
+                    })
+            elif self.tabela_atual == "Kits":
+                data = self.carregar_dados_kits()
+            else:
+                # Para outras tabelas, usa função genérica
+                data = D.carregar_dados_tabela_generica(config["tabela_db"])
+            
+            self.dados_atuais = {}
+            
+            # Processamento especial para diferentes tipos de tabelas
+            if self.tabela_atual == "NPCs":
+                # Para NPCs, a chave primária é 'classe'
+                for item in data:
+                    chave = item.get("classe", f"npc_{item.get('grupo', 'sem_grupo')}")
+                    self.dados_atuais[chave] = item
+            
+            elif self.tabela_atual == "Kits":
+                # Para kits, processa os dados carregados
+                for item in data:
+                    nome = item.get("nome")
+                    if nome:
+                        self.dados_atuais[nome] = item
+                    
+            elif self.tabela_atual == "Proficiências":
+                for item in data:
+                    nome = item["nome"]
+                    self.dados_atuais[nome] = item
+                    
+            else:
+                # Para outras tabelas, usa 'nome' como chave
+                for item in data:
+                    nome = item.get("nome")
+                    if nome:
+                        self.dados_atuais[nome] = item
+            
+            self.atualizar_treeview()
+            
+        except Exception as e:
+            messagebox.showerror("Erro", f"Erro ao carregar dados: {e}")
+            print(f"Erro detalhado: {traceback.format_exc()}")
+
+    def atualizar_treeview(self):
+        """Atualiza o Treeview com os dados atuais"""
+        # Limpar treeview
+        for item in self.tree.get_children():
+            self.tree.delete(item)
+        
+        if not self.tabela_atual or not self.dados_atuais:
+            return
+        
+        config = self.configuracoes_tabelas[self.tabela_atual]
+        campos = config["campos"]
+        
+        # Configurar colunas
+        self.tree["columns"] = campos
+        self.tree["show"] = "headings"
+        
+        for campo in campos:
+            self.tree.heading(campo, text=campo.title())
+            self.tree.column(campo, width=100, minwidth=50)
+        
+        # Adicionar dados
+        for chave, dados in self.dados_atuais.items():
+            valores = []
+            for campo in campos:
+                valor = dados.get(campo, "")
+                if isinstance(valor, (dict, list)):
+                    valor = json.dumps(valor)
+                valores.append(str(valor))
+            self.tree.insert("", "end", values=valores, tags=(chave,))
+
+    def on_item_selecionado(self, event=None):
+        """Chamado quando um item é selecionado no Treeview"""
+        selection = self.tree.selection()
+        if not selection:
+            return
+        
+        item = self.tree.item(selection[0])
+        tags = item.get("tags", [])
+        if tags:
+            self.item_selecionado = tags[0]
+            self.carregar_item_para_edicao()
+
+    def criar_campos_edicao(self, dados=None):
+        """Cria os campos de edição baseados na tabela selecionada"""
+        # Limpar campos existentes
+        for widget in self.frame_campos.winfo_children():
+            widget.destroy()
+        self.campos_entrada.clear()
+
+        
+        if self.tabela_atual == "Kits":
+            # Campo Nome
+            tk.Label(self.frame_campos, text="Nome:", 
+                    fg="white", bg="#2a1f4a", font=("Arial", 12)).grid(row=0, column=0, sticky="w", padx=5, pady=5)
+            entry_nome = tk.Entry(self.frame_campos, bg="#130f26", fg="white", 
+                                font=("Arial", 12), width=50)
+            entry_nome.grid(row=0, column=1, padx=5, pady=5)
+            if dados and "nome" in dados:
+                entry_nome.insert(0, str(dados["nome"]))
+            self.campos_entrada["nome"] = entry_nome
+            
+            # Campo Raridade
+            tk.Label(self.frame_campos, text="Raridade:", 
+                    fg="white", bg="#2a1f4a", font=("Arial", 12)).grid(row=1, column=0, sticky="w", padx=5, pady=5)
+            combo_raridade = ttk.Combobox(self.frame_campos, values=["Comum", "Incomum", "Raro", "Épico", "Lendário"],
+                                        state="readonly", font=("Arial", 12), width=47)
+            combo_raridade.grid(row=1, column=1, padx=5, pady=5)
+            if dados and "raridade" in dados:
+                combo_raridade.set(dados["raridade"])
+            self.campos_entrada["raridade"] = combo_raridade
+            
+            # Botões de gerenciamento de inventário
+            frame_botoes = tk.Frame(self.frame_campos, bg="#2a1f4a")
+            frame_botoes.grid(row=2, column=0, columnspan=2, pady=10)
+            
+            tk.Button(frame_botoes, text="Adicionar Item", command=self.abrir_popup_adicionar_item_kit,
+                    bg="#0d7377", fg="white", font=("Arial", 12)).pack(side="left", padx=5)
+            
+            tk.Button(frame_botoes, text="Remover Item", command=self.abrir_popup_remover_item_kit,
+                    bg="#e74c3c", fg="white", font=("Arial", 12)).pack(side="left", padx=5)
+            
+            # Campo Inventário (apenas visualização)
+            tk.Label(self.frame_campos, text="Inventário:", 
+                    fg="white", bg="#2a1f4a", font=("Arial", 12)).grid(row=3, column=0, sticky="nw", padx=5, pady=5)
+            text_inventario = scrolledtext.ScrolledText(self.frame_campos, height=10, width=50, 
+                                                    bg="#130f26", fg="white", font=("Arial", 10))
+            text_inventario.grid(row=3, column=1, padx=5, pady=5)
+            
+            if dados and "inventario" in dados:
+                # Mostra o inventário de forma legível
+                inventario_str = json.dumps(dados["inventario"], indent=2, ensure_ascii=False)
+                text_inventario.insert("1.0", inventario_str)
+            else:
+                text_inventario.insert("1.0", "{}")
+            
+            self.campos_entrada["inventario"] = text_inventario
+            if dados and self.item_selecionado:
+                # Usa um after para garantir que a interface esteja pronta
+                self.after(100, self.atualizar_visualizacao_inventario)
+            
+            # Aviso sobre edição de inventário
+            tk.Label(self.frame_campos, 
+                    text="Use os botões acima para adicionar/remover itens do inventário.",
+                    fg="yellow", bg="#2a1f4a", font=("Arial", 10), wraplength=400, justify="left").grid(
+                    row=4, column=0, columnspan=2, padx=5, pady=5)
+            
+            # Atualizar scroll region
+            self.frame_campos.update_idletasks()
+            self.canvas_campos.configure(scrollregion=self.canvas_campos.bbox("all"))
+            return
+        
+        if not self.tabela_atual:
+            return
+        
+        config = self.configuracoes_tabelas[self.tabela_atual]
+        campos = config["campos"]
+        
+        row = 0
+        for campo in campos:
+            # Label
+            tk.Label(self.frame_campos, text=f"{campo.title()}:", 
+                    fg="white", bg="#2a1f4a", font=("Arial", 12)).grid(row=row, column=0, sticky="w", padx=5, pady=5)
+            
+            # Campo de entrada
+            if campo in ["descricao", "efeito"]:  # Campos de texto longo
+                text_widget = scrolledtext.ScrolledText(self.frame_campos, height=3, width=50, 
+                                                       bg="#130f26", fg="white", font=("Arial", 10))
+                text_widget.grid(row=row, column=1, padx=5, pady=5)
+                if dados and campo in dados:
+                    text_widget.insert("1.0", str(dados[campo]))
+                self.campos_entrada[campo] = text_widget
+            else:  # Campos de texto simples
+                entry = tk.Entry(self.frame_campos, bg="#130f26", fg="white", 
+                               font=("Arial", 12), width=50)
+                entry.grid(row=row, column=1, padx=5, pady=5)
+                if dados and campo in dados:
+                    entry.insert(0, str(dados[campo]))
+                self.campos_entrada[campo] = entry
+            
+            row += 1
+        
+        # Atualizar scroll region
+        self.frame_campos.update_idletasks()
+        self.canvas_campos.configure(scrollregion=self.canvas_campos.bbox("all"))
+
+    def novo_item(self):
+        """Cria um novo item"""
+        if not self.tabela_atual:
+            messagebox.showwarning("Aviso", "Selecione uma tabela primeiro!")
+            return
+        
+        config = self.configuracoes_tabelas[self.tabela_atual]
+        if not config["campos"]:
+            messagebox.showwarning("Aviso", f"Tabela '{self.tabela_atual}' ainda não implementada!")
+            return
+        
+        self.item_selecionado = None
+        self.criar_campos_edicao()
+
+    def editar_item(self):
+        """Edita o item selecionado"""
+        if not self.item_selecionado:
+            messagebox.showwarning("Aviso", "Selecione um item para editar!")
+            return
+        
+        self.carregar_item_para_edicao()
+
+    def remover_item(self):
+        """Remove o item selecionado"""
+        if not self.item_selecionado:
+            messagebox.showwarning("Aviso", "Selecione um item para remover!")
+            return
+        
+        # Confirmar remoção
+        resposta = messagebox.askyesno("Confirmar", 
+                                     f"Tem certeza que deseja remover o item '{self.item_selecionado}'?")
+        if not resposta:
+            return
+        
+        if self.tabela_atual == "Kits":
+            if D.deletar_kit_do_banco(self.item_selecionado):
+                messagebox.showinfo("Sucesso", f"Kit '{self.item_selecionado}' removido com sucesso!")
+                
+                # Remove dos dados locais
+                if self.item_selecionado in self.dados_atuais:
+                    del self.dados_atuais[self.item_selecionado]
+                
+                # Atualiza a interface
+                self.atualizar_treeview()
+                self.limpar_campos_edicao()
+            else:
+                messagebox.showerror("Erro", "Erro ao remover kit do banco de dados!")
+            return
+        
+        try:
+            config = self.configuracoes_tabelas[self.tabela_atual]
+            
+            # Remove do banco de dados
+            D.deletar_item_do_banco(config["tabela_db"], self.item_selecionado)
+            
+            # Remove dos dados locais
+            if self.item_selecionado in self.dados_atuais:
+                del self.dados_atuais[self.item_selecionado]
+            
+            # Atualiza a interface
+            self.atualizar_treeview()
+            self.limpar_campos_edicao()
+            
+            messagebox.showinfo("Sucesso", f"Item '{self.item_selecionado}' removido com sucesso!")
+            
+        except Exception as e:
+            messagebox.showerror("Erro", f"Erro ao remover item: {e}")
+            print(f"Erro detalhado: {traceback.format_exc()}")
+   
+    def carregar_item_para_edicao(self):
+        """Carrega os dados do item selecionado nos campos de edição"""
+        if not self.item_selecionado or self.item_selecionado not in self.dados_atuais:
+            return
+        
+        dados_item = self.dados_atuais[self.item_selecionado]
+        
+        # Para kits, usa os dados completos
+        if self.tabela_atual == "Kits" and "_dados_completos" in dados_item:
+            dados_para_edicao = dados_item["_dados_completos"]
+            
+            # Se for kit, força o carregamento correto do inventário
+            kit_objeto = dados_item.get("_kit_objeto")
+            if kit_objeto:
+                # Tenta recarregar o kit do banco para garantir inventário atualizado
+                try:
+                    kit_atualizado = D.carregar_kit_completo_db(kit_objeto.nome)
+                    if kit_atualizado and hasattr(kit_atualizado, 'inventario'):
+                        dados_item["_kit_objeto"] = kit_atualizado
+                        dados_para_edicao["inventario"] = self.inventario_para_dict(kit_atualizado.inventario)
+                except Exception as e:
+                    print(f"Erro ao recarregar kit: {e}")
+        else:
+            dados_para_edicao = dados_item
+        
+        self.criar_campos_edicao(dados_para_edicao)
+        
+        # Se for kit, força atualização da visualização do inventário
+        if self.tabela_atual == "Kits":
+            self.atualizar_visualizacao_inventario()
+
+    def salvar_item(self):
+        """Salva ou atualiza o item atual"""
+        if not self.tabela_atual:
+            messagebox.showwarning("Aviso", "Selecione uma tabela primeiro!")
+            return
+        
+        config = self.configuracoes_tabelas[self.tabela_atual]
+        if not config["campos"]:
+            messagebox.showwarning("Aviso", f"Tabela '{self.tabela_atual}' ainda não implementada!")
+            return
+        
+        if self.tabela_atual == "Kits":
+            nome = self.campos_entrada["nome"].get().strip()
+            raridade = self.campos_entrada["raridade"].get()
+            
+            if not nome:
+                messagebox.showwarning("Aviso", "O campo 'nome' é obrigatório!")
+                return
+            
+            if not raridade:
+                messagebox.showwarning("Aviso", "O campo 'raridade' é obrigatório!")
+                return
+            
+            try:
+                # Se é edição, pega o kit existente e preserva o inventário
+                if self.item_selecionado and self.item_selecionado in self.dados_atuais:
+                    kit_existente = self.dados_atuais[self.item_selecionado].get("_kit_objeto")
+                    if kit_existente:
+                        # Atualiza apenas nome e raridade, preserva inventário
+                        kit_existente.nome = nome
+                        kit_existente.raridade = raridade
+                        kit_para_salvar = kit_existente
+                    else:
+                        # Cria novo kit se não encontrou objeto existente
+                        kit_para_salvar = CB.Kits(nome, raridade)
+                else:
+                    # Novo kit
+                    kit_para_salvar = CB.Kits(nome, raridade)
+                    # Garante que o novo kit tenha um inventário vazio
+                    if not hasattr(kit_para_salvar, 'inventario') or kit_para_salvar.inventario is None:
+                        # Assumindo que existe uma classe Inventario
+                        kit_para_salvar.inventario = CB.Inventario()  # ou a classe correta do inventário
+                
+                # Usar a função específica para kits que agora salva o inventário também
+                if D.salvar_kit_no_banco(kit_para_salvar):
+                    if self.item_selecionado and self.item_selecionado in self.dados_atuais:
+                        messagebox.showinfo("Sucesso", f"Kit '{nome}' atualizado com sucesso!")
+                    else:
+                        messagebox.showinfo("Sucesso", f"Kit '{nome}' salvo com sucesso!")
+                    
+                    # Recarrega os dados para atualizar a interface
+                    self.carregar_dados_tabela()
+                    self.limpar_campos_edicao()
+                    
+                    # Atualiza os kits em memória
+                    D.refresh_kits()  # Função que recarrega os kits do banco
+                    
+                else:
+                    messagebox.showerror("Erro", "Erro ao salvar kit no banco de dados!")
+                
+            except Exception as e:
+                messagebox.showerror("Erro", f"Erro ao salvar kit no banco de dados: {e}")
+                print(f"Erro detalhado: {traceback.format_exc()}")
+            
+            return
+        
+        try:
+            # Coletar dados dos campos
+            dados_item = {}
+            for campo, widget in self.campos_entrada.items():
+                if isinstance(widget, scrolledtext.ScrolledText):
+                    valor = widget.get("1.0", "end-1c")
+                else:
+                    valor = widget.get()
+                
+                # Converter tipos apropriados
+                if campo in ["peso", "dano", "perfuracao", "cura", "energia", "raio", "valor", 
+                           "capacidade", "nivelBalistico", "absorcaoFisica", "absorcaoBalistica",
+                           "forca", "agilidade", "vigor", "inteligencia", "tatica", "presenca"]:
+                    try:
+                        valor = float(valor) if valor else 0.0
+                    except ValueError:
+                        valor = 0.0
+                elif campo in ["calibre"]:
+                    # Calibre pode ser string
+                    pass
+                
+                dados_item[campo] = valor
+            
+            # Validar campos obrigatórios
+            if not dados_item.get("nome", "").strip():
+                messagebox.showwarning("Aviso", "O campo 'nome' é obrigatório!")
+                return
+            
+            nome_item = dados_item["nome"]
+            
+            # Verificar se é novo item ou edição
+            if self.item_selecionado and self.item_selecionado in self.dados_atuais:
+                # Atualizando item existente
+                D.atualizar_item_no_banco(config["tabela_db"], self.item_selecionado, dados_item)
+                
+                # Se o nome mudou, precisa remover a entrada antiga
+                if self.item_selecionado != nome_item:
+                    if self.item_selecionado in self.dados_atuais:
+                        del self.dados_atuais[self.item_selecionado]
+                
+                messagebox.showinfo("Sucesso", f"Item '{nome_item}' atualizado com sucesso!")
+            else:
+                # Novo item
+                if nome_item in self.dados_atuais:
+                    resposta = messagebox.askyesno("Item Existente", 
+                                                 f"Item '{nome_item}' já existe. Deseja substituir?")
+                    if not resposta:
+                        return
+                
+                D.salvar_item_no_banco(config["tabela_db"], dados_item)
+                messagebox.showinfo("Sucesso", f"Item '{nome_item}' salvo com sucesso!")
+            
+            # Atualizar dados locais
+            self.dados_atuais[nome_item] = dados_item
+            
+            # Atualizar interface
+            self.atualizar_treeview()
+            self.limpar_campos_edicao()
+            
+        except Exception as e:
+            messagebox.showerror("Erro", f"Erro ao salvar item: {e}")
+            print(f"Erro detalhado: {traceback.format_exc()}")
+
+    def cancelar_edicao(self):
+        """Cancela a edição atual"""
+        self.limpar_campos_edicao()
+
+    def limpar_campos_edicao(self):
+        """Limpa os campos de edição"""
+        self.item_selecionado = None
+        for widget in self.frame_campos.winfo_children():
+            widget.destroy()
+        self.campos_entrada.clear()
 
     def TelaInicial(self):
         self.controller.TelaInicial()
@@ -5269,330 +5999,6 @@ class RegrasItensScreen(tk.Frame):
 
     def TelaDeCombate(self):
         self.controller.TelaDeCombate()
-
-    def mostrar_topico(self, *args):
-        texto = D.Topicos.get(self.topico_var.get(), "Tópico não encontrado.")
-        self.texto_label.config(text=texto)
-
-    def carregar_lista_dados(self, tipo):
-        for widget in self.lista_inner_frame.winfo_children():
-            widget.destroy()
-
-        tipo = tipo or self.lista_tipo_var.get()
-
-        if tipo == "NPCs":
-            grupo = self.npc_grupo_var.get() if hasattr(self, 'npc_grupo_var') else None
-            if not grupo or grupo not in D.NPCs_predefinidos:
-                return
-            npcs = D.NPCs_predefinidos[grupo]
-
-            for nome, f, a, v, i, p, t in npcs:
-                npc = CB.NPC(grupo, nome, f, a, v, i, p, t)
-
-                def mostrar_info(n=npc):
-                    popup = tk.Toplevel(self)
-                    popup.title(f"{n.classe} ({n.grupo})")
-                    popup.configure(bg="#1a1a2e")
-                    popup.geometry("300x300")
-
-                    tk.Label(popup, text=f"Classe: {n.classe}", bg="#1a1a2e", fg="white", font=("Arial", 14, "bold")).pack(pady=(10, 5))
-
-                    atributos = {
-                        "Força": n.forca,
-                        "Agilidade": n.agilidade,
-                        "Vigor": n.vigor,
-                        "Inteligência": n.inteligencia,
-                        "Presença": n.presenca,
-                        "Tática": n.tatica
-                    }
-
-                    for nome, valor in atributos.items():
-                        tk.Label(popup, text=f"{nome}: {valor}", bg="#1a1a2e", fg="lightgreen", font=("Arial", 12)).pack(anchor="w", padx=20)
-
-                    tk.Button(popup, text="Fechar", command=popup.destroy, bg="#4e00b3", fg="white", font=("Arial", 11)).pack(pady=15)
-
-                btn = tk.Button(self.lista_inner_frame, text=nome, font=("Arial", 12, "bold"),
-                                bg="#3d0586", fg="white", relief="flat", command=mostrar_info)
-                btn.pack(fill="x", padx=10, pady=5)
-
-        elif tipo == "Proficiências":
-            filtro = self.prof_filtro_var.get() if hasattr(self, 'prof_filtro_var') else "Geral"
-            grupos = {
-                "Força": D.Força,
-                "Agilidade": D.Agilidade,
-                "Vigor": D.Vigor,
-                "Inteligência": D.Inteligencia,
-                "Presença": D.Presença,
-                "Tática": D.Tática
-            }
-            todas = D.Proficiencias if filtro == "Geral" or filtro not in grupos else grupos[filtro]
-
-            for nome in todas:
-                tk.Label(self.lista_inner_frame, text=nome, bg="#14014a", fg="white", font=("Arial", 12, "bold"), anchor="w").pack(fill="x", padx=10, pady=3)
-
-        elif tipo == "Itens":
-            tipo_item = self.tipo_item_var.get() if hasattr(self, 'tipo_item_var') else None
-            tipos_dict = {
-                "Item": D.Items,
-                "Consumíveis": D.Consumiveis,
-                "Explosivos": D.Explosivos,
-                "Municao": D.Munições,
-                "Melee": D.Melees,
-                "Ranged": D.Rangeds,
-                "Protecao": D.Protecoes,
-                "Melhoria": D.Melhorias
-            }
-
-            if tipo_item not in tipos_dict:
-                return
-            pool = tipos_dict[tipo_item]
-
-            for nome, construtor in pool.items():
-                def abrir_popup(n=nome, c=construtor):
-                    item = c()
-                    popup = tk.Toplevel(self)
-                    popup.title(n)
-                    popup.geometry("300x200")
-                    popup.configure(bg="#1a1a2e")
-
-                    tk.Label(popup, text=f"Nome: {item.nome}", fg="white", bg="#1a1a2e", font=("Arial", 12, "bold")).pack(pady=10)
-                    peso = getattr(item, "peso", "N/A")
-                    tk.Label(popup, text=f"Peso: {peso}", fg="lightgreen", bg="#1a1a2e", font=("Arial", 11)).pack()
-
-                    for attr in vars(item):
-                        if attr not in ("nome", "peso"):
-                            valor = getattr(item, attr)
-                            tk.Label(popup, text=f"{attr.capitalize()}: {valor}", fg="white", bg="#1a1a2e", font=("Arial", 10)).pack(anchor="w", padx=15)
-
-                    tk.Button(popup, text="Fechar", command=popup.destroy, bg="#4e00b3", fg="white").pack(pady=15)
-
-                btn = tk.Button(self.lista_inner_frame, text=nome, font=("Arial", 12, "bold"), bg="#3d0586", fg="white", command=abrir_popup)
-                btn.pack(fill="x", padx=5, pady=2)
-
-        elif tipo == "Kits":
-            nome_kit = self.kit_var.get() if hasattr(self, 'kit_var') else None
-            if nome_kit not in D.kits_por_nome:
-                return
-
-            kit = D.kits_por_nome[nome_kit]
-            contagem = {}
-            for item in kit.itens:
-                nome = getattr(item, "nome", str(item))
-                contagem[nome] = contagem.get(nome, 0) + 1
-
-            for nome, qtd in contagem.items():
-                texto = f"{nome} x{qtd}"
-                tk.Label(self.lista_inner_frame, text=texto, bg="#14014a", fg="white", font=("Arial", 12, "bold"), anchor="w").pack(fill="x", padx=10, pady=3)
-
-        self.lista_canvas.configure(scrollregion=self.lista_canvas.bbox("all"))
-
-    def atualizar_lista_conteudo(self, *args):
-        # Limpa o conteúdo anterior
-        for widget in self.lista_inner_frame.winfo_children():
-            widget.destroy()
-
-        tipo = self.lista_tipo_var.get()
-
-        if tipo == "NPCs":
-            for grupo, npcs in D.NPCs_predefinidos.items():
-                lbl_grupo = tk.Label(self.lista_inner_frame, text=f"[{grupo}]", bg="#14014a", fg="#c5c5ff", font=("Arial", 12, "bold"))
-                lbl_grupo.pack(anchor="w", padx=10, pady=(8, 2))
-
-                for nome, f, a, v, i, p, t in npcs:
-                    def mostrar(n=nome, g=grupo, ff=f, aa=a, vv=v, ii=i, pp=p, tt=t):
-                        npc = CB.NPC(g, n, ff, aa, vv, ii, pp, tt)
-                        self.mostrar_popup_npc(npc)
-                    btn = tk.Button(self.lista_inner_frame, text=nome, bg="#3d0586", fg="white", font=("Arial", 11), command=mostrar)
-                    btn.pack(fill="x", padx=20, pady=2)
-
-        elif tipo == "Itens":
-            pools_nomeados = [
-                ("Itens Gerais", D.Items),
-                ("Consumíveis", D.Consumiveis),
-                ("Explosivos", D.Explosivos),
-                ("Munições", D.Munições),
-                ("Armas Corpo-a-Corpo", D.Melees),
-                ("Armas de Fogo", D.Rangeds),
-                ("Proteções", D.Protecoes),
-                ("Melhorias", D.Melhorias)
-            ]
-            for titulo, pool in pools_nomeados:
-                if not pool:
-                    continue
-
-                lbl_titulo = tk.Label(self.lista_inner_frame, text=titulo, bg="#14014a", fg="#c5c5ff", font=("Arial", 12, "bold"))
-                lbl_titulo.pack(anchor="w", padx=10, pady=(10, 2))
-
-                for nome, construtor in sorted(pool.items()):
-                    def abrir(n=nome, c=construtor):
-                        item = c()
-                        self.mostrar_popup_detalhes_item(item)
-                    btn = tk.Button(self.lista_inner_frame, text=nome, bg="#3d0586", fg="white", font=("Arial", 11), command=abrir)
-                    btn.pack(fill="x", padx=20, pady=2)
-
-        elif tipo == "Kits":
-            for nome, kit in D.kits_por_nome.items():
-                def abrir(n=nome, k=kit):
-                    self.mostrar_popup_kit(n, k)
-                btn = tk.Button(self.lista_inner_frame, text=nome, bg="#3d0586", fg="white", font=("Arial", 11), command=abrir)
-                btn.pack(fill="x", padx=20, pady=2)
-
-        elif tipo == "Proficiências":
-            for nome in D.Proficiencias:
-                lbl = tk.Label(self.lista_inner_frame, text=nome, bg="#14014a", fg="white", font=("Arial", 12, "bold"), anchor="w")
-                lbl.pack(fill="x", padx=10, pady=3)
-
-        self.lista_canvas.configure(scrollregion=self.lista_canvas.bbox("all"))
-
-    def mostrar_popup_npc(self, npc):
-        try:
-            stats = npc.__repr__()  # usa o dicionário personalizado do NPC
-            nome = stats.get("Grupo", "NPC Sem Grupo")
-            tipo = stats.get("Classe", npc.__class__.__name__)
-
-            popup = tk.Toplevel(self)
-            popup.title(f"Detalhes do NPC: {tipo}")
-            popup.configure(bg="#1a0869")
-            popup.geometry("500x420")
-            popup.resizable(False, False)
-
-            tk.Label( popup, text=f"{tipo} (Grupo: {nome})", font=("Arial", 16, "bold"), bg="#1a0869", fg="white").pack(pady=(20, 10))
-
-            frame_scroll = tk.Frame(popup, bg="#1a0869", height=250)
-            frame_scroll.pack(pady=10, padx=20, fill='both', expand=True)
-
-            canvas = tk.Canvas(frame_scroll, bg="#130f26", highlightthickness=0)
-            scrollbar = tk.Scrollbar(frame_scroll, orient="vertical", command=canvas.yview)
-            scroll_frame = tk.Frame(canvas, bg="#130f26")
-
-            scroll_frame.bind( "<Configure>", lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
-            canvas.create_window((0, 0), window=scroll_frame, anchor="nw")
-            canvas.configure(yscrollcommand=scrollbar.set)
-
-            canvas.pack(side="left", fill="both", expand=True)
-            scrollbar.pack(side="right", fill="y")
-
-            for chave, valor in stats.items():
-                linha = tk.Frame(scroll_frame, bg="#130f26")
-                linha.pack(anchor='w', pady=2, padx=10)
-                tk.Label(linha, text=f"{chave}:", font=("Arial", 12, "bold"), fg="white", bg="#130f26").pack(side="left")
-                tk.Label(linha, text=f" {valor}", font=("Arial", 12), fg="white", bg="#130f26").pack(side="left")
-
-            btn_fechar = tk.Button(popup, text="Fechar", command=popup.destroy, bg="#004080", fg="white", font=("Arial", 12),width=10, height=10)
-            btn_fechar.pack(pady=20)
-
-        except Exception as e:
-            print("Erro ao mostrar detalhes do NPC:", e)
-
-    def mostrar_popup_detalhes_item(self, item_obj):
-        try:
-            stats = item_obj.stats()
-            tipo = item_obj.__class__.__name__
-
-            popup = tk.Toplevel(self)
-            popup.title(f"Detalhes do Item: {stats.get('Nome', 'Desconhecido')}")
-            popup.configure(bg="#1a0869")
-            popup.geometry("600x400")
-            popup.resizable(False, False)
-
-            lbl_titulo = tk.Label(
-                popup,
-                text=f"{stats.get('Nome', 'Item Sem Nome')} ({tipo})",
-                font=("Arial", 16, "bold"),
-                bg="#1a0869",
-                fg="white"
-            )
-            lbl_titulo.pack(pady=(20, 10))
-
-            frame_scroll = tk.Frame(popup, bg="#1a0869", height=250)
-            frame_scroll.pack(pady=10, padx=20, fill='both', expand=True)
-
-            canvas = tk.Canvas(frame_scroll, bg="#130f26", highlightthickness=0)
-            scrollbar = tk.Scrollbar(frame_scroll, orient="vertical", command=canvas.yview)
-            scroll_frame = tk.Frame(canvas, bg="#130f26")
-
-            scroll_frame.bind(
-                "<Configure>",
-                lambda e: canvas.configure(scrollregion=canvas.bbox("all"))
-            )
-            self.scroll_frame_item_detalhes = scroll_frame
-            self.item_detalhes_atual = item_obj
-
-            canvas.create_window((0, 0), window=scroll_frame, anchor="nw")
-            canvas.configure(yscrollcommand=scrollbar.set)
-
-            canvas.pack(side="left", fill="both", expand=True)
-            scrollbar.pack(side="right", fill="y")
-
-            for chave, valor in stats.items():
-                linha = tk.Frame(scroll_frame, bg="#130f26")
-                linha.pack(anchor='w', pady=2, padx=10)
-                tk.Label(linha, text=f"{chave}:", font=("Arial", 12, "bold"), fg="white", bg="#130f26").pack(side="left")
-                tk.Label(linha, text=f" {valor}", font=("Arial", 12), fg="white", bg="#130f26").pack(side="left")
-
-            frame_acoes = tk.Frame(popup, bg="#1a0869", height=60)
-            frame_acoes.pack(pady=(10, 0), fill='x')
-
-            if tipo == "Protecao":
-                btn_equipar = tk.Button(
-                    frame_acoes,
-                    text="Equipar", 
-                    command=lambda p=popup: self.abrir_popup_equipar_protecao(item_obj, p),
-                    bg="#004080", fg="white", font=("Arial", 10), width=10
-                )
-                btn_equipar.pack(side="left", padx=(10, 10))
-
-            btn_fechar = tk.Button(popup, text="Fechar", command=popup.destroy, bg="#004080", fg="white", font=("Arial", 12))
-            btn_fechar.pack(side="right", padx=(0, 30), pady=20)
-
-        except Exception as e:
-            print("Erro ao mostrar detalhes do item:", e)
-
-    def mostrar_popup_kit(self, nome, kit):
-        popup = tk.Toplevel(self)
-        popup.title(f"Kit: {nome}")
-        popup.configure(bg="#1a0869")
-        popup.geometry("400x400")
-        popup.resizable(False, False)
-
-        tk.Label(
-            popup,
-            text=nome,
-            font=("Arial", 16, "bold"),
-            bg="#1a0869",
-            fg="white"
-        ).pack(pady=(20, 10))
-
-        # Frame com scroll para os itens do kit
-        frame_scroll = tk.Frame(popup, bg="#1a0869")
-        frame_scroll.pack(padx=20, pady=10, fill='both', expand=True)
-
-        canvas = tk.Canvas(frame_scroll, bg="#130f26", highlightthickness=0)
-        scrollbar = tk.Scrollbar(frame_scroll, orient="vertical", command=canvas.yview)
-        scroll_frame = tk.Frame(canvas, bg="#130f26")
-
-        scroll_frame.bind("<Configure>", lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
-        canvas.create_window((0, 0), window=scroll_frame, anchor="nw")
-        canvas.configure(yscrollcommand=scrollbar.set)
-
-        canvas.pack(side="left", fill="both", expand=True)
-        scrollbar.pack(side="right", fill="y")
-
-        # Agrupa os itens por nome
-        contagem = {}
-        for item in kit.itens:
-            item_nome = getattr(item, "nome", str(item))
-            contagem[item_nome] = contagem.get(item_nome, 0) + 1
-
-        for item_nome, qtd in contagem.items():
-            linha = tk.Frame(scroll_frame, bg="#130f26")
-            linha.pack(anchor="w", pady=2, padx=10)
-            tk.Label(linha, text=f"{item_nome}:", font=("Arial", 12, "bold"), fg="white", bg="#130f26").pack(side="left")
-            tk.Label(linha, text=f" x{qtd}", font=("Arial", 12), fg="white", bg="#130f26").pack(side="left")
-
-        # Botão Fechar
-        btn_fechar = tk.Button(popup, text="Fechar", command=popup.destroy, bg="#004080", fg="white", font=("Arial", 12))
-        btn_fechar.pack(pady=10)
 ### TELA DE DICIONARIOS ###
 ### TELA DE DICIONARIOS ###
 ### TELA DE DICIONARIOS ###
@@ -5650,3 +6056,4 @@ class MainApp(tk.Tk):
 if __name__ == "__main__":
     app = MainApp()
     app.mainloop()
+
