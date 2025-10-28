@@ -49,7 +49,7 @@ class Personagem:
     def __init__(self, nome, nivel, Forca, Agilidade, Vigor, Inteligencia, Presenca, Tatica, proficiencias_base=None):
         self.nome: str = nome
         self.nivel: int = nivel
-        self.XPlvlUp: int = 1000 + (500 * nivel)
+        self.XPlvlUp: int = 500 + (500 * nivel)
         self.XPAtual: int = 0
         #atributos#
         self.Forca: int = Forca
@@ -59,7 +59,7 @@ class Personagem:
         self.Presenca: int = Presenca
         self.Tatica: int = Tatica
         #stats#
-        self.vidaMax: int = 50 + (10 * Vigor)
+        self.vidaMax: int = 100 + (10 * Vigor)
         self.vidaAtual: int = self.vidaMax
         self.PeMax: int = 4 + Presenca
         self.PeAtual: int = self.PeMax
@@ -68,6 +68,8 @@ class Personagem:
         self.CargaMax: float = 15 + (Forca * 2)
         self.cargaAtual: float = 0
         self.mobilidade: int = 5 + (Agilidade * 2)
+        self.percepcao: int = Inteligencia
+
         #Corpo#
         self.Cabeça = None
         self.Rosto = None
@@ -83,10 +85,9 @@ class Personagem:
             for nome, criador in proficiencias_base.items():
                 self.proficiencias.proficiencias[nome] = criador
         self.recalcularAtributos()
-        #Buffs/debuffs#
-        self.efeitos = GerenciadorDeEfeitos()
-        #Habilidades/Poderes#
+        self.poderes = GerenciadorDePoderes()
         self.habilidades = GerenciadorDeHabilidades()
+        self.buffs_debuffs = GerenciadorDeBuffsDebuffs()
         
 
     def CriarPersonagem(nome, nivel, Forca, Agilidade, Vigor, Inteligencia, Presenca, Tatica, proficiencias_base=None):
@@ -145,26 +146,27 @@ class Personagem:
         self.recalcularAtributos()
     
     def recalcularAtributos(self):
-        self.XPlvlUp = 1000 + (500 * self.nivel)
+        self.XPlvlUp = 500 + (500 * self.nivel)
 
         # Obter níveis das proficiências específicas
-        bonus_profs = self.proficiencias.obter_proficiencias("Vitalidade", "Carga", "Combate", "Reflexo", "Folego", "Atletismo")
+        bonus_profs = self.proficiencias.obter_proficiencias("Vitalidade", "Carga", "Combate", "Reflexo", "Atletismo", "Percepção")
         bonus_vida = bonus_profs.get("Vitalidade", 0) * 2
         bonus_carga = bonus_profs.get("Carga", 0) * 1
         bonus_combate = int(bonus_profs.get("Combate", 0) // 2)
         bonus_reflexo = int(bonus_profs.get("Reflexo", 0) // 2)
-        bonus_folego = int(bonus_profs.get("Folego", 0) // 2)
         bonus_atletismo = int(bonus_profs.get("Atletismo", 0) * 2)
+        bonus_percepcao = bonus_profs.get("Percepção", 0) * 1
 
         # Recalcular atributos com bônus de proficiências
-        self.vidaMax = 50 + (10 * self.Vigor) + bonus_vida
+        self.vidaMax = 100 + (10 * self.Vigor) + bonus_vida
         self.vidaAtual = min(self.vidaAtual, self.vidaMax)
-        self.PeMax = 4 + self.Presenca + bonus_folego
+        self.PeMax = 4 + self.Presenca
         self.PeAtual = min(self.PeAtual, self.PeMax)
         self.bloqueio = 5 + self.Forca + bonus_combate
         self.esquiva = 5 + self.Agilidade + bonus_reflexo
         self.CargaMax = 15 + (self.Forca * 2) + bonus_carga
         self.mobilidade = 5 + (self.Agilidade * 2) + bonus_atletismo
+        self.percepcao: int = self.Inteligencia + bonus_percepcao
 
         self.calcular_peso_total()
     
@@ -181,15 +183,6 @@ class Personagem:
         return False
 
     def ReceberKit(self, kit):
-        """
-        Recebe um kit e adiciona todos os itens ao inventário do personagem.
-        
-        Args:
-            kit: Objeto kit que contém uma lista de itens ou um dicionário de itens
-            
-        Returns:
-            bool: True se o kit foi recebido com sucesso, False caso contrário
-        """
         try:
             # Verifica se o kit tem uma lista de itens
             if hasattr(kit, 'itens'):
@@ -305,8 +298,8 @@ class Personagem:
             modo: String que define como aplicar o kit
                 - "basico": Apenas adiciona todos os itens ao inventário
                 - "equipar_protecoes": Adiciona itens e equipa proteções automaticamente
-                - "equipar_tudo": Adiciona itens, equipa proteções e randomiza uma arma para equipados
-                - "equipar_arma": Adiciona itens e randomiza uma arma para equipados
+                - "equipar_tudo": Adiciona itens, equipa proteções e todas as armas
+                - "equipar_arma": (mesmo comportamento de equipar_tudo, mantido por compatibilidade)
         
         Returns:
             dict: Relatório das ações realizadas
@@ -315,88 +308,106 @@ class Personagem:
             "sucesso": False,
             "itens_adicionados": [],
             "protecoes_equipadas": {},
-            "arma_equipada": None,
+            "armas_equipadas": [],
             "erros": []
         }
         
         try:
-            # Obter todos os itens do kit
             itens_kit = kit.listar_itens()
-            
-            # Listas para categorizar itens
-            protecoes = []
-            armas_melee = []
-            armas_ranged = []
-            outros_itens = []
-            
-            # Categorizar os itens
+            protecoes, armas_melee, armas_ranged, outros_itens = [], [], [], []
+
+            # === 1. Adicionar todos os itens ao inventário e categorizar === #
             for item_info in itens_kit:
                 item_obj = item_info["objeto"]
                 quantidade = item_info["quantidade"]
-                
-                # Adicionar todos os itens ao inventário primeiro
+
                 for _ in range(quantidade):
                     if hasattr(item_obj, "Id"):
-                        # Para itens únicos, criar uma nova instância se possível
+                        # Criar cópias seguras se possível
                         if hasattr(item_obj, "to_dict") and hasattr(item_obj.__class__, "from_dict"):
                             item_dict = item_obj.to_dict()
                             nova_instancia = item_obj.__class__.from_dict(item_dict)
                             self.inventario.adicionar_item_objeto(nova_instancia, 1)
                             relatorio["itens_adicionados"].append(nova_instancia.nome)
-                            
-                            # Categorizar o item
-                            if self._eh_protecao(nova_instancia):
-                                protecoes.append(nova_instancia)
-                            elif self._eh_arma_melee(nova_instancia):
-                                armas_melee.append(nova_instancia)
-                            elif self._eh_arma_ranged(nova_instancia):
-                                armas_ranged.append(nova_instancia)
-                            else:
-                                outros_itens.append(nova_instancia)
+                            alvo = nova_instancia
                         else:
                             self.inventario.adicionar_item_objeto(item_obj, 1)
                             relatorio["itens_adicionados"].append(item_obj.nome)
-                            
-                            # Categorizar o item original
-                            if self._eh_protecao(item_obj):
-                                protecoes.append(item_obj)
-                            elif self._eh_arma_melee(item_obj):
-                                armas_melee.append(item_obj)
-                            elif self._eh_arma_ranged(item_obj):
-                                armas_ranged.append(item_obj)
-                            else:
-                                outros_itens.append(item_obj)
+                            alvo = item_obj
+
+                        # Categorizar
+                        if self._eh_protecao(alvo):
+                            protecoes.append(alvo)
+                        elif self._eh_arma_melee(alvo):
+                            armas_melee.append(alvo)
+                        elif self._eh_arma_ranged(alvo):
+                            armas_ranged.append(alvo)
+                        else:
+                            outros_itens.append(alvo)
+
                     else:
-                        # Para itens stackáveis
+                        # Itens empilháveis (munição, consumíveis etc.)
                         self.inventario.adicionar_item_objeto(item_obj, quantidade)
                         relatorio["itens_adicionados"].append(f"{item_obj.nome} x{quantidade}")
                         outros_itens.append(item_obj)
-                        break  # Sai do loop pois já adicionou a quantidade total
-            
-            # Aplicar ações específicas baseadas no modo
-            if modo in ["equipar_protecoes", "equipar_tudo"]:
+                        break
+
+            # === 2. Equipar proteções, se aplicável === #
+            if modo in ["equipar_protecoes", "equipar_tudo", "equipar_arma"]:
                 relatorio["protecoes_equipadas"] = self._equipar_protecoes_automatico(protecoes)
-            
+
+            # === 3. Equipar TODAS as armas === #
             if modo in ["equipar_tudo", "equipar_arma"]:
                 todas_armas = armas_melee + armas_ranged
-                if todas_armas:
-                    arma_escolhida = random.choice(todas_armas)
-                    if self._equipar_arma(arma_escolhida):
-                        relatorio["arma_equipada"] = arma_escolhida.nome
+                for arma in todas_armas:
+                    if self._equipar_arma(arma):
+                        relatorio["armas_equipadas"].append(arma.nome)
                     else:
-                        relatorio["erros"].append(f"Falha ao equipar arma: {arma_escolhida.nome}")
-            
-            # Recalcular peso e atributos
+                        relatorio["erros"].append(f"Falha ao equipar arma: {arma.nome}")
+
+                # === 4. Carregar todas as armas de fogo com munição compatível === #
+                try:
+                    # filtra todas as munições do inventário
+                    municoes_disp = [
+                        i["item"] for i in self.inventario.itens
+                        if hasattr(i["item"], "calibre") or "Municao" in i["item"].__class__.__name__
+                    ]
+
+                    for arma in armas_ranged:
+                        if hasattr(arma, "carregar_municao") and hasattr(arma, "calibre"):
+                            # encontra munição compatível
+                            muni_comp = next(
+                                (m for m in municoes_disp if getattr(m, "calibre", None) == arma.calibre),
+                                None
+                            )
+                            if muni_comp:
+                                # quantidade total da munição no inventário
+                                qtd_disp = next(
+                                    (i["quantidade"] for i in self.inventario.itens if i["item"] == muni_comp),
+                                    0
+                                )
+                                if qtd_disp > 0:
+                                    qtd_carregada = arma.carregar_municao(muni_comp, qtd_disp)
+                                    self.inventario.remover_item(muni_comp, qtd_carregada)
+                                    print(f"[{self.nome}] {arma.nome} carregada com {qtd_carregada}x {muni_comp.nome}.")
+                                else:
+                                    print(f"[{self.nome}] Sem munição suficiente para {arma.nome}.")
+                            else:
+                                print(f"[{self.nome}] Nenhuma munição compatível para {arma.nome}.")
+                except Exception as e:
+                    relatorio["erros"].append(f"Erro ao carregar munições: {str(e)}")
+
+            # === 5. Atualizar atributos === #
             self.calcular_peso_total()
             self.recalcularAtributos()
-            
+
             relatorio["sucesso"] = True
             print(f"{self.nome} recebeu o kit '{kit.nome}' no modo '{modo}' com sucesso!")
-            
+        
         except Exception as e:
             relatorio["erros"].append(f"Erro geral: {str(e)}")
             print(f"Erro ao aplicar kit: {e}")
-        
+
         return relatorio
 
     def _eh_protecao(self, item):
@@ -464,7 +475,6 @@ class Personagem:
             print(f"Erro ao equipar arma {arma.nome}: {e}")
             return False
 
-
     @classmethod
     def from_dict(cls, data):
         personagem = cls(
@@ -500,8 +510,9 @@ class Personagem:
         personagem.inventario = Inventario.from_dict(data.get("inventario", {}))
         personagem.equipados = Inventario.from_dict(data.get("equipados", {}))
         personagem.proficiencias = SistemaDeProficiencias.from_dict(data.get("proficiencias", {}))
-        personagem.efeitos = GerenciadorDeEfeitos.from_dict(data.get("efeitos", {}))
+        personagem.poderes = GerenciadorDePoderes.from_dict(data.get("poderes", {}))
         personagem.habilidades = GerenciadorDeHabilidades.from_dict(data.get("habilidades", {}))
+        personagem.buffs_debuffs = GerenciadorDeBuffsDebuffs.from_dict(data.get("buffs_debuffs", {}))
 
         return personagem
 
@@ -526,7 +537,6 @@ class Personagem:
             "CargaMax": self.CargaMax,
             "cargaAtual": self.cargaAtual,
             "mobilidade": self.mobilidade,
-            # Serializar proteções equipadas
             "Cabeça": serializar_item(self.Cabeça),
             "Rosto": serializar_item(self.Rosto),
             "Torso": serializar_item(self.Torso),
@@ -535,67 +545,149 @@ class Personagem:
             "inventario": self.inventario.to_dict(),
             "equipados": self.equipados.to_dict(),
             "proficiencias": self.proficiencias.to_dict(),
-            "efeitos": self.efeitos.to_dict(),
-            "habilidades": self.habilidades.to_dict()
+            "poderes": self.poderes.to_dict(),
+            "habilidades": self.habilidades.to_dict(),
+            "buffs_debuffs": self.buffs_debuffs.to_dict()
         }
 ### CLASSE PERSONAGEM ###
 ### CLASSE PERSONAGEM ###
 ### CLASSE PERSONAGEM ###
 
-class HabilidadePoder:
-    def __init__(self, nome, descricao, categoria, tipo, efeito, gasto_energia=0, condicao=None):
+
+### CLASSE PODER ###
+class Poder:
+    def __init__(self, nome, tipo, custo, efeitos, descricao):
         self.nome = nome
-        self.descricao = descricao
-        self.categoria = categoria  # "habilidade" ou "poder"
         self.tipo = tipo  # "ativo" ou "passivo"
-        self.efeito = efeito
-        self.gasto_energia = gasto_energia
-        self.condicao = condicao if categoria == "poder" else None  # Condição apenas para poderes
+        self.custo = custo  # Custo em PE (0 para passivos)
+        self.efeitos = efeitos  # Lista de nomes de buffs/debuffs ou descrição de efeitos
+        self.descricao = descricao
     
     def __str__(self):
-        # Símbolos para categoria
-        categoria_symbol = "🔮" if self.categoria == "poder" else "⚔️"
-        # Símbolos para tipo
         tipo_symbol = "⚡" if self.tipo == "ativo" else "🛡️"
-        
-        # Texto de energia
-        energia_text = f"(Custo: {self.gasto_energia} PE)" if self.gasto_energia > 0 else "(Passivo)"
-        
-        # Texto de condição para poderes
-        condicao_text = f" | Condição: {self.condicao}" if self.condicao else ""
-        
-        return f"[{categoria_symbol}{tipo_symbol}] {self.nome}: {self.descricao} - {self.efeito} {energia_text}{condicao_text}"
+        custo_text = f"(Custo: {self.custo} PE)" if self.custo > 0 else "(Passivo)"
+        return f"[🔮{tipo_symbol}] {self.nome}: {self.descricao} | Efeitos: {self.efeitos} {custo_text}"
     
     def to_dict(self):
         return {
             "nome": self.nome,
-            "descricao": self.descricao,
-            "categoria": self.categoria,
             "tipo": self.tipo,
-            "efeito": self.efeito,
-            "gasto_energia": self.gasto_energia,
-            "condicao": self.condicao
+            "custo": self.custo,
+            "efeitos": self.efeitos,
+            "descricao": self.descricao
         }
     
     @classmethod
     def from_dict(cls, data):
         return cls(
             nome=data.get("nome", ""),
-            descricao=data.get("descricao", ""),
-            categoria=data.get("categoria", "habilidade"),
             tipo=data.get("tipo", "ativo"),
-            efeito=data.get("efeito", ""),
-            gasto_energia=data.get("gasto_energia", 0),
-            condicao=data.get("condicao", None)
+            custo=data.get("custo", 0),
+            efeitos=data.get("efeitos", ""),
+            descricao=data.get("descricao", "")
+        )
+
+class GerenciadorDePoderes:
+    def __init__(self):
+        self.poderes = []
+    
+    def adicionar_poder(self, nome, tipo, custo, efeitos, descricao):
+        """Adiciona um novo poder à lista"""
+        poder = Poder(nome, tipo, custo, efeitos, descricao)
+        self.poderes.append(poder)
+        return poder
+    
+    def adicionar_poder_objeto(self, poder):
+        """Adiciona um objeto Poder diretamente"""
+        self.poderes.append(poder)
+        return poder
+    
+    def remover_poder(self, nome):
+        """Remove um poder pelo nome"""
+        self.poderes = [p for p in self.poderes if p.nome != nome]
+    
+    def limpar_poderes(self):
+        """Remove todos os poderes"""
+        self.poderes.clear()
+    
+    def obter_poder(self, nome):
+        """Retorna um poder específico pelo nome"""
+        for poder in self.poderes:
+            if poder.nome == nome:
+                return poder
+        return None
+    
+    def listar_poderes(self):
+        """Retorna todos os poderes"""
+        return self.poderes.copy()
+    
+    def listar_ativos(self):
+        """Retorna apenas os poderes ativos"""
+        return [p for p in self.poderes if p.tipo == "ativo"]
+    
+    def listar_passivos(self):
+        """Retorna apenas os poderes passivos"""
+        return [p for p in self.poderes if p.tipo == "passivo"]
+    
+    def to_dict(self):
+        return {
+            "poderes": [poder.to_dict() for poder in self.poderes]
+        }
+    
+    @classmethod
+    def from_dict(cls, data):
+        gerenciador = cls()
+        for poder_data in data.get("poderes", []):
+            poder = Poder.from_dict(poder_data)
+            gerenciador.poderes.append(poder)
+        return gerenciador
+### CLASSE PODER ###
+
+### CLASSE HABILIDADE ###
+class Habilidade:
+    def __init__(self, nome, tipo, custo, efeitos, descricao):
+        self.nome = nome
+        self.tipo = tipo  # "ativo" ou "passivo"
+        self.custo = custo  # Custo em PE (0 para passivos)
+        self.efeitos = efeitos  # Lista de nomes de buffs/debuffs ou descrição de efeitos
+        self.descricao = descricao
+    
+    def __str__(self):
+        tipo_symbol = "⚡" if self.tipo == "ativo" else "🛡️"
+        custo_text = f"(Custo: {self.custo} PE)" if self.custo > 0 else "(Passivo)"
+        return f"[⚔️{tipo_symbol}] {self.nome}: {self.descricao} | Efeitos: {self.efeitos} {custo_text}"
+    
+    def to_dict(self):
+        return {
+            "nome": self.nome,
+            "tipo": self.tipo,
+            "custo": self.custo,
+            "efeitos": self.efeitos,
+            "descricao": self.descricao
+        }
+    
+    @classmethod
+    def from_dict(cls, data):
+        return cls(
+            nome=data.get("nome", ""),
+            tipo=data.get("tipo", "ativo"),
+            custo=data.get("custo", 0),
+            efeitos=data.get("efeitos", ""),
+            descricao=data.get("descricao", "")
         )
 
 class GerenciadorDeHabilidades:
     def __init__(self):
         self.habilidades = []
     
-    def adicionar_habilidade(self, nome, descricao, categoria, tipo, efeito, gasto_energia=0, condicao=None):
-        """Adiciona uma nova habilidade/poder à lista"""
-        habilidade = HabilidadePoder(nome, descricao, categoria, tipo, efeito, gasto_energia, condicao)
+    def adicionar_habilidade(self, nome, tipo, custo, efeitos, descricao):
+        """Adiciona uma nova habilidade à lista"""
+        habilidade = Habilidade(nome, tipo, custo, efeitos, descricao)
+        self.habilidades.append(habilidade)
+        return habilidade
+    
+    def adicionar_habilidade_objeto(self, habilidade):
+        """Adiciona um objeto Habilidade diretamente"""
         self.habilidades.append(habilidade)
         return habilidade
     
@@ -619,32 +711,12 @@ class GerenciadorDeHabilidades:
         return self.habilidades.copy()
     
     def listar_ativas(self):
-        """Retorna apenas as habilidades/poderes ativos"""
+        """Retorna apenas as habilidades ativas"""
         return [h for h in self.habilidades if h.tipo == "ativo"]
     
     def listar_passivas(self):
-        """Retorna apenas as habilidades/poderes passivos"""
+        """Retorna apenas as habilidades passivas"""
         return [h for h in self.habilidades if h.tipo == "passivo"]
-    
-    def listar_habilidades_apenas(self):
-        """Retorna apenas as habilidades (não poderes)"""
-        return [h for h in self.habilidades if h.categoria == "habilidade"]
-    
-    def listar_poderes_apenas(self):
-        """Retorna apenas os poderes (não habilidades)"""
-        return [h for h in self.habilidades if h.categoria == "poder"]
-    
-    def listar_por_categoria_e_tipo(self, categoria=None, tipo=None):
-        """Retorna habilidades/poderes filtrados por categoria e/ou tipo"""
-        resultado = self.habilidades.copy()
-        
-        if categoria:
-            resultado = [h for h in resultado if h.categoria == categoria]
-        
-        if tipo:
-            resultado = [h for h in resultado if h.tipo == tipo]
-        
-        return resultado
     
     def to_dict(self):
         return {
@@ -655,47 +727,85 @@ class GerenciadorDeHabilidades:
     def from_dict(cls, data):
         gerenciador = cls()
         for habilidade_data in data.get("habilidades", []):
-            habilidade = HabilidadePoder.from_dict(habilidade_data)
+            habilidade = Habilidade.from_dict(habilidade_data)
             gerenciador.habilidades.append(habilidade)
         return gerenciador
+### CLASSE HABILIDADE ###
 
-class Efeito:
-    def __init__(self, nome, descricao, valor=0, tipo="buff"):
+### CLASSE BUFF/DEBUFF ###
+class BuffDebuff:
+    def __init__(self, nome, duracao, efeito, descricao, tipo="buff"):
         self.nome = nome
-        self.descricao = descricao
-        self.valor = valor  # Pode ser um número, string, ou qualquer valor relevante
+        self.duracao = duracao  # Número de turnos, "permanente", ou None
+        self.efeito = efeito  # Descrição do efeito mecânico
+        self.descricao = descricao  # Descrição narrativa
         self.tipo = tipo  # "buff" ou "debuff"
+        self.turnos_restantes = None if duracao == "permanente" else duracao
+    
+    def eh_permanente(self):
+        """Verifica se o efeito é permanente"""
+        return self.duracao == "permanente"
+    
+    def decrementar_turno(self):
+        """Reduz a duração em 1 turno. Retorna True se o efeito ainda está ativo"""
+        if self.eh_permanente():
+            return True
+        
+        if self.turnos_restantes is not None and self.turnos_restantes > 0:
+            self.turnos_restantes -= 1
+            return self.turnos_restantes > 0
+        return False
+    
+    def resetar_duracao(self):
+        """Reseta a duração para o valor original"""
+        if not self.eh_permanente():
+            self.turnos_restantes = self.duracao
     
     def __str__(self):
-        tipo_symbol = "+" if self.tipo == "buff" else "-"
-        return f"[{tipo_symbol}] {self.nome}: {self.descricao} (Valor: {self.valor})"
+        tipo_symbol = "✨" if self.tipo == "buff" else "💀"
+        if self.eh_permanente():
+            duracao_text = "Permanente"
+        else:
+            duracao_text = f"{self.turnos_restantes}/{self.duracao} turnos"
+        
+        return f"[{tipo_symbol}] {self.nome}: {self.descricao} | Efeito: {self.efeito} | Duração: {duracao_text}"
     
     def to_dict(self):
         return {
             "nome": self.nome,
+            "duracao": self.duracao,
+            "efeito": self.efeito,
             "descricao": self.descricao,
-            "valor": self.valor,
-            "tipo": self.tipo
+            "tipo": self.tipo,
+            "turnos_restantes": self.turnos_restantes
         }
     
     @classmethod
     def from_dict(cls, data):
-        return cls(
+        buff = cls(
             nome=data.get("nome", ""),
+            duracao=data.get("duracao", 1),
+            efeito=data.get("efeito", ""),
             descricao=data.get("descricao", ""),
-            valor=data.get("valor", 0),
             tipo=data.get("tipo", "buff")
         )
+        buff.turnos_restantes = data.get("turnos_restantes", buff.turnos_restantes)
+        return buff
 
-class GerenciadorDeEfeitos:
+class GerenciadorDeBuffsDebuffs:
     def __init__(self):
         self.efeitos = []
     
-    def adicionar_efeito(self, nome, descricao, valor=0, tipo="buff"):
-        """Adiciona um novo efeito à lista"""
-        efeito = Efeito(nome, descricao, valor, tipo)
-        self.efeitos.append(efeito)
-        return efeito
+    def adicionar_efeito(self, nome, duracao, efeito, descricao, tipo="buff"):
+        """Adiciona um novo buff/debuff à lista"""
+        buff_debuff = BuffDebuff(nome, duracao, efeito, descricao, tipo)
+        self.efeitos.append(buff_debuff)
+        return buff_debuff
+    
+    def adicionar_efeito_objeto(self, buff_debuff):
+        """Adiciona um objeto BuffDebuff diretamente"""
+        self.efeitos.append(buff_debuff)
+        return buff_debuff
     
     def remover_efeito(self, nome):
         """Remove um efeito pelo nome"""
@@ -704,6 +814,10 @@ class GerenciadorDeEfeitos:
     def limpar_efeitos(self):
         """Remove todos os efeitos"""
         self.efeitos.clear()
+    
+    def limpar_temporarios(self):
+        """Remove apenas os efeitos temporários (mantém permanentes)"""
+        self.efeitos = [e for e in self.efeitos if e.eh_permanente()]
     
     def obter_efeito(self, nome):
         """Retorna um efeito específico pelo nome"""
@@ -724,6 +838,26 @@ class GerenciadorDeEfeitos:
         """Retorna apenas os debuffs"""
         return [e for e in self.efeitos if e.tipo == "debuff"]
     
+    def listar_permanentes(self):
+        """Retorna apenas os efeitos permanentes"""
+        return [e for e in self.efeitos if e.eh_permanente()]
+    
+    def listar_temporarios(self):
+        """Retorna apenas os efeitos temporários"""
+        return [e for e in self.efeitos if not e.eh_permanente()]
+    
+    def processar_turnos(self):
+        """Decrementa todos os efeitos temporários e remove os que expiraram"""
+        efeitos_expirados = []
+        
+        for efeito in self.efeitos[:]:  # Cria cópia para iterar
+            if not efeito.eh_permanente():
+                if not efeito.decrementar_turno():
+                    efeitos_expirados.append(efeito.nome)
+                    self.efeitos.remove(efeito)
+        
+        return efeitos_expirados
+    
     def to_dict(self):
         return {
             "efeitos": [efeito.to_dict() for efeito in self.efeitos]
@@ -733,10 +867,10 @@ class GerenciadorDeEfeitos:
     def from_dict(cls, data):
         gerenciador = cls()
         for efeito_data in data.get("efeitos", []):
-            efeito = Efeito.from_dict(efeito_data)
+            efeito = BuffDebuff.from_dict(efeito_data)
             gerenciador.efeitos.append(efeito)
         return gerenciador
-
+### CLASSE BUFF/DEBUFF ###
 
 class Inventario:
     def __init__(self):
@@ -917,6 +1051,7 @@ class Inventario:
         
         return inventario
 
+### CLASSE PROFICIENCIA ###
 class Proficiencia:
     def __init__(self, nome, atributo, nivel=0):
         self.nome: str = nome
@@ -948,7 +1083,6 @@ class Proficiencia:
         prof = cls(data["nome"], data["atributo"])
         prof.nivel = data.get("nivel", 0)
         return prof
-
 
 class SistemaDeProficiencias:
     def __init__(self):
@@ -1017,7 +1151,7 @@ class SistemaDeProficiencias:
                 sistema.proficiencias[nome] = prof
 
         return sistema
-
+### CLASSE PROFICIENCIA ###
 
 class Item:
     def __init__(self, nome, peso=None):
@@ -1223,29 +1357,93 @@ class Melee(Item):
         self.Melhorias = []
         self.Id = gerar_id()
 
-        self.dano_simples = 0
-        self.critico_simples = 0
-        self.valor_critico_simples = 0
+        self.dano_simples = 1
+        self.critico_simples = 2
+        self.valor_critico_simples = 20
 
-        self.dano_forte = 0
-        self.critico_forte = 0
-        self.valor_critico_forte = 0
+        self.dano_forte = 1
+        self.critico_forte = 2
+        self.valor_critico_forte = 20
 
-        self.dano_investida = 0
-        self.critico_investida = 0
-        self.valor_critico_investida = 0
+        self.dano_investida = 1
+        self.critico_investida = 2
+        self.valor_critico_investida = 20
 
-        self.dano_arremesso = 0
-        self.critico_arremesso = 0
-        self.valor_critico_arremesso = 0
+        self.dano_arremesso = 1
+        self.critico_arremesso = 2
+        self.valor_critico_arremesso = 20
 
         # Subclasse e Raridade #
         if self.classe == "Faca":
-            self.dano_simples = 15
+            self.dano_simples = 35
+            self.critico_simples = 3
+            self.valor_critico_simples = 25
+
+            self.dano_forte = 20
+            self.critico_forte = 2
+            self.valor_critico_forte = 20
+
+            self.dano_investida = 20
+            self.critico_investida = 2
+            self.valor_critico_investida = 20
+
+            self.dano_arremesso = 35
+            self.critico_arremesso = 3
+            self.valor_critico_arremesso = 25
+        elif self.classe == "Adaga":
+            self.dano_simples = 30
             self.critico_simples = 2
-            self.valor_critico_simples = 15
+            self.valor_critico_simples = 19
 
             self.dano_forte = 30
+            self.critico_forte = 2
+            self.valor_critico_forte = 19
+
+            self.dano_investida = 30
+            self.critico_investida = 2
+            self.valor_critico_investida = 20
+
+            self.dano_arremesso = 30
+            self.critico_arremesso = 2
+            self.valor_critico_arremesso = 19
+        elif self.classe == "Espada curta":
+            self.dano_simples = 25
+            self.critico_simples = 2
+            self.valor_critico_simples = 20
+
+            self.dano_forte = 35
+            self.critico_forte = 2
+            self.valor_critico_forte = 19
+
+            self.dano_investida = 30
+            self.critico_investida = 2
+            self.valor_critico_investida = 20
+
+            self.dano_arremesso = 20
+            self.critico_arremesso = 2
+            self.valor_critico_arremesso = 20
+        elif self.classe == "Espada longa":
+            self.dano_simples = 20
+            self.critico_simples = 2
+            self.valor_critico_simples = 20
+
+            self.dano_forte = 40
+            self.critico_forte = 2
+            self.valor_critico_forte = 19
+
+            self.dano_investida = 40
+            self.critico_investida = 2
+            self.valor_critico_investida = 19
+
+            self.dano_arremesso = 20
+            self.critico_arremesso = 2
+            self.valor_critico_arremesso = 20
+        elif self.classe == "Sabre":
+            self.dano_simples = 20
+            self.critico_simples = 3
+            self.valor_critico_simples = 25
+
+            self.dano_forte = 40
             self.critico_forte = 2
             self.valor_critico_forte = 20
 
@@ -1254,88 +1452,24 @@ class Melee(Item):
             self.valor_critico_investida = 20
 
             self.dano_arremesso = 20
-            self.critico_arremesso = 3
-            self.valor_critico_arremesso = 25
-        elif self.classe == "Adaga":
-            self.dano_simples = 15
-            self.critico_simples = 3
-            self.valor_critico_simples = 25
-
-            self.dano_forte = 30
-            self.critico_forte = 2
-            self.valor_critico_forte = 20
-
-            self.dano_investida = 30
-            self.critico_investida = 2
-            self.valor_critico_investida = 20
-
-            self.dano_arremesso = 20
-            self.critico_arremesso = 3
-            self.valor_critico_arremesso = 25
-        elif self.classe == "Espada curta":
-            self.dano_simples = 20
-            self.critico_simples = 2
-            self.valor_critico_simples = 25
-
-            self.dano_forte = 30
-            self.critico_forte = 2
-            self.valor_critico_forte = 20
-
-            self.dano_investida = 30
-            self.critico_investida = 2
-            self.valor_critico_investida = 20
-
-            self.dano_arremesso = 20
-            self.critico_arremesso = 2
-            self.valor_critico_arremesso = 25
-        elif self.classe == "Espada longa":
-            self.dano_simples = 20
-            self.critico_simples = 2
-            self.valor_critico_simples = 20
-
-            self.dano_forte = 30
-            self.critico_forte = 2
-            self.valor_critico_forte = 25
-
-            self.dano_investida = 30
-            self.critico_investida = 2
-            self.valor_critico_investida = 25
-
-            self.dano_arremesso = 20
-            self.critico_arremesso = 2
-            self.valor_critico_arremesso = 20
-        elif self.classe == "Sabre":
-            self.dano_simples = 25
-            self.critico_simples = 2
-            self.valor_critico_simples = 25
-
-            self.dano_forte = 30
-            self.critico_forte = 3
-            self.valor_critico_forte = 20
-
-            self.dano_investida = 30
-            self.critico_investida = 3
-            self.valor_critico_investida = 20
-
-            self.dano_arremesso = 20
             self.critico_arremesso = 2
             self.valor_critico_arremesso = 20
         elif self.classe == "Machadinha":
-            self.dano_simples = 20
-            self.critico_simples = 3
-            self.valor_critico_simples = 20
+            self.dano_simples = 35
+            self.critico_simples = 2
+            self.valor_critico_simples = 25
 
-            self.dano_forte = 30
-            self.critico_forte = 3
-            self.valor_critico_forte = 25
+            self.dano_forte = 20
+            self.critico_forte = 2
+            self.valor_critico_forte = 20
 
-            self.dano_investida = 30
-            self.critico_investida = 3
-            self.valor_critico_investida = 25
+            self.dano_investida = 15
+            self.critico_investida = 2
+            self.valor_critico_investida = 20
 
-            self.dano_arremesso = 20
-            self.critico_arremesso = 3
-            self.valor_critico_arremesso = 20
+            self.dano_arremesso = 40
+            self.critico_arremesso = 2
+            self.valor_critico_arremesso = 25
         elif self.classe == "Machado":
             self.dano_simples = 20
             self.critico_simples = 2
@@ -1343,13 +1477,13 @@ class Melee(Item):
 
             self.dano_forte = 40
             self.critico_forte = 3
-            self.valor_critico_forte = 30
+            self.valor_critico_forte = 25
 
-            self.dano_investida = 40
-            self.critico_investida = 3
-            self.valor_critico_investida = 30
+            self.dano_investida = 15
+            self.critico_investida = 2
+            self.valor_critico_investida = 20
 
-            self.dano_arremesso = 20
+            self.dano_arremesso = 15
             self.critico_arremesso = 2
             self.valor_critico_arremesso = 20
         elif self.classe == "Lança":
@@ -1357,135 +1491,130 @@ class Melee(Item):
             self.critico_simples = 2
             self.valor_critico_simples = 20
 
-            self.dano_forte = 30
+            self.dano_forte = 20
             self.critico_forte = 2
             self.valor_critico_forte = 20
 
             self.dano_investida = 40
             self.critico_investida = 2
-            self.valor_critico_investida = 20
+            self.valor_critico_investida = 18
 
             self.dano_arremesso = 40
             self.critico_arremesso = 2
-            self.valor_critico_arremesso = 20
+            self.valor_critico_arremesso = 18
         elif self.classe == "Martelo":
-            self.dano_simples = 25
+            self.dano_simples = 30
             self.critico_simples = 3
-            self.valor_critico_simples = 25
+            self.valor_critico_simples = 19
 
             self.dano_forte = 30
-            self.critico_forte = 2
-            self.valor_critico_forte = 20
+            self.critico_forte = 3
+            self.valor_critico_forte = 19
 
-            self.dano_investida = 30
+            self.dano_investida = 15
             self.critico_investida = 2
             self.valor_critico_investida = 20
 
-            self.dano_arremesso = 25
+            self.dano_arremesso = 15
             self.critico_arremesso = 2
             self.valor_critico_arremesso = 20
         elif self.classe == "Porrete":
             self.dano_simples = 25
             self.critico_simples = 2
-            self.valor_critico_simples = 20
-
-            self.dano_forte = 14
-            self.critico_forte = 2
-            self.valor_critico_forte = 20
-
-            self.dano_investida = 14
-            self.critico_investida = 2
-            self.valor_critico_investida = 20
-
-            self.dano_arremesso = 8
-            self.critico_arremesso = 2
-            self.valor_critico_arremesso = 20
-        elif self.classe == "Taco":
-            self.dano_simples = 20
-            self.critico_simples = 2
-            self.valor_critico_simples = 25
+            self.valor_critico_simples = 19
 
             self.dano_forte = 35
             self.critico_forte = 2
-            self.valor_critico_forte = 25
+            self.valor_critico_forte = 19
 
-            self.dano_investida = 35
+            self.dano_investida = 15
             self.critico_investida = 2
             self.valor_critico_investida = 20
 
-            self.dano_arremesso = 25
+            self.dano_arremesso = 15
+            self.critico_arremesso = 2
+            self.valor_critico_arremesso = 20
+        elif self.classe == "Taco":
+            self.dano_simples = 35
+            self.critico_simples = 3
+            self.valor_critico_simples = 25
+
+            self.dano_forte = 35
+            self.critico_forte = 3
+            self.valor_critico_forte = 25
+
+            self.dano_investida = 15
+            self.critico_investida = 2
+            self.valor_critico_investida = 25
+
+            self.dano_arremesso = 15
             self.critico_arremesso = 2
             self.valor_critico_arremesso = 20
         elif self.classe == "Maça":
             self.dano_simples = 25
             self.critico_simples = 2
-            self.valor_critico_simples = 20
+            self.valor_critico_simples = 25
 
             self.dano_forte = 35
             self.critico_forte = 3
-            self.valor_critico_forte = 28
+            self.valor_critico_forte = 25
 
-            self.dano_investida = 18
-            self.critico_investida = 3
-            self.valor_critico_investida = 25
-
-            self.dano_arremesso = 20
-            self.critico_arremesso = 2
-            self.valor_critico_arremesso = 20
-        elif self.classe == "Marreta":
-            self.dano_simples = 25
-            self.critico_simples = 2
-            self.valor_critico_simples = 25
-
-            self.dano_forte = 40
-            self.critico_forte = 2
-            self.valor_critico_forte = 20
-
-            self.dano_investida = 35
+            self.dano_investida = 15
             self.critico_investida = 2
             self.valor_critico_investida = 20
 
-            self.dano_arremesso = 25
+            self.dano_arremesso = 15
             self.critico_arremesso = 2
-            self.valor_critico_arremesso = 25
+            self.valor_critico_arremesso = 20
+        elif self.classe == "Marreta":
+            self.dano_simples = 20
+            self.critico_simples = 2
+            self.valor_critico_simples = 20
+
+            self.dano_forte = 45
+            self.critico_forte = 3
+            self.valor_critico_forte = 20
+
+            self.dano_investida = 15
+            self.critico_investida = 2
+            self.valor_critico_investida = 20
+
+            self.dano_arremesso = 15
+            self.critico_arremesso = 2
+            self.valor_critico_arremesso = 20
         else:
             print(f"Erro: Subclasse '{self.subclasse}' não reconhecida.")
     
-        if raridade == "Quebrada":
-            self.dano_simples -= 2
-            self.dano_forte -= 2
-            self.dano_investida -= 2
-            self.dano_arremesso -= 2
-        elif raridade == "Comum":
+        if raridade == "Comum":
             self.dano_simples += 0
             self.dano_forte += 0
             self.dano_investida += 0
             self.dano_arremesso += 0
         elif raridade == "Incomum":
-            self.dano_simples += 2
-            self.dano_forte += 2
-            self.dano_investida += 2
-            self.dano_arremesso += 2
+            self.dano_simples += 5
+            self.dano_forte += 5
+            self.dano_investida += 5
+            self.dano_arremesso += 5
         elif raridade == "Rara":
-            self.dano_simples += 4
-            self.dano_forte += 4
-            self.dano_investida += 4
-            self.dano_arremesso += 4
-        elif raridade == "Épica":
-            self.dano_simples += 6
-            self.dano_forte += 6
-            self.dano_investida += 6
-            self.dano_arremesso += 6
-        elif raridade == "Exótica":
-            self.dano_simples += 8
-            self.dano_forte += 8
-            self.dano_investida += 8
-            self.dano_arremesso += 8
-        elif raridade == "Lendária":
             self.dano_simples += 10
             self.dano_forte += 10
             self.dano_investida += 10
             self.dano_arremesso += 10
+        elif raridade == "Épica":
+            self.dano_simples += 15
+            self.dano_forte += 15
+            self.dano_investida += 15
+            self.dano_arremesso += 15
+        elif raridade == "Exótica":
+            self.dano_simples += 20
+            self.dano_forte += 20
+            self.dano_investida += 20
+            self.dano_arremesso += 20
+        elif raridade == "Lendária":
+            self.dano_simples += 25
+            self.dano_forte += 25
+            self.dano_investida += 25
+            self.dano_arremesso += 25
         else:
             print(f"Erro: Raridade '{raridade}' não reconhecida.")
         # Subclasse e Raridade #
@@ -1655,7 +1784,7 @@ class Ranged(Item):
         self.LongCrit = 0
         
         if classe == "Pistola":
-            self.dano = 10
+            self.dano = 25
             self.recuo = 2
             self.MaxRange = 40
             self.MinRange = 5
@@ -1663,7 +1792,7 @@ class Ranged(Item):
             self.MediumCrit = 25
             self.LongCrit = 30
         elif classe == "Revolver":
-            self.dano = 14
+            self.dano = 35
             self.recuo = 3
             self.MaxRange = 50
             self.MinRange = 5
@@ -1671,7 +1800,7 @@ class Ranged(Item):
             self.MediumCrit = 22
             self.LongCrit = 28
         elif classe == "Submetralhadora":
-            self.dano = 10
+            self.dano = 25
             self.recuo = 2
             self.MaxRange = 45
             self.MinRange = 5
@@ -1679,7 +1808,7 @@ class Ranged(Item):
             self.MediumCrit = 25
             self.LongCrit = 29
         elif classe == "Escopeta":
-            self.dano = 20
+            self.dano = 50
             self.recuo = 3
             self.MaxRange = 45
             self.MinRange = 5
@@ -1687,7 +1816,7 @@ class Ranged(Item):
             self.MediumCrit = 30
             self.LongCrit = 40
         elif classe == "Espingarda":
-            self.dano = 16
+            self.dano = 35
             self.recuo = 3
             self.MaxRange = 60
             self.MinRange = 5
@@ -1695,7 +1824,7 @@ class Ranged(Item):
             self.MediumCrit = 28
             self.LongCrit = 34
         elif classe == "Carabina":
-            self.dano = 10
+            self.dano = 20
             self.recuo = 3
             self.MaxRange = 60
             self.MinRange = 5
@@ -1703,7 +1832,7 @@ class Ranged(Item):
             self.MediumCrit = 24
             self.LongCrit = 30
         elif classe == "Fuzil De Assalto":
-            self.dano = 10
+            self.dano = 20
             self.recuo = 3
             self.MaxRange = 80
             self.MinRange = 5
@@ -1711,15 +1840,15 @@ class Ranged(Item):
             self.MediumCrit = 24
             self.LongCrit = 28
         elif classe == "Fuzil De Batalha":
-            self.dano = 12
-            self.recuo = 3
+            self.dano = 25
+            self.recuo = 4
             self.MaxRange = 100
             self.MinRange = 5
             self.ShortCrit = 22
             self.MediumCrit = 21
             self.LongCrit = 22
         elif classe == "DMR":
-            self.dano = 20
+            self.dano = 25
             self.recuo = 3
             self.MaxRange = 130
             self.MinRange = 5
@@ -1727,7 +1856,7 @@ class Ranged(Item):
             self.MediumCrit = 24
             self.LongCrit = 19
         elif classe == "Fuzil De Precisão":
-            self.dano = 20
+            self.dano = 50
             self.recuo = 3
             self.MaxRange = 150
             self.MinRange = 8
@@ -1735,7 +1864,7 @@ class Ranged(Item):
             self.MediumCrit = 22
             self.LongCrit = 18
         elif classe == "Metralhadora leve":
-            self.dano = 10
+            self.dano = 20
             self.recuo = 3
             self.MaxRange = 80
             self.MinRange = 8
@@ -1743,8 +1872,8 @@ class Ranged(Item):
             self.MediumCrit = 22
             self.LongCrit = 25
         elif classe == "Metralhadora média":
-            self.dano = 14
-            self.recuo = 3
+            self.dano = 20
+            self.recuo = 4
             self.MaxRange = 100
             self.MinRange = 10
             self.ShortCrit = 25
@@ -1752,14 +1881,14 @@ class Ranged(Item):
             self.LongCrit = 25
         elif classe == "Metralhadora pesada":
             self.dano = 20
-            self.recuo = 4
+            self.recuo = 3
             self.MaxRange = 150
-            self.MinRange = 10
+            self.MinRange = 5
             self.ShortCrit = 30
             self.MediumCrit = 30
             self.LongCrit = 30
         elif classe == "Fuzil Antimaterial":
-            self.dano = 35
+            self.dano = 50
             self.recuo = 5
             self.MaxRange = 250
             self.MinRange = 10
@@ -1771,67 +1900,64 @@ class Ranged(Item):
         
         if acao == "Simples":
             self.recuo -= 1
-            self.dano += 4
+            self.dano += 10
             self.MinRange += 1
             self.MaxRange += 5
         elif acao == "Semi":
             self.recuo += 1
-            self.dano += 2
+            self.dano += 0
             self.MinRange += 0
             self.MaxRange += 0
         elif acao == "Dupla":
             self.recuo += 0
-            self.dano += 4
+            self.dano += 5
             self.MinRange += 0
             self.MaxRange += 0
         elif acao == "Rajada":
-            self.recuo += 0
+            self.recuo += 1
             self.dano += 2
             self.MinRange += 0
             self.MaxRange += 0
         elif acao == "Auto":
-            self.recuo += 1
-            self.dano -= 2
+            self.recuo += 2
+            self.dano -= 5
             self.MinRange += 0
             self.MaxRange -= 5
         elif acao == "Pump":
             self.recuo -= 1
-            self.dano += 4
-            self.MinRange += 1
-            self.MaxRange += 5
+            self.dano += 5
+            self.MinRange += 0
+            self.MaxRange += 0
         elif acao == "Alavanca":
             self.recuo -= 1
-            self.dano += 4
+            self.dano += 5
             self.MinRange += 1
             self.MaxRange += 5
         elif acao == "Bolt":
             self.recuo -= 1
-            self.dano += 4
+            self.dano += 5
             self.MinRange += 2
             self.MaxRange += 10
         else:
             print(f"Erro: Ação '{acao}' não reconhecida.")
         
-        if raridade == "Quebrada":
-            self.dano -= 2
-            self.MaxRange -= 5
-        elif raridade == "Comum":
+        if raridade == "Comum":
             pass
         elif raridade == "Incomum":
-            self.dano += 1
-            self.MaxRange += 2
-        elif raridade == "Rara":
             self.dano += 2
-            self.MaxRange += 4
-        elif raridade == "Épica":
-            self.dano += 3
-            self.MaxRange += 6
-        elif raridade == "Exótica":
-            self.dano += 4
-            self.MaxRange += 8
-        elif raridade == "Lendária":
+            self.MaxRange += 5
+        elif raridade == "Rara":
             self.dano += 5
-            self.MaxRange += 10
+            self.MaxRange += 15
+        elif raridade == "Épica":
+            self.dano += 8
+            self.MaxRange += 20
+        elif raridade == "Exótica":
+            self.dano += 11
+            self.MaxRange += 25
+        elif raridade == "Lendária":
+            self.dano += 15
+            self.MaxRange += 30
         else:
             print(f"Erro: Raridade '{raridade}' não reconhecida.")
 
@@ -1844,18 +1970,17 @@ class Ranged(Item):
         self.LongCritBase = self.LongCrit
 
     def carregar_municao(self, municao: "Municao", quantidade: int):
-        """
-        Carrega a munição na arma, define a penetração da munição carregada e retorna a quantidade carregada.
-        """
-        if self.municao is None:
+        if self.municao is None or self.munições == 0:
             self.municao = municao
             self.Perfuracao = municao.perfuracao
+            if self.munições == 0:
+                self.munições = 0
 
         if self.municao.nome != municao.nome:
-            print(f"Erro: Já há outra munição ({self.municao.nome}) carregada na arma.")
-            return 0
+            self.municao = municao
+            self.Perfuracao = municao.perfuracao
+            self.munições = 0
 
-        # Calcula a quantidade de munição que pode ser carregada
         espaco_restante = self.capacidade - self.munições
         quantidade_a_carregar = min(quantidade, espaco_restante)
         self.munições += quantidade_a_carregar
@@ -1886,6 +2011,11 @@ class Ranged(Item):
             quantidade = self.munições
         
         self.munições -= quantidade
+        
+        if self.munições == 0:
+            self.municao = None
+            self.Perfuracao = 0
+        
         self.recalcular_atributos()
         
     def adicionar_acessorio(self, Acessorio):
@@ -2200,10 +2330,12 @@ class Kits:
 
     @classmethod
     def from_dict(cls, data):
-        """Deserializa o kit de um dicionário"""
         kit = cls(data["nome"], data["raridade"])
-        kit.Id = data["Id"]  # Preserva o ID original
-        kit.inventario = Inventario.from_dict({"itens": data["inventario"]})
+        kit.Id = data["Id"]
+
+        inv_data = data.get("inventario", [])
+        kit.inventario = Inventario.from_dict(inv_data)
+
         return kit
 
     def __str__(self):
@@ -2329,9 +2461,9 @@ def acerto_melee(atacante: Personagem, alvo: Personagem, rolagem: int, id_arma, 
             regiao = 'Braços'
     
     if mapa_regioes[regiao] == 'Cabeça':
-        Dano = int(DanoBase * 1.2)
+        Dano = int(DanoBase * 1.3)
     elif mapa_regioes[regiao] == 'Rosto':
-        Dano = int(DanoBase * 1.2)
+        Dano = int(DanoBase * 1.6)
     elif mapa_regioes[regiao] == 'Braços':
         Dano = int(DanoBase * 0.8)
     elif mapa_regioes[regiao] == 'Pernas':
@@ -2349,95 +2481,78 @@ def acerto_melee(atacante: Personagem, alvo: Personagem, rolagem: int, id_arma, 
             if rolagem >= ValorPraCritar:
                 DanoFinal = max(1,((Dano * Crit) - Absorcao - DebuffDano + BuffDano))
                 alvo.TomarDano(DanoFinal)
-                resultado += f"Dano crítico:{(Dano * Crit)} - absorção: {Absorcao}.\n"
+                resultado += f"({regiao}) -> Dano crítico:{(Dano * Crit)} - absorção: {Absorcao} - Debuffs: {DebuffDano}.\n"
                 resultado += f"Dano total:{DanoFinal}.\n"
             else:
                 DanoFinal = max(1,(Dano - Absorcao - DebuffDano + BuffDano))
                 alvo.TomarDano(DanoFinal)
-                resultado += f"Dano :{Dano} - absorção: {Absorcao}.\n"
+                resultado += f"({regiao}) -> Dano:{(Dano)} - absorção: {Absorcao} - Debuffs: {DebuffDano}.\n"
                 resultado += f"Dano total:{DanoFinal}.\n"
     elif ValorPraCritar <= 20:
         if rolagem >= alvo.bloqueio and Acerto >= alvo.esquiva:
             if Acerto >= ValorPraCritar:
                 DanoFinal = max(1,((Dano * Crit) - Absorcao - DebuffDano + BuffDano))
                 alvo.TomarDano(DanoFinal)
-                resultado += f"Dano crítico:{(Dano * Crit)} - absorção: {Absorcao}.\n"
+                resultado += f"({regiao}) -> Dano crítico:{(Dano * Crit)} - absorção: {Absorcao} - Debuffs: {DebuffDano}.\n"
                 resultado += f"Dano total:{DanoFinal}.\n"
             else:
                 DanoFinal = max(1,((Dano) - Absorcao - DebuffDano + BuffDano))
                 alvo.TomarDano(DanoFinal)
-                resultado += f"Dano:{(Dano)} - absorção: {Absorcao}.\n"
+                resultado += f"({regiao}) -> Dano:{(Dano)} - absorção: {Absorcao} - Debuffs: {DebuffDano}.\n"
                 resultado += f"Dano total:{DanoFinal}.\n"
         else:
             resultado += f"{atacante.nome} errou o ataque {tipo_ataque}.\n"
     return resultado
 
 
-def acerto_ranged(atacante: Personagem, alvo: Personagem, Rolagem: int, id_arma, distancia: int, disparos: int, regiao: str, BuffAcerto: int=0, BuffDano: int=0, DebuffAcerto: int=0, DebuffDano: int=0):
+def acerto_ranged(atacante: Personagem, alvo: Personagem, Rolagem: int, id_arma, distancia: int, disparos: int, regiao: str, BuffAcerto: int=0, BuffDano: int=0, DebuffAcerto: int=0, DebuffDano: int=0, cobertura: str = "Nenhuma", material: str = "Madeira"):
+    import random
     resultado = ""
     Acerto = Rolagem
 
     # Obtém dados da arma
     arma_data = atacante.equipados.obter_item_por_id(id_arma)
     arma_obj = arma_data["item"]
-    
-    if arma_obj.municao:
-        Perfuracao = arma_obj.municao.perfuracao
-    else: 
+
+    if not arma_obj.municao:
         resultado += "Click... (sem munição)"
         return resultado
-    
+
+    Perfuracao = arma_obj.municao.perfuracao
     DanoBase = arma_obj.dano
     Recuo = arma_obj.recuo
 
     # Mapeamento de regiões
-    mapa_regioes = {'Aleatorio': 'Aleatorio','Cabeça': 'Cabeça', 'Rosto': 'Rosto', 'Torso': 'Torso', 'Pernas': 'Pernas', 'Braços': 'Braços'}
+    mapa_regioes = {'Aleatorio': 'Aleatorio', 'Aleatório': 'Aleatorio', 'Aleatoria': 'Aleatorio',
+                    'Cabeça': 'Cabeça', 'Rosto': 'Rosto', 'Torso': 'Torso', 'Pernas': 'Pernas', 'Braços': 'Braços', 'Bracos': 'Braços'}
     regioes_validas = ['Cabeça', 'Rosto', 'Torso', 'Pernas', 'Braços']
-    
+
     # Probabilidades para seleção aleatória de regiões
-    # Torso: 50%, Pernas: 20%, Braços: 15%, Rosto: 5%, Cabeça: 5%
-    probabilidades_regioes = [5, 5, 50, 20, 15]  # Cabeça, Rosto, Torso, Pernas, Braços
+    # Torso: 57%, Pernas: 20%, Braços: 16%, Rosto: 3%, Cabeça: 4%
+    def escolher_regiao_aleatoria():
+        rand = random.randint(1, 100)
+        if rand <= 4:
+            return 'Cabeça'
+        elif rand <= 7:
+            return 'Rosto'
+        elif rand <= 64:
+            return 'Torso'
+        elif rand <= 84:
+            return 'Pernas'
+        else:
+            return 'Braços'
 
     # Inicializa dificuldade base
     Dificuldade = 0
 
-    # Modificadores por região (apenas se não for aleatório)
-    if mapa_regioes[regiao] == 'Cabeça':
-        Dificuldade = 5
-        Dano = int(DanoBase * 1.4)
-    elif mapa_regioes[regiao] == 'Rosto':
-        Dificuldade = 10
-        Dano = int(DanoBase * 1.8)
-    elif mapa_regioes[regiao] == 'Torso':
-        Dano = DanoBase
-    elif mapa_regioes[regiao] == 'Braços':
-        Dificuldade = 3
-        Dano = int(DanoBase * 0.8)
-    elif mapa_regioes[regiao] == 'Pernas':
-        Dificuldade = 2
-        Dano = int(DanoBase * 0.9)
-    else:
-        Dificuldade = 0
-        Dano = DanoBase
-
-    # Proteção inicial (apenas se não for aleatório)
-    protecao = getattr(alvo, mapa_regioes[regiao], None)
-    Nivel = protecao.nivelBalistico if protecao else 0
-    Absorcao = protecao.absorcaoBalistica if protecao else 0
-    
-    if Perfuracao > Nivel:
-        Absorcao //= 2
-    elif Perfuracao < Nivel:
-        Absorcao *= 2
-
     # Cálculos de distância e críticos
     if distancia <= 50:
         ValorPraCrit = arma_obj.ShortCrit
-    elif distancia > 51 and distancia <= 101:
+    elif 51 <= distancia <= 101:
         ValorPraCrit = arma_obj.MediumCrit
     else:
         ValorPraCrit = arma_obj.LongCrit
-    
+
     BonusConta = ValorPraCrit > 20
 
     # Modificadores de distância
@@ -2452,67 +2567,77 @@ def acerto_ranged(atacante: Personagem, alvo: Personagem, Rolagem: int, id_arma,
     # Probabilidade inicial
     BuffAcerto += atacante.proficiencias.obter_bonus("Pontaria")
     Probabilidade_inicial = Rolagem * 5
-    Probabilidade = max(4, (Probabilidade_inicial - (Dificuldade * 2) + (BuffAcerto * 2) - (DebuffAcerto * 2)))
 
-    # Função para escolher região aleatória com pesos
-    def escolher_regiao_aleatoria():
-        rand = random.randint(1, 100)
-        if rand <= 5:  # 5% para Cabeça
-            return 'Cabeça'
-        elif rand <= 10:  # 5% para Rosto (5% + 5% = 10%)
-            return 'Rosto'
-        elif rand <= 60:  # 50% para Torso (10% + 50% = 60%)
-            return 'Torso'
-        elif rand <= 80:  # 20% para Pernas (60% + 20% = 80%)
-            return 'Pernas'
-        else:  # 15% para Braços (restante até 100%)
-            return 'Braços'
+    # Mapas de cobertura e materiais
+    cobertura_para_regioes = {
+        "Nenhuma": ['Cabeça', 'Rosto', 'Torso', 'Pernas', 'Braços'],
+        "Baixa": ['Torso', 'Pernas', 'Braços'],
+        "Alta": ['Pernas', 'Braços'],
+        "Total": []
+    }
+    material_limite = {
+        "Nenhum": 0,
+        "Gesso": 4,
+        "Madeira": 8,
+        "Veiculo": 10,
+        "Concreto": 12,
+        "Aço": 16
+    }
 
-    # Loop de disparos
-    for disparo in range(min(disparos, arma_obj.munições)):
-        if arma_obj.munições == 0:
+    # normaliza strings recebidas
+    regiao_param = mapa_regioes.get(regiao, regiao)
+    cobertura = cobertura if cobertura in cobertura_para_regioes else "Nenhuma"
+    material = material if material in material_limite else material.capitalize()
+    limiar = material_limite.get(material, 999)
+
+    # Loop de disparos (respeita munição)
+    muni_atual = arma_obj.munições if hasattr(arma_obj, "munições") else getattr(arma_obj, "municoes", 0)
+    for disparo in range(min(disparos, muni_atual)):
+        if getattr(arma_obj, "munições", 0) == 0:
             resultado += f"Disparo {disparo + 1}: Click... (Sem munição)\n"
             break
 
-        # Sorteia uma região se for aleatório
-        if regiao == 'Aleatorio':
+        # Escolhe região para este disparo
+        if regiao_param == 'Aleatorio':
             regiao_atual = escolher_regiao_aleatoria()
         else:
-            regiao_atual = regiao
+            regiao_atual = regiao_param if regiao_param in regioes_validas else 'Torso'
 
-        # Reaplica buffs e debuffs por região
-        DificuldadeAtual = 0
-
-        # Calcula dano e dificuldade para a região atual
+        # Calcula dano base e dificuldade por região
         if regiao_atual == 'Cabeça':
-            DificuldadeAtual = 5
-            DanoAtual = int(DanoBase * 1.4)
+            DificuldadeAtual = 15
+            DanoAtual = int(DanoBase * 2)
         elif regiao_atual == 'Rosto':
-            DificuldadeAtual = 10
-            DanoAtual = int(DanoBase * 1.8)
+            DificuldadeAtual = 20
+            DanoAtual = int(DanoBase * 2)
         elif regiao_atual == 'Braços':
-            DificuldadeAtual = 3
+            DificuldadeAtual = 5
             DanoAtual = int(DanoBase * 0.8)
         elif regiao_atual == 'Pernas':
-            DificuldadeAtual = 2
+            DificuldadeAtual = 4
             DanoAtual = int(DanoBase * 0.9)
-        else:  # Torso
+        else:
+            DificuldadeAtual = 0
             DanoAtual = DanoBase
 
-        # Atualiza proteção com base na região atual
+        # Proteção do alvo na região
         protecao = getattr(alvo, regiao_atual, None)
         Nivel = protecao.nivelBalistico if protecao else 0
         absorcao = protecao.absorcaoBalistica if protecao else 0
 
+        # Ajuste de absorção segundo perfuração
         if Perfuracao > Nivel:
-            absorcao //= 2
+            if Perfuracao > (Nivel + 1):
+                absorcao = absorcao // 3
+            else: absorcao = absorcao // 2
         elif Perfuracao < Nivel:
-            absorcao *= 2
+            if Perfuracao < (Nivel - 1):
+                absorcao = absorcao * 3
+            else: absorcao = absorcao * 2
 
-        # Recalcula probabilidade com a dificuldade atual
+        # Recalcula probabilidade com dificuldade atual
         Probabilidade_atual = max(4, (Probabilidade_inicial - (DificuldadeAtual * 2) + (BuffAcerto * 2) - (DebuffAcerto * 2)))
 
-        # Verifica crítico
         Critico = False
         if BonusConta:
             if Acerto + BuffAcerto >= ValorPraCrit:
@@ -2521,32 +2646,77 @@ def acerto_ranged(atacante: Personagem, alvo: Personagem, Rolagem: int, id_arma,
             if Acerto >= ValorPraCrit:
                 Critico = True
 
+        # ---- Lógica de cobertura ----
+        regioes_expostas = cobertura_para_regioes.get(cobertura, cobertura_para_regioes["Nenhuma"])
+        disparo_bloqueado = False
+        multiplicador_cobertura = 1.0
+        info_cobertura = "Sem cobertura"
+
+        if regiao_atual not in regioes_expostas:
+            # região está por trás da cobertura
+            if cobertura in ["Baixa", "Alta", "Total"]:
+                # cobertura existe, agora testamos a perfuração contra o limiar do material
+                if Perfuracao > limiar:
+                    info_cobertura = f"Varou"
+                    multiplicador_cobertura = 1.0
+                elif Perfuracao == limiar:
+                    info_cobertura = f"Penetrou"
+                    multiplicador_cobertura = 0.5
+                else:
+                    disparo_bloqueado = True
+                    info_cobertura = f"Bloqueado"
+            else:
+                # caso raro: tipo de cobertura não definido
+                disparo_bloqueado = False
+                multiplicador_cobertura = 1.0
+                info_cobertura = "????"
+
         # Rolagem de acerto
         Chance = random.randint(1, 100)
-        
-        if Chance <= Probabilidade_atual:
+        if Chance <= Probabilidade_atual and not disparo_bloqueado:
+            # calcular dano final (aplicando crítico, absorção e multiplicador da cobertura)
             if Critico:
-                DanoFinal = max(1, (DanoAtual * 2) - absorcao) + BuffDano - DebuffDano
-                resultado += f"Disparo {disparo + 1} ({regiao_atual}): Dano crítico: {DanoAtual * 2}, Absorção: {absorcao}, dano total: {DanoFinal}.\n"
+                bruto = DanoAtual + 20
             else:
-                DanoFinal = max(1, DanoAtual - absorcao) + BuffDano - DebuffDano
-                resultado += f"Disparo {disparo + 1} ({regiao_atual}): Dano: {DanoAtual}, Absorção: {absorcao}, dano total: {DanoFinal}.\n"
+                bruto = DanoAtual
 
-            alvo.TomarDano(DanoFinal)
+            antes_absorv = max(1, bruto - absorcao)
+            com_multiplicador = int(max(0, antes_absorv * multiplicador_cobertura))
+            DanoFinal = max(1, com_multiplicador + BuffDano - DebuffDano)
+            # garante ao menos 1 ponto quando não bloqueado e dano positivo após buffs
+            if DanoFinal <= 0:
+                DanoFinal = 0
+
+            if Critico:
+                resultado += f"({regiao_atual}): Dano crítico: {bruto} - Absorção: {absorcao}, {info_cobertura} | dano final: {DanoFinal}.)\n"
+            else:
+                resultado += f"({regiao_atual}): Dano: {bruto} - Absorção: {absorcao}, {info_cobertura} | dano final: {DanoFinal}.)\n"
+
+            if DanoFinal > 0:
+                alvo.TomarDano(DanoFinal)
         else:
-            resultado += f"Disparo {disparo + 1} ({regiao_atual}): Errou.\n"
+            # errou ou disparo foi bloqueado
+            if disparo_bloqueado:
+                resultado += f"({regiao_atual}): {info_cobertura}.\n"
+            else:
+                resultado += f"({regiao_atual}): Errou.)\n"
 
-        # CORREÇÃO: Aplica recuo APÓS o disparo, não antes
-        Probabilidade_inicial -= (random.randint(1,Recuo) * 4)
-        Acerto -= Recuo
-        arma_obj.munições -= 1
-        print(f"Probabilidade: {Probabilidade_atual} | Chance: {Chance} | Recuo: {Recuo} | Dificuldade: {DificuldadeAtual}")
+        recuo_aplicado = random.randint(1, Recuo)
+        Probabilidade_inicial -= (recuo_aplicado * 4)
+        Acerto -= recuo_aplicado
+        if hasattr(arma_obj, "munições"):
+            arma_obj.munições -= 1
+        elif hasattr(arma_obj, "municoes"):
+            arma_obj.municoes -= 1
+
+        #print(f"Probabilidade: {Probabilidade_atual} | Chance: {Chance} | Recuo aplicado: {recuo_aplicado} | Acerto atual: {Acerto} | Dificuldade: {DificuldadeAtual}")
 
     return resultado
 
 
 def acerto_explosivos():
     pass
+
 
 def acerto_poderes():
     pass

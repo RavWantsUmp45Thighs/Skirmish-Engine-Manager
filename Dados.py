@@ -1,4 +1,4 @@
-from Codigos import Personagem, Inventario, SistemaDeProficiencias, Ranged, Melee, Protecao, Item, Consumivel, Explosivo, Municao, Melhoria, Proficiencia, Kits, NPC, gerar_id, HabilidadePoder, Efeito
+from Codigos import Personagem, Inventario, SistemaDeProficiencias, Ranged, Melee, Protecao, Item, Consumivel, Explosivo, Municao, Melhoria, Proficiencia, Kits, NPC, gerar_id, Habilidade,Poder, BuffDebuff
 import json
 import os
 from supabase import create_client, Client
@@ -92,22 +92,31 @@ def carregar_proficiencias():
         print(f"Erro ao carregar Proficiencias: {e}")
         return {}
 
-def carregar_efeitos():
-    """Carrega todos os efeitos da tabela efeitos"""
+def carregar_poderes():
+    """Carrega todos os poderes da tabela Poderes"""
     try:
-        response = supabase.table("efeitos").select("*").execute()
-        return {item["id"]: item for item in response.data}
+        response = supabase.table("Poderes").select("*").execute()
+        return {item["nome"]: item for item in response.data}
     except Exception as e:
-        print(f"Erro ao carregar efeitos: {e}")
+        print(f"Erro ao carregar Poderes: {e}")
         return {}
 
-def carregar_habilidades_poderes():
-    """Carrega todas as habilidades e poderes da tabela habilidades_poderes"""
+def carregar_habilidades():
+    """Carrega todas as habilidades da tabela Habilidades"""
     try:
-        response = supabase.table("habilidades_poderes").select("*").execute()
-        return {item["id"]: item for item in response.data}
+        response = supabase.table("Habilidades").select("*").execute()
+        return {item["nome"]: item for item in response.data}
     except Exception as e:
-        print(f"Erro ao carregar habilidades_poderes: {e}")
+        print(f"Erro ao carregar Habilidades: {e}")
+        return {}
+
+def carregar_buffs_debuffs():
+    """Carrega todos os buffs/debuffs da tabela BuffsDebuffs"""
+    try:
+        response = supabase.table("BuffsDebuffs").select("*").execute()
+        return {item["nome"]: item for item in response.data}
+    except Exception as e:
+        print(f"Erro ao carregar BuffsDebuffs: {e}")
         return {}
 
 def carregar_npcs():
@@ -131,8 +140,9 @@ def carregar_todos_dados():
         "Melees": carregar_melees(),
         "Protecoes": carregar_protecoes(),
         "Proficiencias": carregar_proficiencias(),
-        "Efeitos": carregar_efeitos(),
-        "HabilidadesPoderes": carregar_habilidades_poderes(),
+        "Poderes": carregar_poderes(),
+        "Habilidades": carregar_habilidades(),
+        "BuffsDebuffs": carregar_buffs_debuffs(),
         "Npcs": carregar_npcs(),
     }
 
@@ -148,8 +158,9 @@ def carregar_tabela_especifica(nome_tabela):
         "Melees": carregar_melees,
         "Protecoes": carregar_protecoes,
         "Proficiencias": carregar_proficiencias,
-        "Efeitos": carregar_efeitos,
-        "HabilidadesPoderes": carregar_habilidades_poderes,
+        "Poderes": carregar_poderes,
+        "Habilidades": carregar_habilidades,
+        "BuffsDebuffs": carregar_buffs_debuffs,
         "Npcs": carregar_npcs
     }
     
@@ -159,7 +170,7 @@ def carregar_tabela_especifica(nome_tabela):
         print(f"Tabela '{nome_tabela}' não encontrada.")
         return {}
 
-_processing_items = set()  # GLOBAL, fora da função
+_processing_items = set()
 
 def carregar_item_por_nome(nome_item):
     db_id = f"item_{nome_item}"
@@ -181,12 +192,14 @@ def carregar_item_por_nome(nome_item):
             "Protecoes": (carregar_protecoes, "Protecao")
         }
         
+        nome_item_lower = nome_item.lower()
+        
         for tabela_nome, (funcao_carregar, class_name) in tabelas_itens.items():
             dados_tabela = funcao_carregar()
-            if nome_item in dados_tabela:
-                print(f"✅ Item '{nome_item}' encontrado na tabela {tabela_nome}")
-                item_data = dados_tabela[nome_item]
-                return reconstruct_item_from_data(item_data, class_name)
+            for chave, item_data in dados_tabela.items():
+                if chave.lower() == nome_item_lower:
+                    print(f"✅ Item '{nome_item}' encontrado na tabela {tabela_nome} como '{chave}'")
+                    return reconstruct_item_from_data(item_data, class_name)
         
         print(f"❌ Item '{nome_item}' não encontrado em nenhuma tabela")
         return None
@@ -195,9 +208,429 @@ def carregar_item_por_nome(nome_item):
         _processing_items.remove(db_id)
 # === FUNÇÕES DE CARREGAMENTO SUPABASE === #
 
+# === FUNÇÕES DE SALVAMENTO E EDIÇÃO SUPABASE === #
+def salvar_item(dados_item):
+    try:
+        response = supabase.table("Itens").insert(dados_item).execute()
+        if response.data:
+            print(f"✅ Item '{dados_item.get('nome')}' salvo com sucesso.")
+            return response.data[0]
+        else:
+            print("⚠️ Nenhum dado retornado ao salvar o item.")
+            return None
+    except Exception as e:
+        print(f"❌ Erro ao salvar item '{dados_item.get('nome', 'Sem nome')}': {e}")
+        return None
+
+def editar_item(nome_item, novos_dados):
+    try:
+        response = supabase.table("Itens").update(novos_dados).eq("nome", nome_item).execute()
+        if response.data:
+            print(f"✅ Item '{nome_item}' atualizado com sucesso.")
+            return response.data[0]
+        else:
+            print(f"⚠️ Nenhum item encontrado com nome '{nome_item}'.")
+            return None
+    except Exception as e:
+        print(f"❌ Erro ao editar item '{nome_item}': {e}")
+        return None
+
+def remover_item(nome):
+    try:
+        supabase.table("Itens").delete().eq("nome", nome).execute()
+        print(f"🗑️ Item '{nome}' removido com sucesso.")
+        return True
+    except Exception as e:
+        print(f"❌ Erro ao remover item '{nome}': {e}")
+        return False
+
+
+def salvar_consumivel(dados_consumivel):
+    try:
+        response = supabase.table("Consumiveis").insert(dados_consumivel).execute()
+        if response.data:
+            print(f"✅ Consumível '{dados_consumivel.get('nome')}' salvo com sucesso.")
+            return response.data[0]
+        else:
+            print("⚠️ Nenhum dado retornado ao salvar o consumível.")
+            return None
+    except Exception as e:
+        print(f"❌ Erro ao salvar consumível '{dados_consumivel.get('nome', 'Sem nome')}': {e}")
+        return None
+
+def editar_consumivel(nome_consumivel, novos_dados):
+    try:
+        response = supabase.table("Consumiveis").update(novos_dados).eq("nome", nome_consumivel).execute()
+        if response.data:
+            print(f"✅ Consumível '{nome_consumivel}' atualizado com sucesso.")
+            return response.data[0]
+        else:
+            print(f"⚠️ Nenhum consumível encontrado com nome '{nome_consumivel}'.")
+            return None
+    except Exception as e:
+        print(f"❌ Erro ao editar consumível '{nome_consumivel}': {e}")
+        return None
+
+def remover_consumivel(nome):
+    try:
+        supabase.table("Consumiveis").delete().eq("nome", nome).execute()
+        print(f"🗑️ Consumível '{nome}' removido com sucesso.")
+        return True
+    except Exception as e:
+        print(f"❌ Erro ao remover consumível '{nome}': {e}")
+        return False
+
+
+def salvar_explosivo(dados_explosivo):
+    try:
+        response = supabase.table("Explosivos").insert(dados_explosivo).execute()
+        if response.data:
+            print(f"✅ Explosivo '{dados_explosivo.get('nome')}' salvo com sucesso.")
+            return response.data[0]
+        else:
+            print("⚠️ Nenhum dado retornado ao salvar o explosivo.")
+            return None
+    except Exception as e:
+        print(f"❌ Erro ao salvar explosivo '{dados_explosivo.get('nome', 'Sem nome')}': {e}")
+        return None
+
+def editar_explosivo(nome_explosivo, novos_dados):
+    try:
+        response = supabase.table("Explosivos").update(novos_dados).eq("nome", nome_explosivo).execute()
+        if response.data:
+            print(f"✅ Explosivo '{nome_explosivo}' atualizado com sucesso.")
+            return response.data[0]
+        else:
+            print(f"⚠️ Nenhum explosivo encontrado com nome '{nome_explosivo}'.")
+            return None
+    except Exception as e:
+        print(f"❌ Erro ao editar explosivo '{nome_explosivo}': {e}")
+        return None
+
+def remover_explosivo(nome):
+    try:
+        supabase.table("Explosivos").delete().eq("nome", nome).execute()
+        print(f"🗑️ Explosivo '{nome}' removido com sucesso.")
+        return True
+    except Exception as e:
+        print(f"❌ Erro ao remover explosivo '{nome}': {e}")
+        return False
+
+
+def salvar_municao(dados_municao):
+    try:
+        response = supabase.table("Municoes").insert(dados_municao).execute()
+        if response.data:
+            print(f"✅ Munição '{dados_municao.get('nome')}' salva com sucesso.")
+            return response.data[0]
+        else:
+            print("⚠️ Nenhum dado retornado ao salvar a munição.")
+            return None
+    except Exception as e:
+        print(f"❌ Erro ao salvar munição '{dados_municao.get('nome', 'Sem nome')}': {e}")
+        return None
+
+def editar_municao(nome_municao, novos_dados):
+    try:
+        response = supabase.table("Municoes").update(novos_dados).eq("nome", nome_municao).execute()
+        if response.data:
+            print(f"✅ Munição '{nome_municao}' atualizada com sucesso.")
+            return response.data[0]
+        else:
+            print(f"⚠️ Nenhuma munição encontrada com nome '{nome_municao}'.")
+            return None
+    except Exception as e:
+        print(f"❌ Erro ao editar munição '{nome_municao}': {e}")
+        return None
+
+def remover_municao(nome):
+    try:
+        supabase.table("Municoes").delete().eq("nome", nome).execute()
+        print(f"🗑️ Munição '{nome}' removida com sucesso.")
+        return True
+    except Exception as e:
+        print(f"❌ Erro ao remover munição '{nome}': {e}")
+        return False
+
+
+def salvar_melhoria(dados_melhoria):
+    try:
+        response = supabase.table("Melhorias").insert(dados_melhoria).execute()
+        if response.data:
+            print(f"✅ Melhoria '{dados_melhoria.get('nome')}' salva com sucesso.")
+            return response.data[0]
+        else:
+            print("⚠️ Nenhum dado retornado ao salvar a melhoria.")
+            return None
+    except Exception as e:
+        print(f"❌ Erro ao salvar melhoria '{dados_melhoria.get('nome', 'Sem nome')}': {e}")
+        return None
+
+def editar_melhoria(nome_melhoria, novos_dados):
+    try:
+        response = supabase.table("Melhorias").update(novos_dados).eq("nome", nome_melhoria).execute()
+        if response.data:
+            print(f"✅ Melhoria '{nome_melhoria}' atualizada com sucesso.")
+            return response.data[0]
+        else:
+            print(f"⚠️ Nenhuma melhoria encontrada com nome '{nome_melhoria}'.")
+            return None
+    except Exception as e:
+        print(f"❌ Erro ao editar melhoria '{nome_melhoria}': {e}")
+        return None
+
+def remover_melhoria(nome):
+    try:
+        supabase.table("Melhorias").delete().eq("nome", nome).execute()
+        print(f"🗑️ Melhoria '{nome}' removida com sucesso.")
+        return True
+    except Exception as e:
+        print(f"❌ Erro ao remover melhoria '{nome}': {e}")
+        return False
+
+
+def salvar_melee(dados_melee):
+    try:
+        response = supabase.table("Melees").insert(dados_melee).execute()
+        if response.data:
+            print(f"✅ Melee '{dados_melee.get('nome')}' salvo com sucesso.")
+            return response.data[0]
+        else:
+            print("⚠️ Nenhum dado retornado ao salvar o melee.")
+            return None
+    except Exception as e:
+        print(f"❌ Erro ao salvar melee '{dados_melee.get('nome', 'Sem nome')}': {e}")
+        return None
+
+def editar_melee(nome_melee, novos_dados):
+    try:
+        response = supabase.table("Melees").update(novos_dados).eq("nome", nome_melee).execute()
+        if response.data:
+            print(f"✅ Melee '{nome_melee}' atualizado com sucesso.")
+            return response.data[0]
+        else:
+            print(f"⚠️ Nenhum melee encontrado com nome '{nome_melee}'.")
+            return None
+    except Exception as e:
+        print(f"❌ Erro ao editar melee '{nome_melee}': {e}")
+        return None
+
+def remover_melee(nome):
+    """Remove uma arma melee pelo nome."""
+    try:
+        supabase.table("Melees").delete().eq("nome", nome).execute()
+        return True
+    except Exception as e:
+        print(f"Erro ao remover Melee: {e}")
+        return False
+
+
+def salvar_ranged(dados_ranged):
+    try:
+        response = supabase.table("Rangeds").insert(dados_ranged).execute()
+        if response.data:
+            print(f"✅ Ranged '{dados_ranged.get('nome')}' salvo com sucesso.")
+            return response.data[0]
+        else:
+            print("⚠️ Nenhum dado retornado ao salvar o ranged.")
+            return None
+    except Exception as e:
+        print(f"❌ Erro ao salvar ranged '{dados_ranged.get('nome', 'Sem nome')}': {e}")
+        return None
+
+def editar_ranged(nome_ranged, novos_dados):
+    try:
+        response = supabase.table("Rangeds").update(novos_dados).eq("nome", nome_ranged).execute()
+        if response.data:
+            print(f"✅ Ranged '{nome_ranged}' atualizado com sucesso.")
+            return response.data[0]
+        else:
+            print(f"⚠️ Nenhum ranged encontrado com nome '{nome_ranged}'.")
+            return None
+    except Exception as e:
+        print(f"❌ Erro ao editar ranged '{nome_ranged}': {e}")
+        return None
+
+def remover_ranged(nome):
+    try:
+        supabase.table("Rangeds").delete().eq("nome", nome).execute()
+        print(f"🗑️ Ranged '{nome}' removido com sucesso.")
+        return True
+    except Exception as e:
+        print(f"❌ Erro ao remover ranged '{nome}': {e}")
+        return False
+    
+
+def salvar_protecao(dados_protecao):
+    try:
+        response = supabase.table("Protecoes").insert(dados_protecao).execute()
+        if response.data:
+            print(f"✅ Proteção '{dados_protecao.get('nome')}' salva com sucesso.")
+            return response.data[0]
+        else:
+            print("⚠️ Nenhum dado retornado ao salvar a proteção.")
+            return None
+    except Exception as e:
+        print(f"❌ Erro ao salvar proteção '{dados_protecao.get('nome', 'Sem nome')}': {e}")
+        return None
+
+def editar_protecao(nome_protecao, novos_dados):
+    try:
+        response = supabase.table("Protecoes").update(novos_dados).eq("nome", nome_protecao).execute()
+        if response.data:
+            print(f"✅ Proteção '{nome_protecao}' atualizada com sucesso.")
+            return response.data[0]
+        else:
+            print(f"⚠️ Nenhuma proteção encontrada com nome '{nome_protecao}'.")
+            return None
+    except Exception as e:
+        print(f"❌ Erro ao editar proteção '{nome_protecao}': {e}")
+        return None
+
+def remover_protecao(nome):
+    try:
+        supabase.table("Protecoes").delete().eq("nome", nome).execute()
+        print(f"🗑️ Proteção '{nome}' removida com sucesso.")
+        return True
+    except Exception as e:
+        print(f"❌ Erro ao remover proteção '{nome}': {e}")
+        return False
+
+
+def salvar_npc(dados_npc):
+    try:
+        response = supabase.table("NPCs").insert(dados_npc).execute()
+        if response.data:
+            print(f"✅ NPC '{dados_npc.get('classe')}' salvo com sucesso.")
+            return response.data[0]
+        else:
+            print("⚠️ Nenhum dado retornado ao salvar o NPC.")
+            return None
+    except Exception as e:
+        print(f"❌ Erro ao salvar NPC '{dados_npc.get('classe', 'Sem classe')}': {e}")
+        return None
+
+def editar_npc(classe_npc, novos_dados):
+    try:
+        response = supabase.table("NPCs").update(novos_dados).eq("classe", classe_npc).execute()
+        if response.data:
+            print(f"✅ NPC '{classe_npc}' atualizado com sucesso.")
+            return response.data[0]
+        else:
+            print(f"⚠️ Nenhum NPC encontrado com classe '{classe_npc}'.")
+            return None
+    except Exception as e:
+        print(f"❌ Erro ao editar NPC '{classe_npc}': {e}")
+        return None
+
+def remover_npc(classe):
+    try:
+        supabase.table("NPCs").delete().eq("classe", classe).execute()
+        print(f"🗑️ NPC '{classe}' removido com sucesso.")
+        return True
+    except Exception as e:
+        print(f"❌ Erro ao remover NPC '{classe}': {e}")
+        return False
+
+
+def salvar_buff_debuff(dados):
+    try:
+        response = supabase.table("BuffsDebuffs").insert(dados).execute()
+        if response.data:
+            print(f"✅ Buff/Debuff '{dados.get('nome')}' salvo com sucesso.")
+            return response.data[0]
+        return None
+    except Exception as e:
+        print(f"❌ Erro ao salvar Buff/Debuff '{dados.get('nome', 'Sem nome')}': {e}")
+        return None
+
+def editar_buff_debuff(nome, novos_dados):
+    try:
+        response = supabase.table("BuffsDebuffs").update(novos_dados).eq("nome", nome).execute()
+        if response.data:
+            print(f"✅ Buff/Debuff '{nome}' atualizado com sucesso.")
+            return response.data[0]
+        return None
+    except Exception as e:
+        print(f"❌ Erro ao editar Buff/Debuff '{nome}': {e}")
+        return None
+
+def remover_buff_debuff(nome):
+    try:
+        supabase.table("BuffsDebuffs").delete().eq("nome", nome).execute()
+        print(f"🗑️ Buff/Debuff '{nome}' removido com sucesso.")
+        return True
+    except Exception as e:
+        print(f"❌ Erro ao remover Buff/Debuff '{nome}': {e}")
+        return False
+
+
+def salvar_habilidade(dados):
+    try:
+        response = supabase.table("Habilidades").insert(dados).execute()
+        if response.data:
+            print(f"✅ Habilidade '{dados.get('nome')}' salva com sucesso.")
+            return response.data[0]
+        return None
+    except Exception as e:
+        print(f"❌ Erro ao salvar habilidade '{dados.get('nome', 'Sem nome')}': {e}")
+        return None
+
+def editar_habilidade(nome, novos_dados):
+    try:
+        response = supabase.table("Habilidades").update(novos_dados).eq("nome", nome).execute()
+        if response.data:
+            print(f"✅ Habilidade '{nome}' atualizada com sucesso.")
+            return response.data[0]
+        return None
+    except Exception as e:
+        print(f"❌ Erro ao editar habilidade '{nome}': {e}")
+        return None
+
+def remover_habilidade(nome):
+    try:
+        supabase.table("Habilidades").delete().eq("nome", nome).execute()
+        print(f"🗑️ Habilidade '{nome}' removida com sucesso.")
+        return True
+    except Exception as e:
+        print(f"❌ Erro ao remover habilidade '{nome}': {e}")
+        return False
+
+
+def salvar_poder(dados):
+    try:
+        response = supabase.table("Poderes").insert(dados).execute()
+        if response.data:
+            print(f"✅ Poder '{dados.get('nome')}' salvo com sucesso.")
+            return response.data[0]
+        return None
+    except Exception as e:
+        print(f"❌ Erro ao salvar poder '{dados.get('nome', 'Sem nome')}': {e}")
+        return None
+
+def editar_poder(nome, novos_dados):
+    try:
+        response = supabase.table("Poderes").update(novos_dados).eq("nome", nome).execute()
+        if response.data:
+            print(f"✅ Poder '{nome}' atualizado com sucesso.")
+            return response.data[0]
+        return None
+    except Exception as e:
+        print(f"❌ Erro ao editar poder '{nome}': {e}")
+        return None
+
+def remover_poder(nome):
+    try:
+        supabase.table("Poderes").delete().eq("nome", nome).execute()
+        print(f"🗑️ Poder '{nome}' removido com sucesso.")
+        return True
+    except Exception as e:
+        print(f"❌ Erro ao remover poder '{nome}': {e}")
+        return False
+# === FUNÇÕES DE SALVAMENTO E EDIÇÃO SUPABASE === #
+
 # === DESERIALIZAÇÃO DE ITENS === #
 def deserialize_object_with_class(obj, _visited_objects=None, _processing_items=None):
-    print(f"➡️ Entrando em deserialize_object_with_class: tipo={type(obj).__name__}, id={id(obj)}")
     """
     Deserializa objetos que foram serializados com informação de classe
     Reconstrói objetos customizados baseado no metadado __class__
@@ -213,26 +646,20 @@ def deserialize_object_with_class(obj, _visited_objects=None, _processing_items=
 
     obj_id = id(obj) if isinstance(obj, (dict, list)) else None
     if obj_id and obj_id in _visited_objects:
-        print(f"⚠️ Loop detectado em deserialize_object_with_class: id={obj_id}, tipo={type(obj).__name__}")
-        print(f"⚠️ Loop detectado, retornando objeto cru")
         return obj
     if obj_id:
         _visited_objects.add(obj_id)
 
     try:
         if obj is None or isinstance(obj, (str, int, float, bool)):
-            print(f"⬅️ Retornando primitivo: {obj}")
             return obj
 
         if isinstance(obj, list):
-            result = [deserialize_object_with_class(item, _visited_objects, _processing_items) for item in obj]
-            print(f"⬅️ Retornando lista com {len(result)} itens")
-            return result
+            return [deserialize_object_with_class(item, _visited_objects, _processing_items) for item in obj]
 
         if isinstance(obj, dict):
             # Proficiencia simples → retorna como está
             if "nome" in obj and "atributo" in obj and ("nivel" in obj or "valor" in obj) and "__class__" not in obj:
-                print(f"⬅️ Retornando proficiencia simples: {obj.get('nome')}")
                 return obj
 
             if "__class__" in obj:
@@ -240,7 +667,6 @@ def deserialize_object_with_class(obj, _visited_objects=None, _processing_items=
                 item_identifier = f"{class_name}_{obj.get('nome', 'unknown')}_{obj.get('Id', id(obj))}"
 
                 if item_identifier in _processing_items:
-                    print(f"⚠️ {item_identifier} já em processamento, retornando versão simplificada")
                     simple_copy = {k: v for k, v in obj.items() if k not in ["__class__", "Acessorios", "Melhorias", "municao"]}
                     return simple_copy
 
@@ -261,16 +687,12 @@ def deserialize_object_with_class(obj, _visited_objects=None, _processing_items=
 
                     # Casos especiais
                     if class_name == "Proficiencias":
-                        print(f"⬅️ Retornando Proficiencias")
                         return safe_data
 
                     elif class_name == "Inventario":
-                        print(f"📦 Reconstruindo Inventario com {len(safe_data.get('itens', []))} itens")
                         try:
                             if hasattr(Inventario, 'from_dict'):
-                                result = Inventario.from_dict(safe_data)
-                                print(f"⬅️ Retornando Inventario via from_dict")
-                                return result
+                                return Inventario.from_dict(safe_data)
                             inventario = Inventario()
                             if "itens" in safe_data:
                                 for item_data in safe_data["itens"]:
@@ -281,33 +703,21 @@ def deserialize_object_with_class(obj, _visited_objects=None, _processing_items=
                                             inventario.adicionar_item(item_reconstruido)
                                     else:
                                         inventario.adicionar_item(item_data)
-                            print(f"⬅️ Retornando Inventario reconstruído")
                             return inventario
                         except Exception as e:
-                            print(f"❌ Erro ao reconstruir Inventario: {e}")
                             return safe_data
 
                     elif class_name in ["Ranged", "Melee", "Protecao", "Consumivel", "Explosivo", "Municao", "Melhoria", "Item"]:
-                        print(f"🔧 Tentando reconstruir objeto da classe {class_name}, id={id(obj)}")
-                        print(f"🛠 Reconstruindo {class_name}: {safe_data.get('nome', 'sem nome')}, id={id(obj)}")
-                        result = reconstruct_item_from_data(safe_data, class_name, _processing_items)
-                        print(f"⬅️ Retornando {class_name} reconstruído")
-                        return result
+                        return reconstruct_item_from_data(safe_data, class_name, _processing_items)
 
                     else:
-                        print(f"🔧 Tentando reconstruir objeto da classe {class_name}, id={id(obj)}")
                         try:
                             class_obj = globals().get(class_name)
                             if class_obj and hasattr(class_obj, 'from_dict'):
-                                print(f"🔧 Reconstruindo {class_name} via from_dict")
-                                result = class_obj.from_dict(safe_data)
-                                print(f"⬅️ Retornando {class_name} via from_dict")
-                                return result
+                                return class_obj.from_dict(safe_data)
                             else:
-                                print(f"⚠️ Classe {class_name} não reconhecida, mantendo dict")
                                 return safe_data
                         except Exception as e:
-                            print(f"❌ Erro ao reconstruir {class_name}: {e}")
                             return safe_data
 
                 finally:
@@ -315,30 +725,22 @@ def deserialize_object_with_class(obj, _visited_objects=None, _processing_items=
 
             else:
                 # Dicionário comum → processa recursivamente
-                result = {key: deserialize_object_with_class(value, _visited_objects, _processing_items) for key, value in obj.items()}
-                print(f"⬅️ Retornando dicionário comum com {len(result)} chaves")
-                return result
+                return {key: deserialize_object_with_class(value, _visited_objects, _processing_items) for key, value in obj.items()}
 
-        print(f"⬅️ Retornando objeto não tratado: {obj}")
         return obj
 
     finally:
-        print(f"⬅️ Saindo de deserialize_object_with_class: tipo={type(obj).__name__}, id={id(obj)}")
         if obj_id and obj_id in _visited_objects:
             _visited_objects.remove(obj_id)
 
 def serializar_item(item):
     """Serializa um item para dicionário"""
-    print(f"➡️ Entrando em serializar_item: tipo={type(item).__name__ if item else 'None'}, id={id(item) if item else 'N/A'}")
     if item is None:
-        print(f"⬅️ Saindo de serializar_item: None")
         return None
     if hasattr(item, 'to_dict'):
         item_dict = item.to_dict()
         item_dict["__class__"] = item.__class__.__name__
-        print(f"⬅️ Saindo de serializar_item: dict com {len(item_dict)} chaves")
         return item_dict
-    print(f"⬅️ Saindo de serializar_item: None (sem to_dict)")
     return None
 
 def serializar_item_com_melhorias(item):
@@ -346,7 +748,6 @@ def serializar_item_com_melhorias(item):
     Serializa itens Ranged, Melee ou Protecao removendo temporariamente as melhorias
     VERSÃO CORRIGIDA - Evita loops na serialização
     """
-    print(f"➡️ Entrando em serializar_item_com_melhorias: tipo={type(item).__name__}, id={id(item)}")
     # Cria uma cópia simples dos dados do item SEM melhorias/acessórios
     if hasattr(item, 'to_dict'):
         data = item.to_dict()
@@ -388,14 +789,11 @@ def serializar_item_com_melhorias(item):
                 }
                 data["__acessorios_serializados__"].append(acessorio_simples)
     
-    print(f"⬅️ Saindo de serializar_item_com_melhorias: dict com {len(data)} chaves")
     return data
 
 def deserializar_item(data):
     """Deserializa um item de dicionário para objeto"""
-    print(f"➡️ Entrando em deserializar_item: tipo={type(data).__name__}, id={id(data) if data else 'N/A'}")
     if data is None:
-        print(f"⬅️ Saindo de deserializar_item: None")
         return None
     
     if isinstance(data, dict) and "__class__" in data:
@@ -408,13 +806,10 @@ def deserializar_item(data):
         try:
             class_obj = globals().get(class_name)
             if class_obj and hasattr(class_obj, 'from_dict'):
-                result = class_obj.from_dict(item_data)
-                print(f"⬅️ Saindo de deserializar_item: {class_name} via from_dict")
-                return result
+                return class_obj.from_dict(item_data)
         except Exception as e:
-            print(f"❌ Erro ao deserializar item {class_name}: {e}")
+            pass
     
-    print(f"⬅️ Saindo de deserializar_item: dados originais")
     return None
 
 def reconstruct_item_from_data(item_data, class_name=None, _processing_items=None):
@@ -430,14 +825,12 @@ def reconstruct_item_from_data(item_data, class_name=None, _processing_items=Non
     Returns:
         Objeto da classe apropriada ou os dados originais se falhar
     """
-    print(f"➡️ Entrando em reconstruct_item_from_data: {class_name}, nome={item_data.get('nome', 'sem nome')}, id={id(item_data)}")
     try:
         if _processing_items is None:
             _processing_items = set()
             
         # Se item_data já é um objeto (não é dict), retorna como está
         if not isinstance(item_data, dict):
-            print(f"⬅️ Saindo de reconstruct_item_from_data: não é dict")
             return item_data
         
         # Detecta automaticamente o tipo de classe se não fornecido
@@ -459,136 +852,96 @@ def reconstruct_item_from_data(item_data, class_name=None, _processing_items=Non
             else:
                 class_name = "Item"
         
-        print(f"🔧 Reconstruindo {class_name}: {item_data.get('nome', 'sem nome')}")
-        
         # Tenta carregar do banco primeiro (se o nome existir)
         if "nome" in item_data:
             try:
                 item_do_banco = carregar_item_por_nome(item_data["nome"])
                 if item_do_banco:
-                    print(f"✅ Item '{item_data['nome']}' carregado do banco")
-                    print(f"⬅️ Saindo de reconstruct_item_from_data: {class_name} carregado do banco")
                     return item_do_banco
             except Exception as e:
-                print(f"⚠️ Item '{item_data['nome']}' não encontrado no banco ({e}), reconstruindo...")
+                pass
         
         # Reconstrói baseado na classe específica
         if class_name == "Ranged":
-            result = reconstruct_ranged(item_data, _processing_items)
-            print(f"⬅️ Saindo de reconstruct_item_from_data: Ranged reconstruído")
-            return result
+            return reconstruct_ranged(item_data, _processing_items)
         elif class_name == "Melee":
-            result = reconstruct_melee(item_data, _processing_items)
-            print(f"⬅️ Saindo de reconstruct_item_from_data: Melee reconstruído")
-            return result
+            return reconstruct_melee(item_data, _processing_items)
         elif class_name == "Protecao":
-            result = reconstruct_protecao(item_data, _processing_items)
-            print(f"⬅️ Saindo de reconstruct_item_from_data: Protecao reconstruído")
-            return result
+            return reconstruct_protecao(item_data, _processing_items)
         elif class_name == "Municao":
-            result = reconstruct_municao(item_data)
-            print(f"⬅️ Saindo de reconstruct_item_from_data: Municao reconstruído")
-            return result
+            return reconstruct_municao(item_data)
         elif class_name == "Explosivo":
-            result = reconstruct_explosivo(item_data)
-            print(f"⬅️ Saindo de reconstruct_item_from_data: Explosivo reconstruído")
-            return result
+            return reconstruct_explosivo(item_data)
         elif class_name == "Consumivel":
-            result = reconstruct_consumivel(item_data)
-            print(f"⬅️ Saindo de reconstruct_item_from_data: Consumivel reconstruído")
-            return result
+            return reconstruct_consumivel(item_data)
         elif class_name == "Melhoria":
-            result = reconstruct_melhoria(item_data)
-            print(f"⬅️ Saindo de reconstruct_item_from_data: Melhoria reconstruído")
-            return result
+            return reconstruct_melhoria(item_data)
         elif class_name == "Item":
-            result = reconstruct_item(item_data)
-            print(f"⬅️ Saindo de reconstruct_item_from_data: Item reconstruído")
-            return result
+            return reconstruct_item(item_data)
         else:
-            print(f"❌ Classe {class_name} não reconhecida")
-            print(f"⬅️ Saindo de reconstruct_item_from_data: dados originais (classe não reconhecida)")
             return item_data
             
     except Exception as e:
-        print(f"❌ Erro ao reconstituir item {class_name}: {e}")
         import traceback
         traceback.print_exc()
-        print(f"⬅️ Saindo de reconstruct_item_from_data: dados originais (erro)")
         return item_data
 
 def reconstruct_item(item_data):
     """Reconstrói um Item básico"""
-    print(f"➡️ Entrando em reconstruct_item: nome={item_data.get('nome', 'sem nome')}, id={id(item_data)}")
-    from Codigos import Item  # Assumindo que as classes estão em Codigos
+    from Codigos import Item
     
-    item = Item(
+    return Item(
         nome=item_data.get("nome", "Item"),
         peso=item_data.get("peso")
     )
-    print(f"⬅️ Saindo de reconstruct_item: Item, id={id(item_data)}")
-    return item
 
 def reconstruct_consumivel(item_data):
     """Reconstrói um Consumível"""
-    print(f"➡️ Entrando em reconstruct_consumivel: nome={item_data.get('nome', 'sem nome')}, id={id(item_data)}")
     from Codigos import Consumivel
     
-    item = Consumivel(
+    return Consumivel(
         nome=item_data.get("nome", "Consumível"),
         peso=item_data.get("peso", 1.0),
         cura=item_data.get("cura", 0),
         energia=item_data.get("energia", 0)
     )
-    print(f"⬅️ Saindo de reconstruct_consumivel: Consumivel, id={id(item_data)}")
-    return item
 
 def reconstruct_explosivo(item_data):
     """Reconstrói um Explosivo"""
-    print(f"➡️ Entrando em reconstruct_explosivo: nome={item_data.get('nome', 'sem nome')}, id={id(item_data)}")
     from Codigos import Explosivo
     
-    item = Explosivo(
+    return Explosivo(
         nome=item_data.get("nome", "Explosivo"),
         peso=item_data.get("peso", 1.0),
         raio=item_data.get("raio", 1),
         dano=item_data.get("dano", 10),
         tipo_dano=item_data.get("tipo_dano", 1)
     )
-    print(f"⬅️ Saindo de reconstruct_explosivo: Explosivo, id={id(item_data)}")
-    return item
 
 def reconstruct_municao(item_data):
     """Reconstrói uma Munição"""
-    print(f"➡️ Entrando em reconstruct_municao: nome={item_data.get('nome', 'sem nome')}, id={id(item_data)}")
     from Codigos import Municao
     
-    item = Municao(
+    return Municao(
         nome=item_data.get("nome", "Munição"),
         calibre=item_data.get("calibre", ".22"),
         perfuracao=item_data.get("perfuracao", 1),
         dano=item_data.get("dano", 5)
     )
-    print(f"⬅️ Saindo de reconstruct_municao: Municao, id={id(item_data)}")
-    return item
 
 def reconstruct_melhoria(item_data):
     """Reconstrói uma Melhoria"""
-    print(f"➡️ Entrando em reconstruct_melhoria: nome={item_data.get('nome', 'sem nome')}, id={id(item_data)}")
     from Codigos import Melhoria
     
-    item = Melhoria(
+    return Melhoria(
         nome=item_data.get("nome", "Melhoria"),
         peso=item_data.get("peso", 0.1),
         tipo=item_data.get("tipo", "ranged"),
         modificadores=item_data.get("modificadores", {})
     )
-    print(f"⬅️ Saindo de reconstruct_melhoria: Melhoria, id={id(item_data)}")
-    return item
 
 def reconstruct_ranged(item_data, _processing_items=None):
     """Reconstrói uma arma Ranged com proteção contra loops - reconstruindo melhorias separadamente"""
-    print(f"➡️ Entrando em reconstruct_ranged: nome={item_data.get('nome', 'sem nome')}, id={id(item_data)}")
     try:
         if _processing_items is None:
             _processing_items = set()
@@ -603,10 +956,7 @@ def reconstruct_ranged(item_data, _processing_items=None):
                 if not all([Ranged, Melhoria, Municao]):
                     raise ImportError("Classes não encontradas")
             except:
-                print(f"❌ Não foi possível importar classes necessárias para Ranged")
                 return item_data
-        
-        print(f"🔧 Construindo Ranged com dados: {list(item_data.keys())}")
         
         # Cria o item usando o construtor padrão SEM acessórios
         item = Ranged(
@@ -681,34 +1031,28 @@ def reconstruct_ranged(item_data, _processing_items=None):
                                 )
                                 acessorios_reconstruidos.append(melhoria)
                             except Exception as e:
-                                print(f"⚠️ Erro ao criar melhoria {melhoria_clean.get('nome', 'unknown')}: {e}")
+                                pass
                     else:
                         acessorios_reconstruidos.append(acessorio_data)
                 except Exception as e:
-                    print(f"⚠️ Erro ao processar acessório: {e}")
                     continue
             
             # Agora equipa todas as melhorias no item usando o método oficial
             for acessorio in acessorios_reconstruidos:
                 try:
                     item.adicionar_acessorio(acessorio)
-                    print(f"✅ Acessório '{acessorio.nome if hasattr(acessorio, 'nome') else 'unknown'}' equipado")
                 except Exception as e:
-                    print(f"⚠️ Erro ao equipar acessório: {e}")
+                    pass
         
-        print(f"✅ Ranged '{item.nome}' reconstruído com sucesso")
-        print(f"⬅️ Saindo de reconstruct_ranged: Ranged, id={id(item_data)}")
         return item
         
     except Exception as e:
-        print(f"❌ Erro ao reconstruir Ranged: {e}")
         import traceback
         traceback.print_exc()
         return item_data
 
 def reconstruct_melee(item_data, _processing_items=None):
     """Reconstrói uma arma Melee com proteção contra loops - reconstruindo melhorias separadamente"""
-    print(f"➡️ Entrando em reconstruct_melee: nome={item_data.get('nome', 'sem nome')}, id={id(item_data)}")
     try:
         if _processing_items is None:
             _processing_items = set()
@@ -722,10 +1066,7 @@ def reconstruct_melee(item_data, _processing_items=None):
                 if not all([Melee, Melhoria]):
                     raise ImportError("Classes não encontradas")
             except:
-                print(f"❌ Não foi possível importar classes necessárias para Melee")
                 return item_data
-        
-        print(f"🔧 Construindo Melee com dados: {list(item_data.keys())}")
         
         # Cria o item usando o construtor padrão SEM melhorias
         item = Melee(
@@ -780,34 +1121,28 @@ def reconstruct_melee(item_data, _processing_items=None):
                                 )
                                 melhorias_reconstruidas.append(melhoria)
                             except Exception as e:
-                                print(f"⚠️ Erro ao criar melhoria {melhoria_clean.get('nome', 'unknown')}: {e}")
+                                pass
                     else:
                         melhorias_reconstruidas.append(melhoria_data)
                 except Exception as e:
-                    print(f"⚠️ Erro ao processar melhoria: {e}")
                     continue
             
             # Agora equipa todas as melhorias no item usando o método oficial
             for melhoria in melhorias_reconstruidas:
                 try:
                     item.adicionar_melhoria(melhoria)
-                    print(f"✅ Melhoria '{melhoria.nome if hasattr(melhoria, 'nome') else 'unknown'}' equipada")
                 except Exception as e:
-                    print(f"⚠️ Erro ao equipar melhoria: {e}")
+                    pass
         
-        print(f"✅ Melee '{item.nome}' reconstruído com sucesso")
-        print(f"⬅️ Saindo de reconstruct_melee: Melee, id={id(item_data)}")
         return item
         
     except Exception as e:
-        print(f"❌ Erro ao reconstruir Melee: {e}")
         import traceback
         traceback.print_exc()
         return item_data
 
 def reconstruct_protecao(item_data, _processing_items=None):
     """Reconstrói uma proteção com proteção contra loops - reconstruindo melhorias separadamente"""
-    print(f"➡️ Entrando em reconstruct_protecao: nome={item_data.get('nome', 'sem nome')}, id={id(item_data)}")
     try:
         if _processing_items is None:
             _processing_items = set()
@@ -821,10 +1156,7 @@ def reconstruct_protecao(item_data, _processing_items=None):
                 if not all([Protecao, Melhoria]):
                     raise ImportError("Classes não encontradas")
             except:
-                print(f"❌ Não foi possível importar classes necessárias para Protecao")
                 return item_data
-        
-        print(f"🔧 Construindo Protecao com dados: {list(item_data.keys())}")
         
         # Cria o item usando o construtor padrão SEM melhorias
         item = Protecao(
@@ -871,27 +1203,22 @@ def reconstruct_protecao(item_data, _processing_items=None):
                                 )
                                 melhorias_reconstruidas.append(melhoria)
                             except Exception as e:
-                                print(f"⚠️ Erro ao criar melhoria {melhoria_clean.get('nome', 'unknown')}: {e}")
+                                pass
                     else:
                         melhorias_reconstruidas.append(melhoria_data)
                 except Exception as e:
-                    print(f"⚠️ Erro ao processar melhoria: {e}")
                     continue
             
             # Agora equipa todas as melhorias no item usando o método oficial
             for melhoria in melhorias_reconstruidas:
                 try:
                     item.adicionar_melhoria(melhoria)
-                    print(f"✅ Melhoria '{melhoria.nome if hasattr(melhoria, 'nome') else 'unknown'}' equipada")
                 except Exception as e:
-                    print(f"⚠️ Erro ao equipar melhoria: {e}")
+                    pass
         
-        print(f"✅ Protecao '{item.nome}' reconstruída com sucesso")
-        print(f"⬅️ Saindo de reconstruct_protecao: Protecao, id={id(item_data)}")
         return item
         
     except Exception as e:
-        print(f"❌ Erro ao reconstruir Protecao: {e}")
         import traceback
         traceback.print_exc()
         return item_data
@@ -904,11 +1231,7 @@ KitsDisponíveis = {}
 def serializar_objeto(obj, _visited_objects=None, _path="root"):
     """
     Serializa qualquer objeto preservando informação de classe e prevenindo loops infinitos
-    
-    Args:
-        obj: Objeto a ser serializado
-        _visited_objects: Set de IDs de objetos já visitados (para prevenir loops)
-        _path: Caminho atual na árvore de serialização (para debug)
+    VERSÃO CORRIGIDA - Trata proteções equipadas em personagens
     """
     # Inicializa set de objetos visitados na primeira chamada
     if _visited_objects is None:
@@ -929,6 +1252,17 @@ def serializar_objeto(obj, _visited_objects=None, _path="root"):
     if obj_id in _visited_objects:
         obj_type = type(obj).__name__
         print(f"  ⚠️  LOOP DETECTADO! {obj_type} (id={obj_id}) já foi visitado em: {_path}")
+        
+        # Para itens com nome, retorna uma referência que pode ser resolvida depois
+        if hasattr(obj, 'nome'):
+            return {
+                "__circular_ref__": True,
+                "__class__": obj_type,
+                "__nome__": obj.nome,  # Permite buscar no banco depois
+                "__id__": obj_id,
+                "__path__": _path
+            }
+        
         return {
             "__circular_ref__": True,
             "__class__": obj_type,
@@ -1061,23 +1395,146 @@ def serializar_item_com_melhorias(item, _visited_objects, _path):
     # Serializa os dados do item (sem recursão infinita)
     return serializar_objeto(data, _visited_objects, f"{_path}.data")
 
-def deserializar_objeto(obj, pools=None):
+def serializar_objeto(obj, _visited_objects=None, _path="root"):
+    """
+    Serializa qualquer objeto preservando informação de classe e prevenindo loops infinitos
+    VERSÃO CORRIGIDA - Trata proteções equipadas em personagens
+    """
+    # Inicializa set de objetos visitados na primeira chamada
+    if _visited_objects is None:
+        _visited_objects = set()
+        print(f"🔄 Iniciando serialização em: {_path}")
+    
+    # Casos triviais (None e tipos primitivos)
+    if obj is None:
+        print(f"  ⚪ None em: {_path}")
+        return None
+    
+    if isinstance(obj, (str, int, float, bool)):
+        print(f"  📝 Primitivo ({type(obj).__name__}) em: {_path}")
+        return obj
+    
+    # Verifica se objeto já foi visitado (previne loop)
+    obj_id = id(obj)
+    if obj_id in _visited_objects:
+        obj_type = type(obj).__name__
+        print(f"  ⚠️  LOOP DETECTADO! {obj_type} (id={obj_id}) já foi visitado em: {_path}")
+        
+        # Para itens com nome, retorna uma referência que pode ser resolvida depois
+        if hasattr(obj, 'nome'):
+            return {
+                "__circular_ref__": True,
+                "__class__": obj_type,
+                "__nome__": obj.nome,  # Permite buscar no banco depois
+                "__id__": obj_id,
+                "__path__": _path
+            }
+        
+        return {
+            "__circular_ref__": True,
+            "__class__": obj_type,
+            "__id__": obj_id,
+            "__path__": _path
+        }
+    
+    # Marca objeto como visitado
+    _visited_objects.add(obj_id)
+    
+    # Serializa listas
+    if isinstance(obj, list):
+        print(f"  📦 Serializando lista de {len(obj)} itens em: {_path}")
+        resultado = []
+        for i, item in enumerate(obj):
+            resultado.append(serializar_objeto(item, _visited_objects, f"{_path}[{i}]"))
+        return resultado
+    
+    # Serializa dicionários
+    if isinstance(obj, dict):
+        print(f"  📚 Serializando dict com {len(obj)} chaves em: {_path}")
+        resultado = {}
+        for key, value in obj.items():
+            resultado[key] = serializar_objeto(value, _visited_objects, f"{_path}.{key}")
+        return resultado
+    
+    # Para objetos com classes customizadas
+    if hasattr(obj, '__class__'):
+        class_name = obj.__class__.__name__
+        print(f"  ➡️  Serializando {class_name} (id={obj_id}) em: {_path}")
+        
+        # Tratamento especial para itens com melhorias/acessórios
+        if class_name in ['Ranged', 'Melee', 'Protecao']:
+            resultado = serializar_item_com_melhorias(obj, _visited_objects, _path)
+            return resultado
+        
+        # Usa to_dict() se disponível
+        if hasattr(obj, 'to_dict'):
+            print(f"    🔧 Usando método to_dict() para {class_name}")
+            data = obj.to_dict()
+            if isinstance(data, dict):
+                data["__class__"] = class_name
+                data["__id__"] = obj_id
+            return serializar_objeto(data, _visited_objects, f"{_path}.to_dict()")
+        else:
+            # Fallback usando __dict__
+            print(f"    🔧 Usando __dict__ para {class_name}")
+            data = vars(obj).copy()
+            data["__class__"] = class_name
+            data["__id__"] = obj_id
+            return serializar_objeto(data, _visited_objects, f"{_path}.__dict__")
+    
+    print(f"  ⚠️  Fallback para string em: {_path}")
+    return str(obj)
+
+def deserializar_objeto(obj, pools=None, _objetos_resolvidos=None):
     """
     Deserializa objeto e re-equipa melhorias se necessário
-    VERSÃO CORRIGIDA - Evita loops na deserialização
+    VERSÃO CORRIGIDA - Resolve referências circulares e proteções
     """
-    print(f"🔄 Iniciando deserialização")
+    # Inicializa cache de objetos resolvidos
+    if _objetos_resolvidos is None:
+        _objetos_resolvidos = {}
+        print(f"🔄 Iniciando deserialização")
     
     # Detecta referências circulares
     if isinstance(obj, dict) and obj.get("__circular_ref__"):
         class_name = obj.get("__class__", "Unknown")
         obj_id = obj.get("__id__", "unknown")
+        nome = obj.get("__nome__")
         path = obj.get("__path__", "unknown")
+        
         print(f"  ⚠️  Referência circular detectada: {class_name} (id={obj_id}) em {path}")
-        return None  # ou retornar um placeholder apropriado
+        
+        # Se já resolvemos este objeto antes, retorna a referência
+        if obj_id in _objetos_resolvidos:
+            print(f"    ✅ Objeto já resolvido anteriormente")
+            return _objetos_resolvidos[obj_id]
+        
+        # Se tem nome, tenta buscar do banco
+        if nome:
+            print(f"    🔍 Tentando carregar '{nome}' do banco")
+            try:
+                item_do_banco = carregar_item_por_nome(nome)
+                if item_do_banco:
+                    print(f"      ✅ '{nome}' carregado do banco")
+                    _objetos_resolvidos[obj_id] = item_do_banco
+                    return item_do_banco
+            except Exception as e:
+                print(f"      ⚠️  Erro ao carregar do banco: {e}")
+        
+        # Se não conseguiu resolver, retorna None
+        print(f"    ⚠️  Não foi possível resolver referência circular")
+        return None
+    
+    # Casos base
+    if not isinstance(obj, dict):
+        return obj
     
     # Primeiro deserializa o objeto base
     resultado = deserialize_object_with_class(obj)
+    
+    # Guarda no cache
+    if isinstance(obj, dict) and "__id__" in obj:
+        _objetos_resolvidos[obj["__id__"]] = resultado
     
     # Se é um dict com dados serializados de melhorias, processa separadamente
     if isinstance(obj, dict) and obj.get("__class__") in ['Ranged', 'Melee', 'Protecao']:
@@ -1090,37 +1547,17 @@ def deserializar_objeto(obj, pools=None):
             print(f"    🛠  Reequipando {len(melhorias_data)} melhorias")
             
             for i, melhoria_data in enumerate(melhorias_data):
-                # Pula referências circulares
-                if isinstance(melhoria_data, dict) and melhoria_data.get("__circular_ref__"):
-                    print(f"      ⚠️  Pulando melhoria {i} (referência circular)")
-                    continue
-                
                 try:
-                    # Tenta carregar do banco primeiro
-                    nome_melhoria = melhoria_data.get("nome")
-                    if nome_melhoria:
-                        print(f"      🔍 Buscando melhoria '{nome_melhoria}' no banco")
-                        try:
-                            melhoria_do_banco = carregar_item_por_nome(nome_melhoria)
-                            if melhoria_do_banco:
-                                print(f"        ✅ Melhoria '{nome_melhoria}' carregada do banco")
-                                if class_name == 'Ranged':
-                                    resultado.adicionar_acessorio(melhoria_do_banco)
-                                else:
-                                    resultado.adicionar_melhoria(melhoria_do_banco)
-                                continue
-                        except Exception as e:
-                            print(f"        ⚠️  Erro ao carregar do banco: {e}")
+                    # Deserializa recursivamente (com cache)
+                    melhoria = deserializar_objeto(melhoria_data, pools, _objetos_resolvidos)
                     
-                    # Se não encontrou no banco, reconstrói
-                    print(f"      🔧 Reconstruindo melhoria a partir dos dados")
-                    melhoria = reconstruct_melhoria(melhoria_data)
-                    if melhoria and class_name == 'Ranged':
-                        resultado.adicionar_acessorio(melhoria)
-                        print(f"        ✅ Acessório adicionado")
-                    elif melhoria:
-                        resultado.adicionar_melhoria(melhoria)
-                        print(f"        ✅ Melhoria adicionada")
+                    if melhoria:
+                        if class_name == 'Ranged':
+                            resultado.adicionar_acessorio(melhoria)
+                            print(f"        ✅ Acessório {i+1} adicionado")
+                        else:
+                            resultado.adicionar_melhoria(melhoria)
+                            print(f"        ✅ Melhoria {i+1} adicionada")
                 except Exception as e:
                     print(f"      ⚠️  Erro ao reequipar melhoria {i}: {e}")
         
@@ -1130,36 +1567,158 @@ def deserializar_objeto(obj, pools=None):
             print(f"    🛠  Reequipando {len(acessorios_data)} acessórios")
             
             for i, acessorio_data in enumerate(acessorios_data):
-                # Pula referências circulares
-                if isinstance(acessorio_data, dict) and acessorio_data.get("__circular_ref__"):
-                    print(f"      ⚠️  Pulando acessório {i} (referência circular)")
-                    continue
-                
                 try:
-                    # Tenta carregar do banco primeiro
-                    nome_acessorio = acessorio_data.get("nome")
-                    if nome_acessorio:
-                        print(f"      🔍 Buscando acessório '{nome_acessorio}' no banco")
-                        try:
-                            acessorio_do_banco = carregar_item_por_nome(nome_acessorio)
-                            if acessorio_do_banco:
-                                print(f"        ✅ Acessório '{nome_acessorio}' carregado do banco")
-                                resultado.adicionar_acessorio(acessorio_do_banco)
-                                continue
-                        except Exception as e:
-                            print(f"        ⚠️  Erro ao carregar do banco: {e}")
+                    # Deserializa recursivamente (com cache)
+                    acessorio = deserializar_objeto(acessorio_data, pools, _objetos_resolvidos)
                     
-                    # Se não encontrou no banco, reconstrói
-                    print(f"      🔧 Reconstruindo acessório a partir dos dados")
-                    acessorio = reconstruct_melhoria(acessorio_data)
                     if acessorio:
                         resultado.adicionar_acessorio(acessorio)
-                        print(f"        ✅ Acessório adicionado")
+                        print(f"        ✅ Acessório {i+1} adicionado")
                 except Exception as e:
                     print(f"      ⚠️  Erro ao reequipar acessório {i}: {e}")
     
     print(f"✅ Deserialização concluída")
     return resultado
+
+def deserializar_item(item_data):
+    """
+    Deserializa um item que pode vir como dict ou objeto já instanciado
+    VERSÃO CORRIGIDA - Trata objetos já instanciados e referências circulares
+    """
+    # Se é None, retorna None
+    if item_data is None:
+        return None
+    
+    # NOVO: Se já é uma instância de classe (não é dict), retorna direto
+    if not isinstance(item_data, dict):
+        # Verifica se é realmente um objeto (tem __class__ mas não é tipo primitivo)
+        if hasattr(item_data, '__class__') and not isinstance(item_data, (str, int, float, bool, list)):
+            classe_nome = item_data.__class__.__name__
+            print(f"  ✅ Item já instanciado: {classe_nome}")
+            if hasattr(item_data, 'nome'):
+                print(f"     Nome: {item_data.nome}")
+            return item_data
+        # Se não é objeto customizado, retorna como está
+        return item_data
+    
+    # NOVO: Trata referências circulares
+    if item_data.get("__circular_ref__"):
+        classe = item_data.get("__class__", "Unknown")
+        nome = item_data.get("__nome__")
+        print(f"  🔄 Resolvendo referência circular: {classe}")
+        
+        if nome:
+            try:
+                print(f"     Buscando '{nome}' no banco...")
+                item = carregar_item_por_nome(nome)
+                if item:
+                    print(f"     ✅ '{nome}' carregado do banco")
+                    return item
+            except Exception as e:
+                print(f"     ⚠️  Erro ao carregar: {e}")
+        
+        print(f"     ⚠️  Não foi possível resolver referência")
+        return None
+    
+    # Se é um dict com dados de item, processa normalmente
+    nome_classe = item_data.get("__class__")
+    
+    if not nome_classe:
+        # Tenta detectar o tipo pela estrutura
+        if "dano" in item_data or "Dano" in item_data:
+            if "alcance" in item_data or "Alcance" in item_data:
+                nome_classe = "Ranged"
+            else:
+                nome_classe = "Melee"
+        elif "protecao" in item_data or "Protecao" in item_data:
+            nome_classe = "Protecao"
+    
+    # Importa as classes necessárias
+    try:
+        if nome_classe == "Ranged":
+            from Codigos import Ranged
+            if hasattr(Ranged, 'from_dict'):
+                return Ranged.from_dict(item_data)
+            else:
+                item = Ranged()
+                for key, value in item_data.items():
+                    if not key.startswith('__'):
+                        setattr(item, key, value)
+                return item
+        
+        elif nome_classe == "Melee":
+            from Codigos import Melee
+            if hasattr(Melee, 'from_dict'):
+                return Melee.from_dict(item_data)
+            else:
+                item = Melee()
+                for key, value in item_data.items():
+                    if not key.startswith('__'):
+                        setattr(item, key, value)
+                return item
+        
+        elif nome_classe == "Protecao":
+            from Codigos import Protecao
+            if hasattr(Protecao, 'from_dict'):
+                return Protecao.from_dict(item_data)
+            else:
+                item = Protecao()
+                for key, value in item_data.items():
+                    if not key.startswith('__'):
+                        setattr(item, key, value)
+                return item
+        
+        else:
+            print(f"  ⚠️  Classe desconhecida: {nome_classe}")
+            return None
+            
+    except Exception as e:
+        print(f"  ❌ Erro ao deserializar item: {e}")
+        import traceback
+        traceback.print_exc()
+        return None
+
+def deserialize_object_with_class(obj):
+    """
+    Deserializa objeto baseado no campo __class__
+    VERSÃO CORRIGIDA - Compatível com objetos já instanciados
+    """
+    # Se não é dict, retorna como está
+    if not isinstance(obj, dict):
+        return obj
+    
+    # Se não tem classe especificada, retorna o dict
+    if "__class__" not in obj:
+        return obj
+    
+    classe_nome = obj.get("__class__")
+    
+    # Remove metadados antes de criar o objeto
+    dados_limpos = {k: v for k, v in obj.items() if not k.startswith('__')}
+    
+    try:
+        # Tenta importar e instanciar a classe
+        if classe_nome == "Personagem":
+            from Codigos import Personagem
+            if hasattr(Personagem, 'from_dict'):
+                return Personagem.from_dict(obj)
+            else:
+                personagem = Personagem()
+                for key, value in dados_limpos.items():
+                    setattr(personagem, key, value)
+                return personagem
+        
+        elif classe_nome in ["Ranged", "Melee", "Protecao"]:
+            # Usa deserializar_item para estes casos
+            return deserializar_item(obj)
+        
+        else:
+            # Para outras classes, retorna o dict
+            return dados_limpos
+            
+    except Exception as e:
+        print(f"⚠️  Erro ao instanciar {classe_nome}: {e}")
+        return dados_limpos
 
 def salvar_sessao(nome_da_sessao, sobrescrever=False):
     """
@@ -1215,6 +1774,7 @@ def salvar_sessao(nome_da_sessao, sobrescrever=False):
 def carregar_sessao(nome_da_sessao, carregar_pools=True):
     """
     Carrega uma sessão do banco de dados
+    VERSÃO CORRIGIDA - Trata personagens com proteções equipadas
     """
     global GruposDePersonagens, KitsDisponíveis
     try:
@@ -1235,21 +1795,30 @@ def carregar_sessao(nome_da_sessao, carregar_pools=True):
         
         dados_sessao = response.data[0]["conteudo"]
         
-        print("🔄 Re-equipando melhorias nos itens...")
+        print("🔄 Reconstruindo personagens e equipamentos...")
         
         # Reconstrói os grupos de personagens
         GruposDePersonagens = {}
         personagens_carregados = 0
+        personagens_com_erro = 0
         
         for grupo, lista_personagens in dados_sessao.items():
             # Ignora dados especiais dos kits
             if grupo == "__kits_disponiveis__":
-                KitsDisponíveis = deserializar_objeto(lista_personagens, pools)
-                continue
-                
-            GruposDePersonagens[grupo] = []
-            for dados_personagem in lista_personagens:
                 try:
+                    KitsDisponíveis = deserializar_objeto(lista_personagens, pools)
+                    print(f"📦 {len(KitsDisponíveis)} kits carregados")
+                except Exception as e:
+                    print(f"⚠️ Erro ao carregar kits: {e}")
+                continue
+            
+            GruposDePersonagens[grupo] = []
+            print(f"\n📂 Processando grupo '{grupo}'...")
+            
+            for idx, dados_personagem in enumerate(lista_personagens):
+                try:
+                    print(f"  👤 Carregando personagem {idx+1}...")
+                    
                     # Deserializa recursivamente para reconstituir objetos
                     dados_deserializados = deserializar_objeto(dados_personagem, pools)
                     
@@ -1259,24 +1828,40 @@ def carregar_sessao(nome_da_sessao, carregar_pools=True):
                     else:
                         personagem = Personagem()
                         for attr, valor in dados_deserializados.items():
-                            setattr(personagem, attr, valor)
+                            if not attr.startswith('__'):  # Ignora metadados
+                                setattr(personagem, attr, valor)
                     
                     GruposDePersonagens[grupo].append(personagem)
                     personagens_carregados += 1
                     
+                    # Mostra info do personagem carregado
+                    nome_personagem = getattr(personagem, 'nome', 'Sem nome')
+                    tem_protecao = hasattr(personagem, 'Protecao') and personagem.Protecao is not None
+                    print(f"    ✅ {nome_personagem} carregado {'(com proteção)' if tem_protecao else ''}")
+                    
                 except Exception as e:
-                    print(f"⚠️ Erro ao carregar personagem: {e}")
+                    print(f"    ❌ Erro ao carregar personagem {idx+1}: {e}")
+                    personagens_com_erro += 1
+                    import traceback
+                    traceback.print_exc()
                     continue
         
-        print(f"✅ Sessão carregada: {len(GruposDePersonagens)} grupos, {personagens_carregados} personagens")
-        if KitsDisponíveis:
-            print(f"📦 {len(KitsDisponíveis)} kits carregados")
+        print(f"\n{'='*60}")
+        print(f"✅ Sessão carregada:")
+        print(f"   • {len(GruposDePersonagens)} grupos")
+        print(f"   • {personagens_carregados} personagens carregados")
+        if personagens_com_erro > 0:
+            print(f"   ⚠️  {personagens_com_erro} personagens com erro")
+        print(f"{'='*60}\n")
+        
         return True
         
     except Exception as e:
         print(f"❌ Erro ao carregar sessão: {e}")
+        import traceback
+        traceback.print_exc()
         return False
-    
+
 def listar_sessoes():
     """
     Lista todas as sessões disponíveis com informações detalhadas
@@ -1312,25 +1897,6 @@ def listar_sessoes():
         print(f"❌ Erro ao listar sessões: {e}")
         return []
 
-def exibir_sessoes():
-    """
-    Exibe uma lista formatada das sessões disponíveis
-    """
-    sessoes = listar_sessoes()
-    
-    if not sessoes:
-        print("📝 Nenhuma sessão encontrada")
-        return
-    
-    print("📋 SESSÕES DISPONÍVEIS:")
-    print("=" * 80)
-    
-    for i, sessao in enumerate(sessoes, 1):
-        print(f"{i:2d}. {sessao['nome']}")
-        print(f"    📅 Criada: {sessao['data_criacao']}")
-        print(f"    👥 {sessao['total_personagens']} personagens em {sessao['total_grupos']} grupos")
-        print()
-
 def deletar_sessao(nome_da_sessao):
     """
     Deleta uma sessão do banco de dados
@@ -1348,15 +1914,6 @@ def deletar_sessao(nome_da_sessao):
     except Exception as e:
         print(f"❌ Erro ao deletar sessão: {e}")
         return False
-
-def limpar_sessao_atual():
-    """
-    Limpa a sessão atual da memória
-    """
-    global GruposDePersonagens, KitsDisponíveis
-    GruposDePersonagens = {}
-    KitsDisponíveis = {}
-    print("🧹 Sessão atual limpa da memória")
 
 def clonar_sessao(nome_original, nome_clone):
     """
@@ -1390,15 +1947,6 @@ def clonar_sessao(nome_original, nome_clone):
     except Exception as e:
         print(f"❌ Erro ao clonar sessão: {e}")
         return False
-
-def backup_sessao(nome_da_sessao, incluir_timestamp=True):
-    """
-    Cria um backup de uma sessão com timestamp
-    """
-    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S") if incluir_timestamp else ""
-    nome_backup = f"{nome_da_sessao}_backup_{timestamp}" if timestamp else f"{nome_da_sessao}_backup"
-    
-    return clonar_sessao(nome_da_sessao, nome_backup)
 
 def validar_sessao(nome_da_sessao):
     """
@@ -1446,27 +1994,6 @@ def validar_sessao(nome_da_sessao):
     except Exception as e:
         return False, f"Erro na validação: {e}"
 
-def status_sessao():
-    """
-    Mostra o status da sessão atual
-    """
-    if not GruposDePersonagens:
-        print("📭 Nenhuma sessão carregada")
-        return
-    
-    print("📊 STATUS DA SESSÃO ATUAL:")
-    print("=" * 50)
-    
-    total_personagens = 0
-    for grupo, lista in GruposDePersonagens.items():
-        print(f"👥 {grupo}: {len(lista)} personagens")
-        total_personagens += len(lista)
-    
-    print(f"\n📈 Total: {total_personagens} personagens em {len(GruposDePersonagens)} grupos")
-    
-    if KitsDisponíveis:
-        print(f"📦 {len(KitsDisponíveis)} kits disponíveis")
-
 # === FUNÇÕES AUXILIARES PARA GERENCIAMENTO === #
 def renomear_sessao(nome_antigo, nome_novo):
     """
@@ -1499,44 +2026,15 @@ def renomear_sessao(nome_antigo, nome_novo):
         print(f"❌ Erro ao renomear sessão: {e}")
         return False
 
-def exportar_sessao_json(nome_da_sessao, arquivo_destino=None):
-    """
-    Exporta uma sessão para um arquivo JSON local
-    """
-    try:
-        response = supabase.table("sessoes").select("*").eq("nome", nome_da_sessao).execute()
-        
-        if not response.data:
-            print(f"❌ Sessão '{nome_da_sessao}' não encontrada")
-            return False
-        
-        import json
-        
-        if not arquivo_destino:
-            arquivo_destino = f"sessao_{nome_da_sessao}_{datetime.now().strftime('%Y%m%d_%H%M%S')}.json"
-        
-        with open(arquivo_destino, 'w', encoding='utf-8') as f:
-            json.dump(response.data[0], f, indent=2, ensure_ascii=False)
-        
-        print(f"✅ Sessão exportada para: {arquivo_destino}")
-        return True
-        
-    except Exception as e:
-        print(f"❌ Erro ao exportar sessão: {e}")
-        return False
 # === SISTEMA DE SESSÕES === #
 
 # === SISTEMA DE KITS === #
 def carregar_kits_db():
-    """Carrega kits do banco de dados usando o mesmo sistema de deserialização dos personagens"""
+    """Carrega kits do banco de dados usando apenas o campo inventario_dados"""
     try:
         print("🔄 Carregando kits do banco de dados...")
         
-        # Carrega dados das tabelas para deserialização
-        print("📋 Carregando dados das tabelas...")
         dados_tabelas = carregar_todos_dados()
-        
-        # Carrega kits básicos
         response = supabase.table("kits").select("*").execute()
         kits_data = response.data
         kits = {}
@@ -1552,35 +2050,26 @@ def carregar_kits_db():
             
             print(f"🎒 Processando kit: {nome}")
             
-            # Cria kit básico
             kit = Kits(nome, raridade)
             kit.id_db = kit_id
             kit.inventario = Inventario()
-            
-            # Carrega inventário serializado
-            try:
-                inv_response = supabase.table("kit_inventario").select("*").eq("kit_id", kit_id).execute()
-                
-                # Procura pelo inventário completo serializado
-                for item_inv in inv_response.data:
-                    if item_inv["item_nome"] == "__inventario_completo__":
-                        item_data = item_inv.get("item_data")
-                        if item_data:
-                            # Deserializa usando o mesmo sistema dos personagens
-                            inventario_deserializado = deserializar_objeto(item_data, dados_tabelas)
-                            if inventario_deserializado:
-                                kit.inventario = inventario_deserializado
-                                print(f"✅ Inventário completo carregado para {nome}")
-                                break
-                
-                # Debug da carga
-                itens = kit.inventario.listar_itens() if hasattr(kit.inventario, 'listar_itens') else []
-                print(f"📊 Kit {nome}: {len(itens)} tipos de itens carregados")
-                        
-            except Exception as e:
-                print(f"❌ Erro ao carregar inventário do kit '{nome}': {e}")
-                import traceback
-                traceback.print_exc()
+
+            inventario_serializado = kit_data.get("inventario_dados")
+            if inventario_serializado:
+                try:
+                    inventario_deserializado = deserializar_objeto(inventario_serializado, dados_tabelas)
+                    
+                    if inventario_deserializado:
+                        if isinstance(inventario_deserializado, list):
+                            kit.inventario = Inventario.from_dict({"itens": inventario_deserializado})
+                        elif isinstance(inventario_deserializado, Inventario):
+                            kit.inventario = inventario_deserializado
+                        else:
+                            print(f"⚠️ Inventário de {nome} veio em formato inesperado: {type(inventario_deserializado)}")
+                    
+                        print(f"✅ Inventário carregado ({len(kit.inventario.itens)} itens)")
+                except Exception as e:
+                    print(f"❌ Erro ao deserializar inventário de {nome}: {e}")
             
             kits[nome] = kit
         
@@ -1594,48 +2083,32 @@ def carregar_kits_db():
         return {}
 
 def salvar_kit_no_banco(kit):
-    """Salva um kit no banco de dados usando o mesmo sistema de serialização dos personagens"""
     try:
         print(f"💾 Salvando kit: {kit.nome}")
         
-        # Dados básicos do kit
+        inventario_serializado = None
+        if kit.inventario and hasattr(kit.inventario, 'itens'):
+            inventario_serializado = serializar_objeto(kit.inventario)
+        
         dados_kit = {
             "nome": kit.nome,
-            "raridade": kit.raridade
+            "raridade": kit.raridade,
+            "inventario_dados": inventario_serializado
         }
         
-        # Verifica se o kit já existe
+        # Busca se já existe
         response = supabase.table("kits").select("id").eq("nome", kit.nome).execute()
         
         if response.data:
-            # Atualiza kit existente
             kit_id = response.data[0]["id"]
             supabase.table("kits").update(dados_kit).eq("id", kit_id).execute()
+            kit.id_db = kit_id
             print(f"🔄 Kit existente atualizado")
         else:
-            # Insere novo kit
             response = supabase.table("kits").insert(dados_kit).execute()
             kit_id = response.data[0]["id"]
             kit.id_db = kit_id
             print(f"🆕 Novo kit criado")
-        
-        # Remove inventário existente do banco
-        supabase.table("kit_inventario").delete().eq("kit_id", kit_id).execute()
-        
-        # Serializa e salva o inventário completo
-        if kit.inventario and hasattr(kit.inventario, 'itens'):
-            inventario_serializado = serializar_objeto(kit.inventario)
-            
-            dados_inventario = {
-                "kit_id": kit_id,
-                "item_nome": "__inventario_completo__",
-                "item_tipo": "Inventario", 
-                "item_data": inventario_serializado,
-                "quantidade": 1
-            }
-            
-            supabase.table("kit_inventario").insert(dados_inventario).execute()
-            print(f"✅ Inventário completo salvo para o kit")
         
         print(f"✅ Kit '{kit.nome}' salvo com sucesso no banco")
         return True
@@ -1647,11 +2120,10 @@ def salvar_kit_no_banco(kit):
         return False
 
 def deletar_kit_do_banco(nome_kit):
-    """Deleta um kit do banco de dados (inventário deletado automaticamente por CASCADE)"""
+    """Deleta um kit do banco de dados"""
     try:
-        response = supabase.table("kits").delete().eq("nome", nome_kit).execute()
+        supabase.table("kits").delete().eq("nome", nome_kit).execute()
         
-        # Remove também do dicionário em memória
         global KitsDisponíveis
         if nome_kit in KitsDisponíveis:
             del KitsDisponíveis[nome_kit]
@@ -1665,7 +2137,7 @@ def deletar_kit_do_banco(nome_kit):
 def listar_kits_banco():
     """Lista todos os kits disponíveis no banco de dados com informações básicas"""
     try:
-        response = supabase.table("kits").select("nome, raridade, id").order("nome").execute()
+        response = supabase.table("kits").select("nome, raridade, id, inventario_dados").order("nome").execute()
         
         if not response.data:
             print("📦 Nenhum kit encontrado no banco de dados")
@@ -1679,10 +2151,16 @@ def listar_kits_banco():
             nome = kit_data["nome"]
             raridade = kit_data["raridade"]
             kit_id = kit_data["id"]
+            inventario_serializado = kit_data.get("inventario_dados")
             
-            # Conta itens no inventário
-            inv_response = supabase.table("kit_inventario").select("quantidade").eq("kit_id", kit_id).execute()
-            total_itens = sum(item.get("quantidade", 0) for item in inv_response.data)
+            total_itens = 0
+            if inventario_serializado:
+                try:
+                    inventario = deserializar_objeto(inventario_serializado, carregar_todos_dados())
+                    if inventario and hasattr(inventario, "itens"):
+                        total_itens = len(inventario.itens)
+                except:
+                    total_itens = 0
             
             kit_info = {
                 "nome": nome,
@@ -1703,36 +2181,22 @@ def listar_kits_banco():
 def validar_kit_banco(nome_kit):
     """Valida se um kit no banco pode ser carregado corretamente"""
     try:
-        # Busca o kit
         response = supabase.table("kits").select("*").eq("nome", nome_kit).execute()
         
         if not response.data:
             return False, "Kit não encontrado no banco"
         
         kit_data = response.data[0]
-        kit_id = kit_data["id"]
+        inventario_serializado = kit_data.get("inventario_dados")
         
-        # Verifica inventário
-        inv_response = supabase.table("kit_inventario").select("*").eq("kit_id", kit_id).execute()
-        
-        if not inv_response.data:
+        if not inventario_serializado:
             return True, "Kit válido mas sem itens"
         
-        # Tenta carregar dados das tabelas
-        dados_tabelas = carregar_todos_dados()
-        
-        # Tenta deserializar inventário
-        for item_inv in inv_response.data:
-            if item_inv["item_nome"] == "__inventario_completo__":
-                item_data = item_inv.get("item_data")
-                if item_data:
-                    try:
-                        deserializar_objeto(item_data, dados_tabelas)
-                        return True, "Kit válido e carregável"
-                    except Exception as e:
-                        return False, f"Erro na deserialização: {str(e)}"
-        
-        return True, "Kit válido (formato legado)"
+        try:
+            deserializar_objeto(inventario_serializado, carregar_todos_dados())
+            return True, "Kit válido e carregável"
+        except Exception as e:
+            return False, f"Erro na deserialização: {str(e)}"
         
     except Exception as e:
         return False, f"Erro na validação: {str(e)}"
@@ -1783,10 +2247,7 @@ def atualizar_kit_especifico(kit_nome: str):
     try:
         print(f"🔄 Atualizando kit: {kit_nome}")
         
-        # Carrega dados das tabelas
         dados_tabelas = carregar_todos_dados()
-        
-        # Busca o kit no banco
         response = supabase.table("kits").select("*").eq("nome", kit_nome).execute()
         
         if not response.data:
@@ -1796,24 +2257,18 @@ def atualizar_kit_especifico(kit_nome: str):
         kit_data = response.data[0]
         kit_id = kit_data["id"]
         
-        # Cria novo kit
         kit = Kits(kit_data["nome"], kit_data["raridade"])
         kit.id_db = kit_id
         kit.inventario = Inventario()
         
-        # Carrega inventário
-        inv_response = supabase.table("kit_inventario").select("*").eq("kit_id", kit_id).execute()
+        inventario_serializado = kit_data.get("inventario_dados")
+        if inventario_serializado:
+            inventario_deserializado = deserializar_objeto(inventario_serializado, dados_tabelas)
+            if isinstance(inventario_deserializado, list):
+                kit.inventario = Inventario.from_dict({"itens": inventario_deserializado})
+            elif isinstance(inventario_deserializado, Inventario):
+                kit.inventario = inventario_deserializado
         
-        for item_inv in inv_response.data:
-            if item_inv["item_nome"] == "__inventario_completo__":
-                item_data = item_inv.get("item_data")
-                if item_data:
-                    inventario_deserializado = deserializar_objeto(item_data, dados_tabelas)
-                    if inventario_deserializado:
-                        kit.inventario = inventario_deserializado
-                        break
-        
-        # Atualiza no dicionário global
         global KitsDisponíveis
         KitsDisponíveis[kit_nome] = kit
         
@@ -1825,7 +2280,7 @@ def atualizar_kit_especifico(kit_nome: str):
         return None
 
 def debug_kit_inventario_detalhado(kit_nome):
-    """Função de debug melhorada para verificar o inventário de um kit"""
+    """Função de debug para verificar o inventário de um kit"""
     try:
         if kit_nome not in KitsDisponíveis:
             print(f"❌ Kit '{kit_nome}' não encontrado")
@@ -1837,93 +2292,29 @@ def debug_kit_inventario_detalhado(kit_nome):
         print(f"📋 Raridade: {kit.raridade}")
         print(f"🆔 ID no banco: {getattr(kit, 'id_db', 'Não definido')}")
         
-        # Debug do inventário
         if hasattr(kit, 'inventario'):
             inventario = kit.inventario
             print(f"📦 Tipo do inventário: {type(inventario)}")
-            print(f"📦 Inventário existe: {inventario is not None}")
+            print(f"📦 Quantidade de itens: {len(inventario.itens) if hasattr(inventario, 'itens') else 0}")
             
-            if inventario and hasattr(inventario, 'itens'):
-                print(f"📝 Lista de itens existe: {hasattr(inventario, 'itens')}")
-                print(f"📝 Tipo da lista: {type(inventario.itens)}")
-                print(f"📝 Quantidade de itens na lista: {len(inventario.itens) if inventario.itens else 0}")
-                
-                if inventario.itens:
-                    print(f"\n🔬 ANÁLISE DOS ITENS:")
-                    for i, item in enumerate(inventario.itens):
-                        print(f"  {i+1}. Tipo do container: {type(item)}")
-                        
-                        # Se é ItemInventario
-                        if hasattr(item, 'item') and hasattr(item, 'quantidade'):
-                            print(f"     📦 ItemInventario detectado")
-                            print(f"     📦 Item interno: {item.item}")
-                            print(f"     📦 Tipo do item interno: {type(item.item)}")
-                            print(f"     📦 Nome do item: {getattr(item.item, 'nome', 'SEM_NOME')}")
-                            print(f"     📦 Classe do item: {item.item.__class__.__name__}")
-                            print(f"     📦 Quantidade: {item.quantidade}")
-                        else:
-                            # Item direto
-                            print(f"     📋 Item direto: {item}")
-                            print(f"     📋 Tipo: {type(item)}")
-                            print(f"     📋 Nome: {getattr(item, 'nome', 'SEM_NOME')}")
-                            print(f"     📋 Classe: {item.__class__.__name__}")
-                
-                # Teste dos métodos do inventário
-                print(f"\n🧪 TESTE DOS MÉTODOS:")
-                if hasattr(inventario, 'listar_itens'):
-                    try:
-                        itens_listados = inventario.listar_itens()
-                        print(f"✅ listar_itens() funcionou: {len(itens_listados)} itens")
-                        for item in itens_listados[:3]:  # Mostra só os 3 primeiros
-                            print(f"     - {item}")
-                    except Exception as e:
-                        print(f"❌ Erro no listar_itens(): {e}")
-                
-                # Teste do método do kit
-                if hasattr(kit, 'listar_itens'):
-                    try:
-                        itens_kit = kit.listar_itens()
-                        print(f"✅ kit.listar_itens() funcionou: {len(itens_kit)} itens")
-                        for item in itens_kit[:3]:  # Mostra só os 3 primeiros
-                            print(f"     - {item}")
-                    except Exception as e:
-                        print(f"❌ Erro no kit.listar_itens(): {e}")
-            else:
-                print("❌ Inventário não tem lista de itens válida")
+            if hasattr(inventario, 'itens') and inventario.itens:
+                print(f"\n🔬 ITENS:")
+                for i, item in enumerate(inventario.itens[:5]):  # Mostra só os 5 primeiros
+                    nome_item = getattr(item.item, 'nome', 'SEM_NOME') if hasattr(item, 'item') else getattr(item, 'nome', 'SEM_NOME')
+                    print(f"  {i+1}. {nome_item} (quantidade: {getattr(item, 'quantidade', '?')})")
         else:
             print("❌ Kit não tem inventário")
-            
-        # Debug direto do banco
-        print(f"\n🗄️ DEBUG DO BANCO DE DADOS:")
-        if hasattr(kit, 'id_db'):
-            try:
-                inv_response = supabase.table("kit_inventario").select("*").eq("kit_id", kit.id_db).execute()
-                print(f"📊 Itens no banco para este kit: {len(inv_response.data)}")
-                
-                for i, item_db in enumerate(inv_response.data[:3]):  # Mostra só os 3 primeiros
-                    print(f"  {i+1}. Nome: {item_db['item_nome']}")
-                    print(f"     Tipo: {item_db.get('item_tipo', 'N/A')}")
-                    print(f"     Quantidade: {item_db['quantidade']}")
-                    print(f"     Tem dados serializados: {'item_data' in item_db and item_db['item_data'] is not None}")
-                    
-            except Exception as e:
-                print(f"❌ Erro ao consultar banco: {e}")
                     
     except Exception as e:
         print(f"❌ Erro no debug detalhado: {e}")
-        import traceback
-        traceback.print_exc()
 
 def testar_carregamento_completo():
     """Teste completo do sistema de kits"""
     print("🧪 TESTE COMPLETO DO SISTEMA DE KITS")
     print("=" * 60)
     
-    # 1. Recarrega kits
-    print("\n1️⃣ RECARREGANDO KITS...")
     kits_carregados = carregar_kits_db()
     
-    # 2. Analisa cada kit
     print(f"\n2️⃣ ANÁLISE DETALHADA ({len(kits_carregados)} kits)...")
     for nome, kit in kits_carregados.items():
         debug_kit_inventario_detalhado(nome)

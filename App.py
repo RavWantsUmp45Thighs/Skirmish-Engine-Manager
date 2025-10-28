@@ -1,8 +1,8 @@
 import tkinter as tk
-from tkinter import ttk, messagebox, scrolledtext
+from tkinter import ttk, messagebox
 import Dados as D
 import Codigos as CB
-import re, random, os, json, traceback
+import re, random
 
 
 ### TELA PRINCIPAL ###
@@ -13,6 +13,8 @@ class MainScreen(tk.Frame):
         super().__init__(parent)
         self.controller = controller
         self.configure(bg="#130f26")
+
+        self.nome_sessao_atual = None
 
         # Título da tela com tamanho reduzido
         title_frame = tk.Frame(self, bg="#1a0869", relief="raised", bd=3)
@@ -48,80 +50,35 @@ class MainScreen(tk.Frame):
         main_container = tk.Frame(sessao_frame, bg="#1a0869")
         main_container.pack(fill="both", expand=True, padx=20, pady=15)
         
-        # Frame para listbox com visual melhorado
-        lista_frame = tk.Frame(main_container, bg="#1a0869")
-        lista_frame.pack(fill="both", expand=True, pady=(0, 15))
+        # Frame para a lista de sessões com canvas e scrollbar
+        lista_container = tk.Frame(main_container, bg="#2a1f3d", relief="sunken", bd=2)
+        lista_container.pack(fill="both", expand=True, pady=(0, 15))
         
-        # Listbox estilizada
-        self.sessoes_listbox = tk.Listbox(lista_frame, font=("Arial", 12, "bold"), 
-                                         bg="#2a1f3d", fg="#ffffff", 
-                                         selectbackground="#4a3f5d", 
-                                         selectforeground="#ffffff",
-                                         relief="sunken", bd=2,
-                                         height=12, activestyle="dotbox")
-        self.sessoes_listbox.pack(side="left", fill="both", expand=True)
+        # Canvas para scroll
+        canvas = tk.Canvas(lista_container, bg="#2a1f3d", highlightthickness=0)
+        scrollbar = tk.Scrollbar(lista_container, orient="vertical", command=canvas.yview,
+                                bg="#2a1f3d", troughcolor="#130f26", activebackground="#4a3f5d")
         
-        # Scrollbar estilizada
-        scrollbar = tk.Scrollbar(lista_frame, orient="vertical", 
-                               command=self.sessoes_listbox.yview,
-                               bg="#2a1f3d", troughcolor="#130f26",
-                               activebackground="#4a3f5d")
+        self.sessoes_frame = tk.Frame(canvas, bg="#2a1f3d")
+        
+        self.sessoes_frame.bind(
+            "<Configure>",
+            lambda e: canvas.configure(scrollregion=canvas.bbox("all"))
+        )
+        
+        canvas.create_window((0, 0), window=self.sessoes_frame, anchor="nw")
+        canvas.configure(yscrollcommand=scrollbar.set)
+        
+        canvas.pack(side="left", fill="both", expand=True)
         scrollbar.pack(side="right", fill="y")
-        self.sessoes_listbox.config(yscrollcommand=scrollbar.set)
         
-        # Frame para controles - primeira linha
-        controles1_frame = tk.Frame(main_container, bg="#1a0869")
-        controles1_frame.pack(fill="x", pady=(0, 10))
-        
-        tk.Button(controles1_frame, text="🔄 Atualizar", command=self.atualizar_lista_sessoes,
-                bg="#2a1f3d", fg="white", font=("Arial", 11, "bold"), 
-                relief="raised", bd=2, activebackground="#4a3f5d",
-                width=12).pack(side="left", padx=5)
-        
-        tk.Button(controles1_frame, text="📂 Carregar", command=self.carregar_sessao_selecionada,
-                bg="#2a1f3d", fg="white", font=("Arial", 11, "bold"),
-                relief="raised", bd=2, activebackground="#4a3f5d",
-                width=12).pack(side="left", padx=5)
-        
-        tk.Button(controles1_frame, text="🗑️ Deletar", command=self.deletar_sessao_selecionada,
-                bg="#8b1538", fg="white", font=("Arial", 11, "bold"),
-                relief="raised", bd=2, activebackground="#a61e42",
-                width=12).pack(side="left", padx=5)
-        
-        # Separador visual
-        separator = tk.Frame(main_container, bg="#4a3f5d", height=2)
-        separator.pack(fill="x", pady=10)
-        
-        # Frame para entrada de texto
-        entrada_frame = tk.Frame(main_container, bg="#1a0869")
-        entrada_frame.pack(fill="x", pady=(0, 10))
-        
-        tk.Label(entrada_frame, text="💾 Nome da sessão:", 
-                fg="white", bg="#1a0869", font=("Arial", 12, "bold")).pack(anchor="w")
-        
-        self.nome_sessao_entry = tk.Entry(entrada_frame, font=("Arial", 12), 
-                                        bg="#2a1f3d", fg="white", relief="sunken", bd=2,
-                                        insertbackground="white")
-        self.nome_sessao_entry.pack(fill="x", pady=5)
-        
-        # Frame para controles - segunda linha
-        controles2_frame = tk.Frame(main_container, bg="#1a0869")
-        controles2_frame.pack(fill="x")
-        
-        tk.Button(controles2_frame, text="➕ Nova Sessão", command=self.criar_nova_sessao,
-                bg="#2a1f3d", fg="white", font=("Arial", 11, "bold"),
-                relief="raised", bd=2, activebackground="#4a3f5d",
-                width=15).pack(side="left", padx=5)
-        
-        tk.Button(controles2_frame, text="💾 Salvar Atual", command=self.salvar_sessao_atual,
-                bg="#1a5f2a", fg="white", font=("Arial", 11, "bold"),
-                relief="raised", bd=2, activebackground="#2a7f3a",
-                width=15).pack(side="left", padx=5)
-        
-        tk.Button(controles2_frame, text="✏️ Renomear", command=self.renomear_sessao_selecionada,
-                bg="#2a1f3d", fg="white", font=("Arial", 11, "bold"),
-                relief="raised", bd=2, activebackground="#4a3f5d",
-                width=15).pack(side="left", padx=5)
+        # Botão de salvar sessão atual
+        btn_salvar = tk.Button(main_container, text="💾 Salvar Sessão Atual", 
+                              command=self.salvar_sessao_atual,
+                              bg="#1a5f2a", fg="white", font=("Arial", 12, "bold"),
+                              relief="raised", bd=2, activebackground="#2a7f3a",
+                              height=2)
+        btn_salvar.pack(fill="x")
         
         # === INFORMAÇÕES DO APLICATIVO (LADO DIREITO E AUMENTADA) ===
         sobre_frame = tk.Frame(self, bg="#1a0869", relief="raised", bd=3)
@@ -173,63 +130,105 @@ class MainScreen(tk.Frame):
         self.atualizar_lista_sessoes()
 
     def atualizar_lista_sessoes(self):
-        """Atualiza a listbox com as sessões disponíveis"""
+        """Atualiza a lista de sessões com botões individuais"""
         try:
-            self.sessoes_listbox.delete(0, tk.END)
+            # Limpa frame
+            for widget in self.sessoes_frame.winfo_children():
+                widget.destroy()
             
             # Importa a função correta do módulo D
             from Dados import listar_sessoes
             sessoes = listar_sessoes()
             
-            for sessao in sessoes:
-                # Formato: "Nome - Data Atualização (X personagens em Y grupos)"
-                status_icon = "🔄" if sessao.get('modificada', False) else "✨"
-                item = f"{status_icon} {sessao['nome']} - ({sessao['total_personagens']} chars em {sessao['total_grupos']} grupos)"
-                self.sessoes_listbox.insert(tk.END, item)
+            if not sessoes:
+                # Mensagem quando não há sessões
+                msg_frame = tk.Frame(self.sessoes_frame, bg="#2a1f3d")
+                msg_frame.pack(fill="x", padx=10, pady=20)
+                tk.Label(msg_frame, text="📭 Nenhuma sessão salva", 
+                        font=("Arial", 12, "italic"), fg="#888888", bg="#2a1f3d").pack()
+                return
+            
+            for idx, sessao in enumerate(sessoes):
+                # Frame para cada sessão
+                sessao_item = tk.Frame(self.sessoes_frame, bg="#1a0869" if idx % 2 == 0 else "#2a1f3d", 
+                                      relief="solid", bd=1)
+                sessao_item.pack(fill="x", padx=5, pady=3)
+                
+                # Frame esquerdo - Info da sessão
+                info_frame = tk.Frame(sessao_item, bg=sessao_item['bg'])
+                info_frame.pack(side="left", fill="both", expand=True, padx=15, pady=10)
+                
+                # Nome da sessão
+                nome_label = tk.Label(info_frame, 
+                                     text=f"📂 {sessao['nome']}", 
+                                     font=("Arial", 13, "bold"), 
+                                     fg="#ffffff", bg=info_frame['bg'],
+                                     anchor="w")
+                nome_label.pack(fill="x")
+                
+                # Info adicional
+                info_text = f"👥 {sessao['total_personagens']} personagens em {sessao['total_grupos']} grupos"
+                info_label = tk.Label(info_frame, 
+                                     text=info_text, 
+                                     font=("Arial", 10), 
+                                     fg="#cccccc", bg=info_frame['bg'],
+                                     anchor="w")
+                info_label.pack(fill="x")
+                
+                # Frame direito - Botões de ação
+                botoes_frame = tk.Frame(sessao_item, bg=sessao_item['bg'])
+                botoes_frame.pack(side="right", padx=10, pady=8)
+                
+                # Botão Carregar
+                btn_carregar = tk.Button(botoes_frame, text="Carregar", 
+                                        command=lambda n=sessao['nome']: self.carregar_sessao(n),
+                                        bg="#2a1f3d", fg="white", font=("Arial", 11, "bold"),
+                                        width=10, relief="raised", bd=2,
+                                        activebackground="#4a3f5d")
+                btn_carregar.pack(side="left", padx=3)
+                
+                # Botão Renomear
+                btn_renomear = tk.Button(botoes_frame, text="Renomear", 
+                                        command=lambda n=sessao['nome']: self.renomear_sessao(n),
+                                        bg="#2a1f3d", fg="white", font=("Arial", 11, "bold"),
+                                        width=10, relief="raised", bd=2,
+                                        activebackground="#4a3f5d")
+                btn_renomear.pack(side="left", padx=3)
+                
+                # Botão Deletar
+                btn_deletar = tk.Button(botoes_frame, text="Apagar", 
+                                       command=lambda n=sessao['nome']: self.deletar_sessao(n),
+                                       bg="#8b1538", fg="white", font=("Arial", 11, "bold"),
+                                       width=8, relief="raised", bd=2,
+                                       activebackground="#a61e42")
+                btn_deletar.pack(side="left", padx=3)
                 
         except Exception as e:
             tk.messagebox.showerror("Erro", f"Erro ao carregar lista de sessões: {e}")
 
-    def carregar_sessao_selecionada(self):
-        """Carrega a sessão selecionada na listbox"""
+    def carregar_sessao(self, nome_sessao):
+        """Carrega a sessão especificada"""
         try:
-            selection = self.sessoes_listbox.curselection()
-            if not selection:
-                tk.messagebox.showwarning("Aviso", "Selecione uma sessão para carregar.")
-                return
-            
-            # Extrai o nome da sessão (após o emoji e antes do " - ")
-            item_text = self.sessoes_listbox.get(selection[0])
-            # Remove emoji e pega o nome até o primeiro " - "
-            nome_sessao = item_text.split(" ", 1)[1].split(" - ")[0]
-            
-            # Importa a função correta do módulo D
             from Dados import carregar_sessao
             
             if carregar_sessao(nome_sessao):
                 tk.messagebox.showinfo("Sucesso", f"Sessão '{nome_sessao}' carregada com sucesso!")
+                self.nome_sessao_atual = nome_sessao
+                # Atualiza outras telas se necessário
+                if hasattr(self.controller, 'atualizar_todas_telas'):
+                    self.controller.atualizar_todas_telas()
             else:
                 tk.messagebox.showerror("Erro", f"Erro ao carregar sessão '{nome_sessao}'")
                 
         except Exception as e:
             tk.messagebox.showerror("Erro", f"Erro ao carregar sessão: {e}")
 
-    def deletar_sessao_selecionada(self):
-        """Deleta a sessão selecionada"""
+    def deletar_sessao(self, nome_sessao):
+        """Deleta a sessão especificada"""
         try:
-            selection = self.sessoes_listbox.curselection()
-            if not selection:
-                tk.messagebox.showwarning("Aviso", "Selecione uma sessão para deletar.")
-                return
-            
-            # Extrai o nome da sessão
-            item_text = self.sessoes_listbox.get(selection[0])
-            nome_sessao = item_text.split(" ", 1)[1].split(" - ")[0]
-            
             # Confirma a exclusão
             if tk.messagebox.askyesno("Confirmar Exclusão", 
                                     f"Tem certeza que deseja deletar a sessão '{nome_sessao}'?\n\nEsta ação não pode ser desfeita."):
-                # Importa a função correta do módulo D
                 from Dados import deletar_sessao
                 
                 if deletar_sessao(nome_sessao):
@@ -241,74 +240,19 @@ class MainScreen(tk.Frame):
         except Exception as e:
             tk.messagebox.showerror("Erro", f"Erro ao deletar sessão: {e}")
 
-    def criar_nova_sessao(self):
-        """Cria uma nova sessão vazia"""
+    def renomear_sessao(self, nome_antigo):
+        """Renomeia a sessão especificada"""
         try:
-            # Importa a função correta do módulo D
-            from Dados import limpar_sessao_atual
+            # Dialog para pedir novo nome
+            from tkinter import simpledialog
+            nome_novo = simpledialog.askstring("Renomear Sessão", 
+                                              f"Digite o novo nome para '{nome_antigo}':",
+                                              parent=self)
             
-            # Confirma se o usuário quer limpar a sessão atual
-            if tk.messagebox.askyesno("Confirmar Nova Sessão", 
-                                    "Criar uma nova sessão irá limpar todos os dados atuais.\n\nDeseja continuar?"):
-                limpar_sessao_atual()
-                tk.messagebox.showinfo("Sucesso", "Nova sessão criada! Todos os dados foram limpos da memória.")
-                # Atualiza outras telas se necessário
-                self.controller.atualizar_todas_telas()
-                
-        except Exception as e:
-            tk.messagebox.showerror("Erro", f"Erro ao criar nova sessão: {e}")
-
-    def salvar_sessao_atual(self):
-        """Salva a sessão atual com o nome especificado"""
-        try:
-            nome_sessao = self.nome_sessao_entry.get().strip()
-            if not nome_sessao:
-                tk.messagebox.showwarning("Aviso", "Digite um nome para a sessão.")
-                return
-            
-            # Importa as funções corretas do módulo D
-            from Dados import salvar_sessao, listar_sessoes
-            
-            # Verifica se já existe uma sessão com esse nome
-            sessoes_existentes = listar_sessoes()
-            sessao_existe = any(s['nome'] == nome_sessao for s in sessoes_existentes)
-            
-            if sessao_existe:
-                if tk.messagebox.askyesno("Confirmar Sobrescrita", 
-                                        f"A sessão '{nome_sessao}' já existe.\n\nDeseja sobrescrever?"):
-                    if salvar_sessao(nome_sessao, sobrescrever=True):
-                        tk.messagebox.showinfo("Sucesso", f"Sessão '{nome_sessao}' atualizada com sucesso!")
-                        self.atualizar_lista_sessoes()
-                        self.nome_sessao_entry.delete(0, tk.END)
-                    else:
-                        tk.messagebox.showerror("Erro", f"Erro ao atualizar sessão '{nome_sessao}'")
-            else:
-                if salvar_sessao(nome_sessao):
-                    tk.messagebox.showinfo("Sucesso", f"Sessão '{nome_sessao}' salva com sucesso!")
-                    self.atualizar_lista_sessoes()
-                    self.nome_sessao_entry.delete(0, tk.END)
-                else:
-                    tk.messagebox.showerror("Erro", f"Erro ao salvar sessão '{nome_sessao}'")
-                    
-        except Exception as e:
-            tk.messagebox.showerror("Erro", f"Erro ao salvar sessão: {e}")
-
-    def renomear_sessao_selecionada(self):
-        """Renomeia a sessão selecionada"""
-        try:
-            selection = self.sessoes_listbox.curselection()
-            if not selection:
-                tk.messagebox.showwarning("Aviso", "Selecione uma sessão para renomear.")
-                return
-            
-            nome_novo = self.nome_sessao_entry.get().strip()
             if not nome_novo:
-                tk.messagebox.showwarning("Aviso", "Digite o novo nome para a sessão.")
                 return
             
-            # Extrai o nome atual da sessão
-            item_text = self.sessoes_listbox.get(selection[0])
-            nome_antigo = item_text.split(" ", 1)[1].split(" - ")[0]
+            nome_novo = nome_novo.strip()
             
             if nome_antigo == nome_novo:
                 tk.messagebox.showwarning("Aviso", "O novo nome deve ser diferente do nome atual.")
@@ -317,7 +261,6 @@ class MainScreen(tk.Frame):
             # Confirma a renomeação
             if tk.messagebox.askyesno("Confirmar Renomeação", 
                                     f"Renomear sessão de:\n'{nome_antigo}'\npara:\n'{nome_novo}'?"):
-                # Importa a função correta do módulo D
                 from Dados import clonar_sessao, deletar_sessao
                 
                 # Como não há função renomear_sessao, usa clone + delete
@@ -325,7 +268,6 @@ class MainScreen(tk.Frame):
                     if deletar_sessao(nome_antigo):
                         tk.messagebox.showinfo("Sucesso", f"Sessão renomeada com sucesso:\n'{nome_antigo}' → '{nome_novo}'")
                         self.atualizar_lista_sessoes()
-                        self.nome_sessao_entry.delete(0, tk.END)
                     else:
                         tk.messagebox.showerror("Erro", "Sessão clonada, mas erro ao deletar a original.")
                         self.atualizar_lista_sessoes()
@@ -335,59 +277,58 @@ class MainScreen(tk.Frame):
         except Exception as e:
             tk.messagebox.showerror("Erro", f"Erro ao renomear sessão: {e}")
 
-    def validar_sessao_selecionada(self):
-        """Valida a sessão selecionada"""
+    def salvar_sessao_atual(self):
+        """Salva a sessão atual - cria nova se não houver sessão carregada"""
         try:
-            selection = self.sessoes_listbox.curselection()
-            if not selection:
-                tk.messagebox.showwarning("Aviso", "Selecione uma sessão para validar.")
-                return
-            
-            # Extrai o nome da sessão
-            item_text = self.sessoes_listbox.get(selection[0])
-            nome_sessao = item_text.split(" ", 1)[1].split(" - ")[0]
-            
-            # Importa a função de validação
-            from Dados import validar_sessao
-            
-            valida, resultado = validar_sessao(nome_sessao)
-            
-            if valida:
-                tk.messagebox.showinfo("Validação", f"✅ Sessão '{nome_sessao}' válida!\n\n{resultado}")
-            else:
-                tk.messagebox.showerror("Validação", f"❌ Problemas na sessão '{nome_sessao}':\n\n{resultado}")
-                
-        except Exception as e:
-            tk.messagebox.showerror("Erro", f"Erro ao validar sessão: {e}")
+            from Dados import salvar_sessao, listar_sessoes
+            from tkinter import simpledialog
 
-    def mostrar_status_sessao_atual(self):
-        """Mostra o status da sessão atual carregada na memória"""
-        try:
-            from Dados import GruposDePersonagens, KitsDisponíveis
-            
-            if not GruposDePersonagens:
-                tk.messagebox.showinfo("Status da Sessão", "📭 Nenhuma sessão carregada na memória")
-                return
-            
-            # Calcula estatísticas
-            total_personagens = 0
-            detalhes_grupos = []
-            
-            for grupo, lista in GruposDePersonagens.items():
-                total_personagens += len(lista)
-                detalhes_grupos.append(f"👥 {grupo}: {len(lista)} personagens")
-            
-            status_text = f"📊 SESSÃO ATUAL CARREGADA:\n\n"
-            status_text += "\n".join(detalhes_grupos)
-            status_text += f"\n\n📈 Total: {total_personagens} personagens em {len(GruposDePersonagens)} grupos"
-            
-            if KitsDisponíveis:
-                status_text += f"\n📦 {len(KitsDisponíveis)} kits disponíveis"
-            
-            tk.messagebox.showinfo("Status da Sessão", status_text)
-            
+            # Se não houver sessão carregada, pede nome para criar nova
+            if self.nome_sessao_atual:
+                # Atualiza sessão existente
+                if tk.messagebox.askyesno("Confirmar Atualização",
+                                        f"Atualizar a sessão '{self.nome_sessao_atual}'?"):
+                    if salvar_sessao(self.nome_sessao_atual, sobrescrever=True):
+                        tk.messagebox.showinfo("Sucesso", f"Sessão '{self.nome_sessao_atual}' atualizada com sucesso!")
+                        self.atualizar_lista_sessoes()
+                    else:
+                        tk.messagebox.showerror("Erro", f"Erro ao atualizar sessão '{self.nome_sessao_atual}'")
+            else:
+                # Cria nova sessão
+                nome_novo = simpledialog.askstring("Nova Sessão",
+                                                "Digite o nome para a nova sessão:",
+                                                parent=self)
+                if not nome_novo:
+                    return
+
+                nome_novo = nome_novo.strip()
+                if not nome_novo:
+                    tk.messagebox.showwarning("Aviso", "Digite um nome válido para a sessão.")
+                    return
+
+                # Verifica se já existe sessão com o mesmo nome
+                sessoes_existentes = listar_sessoes()
+                sessao_existe = any(s['nome'] == nome_novo for s in sessoes_existentes)
+
+                if sessao_existe:
+                    if tk.messagebox.askyesno("Confirmar Sobrescrita",
+                                            f"A sessão '{nome_novo}' já existe.\nDeseja sobrescrever?"):
+                        if salvar_sessao(nome_novo, sobrescrever=True):
+                            tk.messagebox.showinfo("Sucesso", f"Sessão '{nome_novo}' salva com sucesso!")
+                            self.nome_sessao_atual = nome_novo
+                            self.atualizar_lista_sessoes()
+                        else:
+                            tk.messagebox.showerror("Erro", f"Erro ao salvar sessão '{nome_novo}'")
+                else:
+                    if salvar_sessao(nome_novo):
+                        tk.messagebox.showinfo("Sucesso", f"Sessão '{nome_novo}' salva com sucesso!")
+                        self.nome_sessao_atual = nome_novo
+                        self.atualizar_lista_sessoes()
+                    else:
+                        tk.messagebox.showerror("Erro", f"Erro ao salvar sessão '{nome_novo}'")
+
         except Exception as e:
-            tk.messagebox.showerror("Erro", f"Erro ao verificar status da sessão: {e}")
+            tk.messagebox.showerror("Erro", f"Erro ao salvar sessão: {e}")
 
     def TelaDeSelecao(self):
         self.controller.TelaDeSelecao()
@@ -396,7 +337,8 @@ class MainScreen(tk.Frame):
         self.controller.TelaDeCombate()
 
     def TelaDeRegrasEItens(self):
-        self.controller.TelaDeRegrasEItens()### TELA PRINCIPAL ###
+        self.controller.TelaDeRegrasEItens()
+### TELA PRINCIPAL ###
 ### TELA PRINCIPAL ###
 ### TELA PRINCIPAL ###
 
@@ -453,12 +395,12 @@ class CharacterSelectScreen(tk.Frame):
         ### --- Kits (coluna 3) --- ###
         # --- Gerenciamento de Kits ---
         self.kit_management_frame = tk.Frame(self, bg='#1a0869')
-        self.kit_management_frame.place(x=960, y=120, width=450, height=80)
+        self.kit_management_frame.place(x=960, y=120, width=500, height=80)  # Aumentado de 450 para 500
         self.create_kit_management(self.kit_management_frame)
 
         # --- Lista de Kits ---
         self.kit_list_frame = tk.Frame(self, bg='#1a0869')
-        self.kit_list_frame.place(x=960, y=210, width=450, height=470)
+        self.kit_list_frame.place(x=960, y=210, width=500, height=470)
         self.create_kit_list_section(self.kit_list_frame)
 
 ### --- Grupos --- ###
@@ -671,8 +613,224 @@ class CharacterSelectScreen(tk.Frame):
             generate_char_btn.pack(side="right", padx=15, pady=15)
 
     def gerar_varios_personagens(self):
-        """Função placeholder para gerar vários personagens - sem funcionalidade ainda"""
-        messagebox.showinfo("Em desenvolvimento", "Funcionalidade 'Gerar Vários' ainda não implementada.")
+        """Gera vários NPCs de forma customizada"""
+        # --- Passo 1: Perguntar quantidade ---
+        popup_qtd = tk.Toplevel(self)
+        popup_qtd.title("Gerar Vários NPCs")
+        popup_qtd.geometry("300x150")
+        popup_qtd.config(bg="#130f26")
+
+        tk.Label(popup_qtd, text="Quantidade de NPCs", bg="#130f26", fg="white", font=("Arial", 12, "bold")).pack(pady=10)
+        qtd_entry = tk.Entry(popup_qtd, font=("Arial", 12), justify="center")
+        qtd_entry.pack(pady=5)
+        qtd_entry.insert(0, "1")
+
+        def confirmar_qtd():
+            try:
+                qtd = int(qtd_entry.get())
+                if qtd <= 0:
+                    raise ValueError
+                popup_qtd.destroy()
+                self._abrir_config_varios_npcs(qtd)
+            except ValueError:
+                messagebox.showerror("Erro", "Digite um número válido maior que 0.")
+
+        tk.Button(popup_qtd, text="Confirmar", command=confirmar_qtd, bg="#0b8f33", fg="white",
+                font=("Arial", 12, "bold")).pack(pady=10)
+
+    def _abrir_config_varios_npcs(self, quantidade):
+        """Abre janela para configuração de cada NPC"""
+        current_group = self.group_var.get()
+        if not current_group or current_group == "Sem grupos":
+            messagebox.showwarning("Aviso", "Selecione ou crie um grupo primeiro.")
+            return
+
+        popup = tk.Toplevel(self)
+        popup.title("Configurar NPCs")
+        popup.geometry("700x500")
+        popup.config(bg="#130f26")
+
+        # --- Carregar NPCs e kits ---
+        npcs_dados = D.carregar_npcs()
+        
+        # ✅ Usar D.KitsDisponíveis diretamente ao invés de carregar do DB
+        if not hasattr(D, 'KitsDisponíveis') or not D.KitsDisponíveis:
+            messagebox.showerror("Erro", "Nenhum kit disponível. Carregue os kits primeiro.")
+            popup.destroy()
+            return
+        
+        kits_disponiveis = D.KitsDisponíveis
+
+        self.npcs_por_classe = npcs_dados
+
+        # --- Criar Canvas com Scroll ---
+        canvas_frame = tk.Frame(popup, bg='#130f26')
+        canvas_frame.pack(fill="both", expand=True, padx=10, pady=10)
+
+        canvas = tk.Canvas(canvas_frame, bg="#130f26", highlightthickness=0)
+        scrollbar = tk.Scrollbar(canvas_frame, orient="vertical", command=canvas.yview)
+        canvas.configure(yscrollcommand=scrollbar.set)
+
+        scrollbar.pack(side="right", fill="y")
+        canvas.pack(side="left", fill="both", expand=True)
+
+        inner_frame = tk.Frame(canvas, bg="#130f26")
+        canvas.create_window((0, 0), window=inner_frame, anchor='nw')
+        inner_frame.bind("<Configure>", lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
+
+        # --- Linhas de configuração ---
+        self.linhas_npcs = []
+        for i in range(quantidade):
+            linha_frame = tk.Frame(inner_frame, bg="#2a2647", relief="solid", bd=1)
+            linha_frame.pack(fill="x", pady=5)
+
+            # Tipo de NPC
+            tipo_var = tk.StringVar()
+            tipos = list(self.npcs_por_classe.keys())
+            tipo_menu = tk.OptionMenu(linha_frame, tipo_var, *tipos)
+            tipo_menu.config(bg="#1a0869", fg="white", font=("Arial", 10), width=15)
+            tipo_menu.pack(side="left", padx=5, pady=5)
+
+            # Kit - ✅ Usar os nomes exatos de D.KitsDisponíveis
+            kit_var = tk.StringVar()
+            kits_opcoes = [""] + list(kits_disponiveis.keys())
+            kit_menu = tk.OptionMenu(linha_frame, kit_var, *kits_opcoes)
+            kit_menu.config(bg="#1a0869", fg="white", font=("Arial", 10), width=12)
+            kit_menu.pack(side="left", padx=5, pady=5)
+
+            # Equip
+            equip_var = tk.StringVar(value="basico")
+            equip_opcoes = [
+                "equipar_tudo",
+                "equipar_arma", 
+                "equipar_protecoes",
+                "basico"
+            ]
+            equip_menu = tk.OptionMenu(linha_frame, equip_var, *equip_opcoes)
+            equip_menu.config(bg="#1a0869", fg="white", font=("Arial", 10), width=25)
+            equip_menu.pack(side="left", padx=5, pady=5)
+
+            # Nível
+            nivel_entry = tk.Entry(linha_frame, width=5, justify="center")
+            nivel_entry.insert(0, "1")
+            nivel_entry.pack(side="left", padx=5)
+
+            # Nome
+            nome_entry = tk.Entry(linha_frame, width=15)
+            nome_entry.pack(side="left", padx=5)
+
+            self.linhas_npcs.append({
+                "tipo_var": tipo_var,
+                "kit_var": kit_var,
+                "modo_var": equip_var,
+                "nivel_entry": nivel_entry,
+                "nome_entry": nome_entry
+            })
+
+        # --- Botão de confirmar ---
+        def confirmar_geracao():
+            try:
+                npcs_criados = 0
+                kits_aplicados = 0
+                
+                for linha in self.linhas_npcs:
+                    tipo_npc = linha["tipo_var"].get()
+                    kit_nome = linha["kit_var"].get()
+                    modo = linha["modo_var"].get()
+                    nivel_str = linha["nivel_entry"].get()
+                    nome = linha["nome_entry"].get()
+
+                    try:
+                        nivel = int(nivel_str)
+                    except ValueError:
+                        nivel = 1
+
+                    if not tipo_npc:
+                        messagebox.showwarning("Aviso", "Selecione um tipo de NPC para todas as linhas.")
+                        return
+
+                    if not nome:
+                        nome = f"{tipo_npc}_{random.randint(1,1000)}"
+
+                    # --- Buscar NPC base corretamente ---
+                    if tipo_npc not in self.npcs_por_classe:
+                        messagebox.showwarning("Aviso", f"Tipo de NPC '{tipo_npc}' não encontrado.")
+                        continue
+
+                    npc_base = self.npcs_por_classe[tipo_npc]
+
+                    # --- Carregar proficiências padrão ---
+                    proficiencias_dados = D.carregar_proficiencias()
+                    proficiencias_objetos = {}
+                    for nome_prof, dados_prof in proficiencias_dados.items():
+                        proficiencias_objetos[nome_prof] = CB.Proficiencia(
+                            nome_prof,
+                            dados_prof["atributo"],
+                            nivel=0
+                        )
+
+                    # --- Criar o personagem base ---
+                    personagem = CB.NPC(
+                        grupo=npc_base["grupo"],
+                        classe=npc_base["classe"],
+                        forca=npc_base["forca"],
+                        agilidade=npc_base["agilidade"],
+                        vigor=npc_base["vigor"],
+                        inteligencia=npc_base["inteligencia"],
+                        presenca=npc_base["presenca"],
+                        tatica=npc_base["tatica"]
+                    )
+
+                    # --- Gerar o NPC final com nível, nome e proficiências ---
+                    personagem = CB.Gerador(
+                        npc=personagem,
+                        nivel=nivel,
+                        nome=nome,
+                        proficiencias_base=proficiencias_objetos
+                    )
+
+                    # --- Aplicar kit se houver ---
+                    if kit_nome and kit_nome != "":
+                        # ✅ Buscar diretamente em D.KitsDisponíveis
+                        kit_obj = kits_disponiveis.get(kit_nome)
+                        
+                        if kit_obj:
+                            try:
+                                relatorio = personagem.receber_kit_avancado(kit_obj, modo)
+                                if relatorio.get("sucesso", False):
+                                    kits_aplicados += 1
+                                else:
+                                    print(f"⚠️ Falha ao aplicar kit em {nome}: {relatorio.get('erros', [])}")
+                            except Exception as e:
+                                print(f"❌ Erro ao aplicar kit em {nome}: {str(e)}")
+                                import traceback
+                                traceback.print_exc()
+                        else:
+                            print(f"⚠️ Kit '{kit_nome}' não encontrado")
+
+                    # --- Adicionar NPC ao grupo selecionado ---
+                    target_group = self.group_var.get()
+                    if target_group not in D.GruposDePersonagens:
+                        D.GruposDePersonagens[target_group] = []
+                    D.GruposDePersonagens[target_group].append(personagem)
+                    npcs_criados += 1
+
+                self.refresh()
+                popup.destroy()
+                
+                # ✅ Feedback mais detalhado
+                mensagem = f"✅ {npcs_criados} personagem(ns) gerado(s) com sucesso!"
+                if kits_aplicados > 0:
+                    mensagem += f"\n🎒 {kits_aplicados} kit(s) aplicado(s)"
+                messagebox.showinfo("Sucesso", mensagem)
+
+            except Exception as e:
+                messagebox.showerror("Erro", f"Ocorreu um erro ao gerar os NPCs:\n{str(e)}")
+                import traceback
+                traceback.print_exc()
+
+        tk.Button(popup, text="Confirmar", command=confirmar_geracao,
+                bg="#0b8f33", fg="white", font=("Arial", 12, "bold")).pack(pady=10)
 
     def limpar_grupo_atual(self):
         """Limpa todos os personagens do grupo selecionado"""
@@ -917,19 +1075,25 @@ class CharacterSelectScreen(tk.Frame):
         # Botão para refresh dos kits
         refresh_kits_btn = tk.Button(frame, text="Atualizar lista", bg="#0b4f8f", fg="white", font=("Arial", 12, "bold"), command=self.refresh_kits)
         refresh_kits_btn.place(x=10, y=45, width=150, height=30)
+        try:
+            D.refresh_kits()
+        except Exception as e:
+            print(f"Erro ao carregar kits automaticamente: {e}")
 
     def create_kit_list_section(self, frame):
+        # Limpa widgets antigos
         for widget in frame.winfo_children():
             widget.destroy()
 
-        # Armazenar referência do frame atual para uso em outros métodos
+        # Armazenar referência do frame atual
         self.current_frame = frame
 
         label = tk.Label(frame, text="Kits Disponíveis", fg="white", bg="#1a0869", font=("Arial", 16, "bold"))
         label.place(x=10, y=10)
 
+        # Frame principal com canvas + scrollbar
         canvas_frame = tk.Frame(frame, bg='#1a0869')
-        canvas_frame.place(x=10, y=40, width=460, height=420)
+        canvas_frame.place(x=10, y=40, width=480, height=420)
 
         canvas = tk.Canvas(canvas_frame, bg="#1a0869", highlightthickness=0)
         scrollbar = tk.Scrollbar(canvas_frame, orient="vertical", command=canvas.yview)
@@ -939,10 +1103,22 @@ class CharacterSelectScreen(tk.Frame):
         canvas.pack(side="left", fill="both", expand=True)
 
         inner_frame = tk.Frame(canvas, bg="#1a0869")
-        canvas.create_window((0, 0), window=inner_frame, anchor='nw')
+        window = canvas.create_window((0, 0), window=inner_frame, anchor='nw')
+
+        # Faz o inner_frame sempre ocupar a largura visível do canvas
+        def resize_inner(event):
+            canvas.itemconfig(window, width=event.width)
+        canvas.bind("<Configure>", resize_inner)
+
+        # Atualiza scrollregion conforme o conteúdo cresce
         inner_frame.bind("<Configure>", lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
 
-        # Carregar kits disponíveis
+        # Scroll com roda do mouse
+        def _on_mousewheel(event):
+            canvas.yview_scroll(int(-1*(event.delta/120)), "units")
+        canvas.bind_all("<MouseWheel>", _on_mousewheel)
+
+        # Carregar kits
         kits = D.KitsDisponíveis if hasattr(D, 'KitsDisponíveis') and D.KitsDisponíveis else {}
         
         if not kits:
@@ -953,47 +1129,61 @@ class CharacterSelectScreen(tk.Frame):
             # Organizar kits por raridade
             kits_por_raridade = {}
             for nome, kit in kits.items():
-                raridade = kit.raridade
-                if raridade not in kits_por_raridade:
-                    kits_por_raridade[raridade] = []
-                kits_por_raridade[raridade].append((nome, kit))
+                # Suportar tanto objetos quanto dicionários
+                if isinstance(kit, dict):
+                    raridade = kit.get('raridade', 'Comum')
+                else:
+                    raridade = getattr(kit, 'raridade', 'Comum')
+                
+                kits_por_raridade.setdefault(raridade, []).append((nome, kit))
 
-            # Mostrar kits organizados por raridade
+            # Mostrar por raridade
             for raridade in sorted(kits_por_raridade.keys()):
-                # Cabeçalho da raridade
+                # Cabeçalho
                 raridade_frame = tk.Frame(inner_frame, bg="#2a2647", relief="solid", bd=1)
                 raridade_frame.pack(fill="x", pady=(10, 2), padx=5)
                 
                 raridade_label = tk.Label(raridade_frame, text=f"Raridade: {raridade}", 
                                         fg="yellow", bg="#2a2647", font=("Arial", 12, "bold"))
-                raridade_label.pack(pady=3)
+                raridade_label.pack(pady=3, anchor="w", padx=5)
 
                 # Kits desta raridade
                 for nome_kit, kit_obj in kits_por_raridade[raridade]:
-                    kit_frame = tk.Frame(inner_frame, bg="#1a0869", height=80)
+                    kit_frame = tk.Frame(inner_frame, bg="#2a2647")
                     kit_frame.pack(fill="x", pady=2, padx=5)
 
-                    # Contar itens no kit
-                    itens_kit = kit_obj.listar_itens()
-                    total_itens = sum(item["quantidade"] for item in itens_kit)
-                    tipos_itens = len(itens_kit)
+                    # Contar itens - suportar dict e objeto
+                    if isinstance(kit_obj, dict):
+                        itens_kit = kit_obj.get('itens', [])
+                        if isinstance(itens_kit, dict):
+                            total_itens = sum(item.get('quantidade', 0) for item in itens_kit.values())
+                            tipos_itens = len(itens_kit)
+                        else:
+                            total_itens = sum(item.get('quantidade', 0) for item in itens_kit)
+                            tipos_itens = len(itens_kit)
+                    else:
+                        itens_kit = kit_obj.listar_itens()
+                        total_itens = sum(item["quantidade"] for item in itens_kit)
+                        tipos_itens = len(itens_kit)
 
-                    # Botão principal do kit - abre o popup de visualização
-                    kit_button = tk.Button(kit_frame,
+                    # Botão principal - agora expande corretamente
+                    kit_button = tk.Button(
+                        kit_frame,
                         text=f"{nome_kit}\n{tipos_itens} tipos de itens ({total_itens} total)",
                         bg="#1a0869", fg="white", font=("Arial", 11), anchor="w", justify="left",
-                        command=lambda k=kit_obj: self.show_kit_contents(k), wraplength=210, height=3)
+                        command=lambda k=kit_obj: self.show_kit_contents(k),
+                        wraplength=400,
+                        height=3
+                    )
                     kit_button.pack(side="left", fill="x", expand=True, padx=(0, 5), pady=2)
 
-                    # Frame para botão de ação
-                    actions_frame = tk.Frame(kit_frame, bg="#1a0869")
-                    actions_frame.pack(side="right", padx=5)
-
-                    # Botão de apagar kit
-                    delete_button = tk.Button(actions_frame, text="Apagar", bg="#DC143C", fg="white", 
-                                        font=("Arial", 9, "bold"), width=9,
-                                        command=lambda k=nome_kit: self.delete_kit(k))
-                    delete_button.pack(pady=1)
+                    # Botão de apagar - fixo à direita
+                    delete_button = tk.Button(
+                        kit_frame, text="Apagar", bg="#DC143C", fg="white", 
+                        font=("Arial", 9, "bold"), width=10,
+                        command=lambda k=nome_kit: self.delete_kit(k)
+                    )
+                    delete_button.pack(side="right", padx=5)
 
     def show_kit_contents(self, kit_obj):
         """Mostra popup com conteúdo do kit e opção de dar kit"""
@@ -1007,7 +1197,16 @@ class CharacterSelectScreen(tk.Frame):
             parent = self.winfo_toplevel() if hasattr(self, 'winfo_toplevel') else None
         
         popup = tk.Toplevel(parent)
-        popup.title(f"Conteúdo do Kit: {kit_obj.nome}")
+        
+        # Suportar dict e objeto para o nome
+        if isinstance(kit_obj, dict):
+            kit_nome = kit_obj.get('nome', 'Kit sem nome')
+            kit_raridade = kit_obj.get('raridade', 'Comum')
+        else:
+            kit_nome = getattr(kit_obj, 'nome', 'Kit sem nome')
+            kit_raridade = getattr(kit_obj, 'raridade', 'Comum')
+        
+        popup.title(f"Conteúdo do Kit: {kit_nome}")
         popup.geometry("450x600")
         popup.configure(bg="#1a0869")
         popup.resizable(False, False)
@@ -1018,7 +1217,7 @@ class CharacterSelectScreen(tk.Frame):
         popup.grab_set()
         
         # Título
-        title_label = tk.Label(popup, text=f"Kit: {kit_obj.nome}", 
+        title_label = tk.Label(popup, text=f"Kit: {kit_nome}", 
                             fg="white", bg="#1a0869", font=("Arial", 16, "bold"))
         title_label.pack(pady=10)
         
@@ -1026,7 +1225,7 @@ class CharacterSelectScreen(tk.Frame):
         info_frame = tk.Frame(popup, bg="#2a2647", relief="solid", bd=1)
         info_frame.pack(pady=5, padx=15, fill="x")
         
-        kit_info = tk.Label(info_frame, text=f"Raridade: {kit_obj.raridade}", 
+        kit_info = tk.Label(info_frame, text=f"Raridade: {kit_raridade}", 
                         fg="yellow", bg="#2a2647", font=("Arial", 12, "bold"))
         kit_info.pack(pady=5)
         
@@ -1048,8 +1247,15 @@ class CharacterSelectScreen(tk.Frame):
         inner_frame = tk.Frame(canvas, bg="#1a0869")
         canvas.create_window((0, 0), window=inner_frame, anchor='nw')
         
-        # Mostrar itens do kit
-        itens_kit = kit_obj.listar_itens()
+        # Mostrar itens do kit - suportar dict e objeto
+        if isinstance(kit_obj, dict):
+            itens_kit = kit_obj.get('itens', [])
+            if isinstance(itens_kit, dict):
+                itens_kit = [{'nome': nome, 'quantidade': dados.get('quantidade', 0)} 
+                            for nome, dados in itens_kit.items()]
+        else:
+            itens_kit = kit_obj.listar_itens()
+        
         if not itens_kit:
             empty_label = tk.Label(inner_frame, text="Kit vazio", 
                                 fg="gray", bg="#1a0869", font=("Arial", 12, "italic"))
@@ -1059,8 +1265,11 @@ class CharacterSelectScreen(tk.Frame):
                 item_frame = tk.Frame(inner_frame, bg="#2a2647", relief="solid", bd=1)
                 item_frame.pack(fill="x", pady=2, padx=5)
                 
+                item_nome = item.get('nome', 'Item sem nome')
+                item_qtd = item.get('quantidade', 0)
+                
                 item_label = tk.Label(item_frame, 
-                                    text=f"• {item['nome']} - Quantidade: {item['quantidade']}", 
+                                    text=f"• {item_nome} - Quantidade: {item_qtd}", 
                                     fg="white", bg="#2a2647", font=("Arial", 11), anchor="w")
                 item_label.pack(pady=8, padx=15, fill="x")
         
@@ -1403,7 +1612,6 @@ class CharacterSelectScreen(tk.Frame):
                     
             except Exception as e:
                 messagebox.showerror("Erro", f"Erro ao apagar o kit:\n{str(e)}")
-
 ### --- Kits --- ###
 
 # --- Refresh --- #
@@ -1556,10 +1764,12 @@ class CharacterDetailsScreen(tk.Frame):
         self.frame_AC = tk.Frame(self, bg='#1a0869', bd=2, relief='ridge')
         self.frame_AC.place(x=50, y=460, width=200, height=80)
 
-        self.label_bloqueio= tk.Label(self.frame_AC, bg='#1a0869', fg="white", font=("Arial", 16))
+        self.label_bloqueio= tk.Label(self.frame_AC, bg='#1a0869', fg="white", font=("Arial", 12))
         self.label_bloqueio.pack(pady=2)
-        self.label_esquiva= tk.Label(self.frame_AC, bg='#1a0869', fg="white", font=("Arial", 16))
+        self.label_esquiva= tk.Label(self.frame_AC, bg='#1a0869', fg="white", font=("Arial", 12))
         self.label_esquiva.pack(pady=2)
+        self.label_percepcao= tk.Label(self.frame_AC, bg='#1a0869', fg="white", font=("Arial", 12))
+        self.label_percepcao.pack(pady=2)
         ## Frame da AC ##
 
         ## Frame proficiencias ##
@@ -1690,6 +1900,7 @@ class CharacterDetailsScreen(tk.Frame):
             self.label_mobilidade.config(text=f"Mobilidade: {self.character.mobilidade}m")
             self.label_bloqueio.config(text=f"Bloqueio: {self.character.bloqueio}")
             self.label_esquiva.config(text=f"Esquiva: {self.character.esquiva}")
+            self.label_percepcao.config(text=f"Percepção: {self.character.percepcao}")
         except Exception as e:
             print("Erro no refresh das informações básicas:", e)
 
@@ -2069,9 +2280,6 @@ class CharacterDetailsScreen(tk.Frame):
                                                     quantidade=quantidade, 
                                                     operacao="adicionar")
                 self.refresh()
-                
-                # Feedback para o usuário
-                tk.messagebox.showinfo("Sucesso", f"'{nome_item}' adicionado ao inventário!")
                 
             except Exception as e:
                 tk.messagebox.showerror("Erro", f"Erro ao adicionar item: {str(e)}")
@@ -3004,14 +3212,14 @@ class CharacterDetailsScreen(tk.Frame):
         rolar_btn.pack(pady=10)
     
     def abrir_popup_efeitos(self):
-        """Abre popup para visualizar e gerenciar efeitos do personagem"""
+        """Abre popup para visualizar e gerenciar buffs/debuffs do personagem"""
         if not hasattr(self, 'character') or not self.character:
             messagebox.showwarning("Aviso", "Nenhum personagem selecionado!")
             return
         
         popup = tk.Toplevel(self)
-        popup.title("Efeitos do Personagem")
-        popup.geometry("600x500")
+        popup.title("Buffs e Debuffs")
+        popup.geometry("700x600")
         popup.configure(bg='#130f26')
         popup.resizable(False, False)
         
@@ -3030,7 +3238,7 @@ class CharacterDetailsScreen(tk.Frame):
         linha1.pack(fill="x", padx=5, pady=2)
         
         tk.Label(linha1, text="Nome:", bg='#1a0869', fg="white").pack(side="left")
-        entry_nome = tk.Entry(linha1, width=20)
+        entry_nome = tk.Entry(linha1, width=25)
         entry_nome.pack(side="left", padx=5)
         
         tk.Label(linha1, text="Tipo:", bg='#1a0869', fg="white").pack(side="left", padx=(20, 0))
@@ -3038,174 +3246,31 @@ class CharacterDetailsScreen(tk.Frame):
         tk.Radiobutton(linha1, text="Buff", variable=var_tipo, value="buff", bg='#1a0869', fg="white", selectcolor='#1a0869').pack(side="left", padx=5)
         tk.Radiobutton(linha1, text="Debuff", variable=var_tipo, value="debuff", bg='#1a0869', fg="white", selectcolor='#1a0869').pack(side="left")
         
-        # Linha 2: Valor
+        # Linha 2: Duração
         linha2 = tk.Frame(frame_adicionar, bg='#1a0869')
         linha2.pack(fill="x", padx=5, pady=2)
         
-        tk.Label(linha2, text="Valor:", bg='#1a0869', fg="white").pack(side="left")
-        entry_valor = tk.Entry(linha2, width=10)
-        entry_valor.pack(side="left", padx=5)
+        tk.Label(linha2, text="Duração:", bg='#1a0869', fg="white").pack(side="left")
+        entry_duracao = tk.Entry(linha2, width=15)
+        entry_duracao.pack(side="left", padx=5)
+        entry_duracao.insert(0, "1 turno")
         
-        # Linha 3: Descrição
-        linha3 = tk.Frame(frame_adicionar, bg='#1a0869')
-        linha3.pack(fill="x", padx=5, pady=2)
+        var_permanente = tk.BooleanVar(value=False)
         
-        tk.Label(linha3, text="Descrição:", bg='#1a0869', fg="white").pack(anchor="w")
-        entry_descricao = tk.Entry(linha3, width=60)
-        entry_descricao.pack(fill="x", pady=2)
+        def toggle_duracao():
+            if var_permanente.get():
+                entry_duracao.delete(0, tk.END)
+                entry_duracao.insert(0, "permanente")
+                entry_duracao.config(state='disabled')
+            else:
+                entry_duracao.config(state='normal')
+                entry_duracao.delete(0, tk.END)
+                entry_duracao.insert(0, "1 turno")
         
-        # Botão adicionar
-        def adicionar_efeito():
-            nome = entry_nome.get().strip()
-            descricao = entry_descricao.get().strip()
-            valor = entry_valor.get().strip()
-            tipo = var_tipo.get()
-            
-            if not nome or not descricao:
-                messagebox.showwarning("Aviso", "Nome e descrição são obrigatórios!")
-                return
-            
-            # Tenta converter valor para número, se não conseguir mantém como string
-            try:
-                valor = float(valor) if '.' in valor else int(valor)
-            except ValueError:
-                if not valor:
-                    valor = 0
-            
-            self.character.efeitos.adicionar_efeito(nome, descricao, valor, tipo)
-            
-            # Limpa campos
-            entry_nome.delete(0, tk.END)
-            entry_descricao.delete(0, tk.END)
-            entry_valor.delete(0, tk.END)
-            
-            # Atualiza lista
-            atualizar_lista()
-            
-            # Atualiza a tela principal se os efeitos afetarem stats
-            self.refresh_info_basica()
+        tk.Checkbutton(linha2, text="Permanente", variable=var_permanente, bg='#1a0869', fg="white", selectcolor='#1a0869', 
+                    command=toggle_duracao).pack(side="left", padx=10)
         
-        tk.Button(frame_adicionar, text="Adicionar", command=adicionar_efeito, bg="#115c11", fg="white", font=("Arial", 10)).pack(pady=5)
-        
-        # Frame para lista de efeitos
-        frame_lista = tk.Frame(popup, bg='#130f26')
-        frame_lista.pack(pady=10, padx=20, fill="both", expand=True)
-        
-        # Canvas com scrollbar para lista
-        canvas = tk.Canvas(frame_lista, bg='#1a0869', highlightthickness=0)
-        scrollbar = tk.Scrollbar(frame_lista, orient="vertical", command=canvas.yview)
-        scrollable_frame = tk.Frame(canvas, bg='#1a0869')
-        
-        scrollable_frame.bind("<Configure>", lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
-        canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
-        canvas.configure(yscrollcommand=scrollbar.set)
-        
-        canvas.pack(side="left", fill="both", expand=True)
-        scrollbar.pack(side="right", fill="y")
-        
-        def atualizar_lista():
-            # Limpa lista atual
-            for widget in scrollable_frame.winfo_children():
-                widget.destroy()
-            
-            # Adiciona efeitos
-            efeitos = self.character.efeitos.listar_efeitos()
-            if not efeitos:
-                tk.Label(scrollable_frame, text="Nenhum efeito ativo", bg='#1a0869', fg="gray", font=("Arial", 12)).pack(pady=20)
-                return
-            
-            for efeito in efeitos:
-                # Frame para cada efeito
-                frame_efeito = tk.Frame(scrollable_frame, bg='#2a1f4f', bd=1, relief='solid')
-                frame_efeito.pack(fill="x", padx=5, pady=2)
-                
-                # Cor baseada no tipo
-                cor_tipo = "#115c11" if efeito.tipo == "buff" else "#8c1d1d"
-                simbolo = "+" if efeito.tipo == "buff" else "-"
-                
-                # Header do efeito
-                header = tk.Frame(frame_efeito, bg=cor_tipo)
-                header.pack(fill="x")
-                
-                tk.Label(header, text=f"[{simbolo}] {efeito.nome}", font=("Arial", 12, "bold"), bg=cor_tipo, fg="white").pack(side="left", padx=5, pady=2)
-                tk.Label(header, text=f"Valor: {efeito.valor}", font=("Arial", 10), bg=cor_tipo, fg="white").pack(side="right", padx=5, pady=2)
-                
-                # Descrição
-                tk.Label(frame_efeito, text=efeito.descricao, font=("Arial", 10), bg='#2a1f4f', fg="white", wraplength=500, justify="left").pack(anchor="w", padx=5, pady=2)
-                
-                # Botão remover
-                tk.Button(frame_efeito, text="Remover", command=lambda n=efeito.nome: remover_efeito(n), bg="#8c1d1d", fg="white", font=("Arial", 9)).pack(anchor="e", padx=5, pady=2)
-        
-        def remover_efeito(nome):
-            self.character.efeitos.remover_efeito(nome)
-            atualizar_lista()
-            # Atualiza a tela principal se os efeitos afetarem stats
-            self.refresh_info_basica()
-        
-        # Botão para limpar todos os efeitos
-        frame_botoes = tk.Frame(popup, bg='#130f26')
-        frame_botoes.pack(pady=10)
-        
-        def limpar_todos():
-            self.character.efeitos.limpar_efeitos()
-            atualizar_lista()
-            # Atualiza a tela principal se os efeitos afetarem stats
-            self.refresh_info_basica()
-        
-        tk.Button(frame_botoes, text="Limpar Todos", command=limpar_todos, bg="#8c1d1d", fg="white", font=("Arial", 12)).pack(side="left", padx=10)
-        tk.Button(frame_botoes, text="Fechar", command=popup.destroy, bg="#1a0869", fg="white", font=("Arial", 12)).pack(side="left", padx=10)
-        
-        # Carrega lista inicial
-        atualizar_lista()
-        
-        # Centraliza popup
-        popup.transient(self)
-        popup.grab_set()
-
-    def abrir_popup_habilidades(self):
-        """Abre popup para visualizar e gerenciar habilidades/poderes do personagem"""
-        if not hasattr(self, 'character') or not self.character:
-            messagebox.showwarning("Aviso", "Nenhum personagem selecionado!")
-            return
-        
-        popup = tk.Toplevel(self)
-        popup.title("Habilidades e Poderes")
-        popup.geometry("650x600")
-        popup.configure(bg='#130f26')
-        popup.resizable(False, False)
-        
-        # Título
-        title_label = tk.Label(popup, text="Habilidades e Poderes", font=("Arial", 18, "bold"), bg="#1a0869", fg="white")
-        title_label.pack(pady=10, fill="x")
-        
-        # Frame para adicionar nova habilidade
-        frame_adicionar = tk.Frame(popup, bg='#1a0869', bd=2, relief='ridge')
-        frame_adicionar.pack(pady=10, padx=20, fill="x")
-        
-        tk.Label(frame_adicionar, text="Adicionar Habilidade:", font=("Arial", 12, "bold"), bg='#1a0869', fg="white").pack(anchor="w", padx=5, pady=5)
-        
-        # Linha 1: Nome e Gasto de Energia
-        linha1 = tk.Frame(frame_adicionar, bg='#1a0869')
-        linha1.pack(fill="x", padx=5, pady=2)
-        
-        tk.Label(linha1, text="Nome:", bg='#1a0869', fg="white").pack(side="left")
-        entry_nome = tk.Entry(linha1, width=25)
-        entry_nome.pack(side="left", padx=5)
-        
-        tk.Label(linha1, text="Custo Energia:", bg='#1a0869', fg="white").pack(side="left", padx=(20, 0))
-        entry_energia = tk.Entry(linha1, width=5)
-        entry_energia.pack(side="left", padx=5)
-        entry_energia.insert(0, "0")
-        
-        # Linha 2: Descrição
-        linha2 = tk.Frame(frame_adicionar, bg='#1a0869')
-        linha2.pack(fill="x", padx=5, pady=2)
-        
-        tk.Label(linha2, text="Descrição:", bg='#1a0869', fg="white").pack(anchor="w")
-        entry_descricao = tk.Entry(linha2, width=70)
-        entry_descricao.pack(fill="x", pady=2)
-        
-        # Linha 3: Efeito
+        # Linha 3: Efeito Mecânico
         linha3 = tk.Frame(frame_adicionar, bg='#1a0869')
         linha3.pack(fill="x", padx=5, pady=2)
         
@@ -3213,55 +3278,62 @@ class CharacterDetailsScreen(tk.Frame):
         entry_efeito = tk.Entry(linha3, width=70)
         entry_efeito.pack(fill="x", pady=2)
         
+        # Linha 4: Descrição
+        linha4 = tk.Frame(frame_adicionar, bg='#1a0869')
+        linha4.pack(fill="x", padx=5, pady=2)
+        
+        tk.Label(linha4, text="Descrição:", bg='#1a0869', fg="white").pack(anchor="w")
+        entry_descricao = tk.Entry(linha4, width=70)
+        entry_descricao.pack(fill="x", pady=2)
+        
         # Botão adicionar
-        def adicionar_habilidade():
+        def adicionar_efeito():
             nome = entry_nome.get().strip()
-            descricao = entry_descricao.get().strip()
             efeito = entry_efeito.get().strip()
-            energia = entry_energia.get().strip()
+            descricao = entry_descricao.get().strip()
+            duracao = entry_duracao.get().strip()
+            tipo = var_tipo.get()
             
-            if not nome or not descricao or not efeito:
-                messagebox.showwarning("Aviso", "Nome, descrição e efeito são obrigatórios!")
+            if not nome or not efeito or not descricao:
+                messagebox.showwarning("Aviso", "Nome, efeito e descrição são obrigatórios!")
                 return
             
-            # Tenta converter energia para número
-            try:
-                energia = int(energia)
-            except ValueError:
-                energia = 0
+            if not duracao:
+                duracao = "1 turno"
             
-            if energia < 0:
-                energia = 0
-            
-            self.character.habilidades.adicionar_habilidade(nome, descricao, efeito, energia)
+            self.character.buffs_debuffs.adicionar_efeito(nome, duracao, efeito, descricao, tipo)
             
             # Limpa campos
             entry_nome.delete(0, tk.END)
-            entry_descricao.delete(0, tk.END)
             entry_efeito.delete(0, tk.END)
-            entry_energia.delete(0, tk.END)
-            entry_energia.insert(0, "0")
+            entry_descricao.delete(0, tk.END)
+            entry_duracao.delete(0, tk.END)
+            entry_duracao.insert(0, "1 turno")
+            var_permanente.set(False)
+            entry_duracao.config(state='normal')
             
-            # Atualiza lista
             atualizar_lista()
+            self.refresh_info_basica()
         
-        tk.Button(frame_adicionar, text="Adicionar", command=adicionar_habilidade, bg="#115c11", fg="white", font=("Arial", 10)).pack(pady=5)
+        tk.Button(frame_adicionar, text="Adicionar", command=adicionar_efeito, bg="#115c11", fg="white", font=("Arial", 10)).pack(pady=5)
         
-        # Frame para abas (Todas, Ativas, Passivas)
+        # Frame para abas
         frame_abas = tk.Frame(popup, bg='#130f26')
         frame_abas.pack(pady=5)
         
-        var_aba = tk.StringVar(value="todas")
+        var_aba = tk.StringVar(value="todos")
         
-        tk.Radiobutton(frame_abas, text="Todas", variable=var_aba, value="todas", bg='#130f26', fg="white", selectcolor='#1a0869', command=lambda: atualizar_lista()).pack(side="left", padx=10)
-        tk.Radiobutton(frame_abas, text="Ativas", variable=var_aba, value="ativas", bg='#130f26', fg="white", selectcolor='#1a0869', command=lambda: atualizar_lista()).pack(side="left", padx=10)
-        tk.Radiobutton(frame_abas, text="Passivas", variable=var_aba, value="passivas", bg='#130f26', fg="white", selectcolor='#1a0869', command=lambda: atualizar_lista()).pack(side="left", padx=10)
+        tk.Radiobutton(frame_abas, text="Todos", variable=var_aba, value="todos", bg='#130f26', fg="white", selectcolor='#1a0869', command=lambda: atualizar_lista()).pack(side="left", padx=10)
+        tk.Radiobutton(frame_abas, text="Buffs", variable=var_aba, value="buffs", bg='#130f26', fg="white", selectcolor='#1a0869', command=lambda: atualizar_lista()).pack(side="left", padx=10)
+        tk.Radiobutton(frame_abas, text="Debuffs", variable=var_aba, value="debuffs", bg='#130f26', fg="white", selectcolor='#1a0869', command=lambda: atualizar_lista()).pack(side="left", padx=10)
+        tk.Radiobutton(frame_abas, text="Permanentes", variable=var_aba, value="permanentes", bg='#130f26', fg="white", selectcolor='#1a0869', command=lambda: atualizar_lista()).pack(side="left", padx=10)
+        tk.Radiobutton(frame_abas, text="Temporários", variable=var_aba, value="temporarios", bg='#130f26', fg="white", selectcolor='#1a0869', command=lambda: atualizar_lista()).pack(side="left", padx=10)
         
-        # Frame para lista de habilidades
+        # Frame para lista de efeitos
         frame_lista = tk.Frame(popup, bg='#130f26')
         frame_lista.pack(pady=10, padx=20, fill="both", expand=True)
         
-        # Canvas com scrollbar para lista
+        # Canvas com scrollbar
         canvas = tk.Canvas(frame_lista, bg='#1a0869', highlightthickness=0)
         scrollbar = tk.Scrollbar(frame_lista, orient="vertical", command=canvas.yview)
         scrollable_frame = tk.Frame(canvas, bg='#1a0869')
@@ -3274,77 +3346,286 @@ class CharacterDetailsScreen(tk.Frame):
         scrollbar.pack(side="right", fill="y")
         
         def atualizar_lista():
-            # Limpa lista atual
             for widget in scrollable_frame.winfo_children():
                 widget.destroy()
             
-            # Obtém habilidades baseado na aba selecionada
+            # Obtém efeitos baseado na aba
             aba_atual = var_aba.get()
-            if aba_atual == "ativas":
-                habilidades = self.character.habilidades.listar_ativas()
-            elif aba_atual == "passivas":
-                habilidades = self.character.habilidades.listar_passivas()
+            if aba_atual == "buffs":
+                efeitos = self.character.buffs_debuffs.listar_buffs()
+            elif aba_atual == "debuffs":
+                efeitos = self.character.buffs_debuffs.listar_debuffs()
+            elif aba_atual == "permanentes":
+                efeitos = self.character.buffs_debuffs.listar_permanentes()
+            elif aba_atual == "temporarios":
+                efeitos = self.character.buffs_debuffs.listar_temporarios()
             else:
-                habilidades = self.character.habilidades.listar_habilidades()
+                efeitos = self.character.buffs_debuffs.listar_efeitos()
             
-            if not habilidades:
-                texto = "Nenhuma habilidade cadastrada"
-                if aba_atual == "ativas":
-                    texto = "Nenhuma habilidade ativa cadastrada"
-                elif aba_atual == "passivas":
-                    texto = "Nenhuma habilidade passiva cadastrada"
-                
-                tk.Label(scrollable_frame, text=texto, bg='#1a0869', fg="gray", font=("Arial", 12)).pack(pady=20)
+            if not efeitos:
+                tk.Label(scrollable_frame, text="Nenhum efeito", bg='#1a0869', fg="gray", font=("Arial", 12)).pack(pady=20)
                 return
             
-            for habilidade in habilidades:
-                # Frame para cada habilidade
-                frame_habilidade = tk.Frame(scrollable_frame, bg='#2a1f4f', bd=1, relief='solid')
-                frame_habilidade.pack(fill="x", padx=5, pady=3)
+            for efeito in efeitos:
+                frame_efeito = tk.Frame(scrollable_frame, bg='#2a1f4f', bd=1, relief='solid')
+                frame_efeito.pack(fill="x", padx=5, pady=2)
                 
-                # Cor baseada no tipo
-                cor_tipo = "#4a148c" if habilidade.tipo == "passivo" else "#1565c0"
-                simbolo = "🔮" if habilidade.tipo == "passivo" else "⚡"
+                cor_tipo = "#115c11" if efeito.tipo == "buff" else "#8c1d1d"
+                simbolo = "✨" if efeito.tipo == "buff" else "💀"
                 
-                # Header da habilidade
-                header = tk.Frame(frame_habilidade, bg=cor_tipo)
+                # Header
+                header = tk.Frame(frame_efeito, bg=cor_tipo)
                 header.pack(fill="x")
                 
-                tk.Label(header, text=f"{simbolo} {habilidade.nome}", font=("Arial", 12, "bold"), bg=cor_tipo, fg="white").pack(side="left", padx=5, pady=2)
+                tk.Label(header, text=f"{simbolo} {efeito.nome}", font=("Arial", 12, "bold"), bg=cor_tipo, fg="white").pack(side="left", padx=5, pady=2)
                 
-                custo_text = "Passivo" if habilidade.gasto_energia == 0 else f"Custo: {habilidade.gasto_energia} PE"
-                tk.Label(header, text=custo_text, font=("Arial", 10), bg=cor_tipo, fg="white").pack(side="right", padx=5, pady=2)
+                # Exibe duração como texto descritivo
+                duracao_text = str(efeito.duracao)
+                tk.Label(header, text=duracao_text, font=("Arial", 10), bg=cor_tipo, fg="white").pack(side="right", padx=5, pady=2)
                 
                 # Descrição
-                tk.Label(frame_habilidade, text=f"Descrição: {habilidade.descricao}", font=("Arial", 10), bg='#2a1f4f', fg="white", wraplength=550, justify="left").pack(anchor="w", padx=5, pady=2)
+                tk.Label(frame_efeito, text=f"Descrição: {efeito.descricao}", font=("Arial", 10), bg='#2a1f4f', fg="white", wraplength=600, justify="left").pack(anchor="w", padx=5, pady=2)
                 
-                # Efeito
-                tk.Label(frame_habilidade, text=f"Efeito: {habilidade.efeito}", font=("Arial", 10, "bold"), bg='#2a1f4f', fg="#90caf9", wraplength=550, justify="left").pack(anchor="w", padx=5, pady=2)
+                # Efeito mecânico
+                tk.Label(frame_efeito, text=f"Efeito: {efeito.efeito}", font=("Arial", 10, "bold"), bg='#2a1f4f', fg="#90caf9", wraplength=600, justify="left").pack(anchor="w", padx=5, pady=2)
                 
                 # Botão remover
-                tk.Button(frame_habilidade, text="Remover", command=lambda n=habilidade.nome: remover_habilidade(n), bg="#8c1d1d", fg="white", font=("Arial", 9)).pack(anchor="e", padx=5, pady=2)
+                tk.Button(frame_efeito, text="Remover", command=lambda n=efeito.nome: remover_efeito(n), bg="#8c1d1d", fg="white", font=("Arial", 9)).pack(anchor="e", padx=5, pady=2)
         
-        def remover_habilidade(nome):
-            self.character.habilidades.remover_habilidade(nome)
+        def remover_efeito(nome):
+            self.character.buffs_debuffs.remover_efeito(nome)
             atualizar_lista()
+            self.refresh_info_basica()
         
-        # Botão para limpar todas as habilidades
+        # Botões inferiores
         frame_botoes = tk.Frame(popup, bg='#130f26')
         frame_botoes.pack(pady=10)
         
-        def limpar_todas():
-            resultado = messagebox.askyesno("Confirmação", "Tem certeza que deseja remover todas as habilidades?")
+        def limpar_temporarios():
+            self.character.buffs_debuffs.limpar_temporarios()
+            atualizar_lista()
+            self.refresh_info_basica()
+        
+        def limpar_todos():
+            self.character.buffs_debuffs.limpar_efeitos()
+            atualizar_lista()
+            self.refresh_info_basica()
+        
+        tk.Button(frame_botoes, text="Limpar Temporários", command=limpar_temporarios, bg="#d97706", fg="white", font=("Arial", 11)).pack(side="left", padx=5)
+        tk.Button(frame_botoes, text="Limpar Todos", command=limpar_todos, bg="#8c1d1d", fg="white", font=("Arial", 11)).pack(side="left", padx=5)
+        tk.Button(frame_botoes, text="Fechar", command=popup.destroy, bg="#1a0869", fg="white", font=("Arial", 11)).pack(side="left", padx=5)
+        
+        atualizar_lista()
+        popup.transient(self)
+        popup.grab_set()
+
+    def abrir_popup_habilidades(self):
+        """Abre popup para visualizar e gerenciar habilidades e poderes do personagem"""
+        if not hasattr(self, 'character') or not self.character:
+            messagebox.showwarning("Aviso", "Nenhum personagem selecionado!")
+            return
+        
+        popup = tk.Toplevel(self)
+        popup.title("Habilidades e Poderes")
+        popup.geometry("750x650")
+        popup.configure(bg='#130f26')
+        popup.resizable(False, False)
+        
+        # Título
+        title_label = tk.Label(popup, text="Habilidades e Poderes", font=("Arial", 18, "bold"), bg="#1a0869", fg="white")
+        title_label.pack(pady=10, fill="x")
+        
+        # Frame para selecionar categoria (Habilidade ou Poder)
+        frame_categoria = tk.Frame(popup, bg='#130f26')
+        frame_categoria.pack(pady=5)
+        
+        var_categoria = tk.StringVar(value="habilidade")
+        tk.Radiobutton(frame_categoria, text="Habilidade ⚔️", variable=var_categoria, value="habilidade", bg='#130f26', fg="white", selectcolor='#1a0869', font=("Arial", 12), command=lambda: atualizar_lista()).pack(side="left", padx=15)
+        tk.Radiobutton(frame_categoria, text="Poder 🔮", variable=var_categoria, value="poder", bg='#130f26', fg="white", selectcolor='#1a0869', font=("Arial", 12), command=lambda: atualizar_lista()).pack(side="left", padx=15)
+        
+        # Frame para adicionar
+        frame_adicionar = tk.Frame(popup, bg='#1a0869', bd=2, relief='ridge')
+        frame_adicionar.pack(pady=10, padx=20, fill="x")
+        
+        tk.Label(frame_adicionar, text="Adicionar:", font=("Arial", 12, "bold"), bg='#1a0869', fg="white").pack(anchor="w", padx=5, pady=5)
+        
+        # Linha 1: Nome, Tipo e Custo
+        linha1 = tk.Frame(frame_adicionar, bg='#1a0869')
+        linha1.pack(fill="x", padx=5, pady=2)
+        
+        tk.Label(linha1, text="Nome:", bg='#1a0869', fg="white").pack(side="left")
+        entry_nome = tk.Entry(linha1, width=25)
+        entry_nome.pack(side="left", padx=5)
+        
+        tk.Label(linha1, text="Tipo:", bg='#1a0869', fg="white").pack(side="left", padx=(10, 0))
+        var_tipo = tk.StringVar(value="ativo")
+        tk.Radiobutton(linha1, text="Ativo", variable=var_tipo, value="ativo", bg='#1a0869', fg="white", selectcolor='#1a0869').pack(side="left", padx=3)
+        tk.Radiobutton(linha1, text="Passivo", variable=var_tipo, value="passivo", bg='#1a0869', fg="white", selectcolor='#1a0869').pack(side="left", padx=3)
+        
+        tk.Label(linha1, text="Custo PE:", bg='#1a0869', fg="white").pack(side="left", padx=(10, 0))
+        entry_custo = tk.Entry(linha1, width=5)
+        entry_custo.pack(side="left", padx=5)
+        entry_custo.insert(0, "0")
+        
+        # Linha 2: Efeitos
+        linha2 = tk.Frame(frame_adicionar, bg='#1a0869')
+        linha2.pack(fill="x", padx=5, pady=2)
+        
+        tk.Label(linha2, text="Efeitos:", bg='#1a0869', fg="white").pack(anchor="w")
+        entry_efeitos = tk.Entry(linha2, width=80)
+        entry_efeitos.pack(fill="x", pady=2)
+        
+        # Linha 3: Descrição
+        linha3 = tk.Frame(frame_adicionar, bg='#1a0869')
+        linha3.pack(fill="x", padx=5, pady=2)
+        
+        tk.Label(linha3, text="Descrição:", bg='#1a0869', fg="white").pack(anchor="w")
+        entry_descricao = tk.Entry(linha3, width=80)
+        entry_descricao.pack(fill="x", pady=2)
+        
+        # Botão adicionar
+        def adicionar_item():
+            nome = entry_nome.get().strip()
+            tipo = var_tipo.get()
+            custo_str = entry_custo.get().strip()
+            efeitos = entry_efeitos.get().strip()
+            descricao = entry_descricao.get().strip()
+            categoria = var_categoria.get()
+            
+            if not nome or not efeitos or not descricao:
+                messagebox.showwarning("Aviso", "Nome, efeitos e descrição são obrigatórios!")
+                return
+            
+            try:
+                custo = int(custo_str)
+                if custo < 0:
+                    custo = 0
+            except ValueError:
+                messagebox.showwarning("Aviso", "Custo deve ser um número inteiro!")
+                return
+            
+            if categoria == "habilidade":
+                self.character.habilidades.adicionar_habilidade(nome, tipo, custo, efeitos, descricao)
+            else:
+                self.character.poderes.adicionar_poder(nome, tipo, custo, efeitos, descricao)
+            
+            # Limpa campos
+            entry_nome.delete(0, tk.END)
+            entry_efeitos.delete(0, tk.END)
+            entry_descricao.delete(0, tk.END)
+            entry_custo.delete(0, tk.END)
+            entry_custo.insert(0, "0")
+            
+            atualizar_lista()
+        
+        tk.Button(frame_adicionar, text="Adicionar", command=adicionar_item, bg="#115c11", fg="white", font=("Arial", 10)).pack(pady=5)
+        
+        # Frame para filtros
+        frame_filtros = tk.Frame(popup, bg='#130f26')
+        frame_filtros.pack(pady=5)
+        
+        var_filtro = tk.StringVar(value="todos")
+        
+        tk.Radiobutton(frame_filtros, text="Todos", variable=var_filtro, value="todos", bg='#130f26', fg="white", selectcolor='#1a0869', command=lambda: atualizar_lista()).pack(side="left", padx=8)
+        tk.Radiobutton(frame_filtros, text="Ativos", variable=var_filtro, value="ativos", bg='#130f26', fg="white", selectcolor='#1a0869', command=lambda: atualizar_lista()).pack(side="left", padx=8)
+        tk.Radiobutton(frame_filtros, text="Passivos", variable=var_filtro, value="passivos", bg='#130f26', fg="white", selectcolor='#1a0869', command=lambda: atualizar_lista()).pack(side="left", padx=8)
+        
+        # Frame para lista
+        frame_lista = tk.Frame(popup, bg='#130f26')
+        frame_lista.pack(pady=10, padx=20, fill="both", expand=True)
+        
+        # Canvas com scrollbar
+        canvas = tk.Canvas(frame_lista, bg='#1a0869', highlightthickness=0)
+        scrollbar = tk.Scrollbar(frame_lista, orient="vertical", command=canvas.yview)
+        scrollable_frame = tk.Frame(canvas, bg='#1a0869')
+        
+        scrollable_frame.bind("<Configure>", lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
+        canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
+        canvas.configure(yscrollcommand=scrollbar.set)
+        
+        canvas.pack(side="left", fill="both", expand=True)
+        scrollbar.pack(side="right", fill="y")
+        
+        def atualizar_lista():
+            for widget in scrollable_frame.winfo_children():
+                widget.destroy()
+            
+            categoria = var_categoria.get()
+            filtro = var_filtro.get()
+            
+            # Obtém itens baseado na categoria e filtro
+            if categoria == "habilidade":
+                if filtro == "ativos":
+                    itens = self.character.habilidades.listar_ativas()
+                elif filtro == "passivos":
+                    itens = self.character.habilidades.listar_passivas()
+                else:
+                    itens = self.character.habilidades.listar_habilidades()
+                simbolo_categoria = "⚔️"
+                cor_base = "#1565c0"
+            else:
+                if filtro == "ativos":
+                    itens = self.character.poderes.listar_ativos()
+                elif filtro == "passivos":
+                    itens = self.character.poderes.listar_passivos()
+                else:
+                    itens = self.character.poderes.listar_poderes()
+                simbolo_categoria = "🔮"
+                cor_base = "#4a148c"
+            
+            if not itens:
+                tk.Label(scrollable_frame, text="Nenhum item", bg='#1a0869', fg="gray", font=("Arial", 12)).pack(pady=20)
+                return
+            
+            for item in itens:
+                frame_item = tk.Frame(scrollable_frame, bg='#2a1f4f', bd=1, relief='solid')
+                frame_item.pack(fill="x", padx=5, pady=3)
+                
+                simbolo_tipo = "⚡" if item.tipo == "ativo" else "🛡️"
+                
+                # Header
+                header = tk.Frame(frame_item, bg=cor_base)
+                header.pack(fill="x")
+                
+                tk.Label(header, text=f"{simbolo_categoria}{simbolo_tipo} {item.nome}", font=("Arial", 12, "bold"), bg=cor_base, fg="white").pack(side="left", padx=5, pady=2)
+                
+                custo_text = f"Custo: {item.custo} PE" if item.custo > 0 else "Passivo"
+                tk.Label(header, text=custo_text, font=("Arial", 10), bg=cor_base, fg="white").pack(side="right", padx=5, pady=2)
+                
+                # Descrição
+                tk.Label(frame_item, text=f"Descrição: {item.descricao}", font=("Arial", 10), bg='#2a1f4f', fg="white", wraplength=650, justify="left").pack(anchor="w", padx=5, pady=2)
+                
+                # Efeitos
+                tk.Label(frame_item, text=f"Efeitos: {item.efeitos}", font=("Arial", 10, "bold"), bg='#2a1f4f', fg="#90caf9", wraplength=650, justify="left").pack(anchor="w", padx=5, pady=2)
+                
+                # Botão remover
+                tk.Button(frame_item, text="Remover", command=lambda n=item.nome, c=categoria: remover_item(n, c), bg="#8c1d1d", fg="white", font=("Arial", 9)).pack(anchor="e", padx=5, pady=2)
+        
+        def remover_item(nome, categoria):
+            if categoria == "habilidade":
+                self.character.habilidades.remover_habilidade(nome)
+            else:
+                self.character.poderes.remover_poder(nome)
+            atualizar_lista()
+        
+        # Botões inferiores
+        frame_botoes = tk.Frame(popup, bg='#130f26')
+        frame_botoes.pack(pady=10)
+        
+        def limpar_todos():
+            categoria = var_categoria.get()
+            resultado = messagebox.askyesno("Confirmação", f"Tem certeza que deseja remover todos(as) {'as habilidades' if categoria == 'habilidade' else 'os poderes'}?")
             if resultado:
-                self.character.habilidades.limpar_habilidades()
+                if categoria == "habilidade":
+                    self.character.habilidades.limpar_habilidades()
+                else:
+                    self.character.poderes.limpar_poderes()
                 atualizar_lista()
         
-        tk.Button(frame_botoes, text="Limpar Todas", command=limpar_todas, bg="#8c1d1d", fg="white", font=("Arial", 12)).pack(side="left", padx=10)
+        tk.Button(frame_botoes, text="Limpar Todos", command=limpar_todos, bg="#8c1d1d", fg="white", font=("Arial", 12)).pack(side="left", padx=10)
         tk.Button(frame_botoes, text="Fechar", command=popup.destroy, bg="#1a0869", fg="white", font=("Arial", 12)).pack(side="left", padx=10)
         
-        # Carrega lista inicial
         atualizar_lista()
-        
-        # Centraliza popup
         popup.transient(self)
         popup.grab_set()
 
@@ -3746,8 +4027,6 @@ class CombatSystemScreen(tk.Frame):
             personagem.GanharEnergia(valor)
             self.refresh()
 
-    ### CORREÇÃO DO MÉTODO REFRESH (adicionar antes dos outros métodos)
-
     def refresh(self):
         """Atualiza as listas de personagens nas interfaces e as comboboxes de grupos"""
         # Atualizar lista de grupos disponíveis
@@ -4137,7 +4416,7 @@ class CombatSystemScreen(tk.Frame):
         import random
         popup = tk.Toplevel(self)
         popup.title("Ataque Ranged")
-        popup.geometry("500x550")
+        popup.geometry("560x640")
         popup.configure(bg="#1a1a2e")
         popup.resizable(False, False)
 
@@ -4149,15 +4428,14 @@ class CombatSystemScreen(tk.Frame):
         main_frame.pack(fill="both", expand=True, padx=20, pady=20)
 
         # Título
-        tk.Label(main_frame, text=f"Ataque Ranged - {atacante_pre_selecionado.nome}", 
-                bg="#1a1a2e", fg="white", font=("Arial", 14, "bold")).pack(pady=(0, 20))
+        tk.Label(main_frame, text=f"Ataque Ranged - {atacante_pre_selecionado.nome}", bg="#1a1a2e", fg="white", font=("Arial", 14, "bold")).pack(pady=(0, 20))
 
         # Alvo
         alvo_frame = tk.Frame(main_frame, bg="#1a1a2e")
         alvo_frame.pack(fill="x", pady=5)
         tk.Label(alvo_frame, text="Alvo:", bg="#1a1a2e", fg="white", font=("Arial", 12)).pack(side="left")
         alvo_var = tk.StringVar()
-        alvo_menu = ttk.Combobox(alvo_frame, textvariable=alvo_var, state="readonly", values=personagens_names, width=30)
+        alvo_menu = ttk.Combobox(alvo_frame, textvariable=alvo_var, state="readonly", values=personagens_names, width=34)
         alvo_menu.pack(side="right")
 
         # Arma
@@ -4165,17 +4443,32 @@ class CombatSystemScreen(tk.Frame):
         arma_frame.pack(fill="x", pady=5)
         tk.Label(arma_frame, text="Arma Ranged:", bg="#1a1a2e", fg="white", font=("Arial", 12)).pack(side="left")
         arma_var = tk.StringVar()
-        arma_menu = ttk.Combobox(arma_frame, textvariable=arma_var, state="readonly", width=30)
+        arma_menu = ttk.Combobox(arma_frame, textvariable=arma_var, state="readonly", width=34)
         arma_menu.pack(side="right")
 
-        # Região do corpo
         regiao_frame = tk.Frame(main_frame, bg="#1a1a2e")
         regiao_frame.pack(fill="x", pady=5)
         tk.Label(regiao_frame, text="Região do Corpo:", bg="#1a1a2e", fg="white", font=("Arial", 12)).pack(side="left")
         regiao_var = tk.StringVar(value="Aleatória")
         regiao_menu = ttk.Combobox(regiao_frame, textvariable=regiao_var, state="readonly", width=30,
-                          values=["Aleatória", "Cabeça", "Rosto", "Torso", "Pernas", "Braços"])
+                        values=["Aleatória", "Cabeça", "Rosto", "Torso", "Pernas", "Braços"])
         regiao_menu.pack(side="right")
+
+        cobertura_frame = tk.Frame(main_frame, bg="#1a1a2e")
+        cobertura_frame.pack(fill="x", pady=5)
+        tk.Label(cobertura_frame, text="Nível de Cobertura:", bg="#1a1a2e", fg="white", font=("Arial", 12)).pack(side="left")
+        cobertura_var = tk.StringVar(value="Nenhuma")
+        cobertura_menu = ttk.Combobox(cobertura_frame, textvariable=cobertura_var, state="readonly", width=30,
+                        values=["Nenhuma", "Parcial", "Alta", "Total"])
+        cobertura_menu.pack(side="right")
+
+        # Material da cobertura (novo)
+        material_frame = tk.Frame(main_frame, bg="#1a1a2e")
+        material_frame.pack(fill="x", pady=5)
+        tk.Label(material_frame, text="Material da Cobertura:", bg="#1a1a2e", fg="white", font=("Arial", 12)).pack(side="left")
+        material_var = tk.StringVar(value="Madeira")
+        material_menu = ttk.Combobox(material_frame, textvariable=material_var, state="readonly", width=30, values=["Nenhum", "Gesso", "Madeira", "Concreto", "Aço"])
+        material_menu.pack(side="right")
 
         # Quantidade de Disparos
         disparos_frame = tk.Frame(main_frame, bg="#1a1a2e")
@@ -4212,7 +4505,7 @@ class CombatSystemScreen(tk.Frame):
         rolagem_var = tk.IntVar(value=0)
         tk.Entry(rolagem_frame, textvariable=rolagem_var, font=("Arial", 12), width=10, justify="center").pack(side="left", padx=10)
         tk.Button(rolagem_frame, text="Rolar Dado", command=lambda: executar_rolagem_ataque(),
-                 bg="#0077b6", fg="white", font=("Arial", 11)).pack(side="right")
+                bg="#0077b6", fg="white", font=("Arial", 11)).pack(side="right")
 
         # Label de resultado da rolagem
         resultado_rolagem_label = tk.Label(main_frame, text="", bg="#1a1a2e", fg="lightblue", font=("Arial", 10))
@@ -4230,17 +4523,19 @@ class CombatSystemScreen(tk.Frame):
             )
 
         # Função para determinar região aleatória
-        def obter_regiao_final():
-            if regiao_var.get() == "Aleatória":
-                return "Aleatorio"
-            return regiao_var.get()
+        def obter_regiao_final_disparo(regia_escolhida):
+            regioes_possiveis = ["Cabeça", "Rosto", "Torso", "Pernas", "Braços"]
+            if regia_escolhida != "Aleatória":
+                return regia_escolhida
+            # aleatoriza a cada disparo
+            return random.choice(regioes_possiveis)
 
         def atualizar_armas_ranged(*_):
             self.arma_id_por_nome = {}
             atacante = atacante_pre_selecionado
             armas_ranged = []
             self.arma_id_por_nome.clear()
-            
+
             for i in atacante.equipados.itens:
                 item = i["item"]
                 if isinstance(item, CB.Ranged):
@@ -4259,9 +4554,11 @@ class CombatSystemScreen(tk.Frame):
             rolagem = rolagem_var.get()
             buff_dano = buff_dano_var.get()
             buff_acerto = buff_acerto_var.get()
-            regiao = obter_regiao_final()
-            disparos = disparos_var.get()
+            regiao_selecionada = regiao_var.get()
+            disparos = max(1, disparos_var.get())
             distancia = distancia_var.get()
+            cobertura = cobertura_var.get()
+            material = material_var.get()
 
             atacante = atacante_pre_selecionado
             alvo = next((p for p in todos_personagens if p.nome == alvo_nome), None)
@@ -4272,22 +4569,48 @@ class CombatSystemScreen(tk.Frame):
                 resultado_label.config(text="Erro: alvo ou arma inválido(s).", fg="red")
                 return
 
-            resultado = CB.acerto_ranged(
-                atacante=atacante,
-                alvo=alvo,
-                Rolagem=rolagem,
-                id_arma=arma.Id,
-                distancia=distancia,
-                disparos=disparos,
-                regiao=regiao,
-                BuffDano=buff_dano,
-                BuffAcerto=buff_acerto
-            )
-            
-            # Adicionar ao log
-            self.adicionar_log(f"Ataque Ranged: {atacante.nome} → {alvo.nome} ({regiao}) - {disparos} disparos", "orange")
-            self.adicionar_log(resultado, "lightgreen")
-            
+            # obter perfuracao da arma (tentativa robusta)
+            perfuracao = getattr(arma, "Perfuracao", None)
+            if perfuracao is None:
+                perfuracao = getattr(arma, "perfuracao", None)
+            if perfuracao is None:
+                perfuracao = getattr(arma, "Penetration", 0)
+            try:
+                perfuracao = int(perfuracao)
+            except Exception:
+                perfuracao = 0
+
+            resultados_disparos = []
+
+            for n in range(disparos):
+                regiao_final = obter_regiao_final_disparo(regiao_selecionada)
+
+                res = CB.acerto_ranged(
+                    atacante=atacante,
+                    alvo=alvo,
+                    Rolagem=rolagem,
+                    id_arma=arma.Id,
+                    distancia=distancia,
+                    disparos=1,
+                    regiao=regiao_final,
+                    BuffDano=buff_dano,
+                    BuffAcerto=buff_acerto,
+                    DebuffAcerto=0,
+                    DebuffDano=0,
+                    cobertura=cobertura,
+                    material=material
+                )
+
+                resultados_disparos.append(f"Tiro {n+1}: {res}")
+
+            # Agregar resultados e adicionar ao log
+            texto_log = f"Ataque Ranged: {atacante.nome}, {arma.nome} → {alvo.nome} (Cobertura: {cobertura} / {material}) - {disparos} disparos\n"
+            texto_log += "\n".join(resultados_disparos)
+
+            self.adicionar_log(texto_log, "orange")
+            # também mostra resumo na label de resultado
+            resultado_label.config(text=f"{disparos} disparo(s) processado(s). Veja o log para detalhes.", fg="lightgreen")
+
             self.refresh()
             popup.destroy()
 
@@ -4298,12 +4621,12 @@ class CombatSystemScreen(tk.Frame):
         # Botões
         botoes_frame = tk.Frame(main_frame, bg="#1a1a2e")
         botoes_frame.pack(pady=20)
-        
+
         tk.Button(botoes_frame, text="Confirmar Ataque", command=confirmar_ataque_ranged,
-                 bg="#38b000", fg="white", font=("Arial", 12), width=15).pack(side="left", padx=5)
-        
+                bg="#38b000", fg="white", font=("Arial", 12), width=18).pack(side="left", padx=5)
+
         tk.Button(botoes_frame, text="Cancelar", command=popup.destroy,
-                 bg="#8B0000", fg="white", font=("Arial", 12), width=15).pack(side="right", padx=5)
+                bg="#8B0000", fg="white", font=("Arial", 12), width=18).pack(side="right", padx=5)
 
         # Inicializar armas
         atualizar_armas_ranged()
@@ -4781,637 +5104,32 @@ class RegrasItensScreen(tk.Frame):
         # Dados atuais selecionados
         self.tabela_atual = None
         self.dados_atuais = {}
-        self.item_selecionado = None
         
-        # Mapeamento de tabelas para suas configurações
-        self.configuracoes_tabelas = {
-            "Itens": {
-                "tabela_db": "Itens",
-                "classe": CB.Item,
-                "campos": ["nome", "peso"]
-            },
-            "Ranged": {
-                "tabela_db": "Rangeds", 
-                "classe": CB.Ranged,
-                "campos": ["nome", "peso", "classe", "acao", "raridade", "calibre", "capacidade"]
-            },
-            "Melee": {
-                "tabela_db": "Melees",
-                "classe": CB.Melee, 
-                "campos": ["nome", "peso", "classe", "tipo_dano", "raridade"]
-            },
-            "Proteção": {
-                "tabela_db": "Protecoes",
-                "classe": CB.Protecao,
-                "campos": ["nome", "peso", "nivelBalistico", "absorcaoFisica", "absorcaoBalistica", "regiao"]
-            },
-            "Munições": {
-                "tabela_db": "Municoes",
-                "classe": CB.Municao,
-                "campos": ["nome", "calibre", "dano", "perfuracao"]
-            },
-            "Explosivos": {
-                "tabela_db": "Explosivos", 
-                "classe": CB.Explosivo,
-                "campos": ["nome", "peso", "raio", "dano", "tipo_dano"]
-            },
-            "Consumíveis": {
-                "tabela_db": "Consumiveis",
-                "classe": CB.Consumivel, 
-                "campos": ["nome", "peso", "cura", "energia"]
-            },
-            "Melhorias": {
-                "tabela_db": "Melhorias",
-                "classe": CB.Melhoria,
-                "campos": ["nome", "peso", "tipo", "modificadores"]
-            },
-            "Proficiências": {
-                "tabela_db": "Proficiencias",
-                "classe": CB.Proficiencia,
-                "campos": ["nome", "atributo", "nivel"]
-            },
-            "NPCs": {
-                "tabela_db": "NPCs", 
-                "classe": dict,
-                "campos": ["grupo", "classe", "forca", "agilidade", "vigor", "inteligencia", "tatica", "presenca"]
-            },
-            # Tabelas não implementadas ainda
-            "Kits": {
-            "tabela_db": "kits",
-            "classe": CB.Kits,
-            "campos": ["nome", "raridade", "inventario_resumo"]  # Campo especial para mostrar resumo do inventário
-            },
-            "Efeitos": {
-                "tabela_db": "Efeitos",
-                "classe": None,
-                "campos": []  # TODO: Implementar quando a tabela existir
-            },
-            "Habilidades": {
-                "tabela_db": "Habilidades",
-                "classe": None,
-                "campos": []  # TODO: Implementar quando a tabela existir
-            }
+        # Mapeamento de tabelas para templates
+        self.templates_tabelas = {
+            "Itens": self.template_itens,
+            "Ranged": self.template_ranged,
+            "Melee": self.template_melee,
+            "Proteção": self.template_protecao,
+            "Munições": self.template_municoes,
+            "Explosivos": self.template_explosivos,
+            "Consumíveis": self.template_consumiveis,
+            "Melhorias": self.template_melhorias,
+            "Proficiências": self.template_proficiencias,
+            "NPCs": self.template_npcs,
+            "Kits": self.template_kits,
+            "Buffs e Debuffs": self.template_buffs_debuffs,
+            "Habilidades": self.template_habilidades,
+            "Poderes": self.template_poderes
         }
         
         self.setup_ui()
         self.setup_styles()
 
-    def carregar_dados_kits(self):
-        """Carrega dados específicos para kits"""
-        kits_dict = D.carregar_kits_db()  # D é o módulo de dados
-        data = []
-        
-        for nome, kit in kits_dict.items():
-            # Garante que o inventário seja carregado corretamente
-            try:
-                # Força o carregamento do inventário se não estiver carregado
-                if not hasattr(kit, 'inventario') or kit.inventario is None:
-                    # Tenta recarregar o kit completo do banco
-                    kit_completo = D.carregar_kit_completo_db(nome)  # Função que deve existir no módulo D
-                    if kit_completo and hasattr(kit_completo, 'inventario'):
-                        kit = kit_completo
-                
-                inventario_resumo = self.gerar_resumo_inventario(kit)
-            except Exception as e:
-                print(f"Erro ao carregar inventário do kit {nome}: {e}")
-                inventario_resumo = "Erro ao carregar inventário"
-            
-            data.append({
-                "nome": nome,
-                "raridade": kit.raridade,
-                "inventario_resumo": inventario_resumo,
-                "_kit_objeto": kit,  # Armazena referência ao objeto completo
-                "_dados_completos": {
-                    "nome": kit.nome,
-                    "raridade": kit.raridade,
-                    "Id": getattr(kit, 'Id', None),
-                    "inventario": self.inventario_para_dict(kit.inventario) if hasattr(kit, 'inventario') and kit.inventario else {}
-                }
-            })
-        
-        return data
-
-    def gerar_resumo_inventario(self, kit):
-        """Gera um resumo textual do inventário do kit"""
-        if not hasattr(kit, 'inventario') or not kit.inventario:
-            return "Inventário vazio"
-        
-        try:
-            # Se o inventário tem método listar_itens, usa ele
-            if hasattr(kit, 'listar_itens'):
-                itens_info = kit.listar_itens()
-                if not itens_info:
-                    return "Inventário vazio"
-                
-                # Gera resumo mais detalhado
-                tipos_count = {}
-                total_itens = 0
-                
-                for item_info in itens_info:
-                    total_itens += item_info.get('quantidade', 1)
-                    
-                    # Obtém o tipo real do objeto, não do campo 'tipo'
-                    item_obj = item_info.get('objeto')
-                    if item_obj:
-                        # Determina o tipo baseado na classe do objeto
-                        if isinstance(item_obj, CB.Melee):
-                            tipo_display = 'Arma C.a.C.'
-                        elif isinstance(item_obj, CB.Ranged):
-                            tipo_display = 'Arma de Fogo'
-                        elif isinstance(item_obj, CB.Protecao):
-                            tipo_display = 'Proteção'
-                        elif isinstance(item_obj, CB.Consumivel):
-                            tipo_display = 'Consumível'
-                        elif isinstance(item_obj, CB.Explosivo):
-                            tipo_display = 'Explosivo'
-                        elif isinstance(item_obj, CB.Municao):
-                            tipo_display = 'Munição'
-                        elif isinstance(item_obj, CB.Melhoria):
-                            tipo_display = 'Melhoria'
-                        else:
-                            tipo_display = 'Item'
-                    else:
-                        tipo_display = 'Item'
-                    
-                    tipos_count[tipo_display] = tipos_count.get(tipo_display, 0) + item_info.get('quantidade', 1)
-                
-                # Cria resumo baseado nos tipos
-                if len(tipos_count) == 1:
-                    tipo, qtd = next(iter(tipos_count.items()))
-                    return f"{qtd} {tipo}{'s' if qtd > 1 else ''}"
-                else:
-                    resumo_parts = []
-                    for tipo, qtd in tipos_count.items():
-                        resumo_parts.append(f"{qtd} {tipo}{'s' if qtd > 1 else ''}")
-                    return ", ".join(resumo_parts)
-            
-            # Fallback: tenta contar itens diretamente
-            elif hasattr(kit.inventario, 'itens'):
-                total_itens = len(kit.inventario.itens)
-                return f"{total_itens} item(s) no inventário"
-            
-            # Se tem slots
-            elif hasattr(kit.inventario, 'slots'):
-                slots_ocupados = sum(1 for slot in kit.inventario.slots.values() 
-                                if hasattr(slot, 'item') and slot.item)
-                return f"{slots_ocupados} slot(s) ocupado(s)"
-            
-            else:
-                return "Inventário presente"
-                
-        except Exception as e:
-            print(f"Erro ao gerar resumo do inventário: {e}")
-            return "Erro ao ler inventário"
-
-    def inventario_para_dict(self, inventario):
-        """Converte inventário para dicionário para visualização"""
-        if not inventario:
-            return {}
-        
-        try:
-            # Se tem método listar_itens, usa ele para gerar estrutura limpa
-            if hasattr(inventario, 'listar_itens'):
-                # Precisa usar o kit para chamar listar_itens
-                kit = self.get_kit_atual()
-                if kit and hasattr(kit, 'listar_itens'):
-                    itens_info = kit.listar_itens()
-                    inventario_dict = {}
-                    for i, item_info in enumerate(itens_info):
-                        item_obj = item_info.get("objeto")
-                        
-                        # Determina se tem ID baseado no objeto real
-                        tem_id = hasattr(item_obj, 'Id') and item_obj.Id is not None
-                        
-                        # Determina o tipo real do objeto
-                        if isinstance(item_obj, CB.Melee):
-                            tipo = 'melee'
-                        elif isinstance(item_obj, CB.Ranged):
-                            tipo = 'ranged'
-                        elif isinstance(item_obj, CB.Protecao):
-                            tipo = 'protecao'
-                        elif isinstance(item_obj, CB.Consumivel):
-                            tipo = 'consumivel'
-                        elif isinstance(item_obj, CB.Explosivo):
-                            tipo = 'explosivo'
-                        elif isinstance(item_obj, CB.Municao):
-                            tipo = 'municao'
-                        elif isinstance(item_obj, CB.Melhoria):
-                            tipo = 'melhoria'
-                        else:
-                            tipo = 'item'
-                        
-                        inventario_dict[f"item_{i+1}"] = {
-                            "nome": item_info.get("nome", ""),
-                            "quantidade": item_info.get("quantidade", 1),
-                            "tipo": tipo,
-                            "tem_id": tem_id
-                        }
-                    return inventario_dict
-            
-            # Fallback: usa to_dict se disponível
-            elif hasattr(inventario, 'to_dict'):
-                return inventario.to_dict()
-            
-            # Último recurso: converte __dict__
-            else:
-                return vars(inventario)
-                
-        except Exception as e:
-            print(f"Erro ao converter inventário para dict: {e}")
-            return {"erro": str(e)}
-
-    def atualizar_visualizacao_inventario(self):
-        """Atualiza a visualização do inventário no campo de texto"""
-        if "inventario" not in self.campos_entrada:
-            return
-        
-        kit = self.get_kit_atual()
-        if not kit:
-            return
-        
-        text_widget = self.campos_entrada["inventario"]
-        text_widget.delete("1.0", "end")
-        
-        try:
-            # Agora o inventário vem do banco, então mostra os dados atuais
-            if hasattr(kit, 'inventario') and kit.inventario:
-                # Usa o método listar_itens se disponível para uma visualização mais limpa
-                if hasattr(kit, 'listar_itens'):
-                    itens_info = kit.listar_itens()
-                    if itens_info:
-                        inventario_texto = "=== INVENTÁRIO DO KIT ===\n\n"
-                        for i, item_info in enumerate(itens_info, 1):
-                            nome = item_info.get('nome', 'Item sem nome')
-                            quantidade = item_info.get('quantidade', 1)
-                            item_obj = item_info.get('objeto')
-                            
-                            # Determina o tipo real e se tem ID baseado no objeto
-                            tem_id = hasattr(item_obj, 'Id') and item_obj.Id is not None
-                            
-                            if isinstance(item_obj, CB.Melee):
-                                tipo = 'melee'
-                            elif isinstance(item_obj, CB.Ranged):
-                                tipo = 'ranged'
-                            elif isinstance(item_obj, CB.Protecao):
-                                tipo = 'protecao'
-                            elif isinstance(item_obj, CB.Consumivel):
-                                tipo = 'consumivel'
-                            elif isinstance(item_obj, CB.Explosivo):
-                                tipo = 'explosivo'
-                            elif isinstance(item_obj, CB.Municao):
-                                tipo = 'municao'
-                            elif isinstance(item_obj, CB.Melhoria):
-                                tipo = 'melhoria'
-                            else:
-                                tipo = 'item'
-                            
-                            inventario_texto += f"{i}. {nome}\n"
-                            inventario_texto += f"   Quantidade: {quantidade}\n"
-                            inventario_texto += f"   Tipo: {tipo.capitalize()}\n"
-                            
-                            if tem_id:
-                                inventario_texto += f"   Item único (ID: {item_obj.Id})\n"
-                            
-                            # Informações específicas por tipo usando o objeto real
-                            if isinstance(item_obj, CB.Melee):
-                                if hasattr(item_obj, 'peso'):
-                                    inventario_texto += f"   Peso: {item_obj.peso}\n"
-                                if hasattr(item_obj, 'tipo_dano'):
-                                    inventario_texto += f"   Tipo de Dano: {item_obj.tipo_dano}\n"
-                                if hasattr(item_obj, 'classe'):
-                                    inventario_texto += f"   Classe: {item_obj.classe}\n"
-                                if hasattr(item_obj, 'raridade'):
-                                    inventario_texto += f"   Raridade: {item_obj.raridade}\n"
-                                if hasattr(item_obj, 'dano_simples'):
-                                    inventario_texto += f"   Dano Simples: {item_obj.dano_simples}\n"
-                                    
-                            elif isinstance(item_obj, CB.Ranged):
-                                if hasattr(item_obj, 'peso'):
-                                    inventario_texto += f"   Peso: {item_obj.peso}\n"
-                                if hasattr(item_obj, 'calibre'):
-                                    inventario_texto += f"   Calibre: {item_obj.calibre}\n"
-                                if hasattr(item_obj, 'acao'):
-                                    inventario_texto += f"   Ação: {item_obj.acao}\n"
-                                if hasattr(item_obj, 'capacidade'):
-                                    inventario_texto += f"   Capacidade: {item_obj.capacidade}\n"
-                                if hasattr(item_obj, 'raridade'):
-                                    inventario_texto += f"   Raridade: {item_obj.raridade}\n"
-                                    
-                            elif isinstance(item_obj, CB.Protecao):
-                                if hasattr(item_obj, 'peso'):
-                                    inventario_texto += f"   Peso: {item_obj.peso}\n"
-                                if hasattr(item_obj, 'nivelBalistico'):
-                                    inventario_texto += f"   Nível Balístico: {item_obj.nivelBalistico}\n"
-                                if hasattr(item_obj, 'regiao'):
-                                    inventario_texto += f"   Região: {item_obj.regiao}\n"
-                                if hasattr(item_obj, 'absorcaoFisica'):
-                                    inventario_texto += f"   Absorção Física: {item_obj.absorcaoFisica}\n"
-                                if hasattr(item_obj, 'absorcaoBalistica'):
-                                    inventario_texto += f"   Absorção Balística: {item_obj.absorcaoBalistica}\n"
-                                    
-                            elif isinstance(item_obj, CB.Consumivel):
-                                if hasattr(item_obj, 'peso'):
-                                    inventario_texto += f"   Peso: {item_obj.peso}\n"
-                                if hasattr(item_obj, 'cura'):
-                                    inventario_texto += f"   Cura: {item_obj.cura}\n"
-                                if hasattr(item_obj, 'energia'):
-                                    inventario_texto += f"   Energia: {item_obj.energia}\n"
-                                    
-                            elif isinstance(item_obj, CB.Municao):
-                                if hasattr(item_obj, 'calibre'):
-                                    inventario_texto += f"   Calibre: {item_obj.calibre}\n"
-                                if hasattr(item_obj, 'dano'):
-                                    inventario_texto += f"   Dano: {item_obj.dano}\n"
-                                if hasattr(item_obj, 'perfuracao'):
-                                    inventario_texto += f"   Perfuração: {item_obj.perfuracao}\n"
-                            
-                            elif isinstance(item_obj, CB.Explosivo):
-                                if hasattr(item_obj, 'peso'):
-                                    inventario_texto += f"   Peso: {item_obj.peso}\n"
-                                if hasattr(item_obj, 'raio'):
-                                    inventario_texto += f"   Raio: {item_obj.raio}\n"
-                                if hasattr(item_obj, 'dano'):
-                                    inventario_texto += f"   Dano: {item_obj.dano}\n"
-                                if hasattr(item_obj, 'tipo_dano'):
-                                    inventario_texto += f"   Tipo de Dano: {item_obj.tipo_dano}\n"
-                            
-                            elif isinstance(item_obj, CB.Melhoria):
-                                if hasattr(item_obj, 'peso'):
-                                    inventario_texto += f"   Peso: {item_obj.peso}\n"
-                                if hasattr(item_obj, 'tipo'):
-                                    inventario_texto += f"   Tipo: {item_obj.tipo}\n"
-                                if hasattr(item_obj, 'modificadores'):
-                                    inventario_texto += f"   Modificadores: {item_obj.modificadores}\n"
-                            
-                            else:
-                                # Item genérico
-                                if hasattr(item_obj, 'peso'):
-                                    inventario_texto += f"   Peso: {item_obj.peso}\n"
-                            
-                            inventario_texto += "\n"
-                        
-                        text_widget.insert("1.0", inventario_texto)
-                    else:
-                        text_widget.insert("1.0", "Inventário vazio")
-                else:
-                    # Fallback: mostra como JSON mas com dados mais detalhados
-                    inventario_dict = self.inventario_para_dict(kit.inventario)
-                    inventario_str = json.dumps(inventario_dict, indent=2, ensure_ascii=False)
-                    text_widget.insert("1.0", inventario_str)
-            else:
-                text_widget.insert("1.0", "Inventário não inicializado")
-                
-        except Exception as e:
-            text_widget.insert("1.0", f"Erro ao carregar inventário: {e}")
-            print(f"Erro na visualização do inventário: {e}")
-            import traceback
-            print(f"Traceback completo: {traceback.format_exc()}")
-
-    def get_kit_atual(self):
-        """Obtém o kit atualmente selecionado"""
-        if not self.item_selecionado or self.item_selecionado not in self.dados_atuais:
-            return None
-        
-        dados_item = self.dados_atuais[self.item_selecionado]
-        return dados_item.get("_kit_objeto")
-
-    def abrir_popup_adicionar_item_kit(self):
-        """Abre popup para adicionar item ao kit"""
-        kit = self.get_kit_atual()
-        if not kit:
-            messagebox.showwarning("Aviso", "Nenhum kit selecionado!")
-            return
-        
-        popup = tk.Toplevel()
-        popup.title("Adicionar Item ao Kit")
-        popup.configure(bg="#1a0869")
-        popup.geometry("370x500")
-
-        categorias = {
-            "Armas de Fogo": D.Rangeds,
-            "Armas Corpo a Corpo": D.Melees,
-            "Proteções": D.Protecoes,
-            "Melhorias": D.Melhorias,
-            "Munições": D.Municoes,
-            "Consumíveis": D.Consumiveis,
-            "Explosivos": D.Explosivos,
-            "Itens": D.Items
-        }
-
-        tk.Label(popup, text="Categoria:", bg="#1a0869", fg="white", font=("Arial", 16)).pack(pady=5)
-        categoria_var = tk.StringVar()
-        categoria_menu = ttk.Combobox(popup, textvariable=categoria_var, values=list(categorias.keys()))
-        categoria_menu.pack(pady=(0, 10))
-
-        # Área de scroll
-        frame_scroll = tk.Frame(popup, bg="#1a0869")
-        frame_scroll.pack(expand=True, fill="both", padx=10, pady=10)
-
-        canvas = tk.Canvas(frame_scroll, bg="#1a0869", highlightthickness=0, width=300, height=300)
-        scrollbar = tk.Scrollbar(frame_scroll, orient="vertical", command=canvas.yview)
-        scrollable_frame = tk.Frame(canvas, bg="#1a0869")
-
-        scrollable_frame.bind("<Configure>", lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
-        canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
-        canvas.configure(yscrollcommand=scrollbar.set)
-
-        canvas.pack(side="left", fill="both", expand=True)
-        scrollbar.pack(side="right", fill="y")
-
-        # Botão Voltar
-        btn_voltar = tk.Button(popup, text="Voltar", command=popup.destroy, 
-                            bg="#a00c0c", fg="white", font=("Arial", 12))
-        btn_voltar.pack(pady=10, side="bottom")
-
-        quantidade_widgets = {}
-
-        def exibir_itens(*args):
-            for widget in scrollable_frame.winfo_children():
-                widget.destroy()
-            quantidade_widgets.clear()
-
-            categoria = categoria_var.get()
-            if not categoria:
-                return
-
-            for nome_item, item_func in categorias[categoria].items():
-                item_obj = item_func() if callable(item_func) else item_func
-
-                frame_item = tk.Frame(scrollable_frame, bg="#1a0869")
-                frame_item.pack(fill="x", pady=2)
-
-                # Campo de quantidade se for stackável
-                if not hasattr(item_obj, "Id"):
-                    qtd_var = tk.StringVar(value="1")
-                    qtd_entry = tk.Entry(frame_item, textvariable=qtd_var, width=5, font=("Arial", 12))
-                    qtd_entry.pack(side="right", padx=5)
-                    quantidade_widgets[nome_item] = qtd_var
-
-                btn_item = tk.Button(frame_item, text=nome_item,
-                    bg="#0e3386", fg="white", width=28, font=("Arial", 12),
-                    command=lambda n=nome_item: adicionar_item(categoria, n))
-                btn_item.pack(side="left", padx=5)
-
-        def adicionar_item(categoria, nome_item):
-            item_obj = categorias[categoria][nome_item]
-            item_obj = item_obj() if callable(item_obj) else item_obj
-            quantidade = 1
-
-            if not hasattr(item_obj, "Id"):
-                qtd_str = quantidade_widgets.get(nome_item).get()
-                try:
-                    quantidade = int(qtd_str)
-                    if quantidade <= 0:
-                        raise ValueError
-                except ValueError:
-                    messagebox.showerror("Erro", "Quantidade inválida.")
-                    return
-
-            try:
-                # Adiciona o item ao inventário
-                kit.inventario.gerenciar_item(item_objeto=item_obj, quantidade=quantidade, operacao="adicionar")
-                
-                # Salva o kit atualizado no banco (agora com inventário)
-                if D.salvar_kit_no_banco(kit):
-                    self.atualizar_visualizacao_inventario()
-                    # Atualiza os dados locais
-                    D.refresh_kits()
-                    messagebox.showinfo("Sucesso", f"Item '{nome_item}' adicionado ao kit e salvo no banco!")
-                else:
-                    messagebox.showerror("Erro", "Item adicionado mas falha ao salvar no banco!")
-                    
-            except Exception as e:
-                messagebox.showerror("Erro", f"Erro ao adicionar item: {e}")
-
-        categoria_var.trace_add("write", exibir_itens)
-
-    def abrir_popup_remover_item_kit(self):
-        """Abre popup para remover item do kit"""
-        kit = self.get_kit_atual()
-        if not kit:
-            messagebox.showwarning("Aviso", "Nenhum kit selecionado!")
-            return
-        
-        # Obter lista de itens no inventário
-        try:
-            itens_info = kit.listar_itens() if hasattr(kit, 'listar_itens') else []
-        except:
-            itens_info = []
-            
-        if not itens_info:
-            messagebox.showinfo("Info", "O inventário do kit está vazio!")
-            return
-        
-        popup = tk.Toplevel()
-        popup.title("Remover Item do Kit")
-        popup.configure(bg="#1a0869")
-        popup.geometry("400x500")
-
-        tk.Label(popup, text="Itens no Kit:", bg="#1a0869", fg="white", font=("Arial", 16)).pack(pady=10)
-
-        # Área de scroll
-        frame_scroll = tk.Frame(popup, bg="#1a0869")
-        frame_scroll.pack(expand=True, fill="both", padx=10, pady=10)
-
-        canvas = tk.Canvas(frame_scroll, bg="#1a0869", highlightthickness=0, width=350, height=350)
-        scrollbar = tk.Scrollbar(frame_scroll, orient="vertical", command=canvas.yview)
-        scrollable_frame = tk.Frame(canvas, bg="#1a0869")
-
-        scrollable_frame.bind("<Configure>", lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
-        canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
-        canvas.configure(yscrollcommand=scrollbar.set)
-
-        canvas.pack(side="left", fill="both", expand=True)
-        scrollbar.pack(side="right", fill="y")
-
-        quantidade_widgets = {}
-
-        def remover_item(nome_item, tem_id):
-            try:
-                if tem_id:
-                    # Item único - remover diretamente
-                    quantidade = 1
-                else:
-                    # Item stackável - obter quantidade
-                    qtd_str = quantidade_widgets[nome_item].get()
-                    try:
-                        quantidade = int(qtd_str)
-                        if quantidade <= 0:
-                            raise ValueError
-                    except ValueError:
-                        messagebox.showerror("Erro", "Quantidade inválida.")
-                        return
-
-                # Encontrar o objeto do item no inventário
-                item_obj = None
-                if hasattr(kit.inventario, 'slots'):
-                    for slot in kit.inventario.slots.values():
-                        if hasattr(slot, 'item') and slot.item and slot.item.nome == nome_item:
-                            item_obj = slot.item
-                            break
-                elif hasattr(kit.inventario, 'itens'):
-                    for item in kit.inventario.itens:
-                        if hasattr(item, 'nome') and item.nome == nome_item:
-                            item_obj = item
-                            break
-
-                if item_obj:
-                    kit.inventario.gerenciar_item(item_objeto=item_obj, quantidade=quantidade, operacao="remover")
-                    
-                    # Salva o kit atualizado no banco
-                    if D.salvar_kit_no_banco(kit):
-                        self.atualizar_visualizacao_inventario()
-                        # Atualiza os dados locais
-                        D.refresh_kits()
-                        messagebox.showinfo("Sucesso", f"Item '{nome_item}' removido do kit e salvo no banco!")
-                        popup.destroy()
-                        # Reabrir popup atualizado se ainda há itens
-                        self.abrir_popup_remover_item_kit()
-                    else:
-                        messagebox.showerror("Erro", "Item removido mas falha ao salvar no banco!")
-                else:
-                    messagebox.showerror("Erro", f"Item '{nome_item}' não encontrado no inventário!")
-                    
-            except Exception as e:
-                messagebox.showerror("Erro", f"Erro ao remover item: {e}")
-
-        # Exibir itens
-        for item_info in itens_info:
-            nome = item_info["nome"]
-            quantidade_atual = item_info["quantidade"]
-            tem_id = item_info.get("tem_id", False)
-
-            frame_item = tk.Frame(scrollable_frame, bg="#1a0869")
-            frame_item.pack(fill="x", pady=2)
-
-            # Mostrar nome e quantidade atual
-            info_text = f"{nome} (Qtd: {quantidade_atual})"
-            tk.Label(frame_item, text=info_text, bg="#1a0869", fg="white", 
-                    font=("Arial", 10)).pack(side="left", padx=5)
-
-            if not tem_id:
-                # Campo para quantidade a remover
-                qtd_var = tk.StringVar(value="1")
-                qtd_entry = tk.Entry(frame_item, textvariable=qtd_var, width=5, font=("Arial", 10))
-                qtd_entry.pack(side="right", padx=5)
-                quantidade_widgets[nome] = qtd_var
-
-            # Botão remover
-            btn_remover = tk.Button(frame_item, text="Remover",
-                bg="#e74c3c", fg="white", font=("Arial", 10),
-                command=lambda n=nome, t=tem_id: remover_item(n, t))
-            btn_remover.pack(side="right", padx=5)
-
-        # Botão Voltar
-        btn_voltar = tk.Button(popup, text="Voltar", command=popup.destroy, 
-                            bg="#a00c0c", fg="white", font=("Arial", 12))
-        btn_voltar.pack(pady=10, side="bottom")
-
     def setup_styles(self):
         style = ttk.Style()
         style.theme_use("default")
         
-        # Configurações para Combobox
         style.configure("CustomCombobox.TCombobox", 
                        foreground="white", 
                        background="#2a1f4a", 
@@ -5420,7 +5138,6 @@ class RegrasItensScreen(tk.Frame):
                        arrowcolor="white", 
                        font=("Arial", 12))
         
-        # Configurações para Treeview
         style.configure("Custom.Treeview",
                        background="#2a1f4a",
                        foreground="white",
@@ -5428,568 +5145,2672 @@ class RegrasItensScreen(tk.Frame):
                        fieldbackground="#2a1f4a")
         style.map("Custom.Treeview",
                  background=[('selected', '#1a0869')])
-        
-        # Configurações para Entry
-        style.configure("Custom.TEntry",
-                       fieldbackground="#2a1f4a",
-                       bordercolor="#1a0869",
-                       foreground="white")
 
     def setup_ui(self):
         # Botões de navegação
-        tk.Button(self, text="Tela inicial", height=2, command=self.TelaInicial,
-                bg="#1a0869", fg="white", font=("Arial", 16)).place(x=20, y=10, width=250, height=50)
+        tk.Button(self, text="Tela inicial", height=2, command=self.TelaInicial, bg="#1a0869", fg="white", font=("Arial", 20)).place(x=20, y=10, width=350, height=75)
         
-        tk.Button(self, text="Seleção", height=2, command=self.TelaDeSelecao,
-                bg="#1a0869", fg="white", font=("Arial", 16)).place(x=280, y=10, width=250, height=50)
+        tk.Button(self, text="Seleção", height=2, command=self.TelaDeSelecao, bg="#1a0869", fg="white", font=("Arial", 20)).place(x=385, y=10, width=350, height=75)
 
-        tk.Button(self, text="Combate", height=2, command=self.TelaDeCombate,
-                bg="#1a0869", fg="white", font=("Arial", 16)).place(x=540, y=10, width=250, height=50)
+        tk.Button(self, text="Combate", height=2, command=self.TelaDeCombate, bg="#1a0869", fg="white", font=("Arial", 20)).place(x=870, y=10, width=350, height=75)
         
-        tk.Label(self, text="Administração de Dados", fg="white", bg="#1a0869",
-                font=("Arial", 16, "bold")).place(x=800, y=10, width=250, height=50)
+        tk.Label(self, text="Informações", fg="white", bg="#1a0869", font=("Arial", 20, "bold")).place(x=1235, y=10, width=350, height=75)
 
-        # Seção de seleção de tabela
+        # Seção de seleção de tabela (centralizada)
         tk.Label(self, text="Selecionar Tabela:", fg="white", bg="#130f26",
-                font=("Arial", 14, "bold")).place(x=20, y=80)
+                font=("Arial", 14, "bold")).place(x=650, y=100)
         
-        self.combo_tabelas = ttk.Combobox(self, style="CustomCombobox.TCombobox", 
-                                         values=list(self.configuracoes_tabelas.keys()),
-                                         state="readonly", font=("Arial", 12))
-        self.combo_tabelas.place(x=20, y=110, width=300, height=35)
+        self.combo_tabelas = ttk.Combobox(self, style="CustomCombobox.TCombobox", values=list(self.templates_tabelas.keys()), state="readonly", font=("Arial", 12))
+        self.combo_tabelas.place(x=650, y=130, width=300, height=35)
         self.combo_tabelas.bind('<<ComboboxSelected>>', self.on_tabela_selecionada)
 
-        # Botão para atualizar dados
-        tk.Button(self, text="Atualizar Dados", command=self.atualizar_dados,
-                bg="#2a1f4a", fg="white", font=("Arial", 12)).place(x=340, y=110, width=150, height=35)
+        # Container principal para conteúdo dinâmico (centralizado)
+        self.container_conteudo = tk.Frame(self, bg="#130f26")
+        self.container_conteudo.place(x=100, y=180, width=1400, height=700)
 
-        # Lista de itens
-        tk.Label(self, text="Itens da Tabela:", fg="white", bg="#130f26",
-                font=("Arial", 14, "bold")).place(x=20, y=160)
-
-        # Frame para Treeview com scrollbars
-        tree_frame = tk.Frame(self, bg="#130f26")
-        tree_frame.place(x=20, y=190, width=800, height=400)
-
-        # Treeview
-        self.tree = ttk.Treeview(tree_frame, style="Custom.Treeview")
-        self.tree.bind('<<TreeviewSelect>>', self.on_item_selecionado)
-
-        # Scrollbars
-        v_scroll = ttk.Scrollbar(tree_frame, orient="vertical", command=self.tree.yview)
-        h_scroll = ttk.Scrollbar(tree_frame, orient="horizontal", command=self.tree.xview)
-        self.tree.configure(yscrollcommand=v_scroll.set, xscrollcommand=h_scroll.set)
-
-        # Grid do Treeview
-        self.tree.grid(row=0, column=0, sticky="nsew")
-        v_scroll.grid(row=0, column=1, sticky="ns")
-        h_scroll.grid(row=1, column=0, sticky="ew")
-
-        tree_frame.grid_rowconfigure(0, weight=1)
-        tree_frame.grid_columnconfigure(0, weight=1)
-
-        # Botões de ação
-        tk.Button(self, text="Novo Item", command=self.novo_item,
-                bg="#0d7377", fg="white", font=("Arial", 14)).place(x=20, y=610, width=150, height=40)
-        
-        tk.Button(self, text="Editar Item", command=self.editar_item,
-                bg="#f39c12", fg="white", font=("Arial", 14)).place(x=180, y=610, width=150, height=40)
-        
-        tk.Button(self, text="Remover Item", command=self.remover_item,
-                bg="#e74c3c", fg="white", font=("Arial", 14)).place(x=340, y=610, width=150, height=40)
-
-        # Seção de edição/criação
-        tk.Label(self, text="Detalhes do Item:", fg="white", bg="#130f26",
-                font=("Arial", 14, "bold")).place(x=850, y=160)
-
-        # Frame scrollável para campos
-        self.canvas_campos = tk.Canvas(self, bg="#2a1f4a", width=720, height=430)
-        self.canvas_campos.place(x=850, y=190)
-
-        self.frame_campos = tk.Frame(self.canvas_campos, bg="#2a1f4a")
-        self.scrollbar_campos = ttk.Scrollbar(self, orient="vertical", command=self.canvas_campos.yview)
-        self.canvas_campos.configure(yscrollcommand=self.scrollbar_campos.set)
-
-        self.scrollbar_campos.place(x=1570, y=190, height=430)
-        self.canvas_campos.create_window((0, 0), window=self.frame_campos, anchor="nw")
-
-        # Botões de ação para edição
-        tk.Button(self, text="Salvar", command=self.salvar_item,
-                bg="#27ae60", fg="white", font=("Arial", 14)).place(x=850, y=640, width=150, height=40)
-        
-        tk.Button(self, text="Cancelar", command=self.cancelar_edicao,
-                bg="#95a5a6", fg="white", font=("Arial", 14)).place(x=1010, y=640, width=150, height=40)
-
-        # Dicionário para armazenar os widgets de entrada
-        self.campos_entrada = {}
-
-    def atualizar_dados(self):
-        """Atualiza os dados da tabela atual"""
-        if not self.tabela_atual:
-            messagebox.showwarning("Aviso", "Selecione uma tabela primeiro!")
-            return
-        
-        # Recarrega os dados da tabela atual
-        self.carregar_dados_tabela()
-        messagebox.showinfo("Sucesso", f"Dados da tabela '{self.tabela_atual}' atualizados!")
+    def limpar_container(self):
+        """Limpa o container de conteúdo"""
+        for widget in self.container_conteudo.winfo_children():
+            widget.destroy()
 
     def on_tabela_selecionada(self, event=None):
-        """Chamado quando uma tabela é selecionada no combobox"""
+        """Chamado quando uma tabela é selecionada"""
         self.tabela_atual = self.combo_tabelas.get()
-        self.carregar_dados_tabela()
-        self.limpar_campos_edicao()
+        self.limpar_container()
+        
+        # Chama o template correspondente
+        if self.tabela_atual in self.templates_tabelas:
+            self.templates_tabelas[self.tabela_atual]()
 
-    def carregar_dados_tabela(self):
-        """Carrega os dados da tabela selecionada"""
-        if not self.tabela_atual:
+    # ==================== TEMPLATES DE TABELAS ==================== #
+    # itens #
+    def template_itens(self):
+        """Template para tabela de Itens"""
+        self.limpar_container()
+
+        tk.Label(self.container_conteudo, text="ITENS GENÉRICOS", 
+                fg="white", bg="#1a0869", font=("Arial", 18, "bold")
+                ).place(x=0, y=0, width=1400, height=50)
+
+        # Frame da Tabela
+        tree_frame = tk.Frame(self.container_conteudo, bg="#2a1f4a")
+        tree_frame.place(x=0, y=60, width=1400, height=580)
+
+        self.tree_itens = ttk.Treeview(tree_frame, style="Custom.Treeview",
+                                    columns=("Nome", "Peso"),
+                                    show="headings")
+        for col in ("Nome", "Peso"):
+            self.tree_itens.heading(col, text=col)
+            self.tree_itens.column(col, anchor="center", width=300)
+        self.tree_itens.pack(fill="both", expand=True)
+
+        self.carregar_itens_tree()
+
+        # --- Funções internas ---
+        def validar_campos(data, editar=False):
+            if not data["nome"]:
+                messagebox.showwarning("Campo obrigatório", "O campo 'Nome' é obrigatório.")
+                return False
+            if data["peso"]:
+                try:
+                    data["peso"] = float(data["peso"])
+                except ValueError:
+                    messagebox.showwarning("Valor inválido", "O campo 'Peso' deve ser numérico.")
+                    return False
+            else:
+                data["peso"] = None
+
+            if not editar:
+                itens = D.carregar_itens()
+                if data["nome"] in itens:
+                    messagebox.showwarning("Duplicado", f"Já existe um item com o nome '{data['nome']}'.")
+                    return False
+            return True
+
+        def novo_item():
+            popup = tk.Toplevel(self)
+            popup.title("Novo Item")
+            popup.geometry("400x250")
+            popup.config(bg="#1a0869")
+
+            campos = ["Nome", "Peso"]
+            entradas = {}
+            for i, campo in enumerate(campos):
+                tk.Label(popup, text=campo, fg="white", bg="#1a0869",
+                        font=("Arial", 12, "bold")).place(x=30, y=30 + i*70)
+                entrada = tk.Entry(popup, font=("Arial", 12))
+                entrada.place(x=150, y=30 + i*70, width=200)
+                entradas[campo] = entrada
+
+            def salvar():
+                data = {campo.lower(): entradas[campo].get().strip() for campo in campos}
+                if not validar_campos(data):
+                    return
+                if D.salvar_itens(data):
+                    self.carregar_itens_tree()
+                    messagebox.showinfo("Sucesso", f"Item '{data['nome']}' criado com sucesso.")
+                    popup.destroy()
+                else:
+                    messagebox.showerror("Erro", "Erro ao criar Item.")
+
+            tk.Button(popup, text="Salvar", command=salvar,
+                    bg="#0d7377", fg="white", font=("Arial", 14)
+                    ).place(x=130, y=160, width=140, height=40)
+
+        def editar_item():
+            selected = self.tree_itens.selection()
+            if not selected:
+                messagebox.showwarning("Nenhum item selecionado", "Selecione um item para editar.")
+                return
+            item = self.tree_itens.item(selected[0], "values")
+            nome_original = item[0]
+
+            popup = tk.Toplevel(self)
+            popup.title("Editar Item")
+            popup.geometry("400x250")
+            popup.config(bg="#1a0869")
+
+            campos = ["Nome", "Peso"]
+            entradas = {}
+            for i, campo in enumerate(campos):
+                tk.Label(popup, text=campo, fg="white", bg="#1a0869",
+                        font=("Arial", 12, "bold")).place(x=30, y=30 + i*70)
+                entrada = tk.Entry(popup, font=("Arial", 12))
+                entrada.place(x=150, y=30 + i*70, width=200)
+                entrada.insert(0, item[i])
+                entradas[campo] = entrada
+
+            def salvar():
+                data = {campo.lower(): entradas[campo].get().strip() for campo in campos}
+                if not validar_campos(data, editar=True):
+                    return
+                if D.editar_itens(nome_original, data):
+                    self.carregar_itens_tree()
+                    messagebox.showinfo("Sucesso", f"Item '{data['nome']}' atualizado com sucesso.")
+                    popup.destroy()
+                else:
+                    messagebox.showerror("Erro", "Erro ao editar Item.")
+
+            tk.Button(popup, text="Salvar", command=salvar,
+                    bg="#f39c12", fg="white", font=("Arial", 14)
+                    ).place(x=130, y=160, width=140, height=40)
+
+        def remover_item():
+            selected = self.tree_itens.selection()
+            if not selected:
+                messagebox.showwarning("Nenhum item selecionado", "Selecione um item para remover.")
+                return
+            item = self.tree_itens.item(selected[0], "values")
+            nome = item[0]
+
+            confirm = messagebox.askyesno("Confirmar exclusão", f"Tem certeza que deseja remover '{nome}'?")
+            if not confirm:
+                return
+
+            if D.remover_itens(nome):
+                self.carregar_itens_tree()
+                messagebox.showinfo("Removido", f"Item '{nome}' foi removido com sucesso.")
+            else:
+                messagebox.showerror("Erro", f"Erro ao remover Item '{nome}'.")
+
+        # --- Botões ---
+        btn_width = 150
+        btn_spacing = 150
+        total_width = btn_width * 3 + btn_spacing * 2
+        start_x = (1000 - total_width) // 2
+
+        tk.Button(self.container_conteudo, text="Novo", bg="#0d7377", fg="white",
+                font=("Arial", 14), command=novo_item).place(x=start_x, y=650, width=btn_width, height=40)
+        tk.Button(self.container_conteudo, text="Editar", bg="#f39c12", fg="white",
+                font=("Arial", 14), command=editar_item).place(x=start_x + btn_spacing, y=650, width=btn_width, height=40)
+        tk.Button(self.container_conteudo, text="Remover", bg="#e74c3c", fg="white",
+                font=("Arial", 14), command=remover_item).place(x=start_x + btn_spacing * 2, y=650, width=btn_width, height=40)
+
+    def carregar_itens_tree(self):
+        """Carrega e exibe todos os itens do banco"""
+        if not hasattr(self, "tree_itens"):
             return
+        for i in self.tree_itens.get_children():
+            self.tree_itens.delete(i)
+        try:
+            itens = D.carregar_itens()
+            for nome, data in itens.items():
+                self.tree_itens.insert("", "end", values=(
+                    data.get("nome", ""),
+                    data.get("peso", "")
+                ))
+        except Exception as e:
+            messagebox.showerror("Erro", f"Erro ao carregar tabela Itens:\n{e}")
+    # itens #
+
+    # municoes #
+    def template_municoes(self):
+        """Template para tabela de Munições"""
+        self.limpar_container()
+
+        tk.Label(self.container_conteudo, text="MUNIÇÕES",
+                fg="white", bg="#1a0869", font=("Arial", 18, "bold")
+                ).place(x=0, y=0, width=1400, height=50)
+
+        # Frame da Tabela
+        tree_frame = tk.Frame(self.container_conteudo, bg="#2a1f4a")
+        tree_frame.place(x=0, y=60, width=1400, height=580)
+
+        self.tree_municoes = ttk.Treeview(tree_frame, style="Custom.Treeview",
+                                        columns=("Nome", "Calibre", "Dano", "Perfuração"),
+                                        show="headings")
+        for col in ("Nome", "Calibre", "Dano", "Perfuração"):
+            self.tree_municoes.heading(col, text=col)
+            self.tree_municoes.column(col, anchor="center", width=200)
+        self.tree_municoes.pack(fill="both", expand=True)
+
+        self.carregar_municoes_tree()
+
+        # --- Funções internas ---
+        def validar_campos(data, editar=False):
+            if not data["nome"]:
+                messagebox.showwarning("Campo obrigatório", "O campo 'Nome' é obrigatório.")
+                return False
+
+            # Dano
+            if data["dano"]:
+                try:
+                    data["dano"] = int(data["dano"])
+                except ValueError:
+                    messagebox.showwarning("Valor inválido", "O campo 'Dano' deve ser inteiro.")
+                    return False
+            else:
+                data["dano"] = None
+
+            # Perfuração
+            if data["perfuracao"]:
+                try:
+                    data["perfuracao"] = int(data["perfuracao"])
+                except ValueError:
+                    messagebox.showwarning("Valor inválido", "O campo 'Perfuração' deve ser inteiro.")
+                    return False
+            else:
+                data["perfuracao"] = None
+
+            # Calibre
+            if not data["calibre"]:
+                data["calibre"] = None
+
+            if not editar:
+                municoes = D.carregar_municoes()
+                if data["nome"] in municoes:
+                    messagebox.showwarning("Duplicado", f"Já existe uma munição com o nome '{data['nome']}'.")
+                    return False
+
+            return True
+
+        def novo_municao():
+            popup = tk.Toplevel(self)
+            popup.title("Nova Munição")
+            popup.geometry("400x350")
+            popup.config(bg="#1a0869")
+
+            campos = ["Nome", "Calibre", "Dano", "Perfuração"]
+            entradas = {}
+            for i, campo in enumerate(campos):
+                tk.Label(popup, text=campo, fg="white", bg="#1a0869",
+                        font=("Arial", 12, "bold")).place(x=30, y=30 + i*60)
+                entrada = tk.Entry(popup, font=("Arial", 12))
+                entrada.place(x=150, y=30 + i*60, width=200)
+                entradas[campo] = entrada
+
+            def salvar():
+                data = {campo.lower().replace(" ", "_"): entradas[campo].get().strip() for campo in campos}
+                if not validar_campos(data):
+                    return
+                if D.salvar_municoes(data):
+                    self.carregar_municoes_tree()
+                    messagebox.showinfo("Sucesso", f"Munição '{data['nome']}' criada com sucesso.")
+                    popup.destroy()
+                else:
+                    messagebox.showerror("Erro", "Erro ao criar Munição.")
+
+            tk.Button(popup, text="Salvar", command=salvar,
+                    bg="#0d7377", fg="white", font=("Arial", 14)
+                    ).place(x=130, y=280, width=140, height=40)
+
+        def editar_municao():
+            selected = self.tree_municoes.selection()
+            if not selected:
+                messagebox.showwarning("Nenhum item selecionado", "Selecione uma munição para editar.")
+                return
+            item = self.tree_municoes.item(selected[0], "values")
+            nome_original = item[0]
+
+            popup = tk.Toplevel(self)
+            popup.title("Editar Munição")
+            popup.geometry("400x350")
+            popup.config(bg="#1a0869")
+
+            campos = ["Nome", "Calibre", "Dano", "Perfuração"]
+            entradas = {}
+            for i, campo in enumerate(campos):
+                tk.Label(popup, text=campo, fg="white", bg="#1a0869",
+                        font=("Arial", 12, "bold")).place(x=30, y=30 + i*60)
+                entrada = tk.Entry(popup, font=("Arial", 12))
+                entrada.place(x=150, y=30 + i*60, width=200)
+                entrada.insert(0, item[i])
+                entradas[campo] = entrada
+
+            def salvar():
+                data = {campo.lower().replace(" ", "_"): entradas[campo].get().strip() for campo in campos}
+                if not validar_campos(data, editar=True):
+                    return
+                if D.editar_municoes(nome_original, data):
+                    self.carregar_municoes_tree()
+                    messagebox.showinfo("Sucesso", f"Munição '{data['nome']}' atualizada com sucesso.")
+                    popup.destroy()
+                else:
+                    messagebox.showerror("Erro", "Erro ao editar Munição.")
+
+            tk.Button(popup, text="Salvar", command=salvar,
+                    bg="#f39c12", fg="white", font=("Arial", 14)
+                    ).place(x=130, y=280, width=140, height=40)
+
+        def remover_municao():
+            selected = self.tree_municoes.selection()
+            if not selected:
+                messagebox.showwarning("Nenhum item selecionado", "Selecione uma munição para remover.")
+                return
+            item = self.tree_municoes.item(selected[0], "values")
+            nome = item[0]
+
+            confirm = messagebox.askyesno("Confirmar exclusão", f"Tem certeza que deseja remover '{nome}'?")
+            if not confirm:
+                return
+
+            if D.remover_municoes(nome):
+                self.carregar_municoes_tree()
+                messagebox.showinfo("Removido", f"Munição '{nome}' foi removida com sucesso.")
+            else:
+                messagebox.showerror("Erro", f"Erro ao remover Munição '{nome}'.")
+
+        # --- Botões ---
+        btn_width = 150
+        btn_spacing = 150
+        total_width = btn_width * 3 + btn_spacing * 2
+        start_x = (1000 - total_width) // 2
+
+        tk.Button(self.container_conteudo, text="Novo", bg="#0d7377", fg="white",
+                font=("Arial", 14), command=novo_municao).place(x=start_x, y=650, width=btn_width, height=40)
+        tk.Button(self.container_conteudo, text="Editar", bg="#f39c12", fg="white",
+                font=("Arial", 14), command=editar_municao).place(x=start_x + btn_spacing, y=650, width=btn_width, height=40)
+        tk.Button(self.container_conteudo, text="Remover", bg="#e74c3c", fg="white",
+                font=("Arial", 14), command=remover_municao).place(x=start_x + btn_spacing * 2, y=650, width=btn_width, height=40)
+
+    def carregar_municoes_tree(self):
+        """Carrega e exibe todas as munições do banco"""
+        if not hasattr(self, "tree_municoes"):
+            return
+        for i in self.tree_municoes.get_children():
+            self.tree_municoes.delete(i)
+        try:
+            municoes = D.carregar_municoes()
+            for nome, data in municoes.items():
+                self.tree_municoes.insert("", "end", values=(
+                    data.get("nome", ""),
+                    data.get("calibre", ""),
+                    data.get("dano", ""),
+                    data.get("perfuracao", "")
+                ))
+        except Exception as e:
+            messagebox.showerror("Erro", f"Erro ao carregar tabela Munições:\n{e}")
+    # municoes #
+
+    # explosivos #
+    def template_explosivos(self):
+        """Template para tabela de Explosivos"""
+        self.limpar_container()
+
+        tk.Label(self.container_conteudo, text="EXPLOSIVOS",
+                fg="white", bg="#1a0869", font=("Arial", 18, "bold")
+                ).place(x=0, y=0, width=1400, height=50)
+
+        # Frame da Tabela
+        tree_frame = tk.Frame(self.container_conteudo, bg="#2a1f4a")
+        tree_frame.place(x=0, y=60, width=1400, height=580)
+
+        self.tree_explosivos = ttk.Treeview(tree_frame, style="Custom.Treeview",
+                                            columns=("Nome", "Peso", "Raio", "Dano", "Tipo Dano"),
+                                            show="headings")
+        for col in ("Nome", "Peso", "Raio", "Dano", "Tipo Dano"):
+            self.tree_explosivos.heading(col, text=col)
+            self.tree_explosivos.column(col, anchor="center", width=200)
+        self.tree_explosivos.pack(fill="both", expand=True)
+
+        self.carregar_explosivos_tree()
+
+        # --- Funções internas ---
+        def validar_campos(data, editar=False):
+            if not data["nome"]:
+                messagebox.showwarning("Campo obrigatório", "O campo 'Nome' é obrigatório.")
+                return False
+
+            # Peso
+            if data["peso"]:
+                try:
+                    data["peso"] = float(data["peso"])
+                except ValueError:
+                    messagebox.showwarning("Valor inválido", "O campo 'Peso' deve ser numérico.")
+                    return False
+            else:
+                data["peso"] = None
+
+            # Raio
+            if data["raio"]:
+                try:
+                    data["raio"] = int(data["raio"])
+                except ValueError:
+                    messagebox.showwarning("Valor inválido", "O campo 'Raio' deve ser inteiro.")
+                    return False
+            else:
+                data["raio"] = None
+
+            # Dano
+            if data["dano"]:
+                try:
+                    data["dano"] = int(data["dano"])
+                except ValueError:
+                    messagebox.showwarning("Valor inválido", "O campo 'Dano' deve ser inteiro.")
+                    return False
+            else:
+                data["dano"] = None
+
+            # Tipo de dano
+            if not data["tipo_dano"]:
+                data["tipo_dano"] = None
+
+            if not editar:
+                explosivos = D.carregar_explosivos()
+                if data["nome"] in explosivos:
+                    messagebox.showwarning("Duplicado", f"Já existe um explosivo com o nome '{data['nome']}'.")
+                    return False
+
+            return True
+
+        def novo_explosivo():
+            popup = tk.Toplevel(self)
+            popup.title("Novo Explosivo")
+            popup.geometry("400x400")
+            popup.config(bg="#1a0869")
+
+            campos = ["Nome", "Peso", "Raio", "Dano", "Tipo Dano"]
+            entradas = {}
+            for i, campo in enumerate(campos):
+                tk.Label(popup, text=campo, fg="white", bg="#1a0869",
+                        font=("Arial", 12, "bold")).place(x=30, y=30 + i*60)
+                entrada = tk.Entry(popup, font=("Arial", 12))
+                entrada.place(x=150, y=30 + i*60, width=200)
+                entradas[campo] = entrada
+
+            def salvar():
+                data = {campo.lower().replace(" ", "_"): entradas[campo].get().strip() for campo in campos}
+                if not validar_campos(data):
+                    return
+                if D.salvar_explosivos(data):
+                    self.carregar_explosivos_tree()
+                    messagebox.showinfo("Sucesso", f"Explosivo '{data['nome']}' criado com sucesso.")
+                    popup.destroy()
+                else:
+                    messagebox.showerror("Erro", "Erro ao criar Explosivo.")
+
+            tk.Button(popup, text="Salvar", command=salvar,
+                    bg="#0d7377", fg="white", font=("Arial", 14)
+                    ).place(x=130, y=320, width=140, height=40)
+
+        def editar_explosivo():
+            selected = self.tree_explosivos.selection()
+            if not selected:
+                messagebox.showwarning("Nenhum item selecionado", "Selecione um explosivo para editar.")
+                return
+            item = self.tree_explosivos.item(selected[0], "values")
+            nome_original = item[0]
+
+            popup = tk.Toplevel(self)
+            popup.title("Editar Explosivo")
+            popup.geometry("400x400")
+            popup.config(bg="#1a0869")
+
+            campos = ["Nome", "Peso", "Raio", "Dano", "Tipo Dano"]
+            entradas = {}
+            for i, campo in enumerate(campos):
+                tk.Label(popup, text=campo, fg="white", bg="#1a0869",
+                        font=("Arial", 12, "bold")).place(x=30, y=30 + i*60)
+                entrada = tk.Entry(popup, font=("Arial", 12))
+                entrada.place(x=150, y=30 + i*60, width=200)
+                entrada.insert(0, item[i])
+                entradas[campo] = entrada
+
+            def salvar():
+                data = {campo.lower().replace(" ", "_"): entradas[campo].get().strip() for campo in campos}
+                if not validar_campos(data, editar=True):
+                    return
+                if D.editar_explosivos(nome_original, data):
+                    self.carregar_explosivos_tree()
+                    messagebox.showinfo("Sucesso", f"Explosivo '{data['nome']}' atualizado com sucesso.")
+                    popup.destroy()
+                else:
+                    messagebox.showerror("Erro", "Erro ao editar Explosivo.")
+
+            tk.Button(popup, text="Salvar", command=salvar,
+                    bg="#f39c12", fg="white", font=("Arial", 14)
+                    ).place(x=130, y=320, width=140, height=40)
+
+        def remover_explosivo():
+            selected = self.tree_explosivos.selection()
+            if not selected:
+                messagebox.showwarning("Nenhum item selecionado", "Selecione um explosivo para remover.")
+                return
+            item = self.tree_explosivos.item(selected[0], "values")
+            nome = item[0]
+
+            confirm = messagebox.askyesno("Confirmar exclusão", f"Tem certeza que deseja remover '{nome}'?")
+            if not confirm:
+                return
+
+            if D.remover_explosivos(nome):
+                self.carregar_explosivos_tree()
+                messagebox.showinfo("Removido", f"Explosivo '{nome}' foi removido com sucesso.")
+            else:
+                messagebox.showerror("Erro", f"Erro ao remover Explosivo '{nome}'.")
+
+        # --- Botões ---
+        btn_width = 150
+        btn_spacing = 150
+        total_width = btn_width * 3 + btn_spacing * 2
+        start_x = (1000 - total_width) // 2
+
+        tk.Button(self.container_conteudo, text="Novo", bg="#0d7377", fg="white",
+                font=("Arial", 14), command=novo_explosivo).place(x=start_x, y=650, width=btn_width, height=40)
+        tk.Button(self.container_conteudo, text="Editar", bg="#f39c12", fg="white",
+                font=("Arial", 14), command=editar_explosivo).place(x=start_x + btn_spacing, y=650, width=btn_width, height=40)
+        tk.Button(self.container_conteudo, text="Remover", bg="#e74c3c", fg="white",
+                font=("Arial", 14), command=remover_explosivo).place(x=start_x + btn_spacing * 2, y=650, width=btn_width, height=40)
+
+    def carregar_explosivos_tree(self):
+        """Carrega e exibe todos os explosivos do banco"""
+        if not hasattr(self, "tree_explosivos"):
+            return
+        for i in self.tree_explosivos.get_children():
+            self.tree_explosivos.delete(i)
+        try:
+            explosivos = D.carregar_explosivos()
+            for nome, data in explosivos.items():
+                self.tree_explosivos.insert("", "end", values=(
+                    data.get("nome", ""),
+                    data.get("peso", ""),
+                    data.get("raio", ""),
+                    data.get("dano", ""),
+                    data.get("tipo_dano", "")
+                ))
+        except Exception as e:
+            messagebox.showerror("Erro", f"Erro ao carregar tabela Explosivos:\n{e}")
+    # explosivos #
+
+    # consumiveis #
+    def template_consumiveis(self):
+        """Template para tabela de Consumíveis"""
+        self.limpar_container()
+
+        tk.Label(self.container_conteudo, text="CONSUMÍVEIS",
+                fg="white", bg="#1a0869", font=("Arial", 18, "bold")
+                ).place(x=0, y=0, width=1400, height=50)
+
+        # Frame da Tabela
+        tree_frame = tk.Frame(self.container_conteudo, bg="#2a1f4a")
+        tree_frame.place(x=0, y=60, width=1400, height=580)
+
+        self.tree_consumiveis = ttk.Treeview(tree_frame, style="Custom.Treeview",
+                                            columns=("Nome", "Peso", "Cura", "Energia"),
+                                            show="headings")
+        for col in ("Nome", "Peso", "Cura", "Energia"):
+            self.tree_consumiveis.heading(col, text=col)
+            self.tree_consumiveis.column(col, anchor="center", width=200)
+        self.tree_consumiveis.pack(fill="both", expand=True)
+
+        self.carregar_consumiveis_tree()
+
+        # --- Funções internas ---
+        def validar_campos(data, editar=False):
+            if not data["nome"]:
+                messagebox.showwarning("Campo obrigatório", "O campo 'Nome' é obrigatório.")
+                return False
+
+            # Peso
+            if data["peso"]:
+                try:
+                    data["peso"] = float(data["peso"])
+                except ValueError:
+                    messagebox.showwarning("Valor inválido", "O campo 'Peso' deve ser numérico.")
+                    return False
+            else:
+                data["peso"] = None
+
+            # Cura
+            if data["cura"]:
+                try:
+                    data["cura"] = int(data["cura"])
+                except ValueError:
+                    messagebox.showwarning("Valor inválido", "O campo 'Cura' deve ser inteiro.")
+                    return False
+            else:
+                data["cura"] = None
+
+            # Energia
+            if data["energia"]:
+                try:
+                    data["energia"] = int(data["energia"])
+                except ValueError:
+                    messagebox.showwarning("Valor inválido", "O campo 'Energia' deve ser inteiro.")
+                    return False
+            else:
+                data["energia"] = None
+
+            if not editar:
+                consumiveis = D.carregar_consumiveis()
+                if data["nome"] in consumiveis:
+                    messagebox.showwarning("Duplicado", f"Já existe um consumível com o nome '{data['nome']}'.")
+                    return False
+
+            return True
+
+        def novo_consumivel():
+            popup = tk.Toplevel(self)
+            popup.title("Novo Consumível")
+            popup.geometry("400x350")
+            popup.config(bg="#1a0869")
+
+            campos = ["Nome", "Peso", "Cura", "Energia"]
+            entradas = {}
+            for i, campo in enumerate(campos):
+                tk.Label(popup, text=campo, fg="white", bg="#1a0869",
+                        font=("Arial", 12, "bold")).place(x=30, y=30 + i*70)
+                entrada = tk.Entry(popup, font=("Arial", 12))
+                entrada.place(x=150, y=30 + i*70, width=200)
+                entradas[campo] = entrada
+
+            def salvar():
+                data = {campo.lower(): entradas[campo].get().strip() for campo in campos}
+                if not validar_campos(data):
+                    return
+                if D.salvar_consumiveis(data):
+                    self.carregar_consumiveis_tree()
+                    messagebox.showinfo("Sucesso", f"Consumível '{data['nome']}' criado com sucesso.")
+                    popup.destroy()
+                else:
+                    messagebox.showerror("Erro", "Erro ao criar Consumível.")
+
+            tk.Button(popup, text="Salvar", command=salvar,
+                    bg="#0d7377", fg="white", font=("Arial", 14)
+                    ).place(x=130, y=260, width=140, height=40)
+
+        def editar_consumivel():
+            selected = self.tree_consumiveis.selection()
+            if not selected:
+                messagebox.showwarning("Nenhum item selecionado", "Selecione um consumível para editar.")
+                return
+            item = self.tree_consumiveis.item(selected[0], "values")
+            nome_original = item[0]
+
+            popup = tk.Toplevel(self)
+            popup.title("Editar Consumível")
+            popup.geometry("400x350")
+            popup.config(bg="#1a0869")
+
+            campos = ["Nome", "Peso", "Cura", "Energia"]
+            entradas = {}
+            for i, campo in enumerate(campos):
+                tk.Label(popup, text=campo, fg="white", bg="#1a0869",
+                        font=("Arial", 12, "bold")).place(x=30, y=30 + i*70)
+                entrada = tk.Entry(popup, font=("Arial", 12))
+                entrada.place(x=150, y=30 + i*70, width=200)
+                entrada.insert(0, item[i])
+                entradas[campo] = entrada
+
+            def salvar():
+                data = {campo.lower(): entradas[campo].get().strip() for campo in campos}
+                if not validar_campos(data, editar=True):
+                    return
+                if D.editar_consumiveis(nome_original, data):
+                    self.carregar_consumiveis_tree()
+                    messagebox.showinfo("Sucesso", f"Consumível '{data['nome']}' atualizado com sucesso.")
+                    popup.destroy()
+                else:
+                    messagebox.showerror("Erro", "Erro ao editar Consumível.")
+
+            tk.Button(popup, text="Salvar", command=salvar,
+                    bg="#f39c12", fg="white", font=("Arial", 14)
+                    ).place(x=130, y=260, width=140, height=40)
+
+        def remover_consumivel():
+            selected = self.tree_consumiveis.selection()
+            if not selected:
+                messagebox.showwarning("Nenhum item selecionado", "Selecione um consumível para remover.")
+                return
+            item = self.tree_consumiveis.item(selected[0], "values")
+            nome = item[0]
+
+            confirm = messagebox.askyesno("Confirmar exclusão", f"Tem certeza que deseja remover '{nome}'?")
+            if not confirm:
+                return
+
+            if D.remover_consumiveis(nome):
+                self.carregar_consumiveis_tree()
+                messagebox.showinfo("Removido", f"Consumível '{nome}' foi removido com sucesso.")
+            else:
+                messagebox.showerror("Erro", f"Erro ao remover Consumível '{nome}'.")
+
+        # --- Botões ---
+        btn_width = 150
+        btn_spacing = 150
+        total_width = btn_width * 3 + btn_spacing * 2
+        start_x = (1000 - total_width) // 2
+
+        tk.Button(self.container_conteudo, text="Novo", bg="#0d7377", fg="white",
+                font=("Arial", 14), command=novo_consumivel).place(x=start_x, y=650, width=btn_width, height=40)
+        tk.Button(self.container_conteudo, text="Editar", bg="#f39c12", fg="white",
+                font=("Arial", 14), command=editar_consumivel).place(x=start_x + btn_spacing, y=650, width=btn_width, height=40)
+        tk.Button(self.container_conteudo, text="Remover", bg="#e74c3c", fg="white",
+                font=("Arial", 14), command=remover_consumivel).place(x=start_x + btn_spacing * 2, y=650, width=btn_width, height=40)
+
+    def carregar_consumiveis_tree(self):
+        """Carrega e exibe todos os consumíveis do banco"""
+        if not hasattr(self, "tree_consumiveis"):
+            return
+        for i in self.tree_consumiveis.get_children():
+            self.tree_consumiveis.delete(i)
+        try:
+            consumiveis = D.carregar_consumiveis()
+            for nome, data in consumiveis.items():
+                self.tree_consumiveis.insert("", "end", values=(
+                    data.get("nome", ""),
+                    data.get("peso", ""),
+                    data.get("cura", ""),
+                    data.get("energia", "")
+                ))
+        except Exception as e:
+            messagebox.showerror("Erro", f"Erro ao carregar tabela Consumíveis:\n{e}")
+    # consumiveis #
+
+    # melhorias #
+    def template_melhorias(self):
+        """Template para tabela de Melhorias"""
+        self.limpar_container()
+
+        tk.Label(self.container_conteudo, text="MELHORIAS",
+                fg="white", bg="#1a0869", font=("Arial", 18, "bold")
+                ).place(x=0, y=0, width=1400, height=50)
+
+        tree_frame = tk.Frame(self.container_conteudo, bg="#2a1f4a")
+        tree_frame.place(x=0, y=60, width=1400, height=580)
+
+        self.tree_melhorias = ttk.Treeview(tree_frame, style="Custom.Treeview",
+                                        columns=("Nome", "Peso", "Tipo", "Modificadores"),
+                                        show="headings")
+        for col in ("Nome", "Peso", "Tipo", "Modificadores"):
+            self.tree_melhorias.heading(col, text=col)
+            self.tree_melhorias.column(col, anchor="center", width=200)
+        self.tree_melhorias.pack(fill="both", expand=True)
+
+        self.carregar_melhorias_tree()
+
+        # --- Funções internas ---
+        def validar_campos(data, editar=False):
+            if not data["nome"]:
+                messagebox.showwarning("Campo obrigatório", "O campo 'Nome' é obrigatório.")
+                return False
+
+            if data["peso"]:
+                try:
+                    data["peso"] = float(data["peso"])
+                except ValueError:
+                    messagebox.showwarning("Valor inválido", "O campo 'Peso' deve ser numérico.")
+                    return False
+            else:
+                data["peso"] = None
+
+            if not data["tipo"]:
+                data["tipo"] = None
+            if not data["modificadores"]:
+                data["modificadores"] = None
+
+            if not editar:
+                melhorias = D.carregar_melhorias()
+                if data["nome"] in melhorias:
+                    messagebox.showwarning("Duplicado", f"Já existe uma melhoria com o nome '{data['nome']}'.")
+                    return False
+
+            return True
+
+        def novo_melhoria():
+            popup = tk.Toplevel(self)
+            popup.title("Nova Melhoria")
+            popup.geometry("400x400")
+            popup.config(bg="#1a0869")
+
+            campos = ["Nome", "Peso", "Tipo", "Modificadores"]
+            entradas = {}
+            for i, campo in enumerate(campos):
+                tk.Label(popup, text=campo, fg="white", bg="#1a0869",
+                        font=("Arial", 12, "bold")).place(x=30, y=30 + i*60)
+                entrada = tk.Entry(popup, font=("Arial", 12))
+                entrada.place(x=150, y=30 + i*60, width=200)
+                entradas[campo] = entrada
+
+            def salvar():
+                data = {campo.lower().replace(" ", "_"): entradas[campo].get().strip() for campo in campos}
+                if not validar_campos(data):
+                    return
+                if D.salvar_melhoria(data):
+                    self.carregar_melhorias_tree()
+                    messagebox.showinfo("Sucesso", f"Melhoria '{data['nome']}' criada com sucesso.")
+                    popup.destroy()
+                else:
+                    messagebox.showerror("Erro", "Erro ao criar Melhoria.")
+
+            tk.Button(popup, text="Salvar", command=salvar,
+                    bg="#0d7377", fg="white", font=("Arial", 14)
+                    ).place(x=130, y=320, width=140, height=40)
+
+        def editar_melhoria():
+            selected = self.tree_melhorias.selection()
+            if not selected:
+                messagebox.showwarning("Nenhum item selecionado", "Selecione uma melhoria para editar.")
+                return
+            item = self.tree_melhorias.item(selected[0], "values")
+            nome_original = item[0]
+
+            popup = tk.Toplevel(self)
+            popup.title("Editar Melhoria")
+            popup.geometry("400x400")
+            popup.config(bg="#1a0869")
+
+            campos = ["Nome", "Peso", "Tipo", "Modificadores"]
+            entradas = {}
+            for i, campo in enumerate(campos):
+                tk.Label(popup, text=campo, fg="white", bg="#1a0869",
+                        font=("Arial", 12, "bold")).place(x=30, y=30 + i*60)
+                entrada = tk.Entry(popup, font=("Arial", 12))
+                entrada.place(x=150, y=30 + i*60, width=200)
+                entrada.insert(0, item[i])
+                entradas[campo] = entrada
+
+            def salvar():
+                data = {campo.lower().replace(" ", "_"): entradas[campo].get().strip() for campo in campos}
+                if not validar_campos(data, editar=True):
+                    return
+                if D.editar_melhoria(nome_original, data):
+                    self.carregar_melhorias_tree()
+                    messagebox.showinfo("Sucesso", f"Melhoria '{data['nome']}' atualizada com sucesso.")
+                    popup.destroy()
+                else:
+                    messagebox.showerror("Erro", "Erro ao editar Melhoria.")
+
+            tk.Button(popup, text="Salvar", command=salvar,
+                    bg="#f39c12", fg="white", font=("Arial", 14)
+                    ).place(x=130, y=320, width=140, height=40)
+
+        def remover_melhoria():
+            selected = self.tree_melhorias.selection()
+            if not selected:
+                messagebox.showwarning("Nenhum item selecionado", "Selecione uma melhoria para remover.")
+                return
+            item = self.tree_melhorias.item(selected[0], "values")
+            nome = item[0]
+
+            confirm = messagebox.askyesno("Confirmar exclusão", f"Tem certeza que deseja remover '{nome}'?")
+            if not confirm:
+                return
+
+            if D.remover_melhoria(nome):
+                self.carregar_melhorias_tree()
+                messagebox.showinfo("Removido", f"Melhoria '{nome}' foi removida com sucesso.")
+            else:
+                messagebox.showerror("Erro", f"Erro ao remover Melhoria '{nome}'.")
+
+        # --- Botões ---
+        btn_width = 150
+        btn_spacing = 150
+        total_width = btn_width * 3 + btn_spacing * 2
+        start_x = (1000 - total_width) // 2
+
+        tk.Button(self.container_conteudo, text="Novo", bg="#0d7377", fg="white",
+                font=("Arial", 14), command=novo_melhoria).place(x=start_x, y=650, width=btn_width, height=40)
+        tk.Button(self.container_conteudo, text="Editar", bg="#f39c12", fg="white",
+                font=("Arial", 14), command=editar_melhoria).place(x=start_x + btn_spacing, y=650, width=btn_width, height=40)
+        tk.Button(self.container_conteudo, text="Remover", bg="#e74c3c", fg="white",
+                font=("Arial", 14), command=remover_melhoria).place(x=start_x + btn_spacing * 2, y=650, width=btn_width, height=40)
+
+    def carregar_melhorias_tree(self):
+        """Carrega e exibe todas as melhorias do banco"""
+        if not hasattr(self, "tree_melhorias"):
+            return
+        for i in self.tree_melhorias.get_children():
+            self.tree_melhorias.delete(i)
+        try:
+            melhorias = D.carregar_melhorias()
+            for nome, data in melhorias.items():
+                self.tree_melhorias.insert("", "end", values=(
+                    data.get("nome", ""),
+                    data.get("peso", ""),
+                    data.get("tipo", ""),
+                    data.get("modificadores", "")
+                ))
+        except Exception as e:
+            messagebox.showerror("Erro", f"Erro ao carregar tabela Melhorias:\n{e}")
+    # melhorias #
+    
+    # Ranged #
+    def template_ranged(self):
+        """Template para tabela de Armas de Fogo"""
+        self.limpar_container()
+
+        tk.Label(self.container_conteudo, text="ARMAS DE FOGO",
+                fg="white", bg="#1a0869", font=("Arial", 18, "bold")
+                ).place(x=0, y=0, width=1400, height=50)
+
+        tree_frame = tk.Frame(self.container_conteudo, bg="#2a1f4a")
+        tree_frame.place(x=0, y=60, width=1400, height=580)
+
+        self.tree_ranged = ttk.Treeview(tree_frame, style="Custom.Treeview",
+                                        columns=("Nome", "Peso", "Classe", "Ação", "Raridade", "Calibre", "Capacidade"),
+                                        show="headings")
+        for col in ("Nome", "Peso", "Classe", "Ação", "Raridade", "Calibre", "Capacidade"):
+            self.tree_ranged.heading(col, text=col)
+            self.tree_ranged.column(col, anchor="center", width=180)
+        self.tree_ranged.pack(fill="both", expand=True)
+
+        self.carregar_ranged_tree()
+
+        # --- Funções internas ---
+        def validar_campos(data, editar=False):
+            if not data["nome"]:
+                messagebox.showwarning("Campo obrigatório", "O campo 'Nome' é obrigatório.")
+                return False
+
+            if data["peso"]:
+                try:
+                    data["peso"] = float(data["peso"])
+                except ValueError:
+                    messagebox.showwarning("Valor inválido", "O campo 'Peso' deve ser numérico.")
+                    return False
+            else:
+                data["peso"] = None
+
+            # Campos opcionais
+            for campo in ["classe", "acao", "raridade", "calibre", "capacidade"]:
+                if not data[campo]:
+                    data[campo] = None
+
+            if not editar:
+                rangeds = D.carregar_rangeds()
+                if data["nome"] in rangeds:
+                    messagebox.showwarning("Duplicado", f"Já existe uma arma de fogo com o nome '{data['nome']}'.")
+                    return False
+
+            return True
+
+        def novo_ranged():
+            popup = tk.Toplevel(self)
+            popup.title("Nova Arma de Fogo")
+            popup.geometry("450x450")
+            popup.config(bg="#1a0869")
+
+            campos = ["Nome", "Peso", "Classe", "Ação", "Raridade", "Calibre", "Capacidade"]
+            entradas = {}
+            for i, campo in enumerate(campos):
+                tk.Label(popup, text=campo, fg="white", bg="#1a0869",
+                        font=("Arial", 12, "bold")).place(x=30, y=30 + i*50)
+                entrada = tk.Entry(popup, font=("Arial", 12))
+                entrada.place(x=150, y=30 + i*50, width=250)
+                entradas[campo] = entrada
+
+            def salvar():
+                data = {campo.lower().replace(" ", "_"): entradas[campo].get().strip() for campo in campos}
+                if not validar_campos(data):
+                    return
+                if D.salvar_ranged(data):
+                    self.carregar_ranged_tree()
+                    messagebox.showinfo("Sucesso", f"Arma '{data['nome']}' criada com sucesso.")
+                    popup.destroy()
+                else:
+                    messagebox.showerror("Erro", "Erro ao criar Arma de Fogo.")
+
+            tk.Button(popup, text="Salvar", command=salvar,
+                    bg="#0d7377", fg="white", font=("Arial", 14)
+                    ).place(x=150, y=370, width=140, height=40)
+
+        def editar_ranged():
+            selected = self.tree_ranged.selection()
+            if not selected:
+                messagebox.showwarning("Nenhum item selecionado", "Selecione uma arma para editar.")
+                return
+            item = self.tree_ranged.item(selected[0], "values")
+            nome_original = item[0]
+
+            popup = tk.Toplevel(self)
+            popup.title("Editar Arma de Fogo")
+            popup.geometry("450x450")
+            popup.config(bg="#1a0869")
+
+            campos = ["Nome", "Peso", "Classe", "Ação", "Raridade", "Calibre", "Capacidade"]
+            entradas = {}
+            for i, campo in enumerate(campos):
+                tk.Label(popup, text=campo, fg="white", bg="#1a0869",
+                        font=("Arial", 12, "bold")).place(x=30, y=30 + i*50)
+                entrada = tk.Entry(popup, font=("Arial", 12))
+                entrada.place(x=150, y=30 + i*50, width=250)
+                entrada.insert(0, item[i])
+                entradas[campo] = entrada
+
+            def salvar():
+                data = {campo.lower().replace(" ", "_"): entradas[campo].get().strip() for campo in campos}
+                if not validar_campos(data, editar=True):
+                    return
+                if D.editar_ranged(nome_original, data):
+                    self.carregar_ranged_tree()
+                    messagebox.showinfo("Sucesso", f"Arma '{data['nome']}' atualizada com sucesso.")
+                    popup.destroy()
+                else:
+                    messagebox.showerror("Erro", "Erro ao editar Arma de Fogo.")
+
+            tk.Button(popup, text="Salvar", command=salvar,
+                    bg="#f39c12", fg="white", font=("Arial", 14)
+                    ).place(x=150, y=370, width=140, height=40)
+
+        def remover_ranged():
+            selected = self.tree_ranged.selection()
+            if not selected:
+                messagebox.showwarning("Nenhum item selecionado", "Selecione uma arma para remover.")
+                return
+            item = self.tree_ranged.item(selected[0], "values")
+            nome = item[0]
+
+            confirm = messagebox.askyesno("Confirmar exclusão", f"Tem certeza que deseja remover '{nome}'?")
+            if not confirm:
+                return
+
+            if D.remover_ranged(nome):
+                self.carregar_ranged_tree()
+                messagebox.showinfo("Removido", f"Arma '{nome}' foi removida com sucesso.")
+            else:
+                messagebox.showerror("Erro", f"Erro ao remover Arma '{nome}'.")
+
+        # --- Botões ---
+        btn_width = 150
+        btn_spacing = 150
+        total_width = btn_width * 3 + btn_spacing * 2
+        start_x = (1000 - total_width) // 2
+
+        tk.Button(self.container_conteudo, text="Novo", bg="#0d7377", fg="white",
+                font=("Arial", 14), command=novo_ranged).place(x=start_x, y=650, width=btn_width, height=40)
+        tk.Button(self.container_conteudo, text="Editar", bg="#f39c12", fg="white",
+                font=("Arial", 14), command=editar_ranged).place(x=start_x + btn_spacing, y=650, width=btn_width, height=40)
+        tk.Button(self.container_conteudo, text="Remover", bg="#e74c3c", fg="white",
+                font=("Arial", 14), command=remover_ranged).place(x=start_x + btn_spacing * 2, y=650, width=btn_width, height=40)
+
+    def carregar_ranged_tree(self):
+        """Carrega e exibe todas as armas de fogo do banco"""
+        if not hasattr(self, "tree_ranged"):
+            return
+        for i in self.tree_ranged.get_children():
+            self.tree_ranged.delete(i)
+        try:
+            rangeds = D.carregar_rangeds()
+            for nome, data in rangeds.items():
+                self.tree_ranged.insert("", "end", values=(
+                    data.get("nome", ""),
+                    data.get("peso", ""),
+                    data.get("classe", ""),
+                    data.get("acao", ""),
+                    data.get("raridade", ""),
+                    data.get("calibre", ""),
+                    data.get("capacidade", "")
+                ))
+        except Exception as e:
+            messagebox.showerror("Erro", f"Erro ao carregar tabela Armas de Fogo:\n{e}")
+    # Ranged #
+
+    # Melees #
+    def template_melee(self):
+        """Template para tabela de Armas Corpo a Corpo"""
+        self.limpar_container()
+
+        tk.Label(self.container_conteudo, text="ARMAS CORPO A CORPO", 
+                 fg="white", bg="#1a0869", font=("Arial", 18, "bold")
+                 ).place(x=0, y=0, width=1400, height=50)
+
+        # Frame da Tabela
+        tree_frame = tk.Frame(self.container_conteudo, bg="#2a1f4a")
+        tree_frame.place(x=0, y=60, width=1400, height=580)
+
+        self.tree_melee = ttk.Treeview(tree_frame, style="Custom.Treeview",
+                                       columns=("Nome", "Peso", "Classe", "Tipo Dano", "Raridade"),
+                                       show="headings")
+        for col in ("Nome", "Peso", "Classe", "Tipo Dano", "Raridade"):
+            self.tree_melee.heading(col, text=col)
+            self.tree_melee.column(col, anchor="center", width=200)
+        self.tree_melee.pack(fill="both", expand=True)
+
+        self.carregar_melees_tree()
+
+        # --- Funções internas ---
+        def validar_campos(data, editar=False):
+            """Valida campos antes de salvar"""
+            if not data["nome"]:
+                messagebox.showwarning("Campo obrigatório", "O campo 'Nome' é obrigatório.")
+                return False
+
+            if data["peso"]:
+                try:
+                    data["peso"] = float(data["peso"])
+                except ValueError:
+                    messagebox.showwarning("Valor inválido", "O campo 'Peso' deve ser numérico.")
+                    return False
+            else:
+                data["peso"] = None
+
+            if not editar:
+                melees = D.carregar_melees()
+                if data["nome"] in melees:
+                    messagebox.showwarning("Duplicado", f"Já existe um melee com o nome '{data['nome']}'.")
+                    return False
+
+            return True
+
+        def novo_melee():
+            popup = tk.Toplevel(self)
+            popup.title("Novo Melee")
+            popup.geometry("400x400")
+            popup.config(bg="#1a0869")
+
+            campos = ["Nome", "Peso", "Classe", "Tipo Dano", "Raridade"]
+            entradas = {}
+
+            for i, campo in enumerate(campos):
+                tk.Label(popup, text=campo, fg="white", bg="#1a0869",
+                         font=("Arial", 12, "bold")).place(x=30, y=30 + i*50)
+                entrada = tk.Entry(popup, font=("Arial", 12))
+                entrada.place(x=150, y=30 + i*50, width=200)
+                entradas[campo] = entrada
+
+            def salvar():
+                data = {campo.lower().replace(" ", "_"): entradas[campo].get().strip() for campo in campos}
+                if not validar_campos(data):
+                    return
+
+                if D.inserir_melee(data):
+                    self.carregar_melees_tree()
+                    messagebox.showinfo("Sucesso", f"Melee '{data['nome']}' criado com sucesso.")
+                    popup.destroy()
+                else:
+                    messagebox.showerror("Erro", "Erro ao criar Melee.")
+
+            tk.Button(popup, text="Salvar", command=salvar,
+                      bg="#0d7377", fg="white", font=("Arial", 14)
+                      ).place(x=130, y=320, width=140, height=40)
+
+        def editar_melee():
+            selected = self.tree_melee.selection()
+            if not selected:
+                messagebox.showwarning("Nenhum item selecionado", "Selecione um melee para editar.")
+                return
+            item = self.tree_melee.item(selected[0], "values")
+            nome_original = item[0]
+
+            popup = tk.Toplevel(self)
+            popup.title("Editar Melee")
+            popup.geometry("400x400")
+            popup.config(bg="#1a0869")
+
+            campos = ["Nome", "Peso", "Classe", "Tipo Dano", "Raridade"]
+            entradas = {}
+
+            for i, campo in enumerate(campos):
+                tk.Label(popup, text=campo, fg="white", bg="#1a0869",
+                         font=("Arial", 12, "bold")).place(x=30, y=30 + i*50)
+                entrada = tk.Entry(popup, font=("Arial", 12))
+                entrada.place(x=150, y=30 + i*50, width=200)
+                entrada.insert(0, item[i])
+                entradas[campo] = entrada
+
+            def salvar():
+                data = {campo.lower().replace(" ", "_"): entradas[campo].get().strip() for campo in campos}
+                if not validar_campos(data, editar=True):
+                    return
+
+                if D.editar_melee(nome_original, data):
+                    self.carregar_melees_tree()
+                    messagebox.showinfo("Sucesso", f"Melee '{data['nome']}' atualizado com sucesso.")
+                    popup.destroy()
+                else:
+                    messagebox.showerror("Erro", "Erro ao editar Melee.")
+
+            tk.Button(popup, text="Salvar", command=salvar,
+                      bg="#f39c12", fg="white", font=("Arial", 14)
+                      ).place(x=130, y=320, width=140, height=40)
+
+        def remover_melee():
+            selected = self.tree_melee.selection()
+            if not selected:
+                messagebox.showwarning("Nenhum item selecionado", "Selecione um melee para remover.")
+                return
+            item = self.tree_melee.item(selected[0], "values")
+            nome = item[0]
+
+            confirm = messagebox.askyesno("Confirmar exclusão", f"Tem certeza que deseja remover '{nome}'?")
+            if not confirm:
+                return
+
+            if D.remover_melee(nome):
+                self.carregar_melees_tree()
+                messagebox.showinfo("Removido", f"Melee '{nome}' foi removido com sucesso.")
+            else:
+                messagebox.showerror("Erro", f"Erro ao remover Melee '{nome}'.")
+
+        # --- Botões ---
+        btn_width = 150
+        btn_spacing = 150
+        total_width = btn_width * 3 + btn_spacing * 2
+        start_x = (1000 - total_width) // 2
+
+        tk.Button(self.container_conteudo, text="Novo", bg="#0d7377", fg="white",
+                  font=("Arial", 14), command=novo_melee).place(x=start_x, y=650, width=btn_width, height=40)
+
+        tk.Button(self.container_conteudo, text="Editar", bg="#f39c12", fg="white",
+                  font=("Arial", 14), command=editar_melee).place(x=start_x + btn_spacing, y=650, width=btn_width, height=40)
+
+        tk.Button(self.container_conteudo, text="Remover", bg="#e74c3c", fg="white",
+                  font=("Arial", 14), command=remover_melee).place(x=start_x + btn_spacing * 2, y=650, width=btn_width, height=40)
+    
+    def carregar_melees_tree(self):
+        """Carrega e exibe todas as armas melee do banco"""
+        if not hasattr(self, "tree_melee"):
+            return
+
+        for i in self.tree_melee.get_children():
+            self.tree_melee.delete(i)
+
+        try:
+            melees = D.carregar_melees()
+            for nome, data in melees.items():
+                self.tree_melee.insert("", "end", values=(
+                    data.get("nome", ""),
+                    data.get("peso", ""),
+                    data.get("classe", ""),
+                    data.get("tipo_dano", ""),
+                    data.get("raridade", "")
+                ))
+        except Exception as e:
+            messagebox.showerror("Erro", f"Erro ao carregar tabela Melee:\n{e}")
+    # Melees #
+    
+    # protecao #
+    def template_protecao(self):
+        """Template para tabela de Proteções"""
+        self.limpar_container()
+
+        tk.Label(self.container_conteudo, text="PROTEÇÕES",
+                fg="white", bg="#1a0869", font=("Arial", 18, "bold")
+                ).place(x=0, y=0, width=1400, height=50)
+
+        tree_frame = tk.Frame(self.container_conteudo, bg="#2a1f4a")
+        tree_frame.place(x=0, y=60, width=1400, height=580)
+
+        self.tree_protecao = ttk.Treeview(tree_frame, style="Custom.Treeview",
+                                        columns=("Nome", "Peso", "Nível Balístico", "Abs. Física", "Abs. Balística", "Região"),
+                                        show="headings")
+        for col in ("Nome", "Peso", "Nível Balístico", "Abs. Física", "Abs. Balística", "Região"):
+            self.tree_protecao.heading(col, text=col)
+            self.tree_protecao.column(col, anchor="center", width=180)
+        self.tree_protecao.pack(fill="both", expand=True)
+
+        self.carregar_protecao_tree()
+
+        # --- Funções internas ---
+        def validar_campos(data, editar=False):
+            if not data["nome"]:
+                messagebox.showwarning("Campo obrigatório", "O campo 'Nome' é obrigatório.")
+                return False
+
+            # Conversão de valores numéricos
+            for campo in ["peso", "nivel_balistico", "absorcao_fisica", "absorcao_balistica"]:
+                if data[campo]:
+                    try:
+                        data[campo] = float(data[campo])
+                    except ValueError:
+                        messagebox.showwarning("Valor inválido", f"O campo '{campo}' deve ser numérico.")
+                        return False
+                else:
+                    data[campo] = None
+
+            if not data["regiao"]:
+                data["regiao"] = None
+
+            if not editar:
+                protecoes = D.carregar_protecoes()
+                if data["nome"] in protecoes:
+                    messagebox.showwarning("Duplicado", f"Já existe uma proteção com o nome '{data['nome']}'.")
+                    return False
+
+            return True
+
+        def novo_protecao():
+            popup = tk.Toplevel(self)
+            popup.title("Nova Proteção")
+            popup.geometry("450x450")
+            popup.config(bg="#1a0869")
+
+            campos = ["Nome", "Peso", "Nível Balístico", "Abs. Física", "Abs. Balística", "Região"]
+            entradas = {}
+            for i, campo in enumerate(campos):
+                tk.Label(popup, text=campo, fg="white", bg="#1a0869",
+                        font=("Arial", 12, "bold")).place(x=30, y=30 + i*50)
+                entrada = tk.Entry(popup, font=("Arial", 12))
+                entrada.place(x=180, y=30 + i*50, width=200)
+                entradas[campo] = entrada
+
+            def salvar():
+                data = {
+                    "nome": entradas["Nome"].get().strip(),
+                    "peso": entradas["Peso"].get().strip(),
+                    "nivel_balistico": entradas["Nível Balístico"].get().strip(),
+                    "absorcao_fisica": entradas["Abs. Física"].get().strip(),
+                    "absorcao_balistica": entradas["Abs. Balística"].get().strip(),
+                    "regiao": entradas["Região"].get().strip()
+                }
+                if not validar_campos(data):
+                    return
+                if D.salvar_protecao(data):
+                    self.carregar_protecao_tree()
+                    messagebox.showinfo("Sucesso", f"Proteção '{data['nome']}' criada com sucesso.")
+                    popup.destroy()
+                else:
+                    messagebox.showerror("Erro", "Erro ao criar Proteção.")
+
+            tk.Button(popup, text="Salvar", command=salvar,
+                    bg="#0d7377", fg="white", font=("Arial", 14)
+                    ).place(x=150, y=370, width=140, height=40)
+
+        def editar_protecao():
+            selected = self.tree_protecao.selection()
+            if not selected:
+                messagebox.showwarning("Nenhum item selecionado", "Selecione uma proteção para editar.")
+                return
+            item = self.tree_protecao.item(selected[0], "values")
+            nome_original = item[0]
+
+            popup = tk.Toplevel(self)
+            popup.title("Editar Proteção")
+            popup.geometry("450x450")
+            popup.config(bg="#1a0869")
+
+            campos = ["Nome", "Peso", "Nível Balístico", "Abs. Física", "Abs. Balística", "Região"]
+            entradas = {}
+            for i, campo in enumerate(campos):
+                tk.Label(popup, text=campo, fg="white", bg="#1a0869",
+                        font=("Arial", 12, "bold")).place(x=30, y=30 + i*50)
+                entrada = tk.Entry(popup, font=("Arial", 12))
+                entrada.place(x=180, y=30 + i*50, width=200)
+                entrada.insert(0, item[i])
+                entradas[campo] = entrada
+
+            def salvar():
+                data = {
+                    "nome": entradas["Nome"].get().strip(),
+                    "peso": entradas["Peso"].get().strip(),
+                    "nivel_balistico": entradas["Nível Balístico"].get().strip(),
+                    "absorcao_fisica": entradas["Abs. Física"].get().strip(),
+                    "absorcao_balistica": entradas["Abs. Balística"].get().strip(),
+                    "regiao": entradas["Região"].get().strip()
+                }
+                if not validar_campos(data, editar=True):
+                    return
+                if D.editar_protecao(nome_original, data):
+                    self.carregar_protecao_tree()
+                    messagebox.showinfo("Sucesso", f"Proteção '{data['nome']}' atualizada com sucesso.")
+                    popup.destroy()
+                else:
+                    messagebox.showerror("Erro", "Erro ao editar Proteção.")
+
+            tk.Button(popup, text="Salvar", command=salvar,
+                    bg="#f39c12", fg="white", font=("Arial", 14)
+                    ).place(x=150, y=370, width=140, height=40)
+
+        def remover_protecao():
+            selected = self.tree_protecao.selection()
+            if not selected:
+                messagebox.showwarning("Nenhum item selecionado", "Selecione uma proteção para remover.")
+                return
+            item = self.tree_protecao.item(selected[0], "values")
+            nome = item[0]
+
+            confirm = messagebox.askyesno("Confirmar exclusão", f"Tem certeza que deseja remover '{nome}'?")
+            if not confirm:
+                return
+
+            if D.remover_protecao(nome):
+                self.carregar_protecao_tree()
+                messagebox.showinfo("Removido", f"Proteção '{nome}' foi removida com sucesso.")
+            else:
+                messagebox.showerror("Erro", f"Erro ao remover Proteção '{nome}'.")
+
+        # --- Botões ---
+        btn_width = 150
+        btn_spacing = 150
+        total_width = btn_width * 3 + btn_spacing * 2
+        start_x = (1000 - total_width) // 2
+
+        tk.Button(self.container_conteudo, text="Novo", bg="#0d7377", fg="white",
+                font=("Arial", 14), command=novo_protecao).place(x=start_x, y=650, width=btn_width, height=40)
+        tk.Button(self.container_conteudo, text="Editar", bg="#f39c12", fg="white",
+                font=("Arial", 14), command=editar_protecao).place(x=start_x + btn_spacing, y=650, width=btn_width, height=40)
+        tk.Button(self.container_conteudo, text="Remover", bg="#e74c3c", fg="white",
+                font=("Arial", 14), command=remover_protecao).place(x=start_x + btn_spacing * 2, y=650, width=btn_width, height=40)
+
+    def carregar_protecao_tree(self):
+        """Carrega e exibe todas as proteções do banco"""
+        if not hasattr(self, "tree_protecao"):
+            return
+        for i in self.tree_protecao.get_children():
+            self.tree_protecao.delete(i)
+        try:
+            protecoes = D.carregar_protecoes()
+            for nome, data in protecoes.items():
+                self.tree_protecao.insert("", "end", values=(
+                    data.get("nome", ""),
+                    data.get("peso", ""),
+                    data.get("nivel_balistico", ""),
+                    data.get("absorcao_fisica", ""),
+                    data.get("absorcao_balistica", ""),
+                    data.get("regiao", "")
+                ))
+        except Exception as e:
+            messagebox.showerror("Erro", f"Erro ao carregar tabela Proteções:\n{e}")
+    # protecao #
+
+    # npcs - não tá pronto #
+    def template_npcs(self):
+        """Template para tabela de NPCs"""
+        tk.Label(self.container_conteudo, text="NPCs", 
+                fg="white", bg="#1a0869", font=("Arial", 18, "bold")).place(x=0, y=0, width=1400, height=50)
+        
+        tree_frame = tk.Frame(self.container_conteudo, bg="#2a1f4a")
+        tree_frame.place(x=0, y=60, width=1400, height=580)
+        
+        tree = ttk.Treeview(tree_frame, style="Custom.Treeview", columns=("Grupo", "Classe", "FOR", "AGI", "VIG", "INT", "TAT", "PRE"), show="headings")
+        for col in ("Grupo", "Classe", "FOR", "AGI", "VIG", "INT", "TAT", "PRE"):
+            tree.heading(col, text=col)
+        tree.pack(fill="both", expand=True)
+        
+        # Botões centralizados
+        btn_width = 150
+        btn_spacing = 150
+        total_width = btn_width * 3 + btn_spacing * 2
+        start_x = (1000 - total_width) // 2
+        
+        tk.Button(self.container_conteudo, text="Novo", bg="#0d7377", fg="white", 
+                 font=("Arial", 14)).place(x=start_x, y=650, width=btn_width, height=40)
+        tk.Button(self.container_conteudo, text="Editar", bg="#f39c12", fg="white", 
+                 font=("Arial", 14)).place(x=start_x + btn_spacing, y=650, width=btn_width, height=40)
+        tk.Button(self.container_conteudo, text="Remover", bg="#e74c3c", fg="white", 
+                 font=("Arial", 14)).place(x=start_x + btn_spacing * 2, y=650, width=btn_width, height=40)
+    # npcs - não tá pronto #
+    
+    # kits #
+    def template_kits(self):
+        """Template para tabela de Kits com integração ao banco de dados"""
+        tk.Label(self.container_conteudo, text="KITS", fg="white", bg="#1a0869", 
+                font=("Arial", 18, "bold")).place(x=0, y=0, width=1400, height=50)
+        
+        # Frame para a Treeview
+        tree_frame = tk.Frame(self.container_conteudo, bg="#2a1f4a")
+        tree_frame.place(x=0, y=60, width=1400, height=530)
+        
+        # Scrollbar
+        scrollbar = tk.Scrollbar(tree_frame)
+        scrollbar.pack(side="right", fill="y")
+        
+        # Treeview para lista de kits
+        self.tree_kits = ttk.Treeview(tree_frame, style="Custom.Treeview", 
+                                    columns=("Nome", "Raridade", "Conteúdo"), 
+                                    show="headings", yscrollcommand=scrollbar.set)
+        
+        self.tree_kits.heading("Nome", text="Nome do Kit")
+        self.tree_kits.heading("Raridade", text="Raridade")
+        self.tree_kits.heading("Conteúdo", text="Conteúdo")
+        
+        # Larguras das colunas
+        self.tree_kits.column("Nome", width=250, anchor="w")
+        self.tree_kits.column("Raridade", width=150, anchor="center")
+        self.tree_kits.column("Conteúdo", width=950, anchor="w")
+        
+        scrollbar.config(command=self.tree_kits.yview)
+        self.tree_kits.pack(fill="both", expand=True)
+        
+        # Carrega os kits do banco
+        self.carregar_kits_na_tree()
+        
+        # Botões de ação
+        btn_width = 150
+        btn_spacing = 20
+        total_width = btn_width * 3 + btn_spacing * 2
+        start_x = (1400 - total_width) // 2
+        
+        tk.Button(self.container_conteudo, text="Novo Kit", bg="#0d7377", fg="white", 
+                font=("Arial", 14), command=self.novo_kit).place(
+                x=start_x, y=600, width=btn_width, height=40)
+        
+        tk.Button(self.container_conteudo, text="Editar Kit", bg="#f39c12", fg="white", 
+                font=("Arial", 14), command=self.editar_kit).place(
+                x=start_x + btn_width + btn_spacing, y=600, width=btn_width, height=40)
+        
+        tk.Button(self.container_conteudo, text="Remover Kit", bg="#e74c3c", fg="white", 
+                font=("Arial", 14), command=self.remover_kit).place(
+                x=start_x + (btn_width + btn_spacing) * 2, y=600, width=btn_width, height=40)
+        
+        # Botão de atualizar
+        tk.Button(self.container_conteudo, text="🔄 Atualizar", bg="#3498db", fg="white", 
+                font=("Arial", 12), command=self.carregar_kits_na_tree).place(
+                x=1250, y=605, width=120, height=30)
+
+    def carregar_kits_na_tree(self):
+        """Carrega os kits do banco de dados e exibe na Treeview"""
+        # Limpa a tree
+        for item in self.tree_kits.get_children():
+            self.tree_kits.delete(item)
         
         try:
-            config = self.configuracoes_tabelas[self.tabela_atual]
+            # Importa as funções necessárias do módulo Dados
+            from Dados import KitsDisponíveis, carregar_kits_db
             
-            # Verifica se a tabela está implementada
-            if not config["campos"]:
-                messagebox.showwarning("Aviso", f"Tabela '{self.tabela_atual}' ainda não implementada!")
-                self.dados_atuais = {}
-                self.atualizar_treeview()
+            # Recarrega os kits do banco
+            kits = carregar_kits_db()
+            
+            # Popula a tree
+            for nome_kit, kit in kits.items():
+                raridade = kit.raridade
+                
+                # Monta a string de conteúdo
+                conteudo_str = self.montar_string_conteudo(kit)
+                
+                self.tree_kits.insert("", "end", values=(nome_kit, raridade, conteudo_str))
+            
+            print(f"✅ {len(kits)} kits carregados na interface")
+            
+        except Exception as e:
+            print(f"❌ Erro ao carregar kits: {e}")
+            import traceback
+            traceback.print_exc()
+
+    def carregar_itens_kit_na_tree(self, tree, kit):
+        """Carrega os itens do kit na Treeview"""
+        # Limpa a tree
+        for item in tree.get_children():
+            tree.delete(item)
+        
+        try:
+            if not hasattr(kit, 'inventario') or not kit.inventario:
                 return
             
-
-            if self.tabela_atual == "NPCs":
-                data = D.carregar_tipos_npcs_db()
-            elif self.tabela_atual == "Proficiências":
-                profs_dict = D.carregar_proficiencias_db()
-                data = []
-                for nome, prof in profs_dict.items():
-                    data.append({
-                        "nome": nome,
-                        "atributo": prof.atributo,
-                        "nivel": prof.nivel
-                    })
-            elif self.tabela_atual == "Kits":
-                data = self.carregar_dados_kits()
-            else:
-                # Para outras tabelas, usa função genérica
-                data = D.carregar_dados_tabela_generica(config["tabela_db"])
+            inventario = kit.inventario
             
-            self.dados_atuais = {}
+            # Verifica se tem o método listar_itens
+            if hasattr(inventario, 'listar_itens'):
+                itens = inventario.listar_itens()
+                
+                for item_info in itens:
+                    if isinstance(item_info, dict):
+                        nome = item_info.get('nome', 'Item Desconhecido')
+                        qtd = item_info.get('quantidade', 1)
+                        tree.insert("", "end", values=(nome, qtd))
+                    else:
+                        # Fallback para formato alternativo
+                        nome = str(item_info)
+                        tree.insert("", "end", values=(nome, 1))
             
-            # Processamento especial para diferentes tipos de tabelas
-            if self.tabela_atual == "NPCs":
-                # Para NPCs, a chave primária é 'classe'
-                for item in data:
-                    chave = item.get("classe", f"npc_{item.get('grupo', 'sem_grupo')}")
-                    self.dados_atuais[chave] = item
-            
-            elif self.tabela_atual == "Kits":
-                # Para kits, processa os dados carregados
-                for item in data:
-                    nome = item.get("nome")
-                    if nome:
-                        self.dados_atuais[nome] = item
-                    
-            elif self.tabela_atual == "Proficiências":
-                for item in data:
-                    nome = item["nome"]
-                    self.dados_atuais[nome] = item
-                    
-            else:
-                # Para outras tabelas, usa 'nome' como chave
-                for item in data:
-                    nome = item.get("nome")
-                    if nome:
-                        self.dados_atuais[nome] = item
-            
-            self.atualizar_treeview()
-            
+            # Fallback: acesso direto aos itens
+            elif hasattr(inventario, 'itens') and inventario.itens:
+                for item_container in inventario.itens:
+                    # Verifica se é ItemInventario (com quantidade)
+                    if hasattr(item_container, 'item') and hasattr(item_container, 'quantidade'):
+                        item_obj = item_container.item
+                        qtd = item_container.quantidade
+                        nome = getattr(item_obj, 'nome', 'Item Desconhecido')
+                        tree.insert("", "end", values=(nome, qtd))
+                    else:
+                        # Item direto
+                        nome = getattr(item_container, 'nome', str(item_container))
+                        tree.insert("", "end", values=(nome, 1))
+                        
         except Exception as e:
-            messagebox.showerror("Erro", f"Erro ao carregar dados: {e}")
-            print(f"Erro detalhado: {traceback.format_exc()}")
+            print(f"Erro ao carregar itens do kit: {e}")
+            import traceback
+            traceback.print_exc()
 
-    def atualizar_treeview(self):
-        """Atualiza o Treeview com os dados atuais"""
-        # Limpar treeview
-        for item in self.tree.get_children():
-            self.tree.delete(item)
+    def remover_item_do_kit(self, tree, kit, popup):
+        """Remove item selecionado do kit (passando o objeto real do inventário)"""
+        selecionado = tree.selection()
         
-        if not self.tabela_atual or not self.dados_atuais:
+        if not selecionado:
+            messagebox.showwarning("Aviso", "Selecione um item para remover", parent=popup)
             return
         
-        config = self.configuracoes_tabelas[self.tabela_atual]
-        campos = config["campos"]
+        item_tree = tree.item(selecionado[0])
+        nome_item = item_tree['values'][0]
         
-        # Configurar colunas
-        self.tree["columns"] = campos
-        self.tree["show"] = "headings"
-        
-        for campo in campos:
-            self.tree.heading(campo, text=campo.title())
-            self.tree.column(campo, width=100, minwidth=50)
-        
-        # Adicionar dados
-        for chave, dados in self.dados_atuais.items():
-            valores = []
-            for campo in campos:
-                valor = dados.get(campo, "")
-                if isinstance(valor, (dict, list)):
-                    valor = json.dumps(valor)
-                valores.append(str(valor))
-            self.tree.insert("", "end", values=valores, tags=(chave,))
+        confirma = messagebox.askyesno(
+            "Confirmar Remoção",
+            f"Deseja remover '{nome_item}' do kit?",
+            parent=popup
+        )
+        if not confirma:
+            return
 
-    def on_item_selecionado(self, event=None):
-        """Chamado quando um item é selecionado no Treeview"""
-        selection = self.tree.selection()
-        if not selection:
-            return
-        
-        item = self.tree.item(selection[0])
-        tags = item.get("tags", [])
-        if tags:
-            self.item_selecionado = tags[0]
-            self.carregar_item_para_edicao()
-
-    def criar_campos_edicao(self, dados=None):
-        """Cria os campos de edição baseados na tabela selecionada"""
-        # Limpar campos existentes
-        for widget in self.frame_campos.winfo_children():
-            widget.destroy()
-        self.campos_entrada.clear()
-
-        
-        if self.tabela_atual == "Kits":
-            # Campo Nome
-            tk.Label(self.frame_campos, text="Nome:", 
-                    fg="white", bg="#2a1f4a", font=("Arial", 12)).grid(row=0, column=0, sticky="w", padx=5, pady=5)
-            entry_nome = tk.Entry(self.frame_campos, bg="#130f26", fg="white", 
-                                font=("Arial", 12), width=50)
-            entry_nome.grid(row=0, column=1, padx=5, pady=5)
-            if dados and "nome" in dados:
-                entry_nome.insert(0, str(dados["nome"]))
-            self.campos_entrada["nome"] = entry_nome
-            
-            # Campo Raridade
-            tk.Label(self.frame_campos, text="Raridade:", 
-                    fg="white", bg="#2a1f4a", font=("Arial", 12)).grid(row=1, column=0, sticky="w", padx=5, pady=5)
-            combo_raridade = ttk.Combobox(self.frame_campos, values=["Comum", "Incomum", "Raro", "Épico", "Lendário"],
-                                        state="readonly", font=("Arial", 12), width=47)
-            combo_raridade.grid(row=1, column=1, padx=5, pady=5)
-            if dados and "raridade" in dados:
-                combo_raridade.set(dados["raridade"])
-            self.campos_entrada["raridade"] = combo_raridade
-            
-            # Botões de gerenciamento de inventário
-            frame_botoes = tk.Frame(self.frame_campos, bg="#2a1f4a")
-            frame_botoes.grid(row=2, column=0, columnspan=2, pady=10)
-            
-            tk.Button(frame_botoes, text="Adicionar Item", command=self.abrir_popup_adicionar_item_kit,
-                    bg="#0d7377", fg="white", font=("Arial", 12)).pack(side="left", padx=5)
-            
-            tk.Button(frame_botoes, text="Remover Item", command=self.abrir_popup_remover_item_kit,
-                    bg="#e74c3c", fg="white", font=("Arial", 12)).pack(side="left", padx=5)
-            
-            # Campo Inventário (apenas visualização)
-            tk.Label(self.frame_campos, text="Inventário:", 
-                    fg="white", bg="#2a1f4a", font=("Arial", 12)).grid(row=3, column=0, sticky="nw", padx=5, pady=5)
-            text_inventario = scrolledtext.ScrolledText(self.frame_campos, height=10, width=50, 
-                                                    bg="#130f26", fg="white", font=("Arial", 10))
-            text_inventario.grid(row=3, column=1, padx=5, pady=5)
-            
-            if dados and "inventario" in dados:
-                # Mostra o inventário de forma legível
-                inventario_str = json.dumps(dados["inventario"], indent=2, ensure_ascii=False)
-                text_inventario.insert("1.0", inventario_str)
-            else:
-                text_inventario.insert("1.0", "{}")
-            
-            self.campos_entrada["inventario"] = text_inventario
-            if dados and self.item_selecionado:
-                # Usa um after para garantir que a interface esteja pronta
-                self.after(100, self.atualizar_visualizacao_inventario)
-            
-            # Aviso sobre edição de inventário
-            tk.Label(self.frame_campos, 
-                    text="Use os botões acima para adicionar/remover itens do inventário.",
-                    fg="yellow", bg="#2a1f4a", font=("Arial", 10), wraplength=400, justify="left").grid(
-                    row=4, column=0, columnspan=2, padx=5, pady=5)
-            
-            # Atualizar scroll region
-            self.frame_campos.update_idletasks()
-            self.canvas_campos.configure(scrollregion=self.canvas_campos.bbox("all"))
-            return
-        
-        if not self.tabela_atual:
-            return
-        
-        config = self.configuracoes_tabelas[self.tabela_atual]
-        campos = config["campos"]
-        
-        row = 0
-        for campo in campos:
-            # Label
-            tk.Label(self.frame_campos, text=f"{campo.title()}:", 
-                    fg="white", bg="#2a1f4a", font=("Arial", 12)).grid(row=row, column=0, sticky="w", padx=5, pady=5)
-            
-            # Campo de entrada
-            if campo in ["descricao", "efeito"]:  # Campos de texto longo
-                text_widget = scrolledtext.ScrolledText(self.frame_campos, height=3, width=50, 
-                                                       bg="#130f26", fg="white", font=("Arial", 10))
-                text_widget.grid(row=row, column=1, padx=5, pady=5)
-                if dados and campo in dados:
-                    text_widget.insert("1.0", str(dados[campo]))
-                self.campos_entrada[campo] = text_widget
-            else:  # Campos de texto simples
-                entry = tk.Entry(self.frame_campos, bg="#130f26", fg="white", 
-                               font=("Arial", 12), width=50)
-                entry.grid(row=row, column=1, padx=5, pady=5)
-                if dados and campo in dados:
-                    entry.insert(0, str(dados[campo]))
-                self.campos_entrada[campo] = entry
-            
-            row += 1
-        
-        # Atualizar scroll region
-        self.frame_campos.update_idletasks()
-        self.canvas_campos.configure(scrollregion=self.canvas_campos.bbox("all"))
-
-    def novo_item(self):
-        """Cria um novo item"""
-        if not self.tabela_atual:
-            messagebox.showwarning("Aviso", "Selecione uma tabela primeiro!")
-            return
-        
-        config = self.configuracoes_tabelas[self.tabela_atual]
-        if not config["campos"]:
-            messagebox.showwarning("Aviso", f"Tabela '{self.tabela_atual}' ainda não implementada!")
-            return
-        
-        self.item_selecionado = None
-        self.criar_campos_edicao()
-
-    def editar_item(self):
-        """Edita o item selecionado"""
-        if not self.item_selecionado:
-            messagebox.showwarning("Aviso", "Selecione um item para editar!")
-            return
-        
-        self.carregar_item_para_edicao()
-
-    def remover_item(self):
-        """Remove o item selecionado"""
-        if not self.item_selecionado:
-            messagebox.showwarning("Aviso", "Selecione um item para remover!")
-            return
-        
-        # Confirmar remoção
-        resposta = messagebox.askyesno("Confirmar", 
-                                     f"Tem certeza que deseja remover o item '{self.item_selecionado}'?")
-        if not resposta:
-            return
-        
-        if self.tabela_atual == "Kits":
-            if D.deletar_kit_do_banco(self.item_selecionado):
-                messagebox.showinfo("Sucesso", f"Kit '{self.item_selecionado}' removido com sucesso!")
-                
-                # Remove dos dados locais
-                if self.item_selecionado in self.dados_atuais:
-                    del self.dados_atuais[self.item_selecionado]
-                
-                # Atualiza a interface
-                self.atualizar_treeview()
-                self.limpar_campos_edicao()
-            else:
-                messagebox.showerror("Erro", "Erro ao remover kit do banco de dados!")
-            return
-        
         try:
-            config = self.configuracoes_tabelas[self.tabela_atual]
+            if hasattr(kit, 'inventario') and kit.inventario:
+                inventario = kit.inventario
+                item_objeto = None
+
+                # 🔎 Primeiro tenta achar o objeto pelo nome
+                for container in getattr(inventario, "itens", []):
+                    if hasattr(container, "item"):
+                        obj = container.item
+                        if getattr(obj, "nome", None) == nome_item:
+                            item_objeto = obj
+                            break
+                    elif hasattr(container, "nome"):
+                        if container.nome == nome_item:
+                            item_objeto = container
+                            break
+                    elif isinstance(container, dict):
+                        if container.get("nome") == nome_item:
+                            from Dados import carregar_item_por_nome
+                            item_objeto = carregar_item_por_nome(nome_item)
+                            break
+                    elif isinstance(container, str):
+                        from Dados import carregar_item_por_nome
+                        if container == nome_item:
+                            item_objeto = carregar_item_por_nome(nome_item)
+                            break
+                
+                if not item_objeto:
+                    messagebox.showerror("Erro", f"Item '{nome_item}' não encontrado no inventário", parent=popup)
+                    return
+
+                # ✅ Remove agora com segurança
+                inventario.remover_item(item_objeto)
+
+                from Dados import salvar_kit_no_banco
+                if salvar_kit_no_banco(kit):
+                    messagebox.showinfo("Sucesso", f"Item '{nome_item}' removido com sucesso!", parent=popup)
+                    self.carregar_itens_kit_na_tree(tree, kit)
+                    self.carregar_kits_na_tree()
+                else:
+                    messagebox.showerror("Erro", "Não foi possível salvar as alterações", parent=popup)
+                    
+        except Exception as e:
+            messagebox.showerror("Erro", f"Erro ao remover item: {str(e)}", parent=popup)
+            print(f"Erro ao remover item do kit: {e}")
+            import traceback
+            traceback.print_exc()
+
+    def montar_string_conteudo(self, kit):
+        """Monta uma string resumida do conteúdo do kit"""
+        try:
+            if not hasattr(kit, 'inventario') or not kit.inventario:
+                return "Vazio"
             
-            # Remove do banco de dados
-            D.deletar_item_do_banco(config["tabela_db"], self.item_selecionado)
+            inventario = kit.inventario
             
-            # Remove dos dados locais
-            if self.item_selecionado in self.dados_atuais:
-                del self.dados_atuais[self.item_selecionado]
+            # Se o inventário tem o método listar_itens
+            if hasattr(inventario, 'listar_itens'):
+                itens = inventario.listar_itens()
+                
+                if not itens:
+                    return "Vazio"
+                
+                # Cria resumo dos itens
+                resumo_itens = []
+                for item_info in itens[:5]:  # Mostra no máximo 5 itens
+                    if isinstance(item_info, dict):
+                        nome = item_info.get('nome', 'Item')
+                        qtd = item_info.get('quantidade', 1)
+                        resumo_itens.append(f"{nome} ({qtd}x)")
+                    else:
+                        resumo_itens.append(str(item_info))
+                
+                total_itens = len(itens)
+                texto = ", ".join(resumo_itens)
+                
+                if total_itens > 5:
+                    texto += f" ... +{total_itens - 5} itens"
+                
+                return texto
             
-            # Atualiza a interface
-            self.atualizar_treeview()
-            self.limpar_campos_edicao()
+            # Fallback: conta itens direto
+            elif hasattr(inventario, 'itens') and inventario.itens:
+                total = len(inventario.itens)
+                return f"{total} item(ns)"
             
-            messagebox.showinfo("Sucesso", f"Item '{self.item_selecionado}' removido com sucesso!")
+            return "Vazio"
             
         except Exception as e:
-            messagebox.showerror("Erro", f"Erro ao remover item: {e}")
-            print(f"Erro detalhado: {traceback.format_exc()}")
-   
-    def carregar_item_para_edicao(self):
-        """Carrega os dados do item selecionado nos campos de edição"""
-        if not self.item_selecionado or self.item_selecionado not in self.dados_atuais:
-            return
-        
-        dados_item = self.dados_atuais[self.item_selecionado]
-        
-        # Para kits, usa os dados completos
-        if self.tabela_atual == "Kits" and "_dados_completos" in dados_item:
-            dados_para_edicao = dados_item["_dados_completos"]
-            
-            # Se for kit, força o carregamento correto do inventário
-            kit_objeto = dados_item.get("_kit_objeto")
-            if kit_objeto:
-                # Tenta recarregar o kit do banco para garantir inventário atualizado
-                try:
-                    kit_atualizado = D.carregar_kit_completo_db(kit_objeto.nome)
-                    if kit_atualizado and hasattr(kit_atualizado, 'inventario'):
-                        dados_item["_kit_objeto"] = kit_atualizado
-                        dados_para_edicao["inventario"] = self.inventario_para_dict(kit_atualizado.inventario)
-                except Exception as e:
-                    print(f"Erro ao recarregar kit: {e}")
-        else:
-            dados_para_edicao = dados_item
-        
-        self.criar_campos_edicao(dados_para_edicao)
-        
-        # Se for kit, força atualização da visualização do inventário
-        if self.tabela_atual == "Kits":
-            self.atualizar_visualizacao_inventario()
+            print(f"⚠️ Erro ao montar conteúdo: {e}")
+            return "Erro ao carregar"
 
-    def salvar_item(self):
-        """Salva ou atualiza o item atual"""
-        if not self.tabela_atual:
-            messagebox.showwarning("Aviso", "Selecione uma tabela primeiro!")
-            return
+    def novo_kit(self):
+        """Abre janela para criar novo kit"""
+        popup = tk.Toplevel(self)
+        popup.title("Novo Kit")
+        popup.geometry("400x250")
+        popup.configure(bg="#130f26")
+        popup.transient(self)
+        popup.grab_set()
         
-        config = self.configuracoes_tabelas[self.tabela_atual]
-        if not config["campos"]:
-            messagebox.showwarning("Aviso", f"Tabela '{self.tabela_atual}' ainda não implementada!")
-            return
+        # Título
+        tk.Label(popup, text="CRIAR NOVO KIT", fg="white", bg="#1a0869",
+                font=("Arial", 16, "bold")).pack(fill="x", pady=(0, 10))
         
-        if self.tabela_atual == "Kits":
-            nome = self.campos_entrada["nome"].get().strip()
-            raridade = self.campos_entrada["raridade"].get()
+        # Nome do kit
+        tk.Label(popup, text="Nome do Kit:", bg="#130f26", fg="white",
+                font=("Arial", 12)).pack(anchor="w", padx=20, pady=(10, 0))
+        nome_var = tk.StringVar()
+        tk.Entry(popup, textvariable=nome_var, font=("Arial", 12)).pack(fill="x", padx=20, pady=5)
+        
+        # Raridade
+        tk.Label(popup, text="Raridade:", bg="#130f26", fg="white",
+                font=("Arial", 12)).pack(anchor="w", padx=20, pady=(10, 0))
+        raridade_var = tk.StringVar()
+        raridades = ["Comum", "Incomum", "Raro", "Épico", "Lendário"]
+        raridade_combo = ttk.Combobox(popup, textvariable=raridade_var, values=raridades, state="readonly")
+        raridade_combo.pack(fill="x", padx=20, pady=5)
+        raridade_combo.current(0)  # Default = Comum
+        
+        def salvar_novo_kit():
+            nome = nome_var.get().strip()
+            raridade = raridade_var.get()
             
             if not nome:
-                messagebox.showwarning("Aviso", "O campo 'nome' é obrigatório!")
-                return
-            
-            if not raridade:
-                messagebox.showwarning("Aviso", "O campo 'raridade' é obrigatório!")
+                messagebox.showwarning("Aviso", "Digite um nome para o kit", parent=popup)
                 return
             
             try:
-                # Se é edição, pega o kit existente e preserva o inventário
-                if self.item_selecionado and self.item_selecionado in self.dados_atuais:
-                    kit_existente = self.dados_atuais[self.item_selecionado].get("_kit_objeto")
-                    if kit_existente:
-                        # Atualiza apenas nome e raridade, preserva inventário
-                        kit_existente.nome = nome
-                        kit_existente.raridade = raridade
-                        kit_para_salvar = kit_existente
-                    else:
-                        # Cria novo kit se não encontrou objeto existente
-                        kit_para_salvar = CB.Kits(nome, raridade)
-                else:
-                    # Novo kit
-                    kit_para_salvar = CB.Kits(nome, raridade)
-                    # Garante que o novo kit tenha um inventário vazio
-                    if not hasattr(kit_para_salvar, 'inventario') or kit_para_salvar.inventario is None:
-                        # Assumindo que existe uma classe Inventario
-                        kit_para_salvar.inventario = CB.Inventario()  # ou a classe correta do inventário
+                from Codigos import Kits
+                from Dados import salvar_kit_no_banco
                 
-                # Usar a função específica para kits que agora salva o inventário também
-                if D.salvar_kit_no_banco(kit_para_salvar):
-                    if self.item_selecionado and self.item_selecionado in self.dados_atuais:
-                        messagebox.showinfo("Sucesso", f"Kit '{nome}' atualizado com sucesso!")
-                    else:
-                        messagebox.showinfo("Sucesso", f"Kit '{nome}' salvo com sucesso!")
-                    
-                    # Recarrega os dados para atualizar a interface
-                    self.carregar_dados_tabela()
-                    self.limpar_campos_edicao()
-                    
-                    # Atualiza os kits em memória
-                    D.refresh_kits()  # Função que recarrega os kits do banco
-                    
-                else:
-                    messagebox.showerror("Erro", "Erro ao salvar kit no banco de dados!")
+                # Cria objeto Kit
+                kit = Kits(nome=nome, raridade=raridade)
                 
-            except Exception as e:
-                messagebox.showerror("Erro", f"Erro ao salvar kit no banco de dados: {e}")
-                print(f"Erro detalhado: {traceback.format_exc()}")
+                # Salva no banco
+                if salvar_kit_no_banco(kit):
+                    messagebox.showinfo("Sucesso", f"Kit '{nome}' criado com sucesso!", parent=popup)
+                    self.carregar_kits_na_tree()  # Atualiza a tree
+                    popup.destroy()
+                else:
+                    messagebox.showerror("Erro", "Não foi possível salvar o kit", parent=popup)
             
+            except Exception as e:
+                messagebox.showerror("Erro", f"Erro ao criar kit: {str(e)}", parent=popup)
+                print(f"❌ Erro ao criar kit: {e}")
+                import traceback
+                traceback.print_exc()
+        
+        # Botões
+        frame_botoes = tk.Frame(popup, bg="#130f26")
+        frame_botoes.pack(fill="x", pady=15)
+        
+        tk.Button(frame_botoes, text="Cancelar", bg="#a00c0c", fg="white",
+                font=("Arial", 12), command=popup.destroy).pack(side="left", padx=20)
+        tk.Button(frame_botoes, text="Criar Kit", bg="#0d7377", fg="white",
+                font=("Arial", 12), command=salvar_novo_kit).pack(side="right", padx=20)
+
+    def editar_kit(self):
+        """Abre janela para editar kit selecionado"""
+        selecionado = self.tree_kits.selection()
+        
+        if not selecionado:
+            messagebox.showwarning("Aviso", "Selecione um kit para editar")
             return
         
+        item = self.tree_kits.item(selecionado[0])
+        nome_kit = item['values'][0]
+        
         try:
-            # Coletar dados dos campos
-            dados_item = {}
-            for campo, widget in self.campos_entrada.items():
-                if isinstance(widget, scrolledtext.ScrolledText):
-                    valor = widget.get("1.0", "end-1c")
-                else:
-                    valor = widget.get()
-                
-                # Converter tipos apropriados
-                if campo in ["peso", "dano", "perfuracao", "cura", "energia", "raio", "valor", 
-                           "capacidade", "nivelBalistico", "absorcaoFisica", "absorcaoBalistica",
-                           "forca", "agilidade", "vigor", "inteligencia", "tatica", "presenca"]:
-                    try:
-                        valor = float(valor) if valor else 0.0
-                    except ValueError:
-                        valor = 0.0
-                elif campo in ["calibre"]:
-                    # Calibre pode ser string
-                    pass
-                
-                dados_item[campo] = valor
+            # Recarrega os kits do banco para garantir sincronização
+            from Dados import carregar_kits_db
+            kits_atualizados = carregar_kits_db()
             
-            # Validar campos obrigatórios
-            if not dados_item.get("nome", "").strip():
-                messagebox.showwarning("Aviso", "O campo 'nome' é obrigatório!")
+            if nome_kit not in kits_atualizados:
+                messagebox.showerror("Erro", f"Kit '{nome_kit}' não encontrado")
                 return
             
-            nome_item = dados_item["nome"]
+            kit = kits_atualizados[nome_kit]
             
-            # Verificar se é novo item ou edição
-            if self.item_selecionado and self.item_selecionado in self.dados_atuais:
-                # Atualizando item existente
-                D.atualizar_item_no_banco(config["tabela_db"], self.item_selecionado, dados_item)
-                
-                # Se o nome mudou, precisa remover a entrada antiga
-                if self.item_selecionado != nome_item:
-                    if self.item_selecionado in self.dados_atuais:
-                        del self.dados_atuais[self.item_selecionado]
-                
-                messagebox.showinfo("Sucesso", f"Item '{nome_item}' atualizado com sucesso!")
-            else:
-                # Novo item
-                if nome_item in self.dados_atuais:
-                    resposta = messagebox.askyesno("Item Existente", 
-                                                 f"Item '{nome_item}' já existe. Deseja substituir?")
-                    if not resposta:
-                        return
-                
-                D.salvar_item_no_banco(config["tabela_db"], dados_item)
-                messagebox.showinfo("Sucesso", f"Item '{nome_item}' salvo com sucesso!")
-            
-            # Atualizar dados locais
-            self.dados_atuais[nome_item] = dados_item
-            
-            # Atualizar interface
-            self.atualizar_treeview()
-            self.limpar_campos_edicao()
+            # Cria popup de edição
+            self.abrir_popup_edicao_kit(kit)
             
         except Exception as e:
-            messagebox.showerror("Erro", f"Erro ao salvar item: {e}")
-            print(f"Erro detalhado: {traceback.format_exc()}")
+            messagebox.showerror("Erro", f"Erro ao carregar kit: {str(e)}")
+            print(f"❌ Erro ao editar kit: {e}")
+            import traceback
+            traceback.print_exc()
 
-    def cancelar_edicao(self):
-        """Cancela a edição atual"""
-        self.limpar_campos_edicao()
+    def remover_kit(self):
+        """Remove kit selecionado"""
+        selecionado = self.tree_kits.selection()
+        
+        if not selecionado:
+            messagebox.showwarning("Aviso", "Selecione um kit para remover")
+            return
+        
+        item = self.tree_kits.item(selecionado[0])
+        nome_kit = item['values'][0]
+        
+        # Confirma remoção
+        confirma = messagebox.askyesno("Confirmar Remoção", 
+                                        f"Deseja realmente remover o kit '{nome_kit}'?")
+        
+        if confirma:
+            try:
+                from Dados import deletar_kit_do_banco
+                
+                if deletar_kit_do_banco(nome_kit):
+                    messagebox.showinfo("Sucesso", f"Kit '{nome_kit}' removido com sucesso!")
+                    self.carregar_kits_na_tree()  # Atualiza a lista
+                else:
+                    messagebox.showerror("Erro", f"Não foi possível remover o kit '{nome_kit}'")
+                    
+            except Exception as e:
+                messagebox.showerror("Erro", f"Erro ao remover kit: {str(e)}")
+                print(f"❌ Erro: {e}")
+                import traceback
+                traceback.print_exc()
 
-    def limpar_campos_edicao(self):
-        """Limpa os campos de edição"""
-        self.item_selecionado = None
-        for widget in self.frame_campos.winfo_children():
-            widget.destroy()
-        self.campos_entrada.clear()
+    def abrir_popup_edicao_kit(self, kit):
+        """Abre popup com a lista de itens do kit para edição"""
+        popup = tk.Toplevel(self)
+        popup.title(f"Editar Kit: {kit.nome}")
+        popup.geometry("800x600")
+        popup.config(bg="#130f26")
+        popup.transient(self)
+        popup.grab_set()
+        
+        # Título
+        tk.Label(popup, text=f"EDITANDO: {kit.nome}", fg="white", bg="#1a0869", 
+                font=("Arial", 16, "bold")).pack(fill="x", pady=(0, 10))
+        
+        # Frame para a lista de itens
+        frame_lista = tk.Frame(popup, bg="#2a1f4a")
+        frame_lista.pack(fill="both", expand=True, padx=20, pady=10)
+        
+        # Scrollbar
+        scrollbar = tk.Scrollbar(frame_lista)
+        scrollbar.pack(side="right", fill="y")
+        
+        # Treeview para itens do kit
+        tree_itens = ttk.Treeview(frame_lista, style="Custom.Treeview",
+                                columns=("Nome", "Quantidade"),
+                                show="headings", yscrollcommand=scrollbar.set)
+        
+        tree_itens.heading("Nome", text="Item")
+        tree_itens.heading("Quantidade", text="Quantidade")
+        
+        tree_itens.column("Nome", width=500, anchor="w")
+        tree_itens.column("Quantidade", width=150, anchor="center")
+        
+        scrollbar.config(command=tree_itens.yview)
+        tree_itens.pack(fill="both", expand=True)
+        
+        # Carrega itens do kit
+        self.carregar_itens_kit_na_tree(tree_itens, kit)
+        
+        # Frame para botões
+        frame_botoes = tk.Frame(popup, bg="#130f26")
+        frame_botoes.pack(fill="x", padx=20, pady=10)
+        
+        # Botão Adicionar (sem funcionalidade)
+        tk.Button(frame_botoes, text="Adicionar Item", bg="#0d7377", fg="white", font=("Arial", 12), 
+        command=lambda: self.abrir_popup_adicionar_item_kit(kit, tree_itens, popup)).pack(side="left", padx=5)
+        
+        # Botão Remover
+        tk.Button(frame_botoes, text="Remover Item", bg="#e74c3c", fg="white",
+                font=("Arial", 12), 
+                command=lambda: self.remover_item_do_kit(tree_itens, kit, popup)).pack(side="left", padx=5)
+        
+        # Botão Fechar
+        tk.Button(frame_botoes, text="Fechar", bg="#95a5a6", fg="white",
+                font=("Arial", 12), command=popup.destroy).pack(side="right", padx=5)
+    
+    def abrir_popup_adicionar_item_kit(self, kit, tree_itens, popup_pai):
+        """Abre popup para adicionar item ao kit"""
+        popup = tk.Toplevel(popup_pai)
+        popup.title("Adicionar Item ao Kit")
+        popup.configure(bg="#130f26")
+        popup.geometry("1400x700")
+        popup.transient(popup_pai)
+        popup.grab_set()
+
+        # Carrega os dados das tabelas
+        import Dados as D
+        dados_tabelas = {
+            "Armas de Fogo": D.carregar_rangeds(),
+            "Armas Corpo a Corpo": D.carregar_melees(),
+            "Proteções": D.carregar_protecoes(),
+            "Melhorias": D.carregar_melhorias(),
+            "Munições": D.carregar_municoes(),
+            "Consumíveis": D.carregar_consumiveis(),
+            "Explosivos": D.carregar_explosivos(),
+            "Itens": D.carregar_itens()
+        }
+
+        # Título
+        tk.Label(popup, text="ADICIONAR ITEM AO KIT", bg="#1a0869", fg="white", 
+                font=("Arial", 18, "bold")).pack(fill="x", pady=(0, 10))
+
+        # Frame principal com scroll
+        main_frame = tk.Frame(popup, bg="#130f26")
+        main_frame.pack(fill="both", expand=True, padx=10, pady=10)
+
+        canvas = tk.Canvas(main_frame, bg="#130f26", highlightthickness=0)
+        scrollbar = tk.Scrollbar(main_frame, orient="vertical", command=canvas.yview)
+        scrollable_frame = tk.Frame(canvas, bg="#130f26")
+
+        scrollable_frame.bind("<Configure>", lambda e: canvas.configure(scrollregion=canvas.bbox("all")))
+        canvas.create_window((0, 0), window=scrollable_frame, anchor="nw")
+        canvas.configure(yscrollcommand=scrollbar.set)
+
+        canvas.pack(side="left", fill="both", expand=True)
+        scrollbar.pack(side="right", fill="y")
+
+        quantidade_widgets = {}
+
+        # Frame para as três colunas
+        frame_colunas = tk.Frame(scrollable_frame, bg="#130f26")
+        frame_colunas.pack(fill="both", expand=True, padx=10)
+
+        # Dividir categorias em três colunas
+        categorias_lista = list(dados_tabelas.items())
+        terco = (len(categorias_lista) + 2) // 3
+        
+        # Coluna esquerda
+        coluna_esquerda = tk.Frame(frame_colunas, bg="#130f26")
+        coluna_esquerda.pack(side="left", fill="both", expand=True, padx=3)
+        
+        # Coluna central
+        coluna_central = tk.Frame(frame_colunas, bg="#130f26")
+        coluna_central.pack(side="left", fill="both", expand=True, padx=3)
+        
+        # Coluna direita
+        coluna_direita = tk.Frame(frame_colunas, bg="#130f26")
+        coluna_direita.pack(side="left", fill="both", expand=True, padx=3)
+
+        # Cria uma seção para cada categoria
+        for idx, (categoria, itens_dict) in enumerate(categorias_lista):
+            if not itens_dict:
+                continue
+            
+            # Escolhe a coluna (distribuindo em 3 colunas)
+            if idx < terco:
+                parent_frame = coluna_esquerda
+            elif idx < terco * 2:
+                parent_frame = coluna_central
+            else:
+                parent_frame = coluna_direita
+                
+            # Frame da categoria
+            frame_categoria = tk.Frame(parent_frame, bg="#1a0869", relief="raised", bd=2)
+            frame_categoria.pack(fill="both", expand=True, pady=5)
+            
+            # Header da categoria
+            tk.Label(frame_categoria, text=categoria, bg="#0e3386", fg="white", 
+                    font=("Arial", 12, "bold")).pack(fill="x", pady=3)
+            
+            # Frame com canvas e scrollbar para a lista de itens
+            frame_lista = tk.Frame(frame_categoria, bg="#1a0869")
+            frame_lista.pack(fill="both", expand=True, padx=5, pady=5)
+            
+            # Canvas e scrollbar
+            canvas_lista = tk.Canvas(frame_lista, bg="#1a0869", highlightthickness=0, height=150)
+            scrollbar_lista = tk.Scrollbar(frame_lista, orient="vertical", command=canvas_lista.yview)
+            frame_itens_scroll = tk.Frame(canvas_lista, bg="#1a0869")
+            
+            frame_itens_scroll.bind("<Configure>", 
+                                lambda e, c=canvas_lista: c.configure(scrollregion=c.bbox("all")))
+            canvas_lista.create_window((0, 0), window=frame_itens_scroll, anchor="nw")
+            canvas_lista.configure(yscrollcommand=scrollbar_lista.set)
+            
+            canvas_lista.pack(side="left", fill="both", expand=True)
+            scrollbar_lista.pack(side="right", fill="y")
+            
+            # Exibe os itens da categoria na lista com scroll
+            for nome_item, item_data in itens_dict.items():
+                frame_item = tk.Frame(frame_itens_scroll, bg="#1a0869")
+                frame_item.pack(fill="x", pady=1)
+
+                # Botão do item
+                btn_item = tk.Button(frame_item, text=nome_item,
+                                bg="#0d7377", fg="white", width=20, font=("Arial", 9),
+                                anchor="w", padx=5,
+                                command=lambda c=categoria, n=nome_item: adicionar_item(c, n))
+                btn_item.pack(side="left", padx=2)
+
+                # Campo de quantidade para itens stackáveis
+                if "id" not in item_data:
+                    qtd_var = tk.StringVar(value="1")
+                    tk.Label(frame_item, text="Qtd:", bg="#1a0869", fg="white",
+                            font=("Arial", 8)).pack(side="left", padx=(5, 2))
+                    qtd_entry = tk.Entry(frame_item, textvariable=qtd_var, 
+                                    width=4, font=("Arial", 9))
+                    qtd_entry.pack(side="left", padx=2)
+                    quantidade_widgets[nome_item] = qtd_var
+
+        def adicionar_item(categoria, nome_item):
+            try:
+                item_data = dados_tabelas[categoria][nome_item]
+                
+                # Cria o objeto do item baseado na categoria
+                item_obj = criar_item_por_categoria(categoria, item_data)
+                
+                if item_obj is None:
+                    messagebox.showerror("Erro", f"Erro ao criar item '{nome_item}'.", parent=popup)
+                    return
+                
+                quantidade = 1
+
+                # Verifica se é um item stackável (sem ID único)
+                if not hasattr(item_obj, "Id"):
+                    if nome_item in quantidade_widgets:
+                        qtd_str = quantidade_widgets[nome_item].get()
+                        try:
+                            quantidade = int(qtd_str)
+                            if quantidade <= 0:
+                                raise ValueError("Quantidade deve ser maior que zero")
+                        except ValueError:
+                            messagebox.showerror("Erro", "Quantidade inválida.", parent=popup)
+                            return
+
+                # Adiciona o item ao inventário do kit
+                if hasattr(kit, 'inventario') and kit.inventario:
+                    kit.inventario.gerenciar_item(item_objeto=item_obj, 
+                                                quantidade=quantidade, 
+                                                operacao="adicionar")
+                    
+                    # Salva no banco
+                    from Dados import salvar_kit_no_banco
+                    
+                    if salvar_kit_no_banco(kit):
+                        # Atualiza a tree do popup de edição
+                        self.carregar_itens_kit_na_tree(tree_itens, kit)
+                        
+                        # Atualiza a tree principal
+                        self.carregar_kits_na_tree()
+                        
+                        # Reseta o campo de quantidade se for stackável
+                        if nome_item in quantidade_widgets:
+                            quantidade_widgets[nome_item].set("1")
+                    else:
+                        messagebox.showerror("Erro", "Não foi possível salvar as alterações", parent=popup)
+                else:
+                    messagebox.showerror("Erro", "Kit não possui inventário válido", parent=popup)
+                    
+            except Exception as e:
+                messagebox.showerror("Erro", f"Erro ao adicionar item: {str(e)}", parent=popup)
+                print(f"❌ Erro: {e}")
+                import traceback
+                traceback.print_exc()
+
+        def criar_item_por_categoria(categoria, item_data):
+            """Cria um objeto de item baseado na categoria e dados"""
+            try:
+                if categoria == "Armas de Fogo":
+                    from Codigos import Ranged
+                    return Ranged(
+                        nome=item_data.get("nome", "Arma de Fogo"),
+                        peso=item_data.get("peso", 2.0),
+                        classe=item_data.get("classe", "Pistola"),
+                        acao=item_data.get("acao", "Semi"),
+                        raridade=item_data.get("raridade", "Comum"),
+                        calibre=item_data.get("calibre", ".22"),
+                        capacidade=item_data.get("capacidade", 10)
+                    )
+                    
+                elif categoria == "Armas Corpo a Corpo":
+                    from Codigos import Melee
+                    return Melee(
+                        nome=item_data.get("nome", "Arma Branca"),
+                        peso=item_data.get("peso", 1.0),
+                        classe=item_data.get("classe", "Faca"),
+                        tipo_dano=item_data.get("tipo_dano", "Cortante"),
+                        raridade=item_data.get("raridade", "Comum")
+                    )
+                    
+                elif categoria == "Proteções":
+                    from Codigos import Protecao
+                    return Protecao(
+                        nome=item_data.get("nome", "Proteção"),
+                        peso=item_data.get("peso", 1.0),
+                        nivelBalistico=item_data.get("nivelBalistico", 1),
+                        absorcaoFisica=item_data.get("absorcaoFisica", 1),
+                        absorcaoBalistica=item_data.get("absorcaoBalistica", 1),
+                        regiao=item_data.get("regiao", "Torso")
+                    )
+                    
+                elif categoria == "Melhorias":
+                    from Codigos import Melhoria
+                    return Melhoria(
+                        nome=item_data.get("nome", "Melhoria"),
+                        peso=item_data.get("peso", 0.1),
+                        tipo=item_data.get("tipo", "ranged"),
+                        modificadores=item_data.get("modificadores", {})
+                    )
+                    
+                elif categoria == "Munições":
+                    from Codigos import Municao
+                    return Municao(
+                        nome=item_data.get("nome", "Munição"),
+                        calibre=item_data.get("calibre", ".22"),
+                        perfuracao=item_data.get("perfuracao", 1),
+                        dano=item_data.get("dano", 5)
+                    )
+                    
+                elif categoria == "Consumíveis":
+                    from Codigos import Consumivel
+                    return Consumivel(
+                        nome=item_data.get("nome", "Consumível"),
+                        peso=item_data.get("peso", 1.0),
+                        cura=item_data.get("cura", 0),
+                        energia=item_data.get("energia", 0)
+                    )
+                    
+                elif categoria == "Explosivos":
+                    from Codigos import Explosivo
+                    return Explosivo(
+                        nome=item_data.get("nome", "Explosivo"),
+                        peso=item_data.get("peso", 1.0),
+                        raio=item_data.get("raio", 1),
+                        dano=item_data.get("dano", 10),
+                        tipo_dano=item_data.get("tipo_dano", 1)
+                    )
+                    
+                elif categoria == "Itens":
+                    from Codigos import Item
+                    return Item(
+                        nome=item_data.get("nome", "Item"),
+                        peso=item_data.get("peso", 1.0)
+                    )
+                    
+                else:
+                    return None
+                    
+            except Exception as e:
+                print(f"❌ Erro ao criar item da categoria {categoria}: {e}")
+                return None
+
+        # Botão Fechar
+        tk.Button(popup, text="Fechar", command=popup.destroy, 
+                bg="#95a5a6", fg="white", font=("Arial", 14), 
+                width=20).pack(pady=10)
+    # kits #
+
+    # buffs e debuffs #
+    def template_buffs_debuffs(self):
+        """Template para tabela de Buffs e Debuffs"""
+        self.limpar_container()
+
+        tk.Label(self.container_conteudo, text="BUFFS E DEBUFFS", 
+                fg="white", bg="#1a0869", font=("Arial", 18, "bold")
+                ).place(x=0, y=0, width=1400, height=50)
+
+        # --- Tabela ---
+        tree_frame = tk.Frame(self.container_conteudo, bg="#2a1f4a")
+        tree_frame.place(x=0, y=60, width=1400, height=580)
+
+        self.tree_buffs = ttk.Treeview(tree_frame, style="Custom.Treeview",
+                                    columns=("Nome", "Tipo", "Duração", "Descrição"),
+                                    show="headings")
+        for col in ("Nome", "Tipo", "Duração", "Descrição"):
+            self.tree_buffs.heading(col, text=col)
+            self.tree_buffs.column(col, anchor="center", width=300)
+        self.tree_buffs.pack(fill="both", expand=True)
+
+        self.carregar_buffs_tree()
+
+        # --- Funções internas ---
+        def validar_campos(data, editar=False):
+            if not data["nome"]:
+                messagebox.showwarning("Campo obrigatório", "O campo 'Nome' é obrigatório.")
+                return False
+            if not data["tipo"]:
+                messagebox.showwarning("Campo obrigatório", "O campo 'Tipo' é obrigatório.")
+                return False
+            if data["duração"]:
+                try:
+                    data["duração"] = int(data["duração"])
+                except ValueError:
+                    messagebox.showwarning("Valor inválido", "O campo 'Duração' deve ser numérico.")
+                    return False
+            else:
+                data["duração"] = None
+            if not editar:
+                buffs = D.carregar_buffs_debuffs()
+                if data["nome"] in buffs:
+                    messagebox.showwarning("Duplicado", f"Já existe um efeito chamado '{data['nome']}'.")
+                    return False
+            return True
+
+        def novo_buff():
+            popup = tk.Toplevel(self)
+            popup.title("Novo Buff/Debuff")
+            popup.geometry("450x400")
+            popup.config(bg="#1a0869")
+
+            campos = ["Nome", "Tipo", "Duração", "Descrição"]
+            entradas = {}
+            for i, campo in enumerate(campos):
+                tk.Label(popup, text=campo, fg="white", bg="#1a0869", font=("Arial", 12, "bold")).place(x=30, y=30 + i*70)
+                entrada = tk.Entry(popup, font=("Arial", 12))
+                entrada.place(x=150, y=30 + i*70, width=250)
+                entradas[campo] = entrada
+
+            def salvar():
+                data = {campo.lower(): entradas[campo].get().strip() for campo in campos}
+                if not validar_campos(data):
+                    return
+                if D.salvar_buff_debuff(data):
+                    self.carregar_buffs_tree()
+                    messagebox.showinfo("Sucesso", f"Efeito '{data['nome']}' criado com sucesso.")
+                    popup.destroy()
+                else:
+                    messagebox.showerror("Erro", "Erro ao criar Buff/Debuff.")
+
+            tk.Button(popup, text="Salvar", command=salvar,
+                    bg="#0d7377", fg="white", font=("Arial", 14)).place(x=150, y=320, width=140, height=40)
+
+        def editar_buff():
+            selected = self.tree_buffs.selection()
+            if not selected:
+                messagebox.showwarning("Nenhum selecionado", "Selecione um efeito para editar.")
+                return
+            item = self.tree_buffs.item(selected[0], "values")
+            nome_original = item[0]
+
+            popup = tk.Toplevel(self)
+            popup.title("Editar Buff/Debuff")
+            popup.geometry("450x400")
+            popup.config(bg="#1a0869")
+
+            campos = ["Nome", "Tipo", "Duração", "Descrição"]
+            entradas = {}
+            for i, campo in enumerate(campos):
+                tk.Label(popup, text=campo, fg="white", bg="#1a0869", font=("Arial", 12, "bold")).place(x=30, y=30 + i*70)
+                entrada = tk.Entry(popup, font=("Arial", 12))
+                entrada.place(x=150, y=30 + i*70, width=250)
+                entrada.insert(0, item[i])
+                entradas[campo] = entrada
+
+            def salvar():
+                data = {campo.lower(): entradas[campo].get().strip() for campo in campos}
+                if not validar_campos(data, editar=True):
+                    return
+                if D.editar_buff_debuff(nome_original, data):
+                    self.carregar_buffs_tree()
+                    messagebox.showinfo("Sucesso", f"Efeito '{data['nome']}' atualizado com sucesso.")
+                    popup.destroy()
+                else:
+                    messagebox.showerror("Erro", "Erro ao editar Buff/Debuff.")
+
+            tk.Button(popup, text="Salvar", command=salvar,
+                    bg="#f39c12", fg="white", font=("Arial", 14)).place(x=150, y=320, width=140, height=40)
+
+        def remover_buff():
+            selected = self.tree_buffs.selection()
+            if not selected:
+                messagebox.showwarning("Nenhum selecionado", "Selecione um efeito para remover.")
+                return
+            item = self.tree_buffs.item(selected[0], "values")
+            nome = item[0]
+            if not messagebox.askyesno("Confirmar exclusão", f"Remover '{nome}'?"):
+                return
+            if D.remover_buff_debuff(nome):
+                self.carregar_buffs_tree()
+                messagebox.showinfo("Removido", f"'{nome}' removido com sucesso.")
+            else:
+                messagebox.showerror("Erro", "Erro ao remover Buff/Debuff.")
+
+        # --- Botões ---
+        btn_width = 150
+        btn_spacing = 150
+        total_width = btn_width * 3 + btn_spacing * 2
+        start_x = (1000 - total_width) // 2
+
+        tk.Button(self.container_conteudo, text="Novo", bg="#0d7377", fg="white",
+                font=("Arial", 14), command=novo_buff).place(x=start_x, y=650, width=btn_width, height=40)
+        tk.Button(self.container_conteudo, text="Editar", bg="#f39c12", fg="white",
+                font=("Arial", 14), command=editar_buff).place(x=start_x + btn_spacing, y=650, width=btn_width, height=40)
+        tk.Button(self.container_conteudo, text="Remover", bg="#e74c3c", fg="white",
+                font=("Arial", 14), command=remover_buff).place(x=start_x + btn_spacing * 2, y=650, width=btn_width, height=40)
+
+    def carregar_buffs_tree(self):
+        if not hasattr(self, "tree_buffs"):
+            return
+        for i in self.tree_buffs.get_children():
+            self.tree_buffs.delete(i)
+        try:
+            buffs = D.carregar_buffs_debuffs()
+            for nome, data in buffs.items():
+                self.tree_buffs.insert("", "end", values=(
+                    data.get("nome", ""),
+                    data.get("tipo", ""),
+                    data.get("duração", ""),
+                    data.get("descrição", "")
+                ))
+        except Exception as e:
+            messagebox.showerror("Erro", f"Erro ao carregar Buffs/Debuffs:\n{e}")
+    # buffs e debuffs #
+
+    # habilidades #
+    def template_habilidades(self):
+        """Template para tabela de Habilidades"""
+        self.limpar_container()
+
+        tk.Label(self.container_conteudo, text="HABILIDADES",
+                fg="white", bg="#1a0869", font=("Arial", 18, "bold")
+                ).place(x=0, y=0, width=1400, height=50)
+
+        # Frame da Tabela
+        tree_frame = tk.Frame(self.container_conteudo, bg="#2a1f4a")
+        tree_frame.place(x=0, y=60, width=1400, height=580)
+
+        self.tree_habilidades = ttk.Treeview(tree_frame, style="Custom.Treeview",
+                                        columns=("Nome", "Descrição", "Categoria"),
+                                        show="headings")
+        for col in ("Nome", "Descrição", "Categoria"):
+            self.tree_habilidades.heading(col, text=col)
+            self.tree_habilidades.column(col, anchor="center", width=400)
+        self.tree_habilidades.pack(fill="both", expand=True)
+
+        self.carregar_habilidades_tree()
+
+        # --- Funções internas ---
+        def validar_campos(data, editar=False):
+            if not data["nome"]:
+                messagebox.showwarning("Campo obrigatório", "O campo 'Nome' é obrigatório.")
+                return False
+            if not editar:
+                habilidades = D.carregar_habilidades()
+                if data["nome"] in habilidades:
+                    messagebox.showwarning("Duplicado", f"Já existe uma habilidade com o nome '{data['nome']}'.")
+                    return False
+            return True
+
+        def nova_habilidade():
+            popup = tk.Toplevel(self)
+            popup.title("Nova Habilidade")
+            popup.geometry("500x350")
+            popup.config(bg="#1a0869")
+
+            campos = ["Nome", "Descrição", "Categoria"]
+            entradas = {}
+            for i, campo in enumerate(campos):
+                tk.Label(popup, text=campo, fg="white", bg="#1a0869",
+                        font=("Arial", 12, "bold")).place(x=30, y=30 + i*90)
+                entrada = tk.Entry(popup, font=("Arial", 12))
+                entrada.place(x=150, y=30 + i*90, width=300)
+                entradas[campo] = entrada
+
+            def salvar():
+                data = {campo.lower(): entradas[campo].get().strip() for campo in campos}
+                if not validar_campos(data):
+                    return
+                if D.salvar_habilidades(data):
+                    self.carregar_habilidades_tree()
+                    messagebox.showinfo("Sucesso", f"Habilidade '{data['nome']}' criada com sucesso.")
+                    popup.destroy()
+                else:
+                    messagebox.showerror("Erro", "Erro ao criar Habilidade.")
+
+            tk.Button(popup, text="Salvar", command=salvar,
+                    bg="#0d7377", fg="white", font=("Arial", 14)
+                    ).place(x=180, y=280, width=140, height=40)
+
+        def editar_habilidade():
+            selected = self.tree_habilidades.selection()
+            if not selected:
+                messagebox.showwarning("Nenhuma habilidade selecionada", "Selecione uma habilidade para editar.")
+                return
+            item = self.tree_habilidades.item(selected[0], "values")
+            nome_original = item[0]
+
+            popup = tk.Toplevel(self)
+            popup.title("Editar Habilidade")
+            popup.geometry("500x350")
+            popup.config(bg="#1a0869")
+
+            campos = ["Nome", "Descrição", "Categoria"]
+            entradas = {}
+            for i, campo in enumerate(campos):
+                tk.Label(popup, text=campo, fg="white", bg="#1a0869",
+                        font=("Arial", 12, "bold")).place(x=30, y=30 + i*90)
+                entrada = tk.Entry(popup, font=("Arial", 12))
+                entrada.place(x=150, y=30 + i*90, width=300)
+                entrada.insert(0, item[i])
+                entradas[campo] = entrada
+
+            def salvar():
+                data = {campo.lower(): entradas[campo].get().strip() for campo in campos}
+                if not validar_campos(data, editar=True):
+                    return
+                if D.editar_habilidades(nome_original, data):
+                    self.carregar_habilidades_tree()
+                    messagebox.showinfo("Sucesso", f"Habilidade '{data['nome']}' atualizada com sucesso.")
+                    popup.destroy()
+                else:
+                    messagebox.showerror("Erro", "Erro ao editar Habilidade.")
+
+            tk.Button(popup, text="Salvar", command=salvar,
+                    bg="#f39c12", fg="white", font=("Arial", 14)
+                    ).place(x=180, y=280, width=140, height=40)
+
+        def remover_habilidade():
+            selected = self.tree_habilidades.selection()
+            if not selected:
+                messagebox.showwarning("Nenhuma habilidade selecionada", "Selecione uma habilidade para remover.")
+                return
+            item = self.tree_habilidades.item(selected[0], "values")
+            nome = item[0]
+
+            confirm = messagebox.askyesno("Confirmar exclusão", f"Tem certeza que deseja remover '{nome}'?")
+            if not confirm:
+                return
+
+            if D.remover_habilidades(nome):
+                self.carregar_habilidades_tree()
+                messagebox.showinfo("Removida", f"Habilidade '{nome}' removida com sucesso.")
+            else:
+                messagebox.showerror("Erro", f"Erro ao remover habilidade '{nome}'.")
+
+        # --- Botões ---
+        btn_width = 150
+        btn_spacing = 150
+        total_width = btn_width * 3 + btn_spacing * 2
+        start_x = (1000 - total_width) // 2
+
+        tk.Button(self.container_conteudo, text="Novo", bg="#0d7377", fg="white",
+                font=("Arial", 14), command=nova_habilidade).place(x=start_x, y=650, width=btn_width, height=40)
+        tk.Button(self.container_conteudo, text="Editar", bg="#f39c12", fg="white",
+                font=("Arial", 14), command=editar_habilidade).place(x=start_x + btn_spacing, y=650, width=btn_width, height=40)
+        tk.Button(self.container_conteudo, text="Remover", bg="#e74c3c", fg="white",
+                font=("Arial", 14), command=remover_habilidade).place(x=start_x + btn_spacing * 2, y=650, width=btn_width, height=40)
+
+    def carregar_habilidades_tree(self):
+        """Carrega e exibe todas as habilidades do banco"""
+        if not hasattr(self, "tree_habilidades"):
+            return
+        for i in self.tree_habilidades.get_children():
+            self.tree_habilidades.delete(i)
+        try:
+            habilidades = D.carregar_habilidades()
+            for nome, data in habilidades.items():
+                self.tree_habilidades.insert("", "end", values=(
+                    data.get("nome", ""),
+                    data.get("descrição", ""),
+                    data.get("categoria", "")
+                ))
+        except Exception as e:
+            messagebox.showerror("Erro", f"Erro ao carregar tabela Habilidades:\n{e}")
+    # habilidades #
+
+    # poderes #
+    def template_poderes(self):
+        """Template para tabela de Poderes"""
+        self.limpar_container()
+
+        tk.Label(self.container_conteudo, text="PODERES",
+                fg="white", bg="#1a0869", font=("Arial", 18, "bold")
+                ).place(x=0, y=0, width=1400, height=50)
+
+        # Frame da Tabela
+        tree_frame = tk.Frame(self.container_conteudo, bg="#2a1f4a")
+        tree_frame.place(x=0, y=60, width=1400, height=580)
+
+        self.tree_poderes = ttk.Treeview(tree_frame, style="Custom.Treeview",
+                                        columns=("Nome", "Custo", "Descrição"),
+                                        show="headings")
+        for col in ("Nome", "Custo", "Descrição"):
+            self.tree_poderes.heading(col, text=col)
+            self.tree_poderes.column(col, anchor="center", width=400)
+        self.tree_poderes.pack(fill="both", expand=True)
+
+        self.carregar_poderes_tree()
+
+        # --- Funções internas ---
+        def validar_campos(data, editar=False):
+            if not data["nome"]:
+                messagebox.showwarning("Campo obrigatório", "O campo 'Nome' é obrigatório.")
+                return False
+            if data["custo"]:
+                try:
+                    data["custo"] = int(data["custo"])
+                except ValueError:
+                    messagebox.showwarning("Valor inválido", "O campo 'Custo' deve ser numérico.")
+                    return False
+            else:
+                data["custo"] = None
+
+            if not editar:
+                poderes = D.carregar_poderes()
+                if data["nome"] in poderes:
+                    messagebox.showwarning("Duplicado", f"Já existe um poder com o nome '{data['nome']}'.")
+                    return False
+            return True
+
+        def novo_poder():
+            popup = tk.Toplevel(self)
+            popup.title("Novo Poder")
+            popup.geometry("500x350")
+            popup.config(bg="#1a0869")
+
+            campos = ["Nome", "Custo", "Descrição"]
+            entradas = {}
+            for i, campo in enumerate(campos):
+                tk.Label(popup, text=campo, fg="white", bg="#1a0869",
+                        font=("Arial", 12, "bold")).place(x=30, y=30 + i*90)
+                entrada = tk.Entry(popup, font=("Arial", 12))
+                entrada.place(x=150, y=30 + i*90, width=300)
+                entradas[campo] = entrada
+
+            def salvar():
+                data = {campo.lower(): entradas[campo].get().strip() for campo in campos}
+                if not validar_campos(data):
+                    return
+                if D.salvar_poderes(data):
+                    self.carregar_poderes_tree()
+                    messagebox.showinfo("Sucesso", f"Poder '{data['nome']}' criado com sucesso.")
+                    popup.destroy()
+                else:
+                    messagebox.showerror("Erro", "Erro ao criar Poder.")
+
+            tk.Button(popup, text="Salvar", command=salvar,
+                    bg="#0d7377", fg="white", font=("Arial", 14)
+                    ).place(x=180, y=280, width=140, height=40)
+
+        def editar_poder():
+            selected = self.tree_poderes.selection()
+            if not selected:
+                messagebox.showwarning("Nenhum poder selecionado", "Selecione um poder para editar.")
+                return
+            item = self.tree_poderes.item(selected[0], "values")
+            nome_original = item[0]
+
+            popup = tk.Toplevel(self)
+            popup.title("Editar Poder")
+            popup.geometry("500x350")
+            popup.config(bg="#1a0869")
+
+            campos = ["Nome", "Custo", "Descrição"]
+            entradas = {}
+            for i, campo in enumerate(campos):
+                tk.Label(popup, text=campo, fg="white", bg="#1a0869",
+                        font=("Arial", 12, "bold")).place(x=30, y=30 + i*90)
+                entrada = tk.Entry(popup, font=("Arial", 12))
+                entrada.place(x=150, y=30 + i*90, width=300)
+                entrada.insert(0, item[i])
+                entradas[campo] = entrada
+
+            def salvar():
+                data = {campo.lower(): entradas[campo].get().strip() for campo in campos}
+                if not validar_campos(data, editar=True):
+                    return
+                if D.editar_poderes(nome_original, data):
+                    self.carregar_poderes_tree()
+                    messagebox.showinfo("Sucesso", f"Poder '{data['nome']}' atualizado com sucesso.")
+                    popup.destroy()
+                else:
+                    messagebox.showerror("Erro", "Erro ao editar Poder.")
+
+            tk.Button(popup, text="Salvar", command=salvar,
+                    bg="#f39c12", fg="white", font=("Arial", 14)
+                    ).place(x=180, y=280, width=140, height=40)
+
+        def remover_poder():
+            selected = self.tree_poderes.selection()
+            if not selected:
+                messagebox.showwarning("Nenhum poder selecionado", "Selecione um poder para remover.")
+                return
+            item = self.tree_poderes.item(selected[0], "values")
+            nome = item[0]
+
+            confirm = messagebox.askyesno("Confirmar exclusão", f"Tem certeza que deseja remover '{nome}'?")
+            if not confirm:
+                return
+
+            if D.remover_poderes(nome):
+                self.carregar_poderes_tree()
+                messagebox.showinfo("Removido", f"Poder '{nome}' removido com sucesso.")
+            else:
+                messagebox.showerror("Erro", f"Erro ao remover Poder '{nome}'.")
+
+        # --- Botões ---
+        btn_width = 150
+        btn_spacing = 150
+        total_width = btn_width * 3 + btn_spacing * 2
+        start_x = (1000 - total_width) // 2
+
+        tk.Button(self.container_conteudo, text="Novo", bg="#0d7377", fg="white",
+                font=("Arial", 14), command=novo_poder).place(x=start_x, y=650, width=btn_width, height=40)
+        tk.Button(self.container_conteudo, text="Editar", bg="#f39c12", fg="white",
+                font=("Arial", 14), command=editar_poder).place(x=start_x + btn_spacing, y=650, width=btn_width, height=40)
+        tk.Button(self.container_conteudo, text="Remover", bg="#e74c3c", fg="white",
+                font=("Arial", 14), command=remover_poder).place(x=start_x + btn_spacing * 2, y=650, width=btn_width, height=40)
+
+    def carregar_poderes_tree(self):
+        """Carrega e exibe todos os poderes do banco"""
+        if not hasattr(self, "tree_poderes"):
+            return
+        for i in self.tree_poderes.get_children():
+            self.tree_poderes.delete(i)
+        try:
+            poderes = D.carregar_poderes()
+            for nome, data in poderes.items():
+                self.tree_poderes.insert("", "end", values=(
+                    data.get("nome", ""),
+                    data.get("custo", ""),
+                    data.get("descrição", "")
+                ))
+        except Exception as e:
+            messagebox.showerror("Erro", f"Erro ao carregar tabela Poderes:\n{e}")
+    # poderes #
+
+    def template_proficiencias(self):
+        """Template para tabela de Proficiências"""
+        tk.Label(self.container_conteudo, text="PROFICIÊNCIAS", fg="white", bg="#1a0869", font=("Arial", 18, "bold")).place(x=0, y=0, width=1400, height=50)
+        
+        tree_frame = tk.Frame(self.container_conteudo, bg="#2a1f4a")
+        tree_frame.place(x=0, y=60, width=1400, height=580)
+        
+        tree = ttk.Treeview(tree_frame, style="Custom.Treeview", columns=("Nome", "Atributo", "Nível"), show="headings")
+        for col in ("Nome", "Atributo", "Nível"):
+            tree.heading(col, text=col)
+        tree.pack(fill="both", expand=True)
+        
+        # Botões centralizados
+        btn_width = 150
+        btn_spacing = 150
+        total_width = btn_width * 3 + btn_spacing * 2
+        start_x = (1000 - total_width) // 2
+        
+        tk.Button(self.container_conteudo, text="Novo", bg="#0d7377", fg="white", 
+                 font=("Arial", 14)).place(x=start_x, y=650, width=btn_width, height=40)
+        tk.Button(self.container_conteudo, text="Editar", bg="#f39c12", fg="white", 
+                 font=("Arial", 14)).place(x=start_x + btn_spacing, y=650, width=btn_width, height=40)
+        tk.Button(self.container_conteudo, text="Remover", bg="#e74c3c", fg="white", 
+                 font=("Arial", 14)).place(x=start_x + btn_spacing * 2, y=650, width=btn_width, height=40)
 
     def TelaInicial(self):
         self.controller.TelaInicial()
