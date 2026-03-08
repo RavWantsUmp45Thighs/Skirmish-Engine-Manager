@@ -1,0 +1,275 @@
+{
+  "Agent": {
+    "__class__": "NPC",
+    "nome": "Agent",
+    "nivel": 1,
+    "classe": "Agent",
+    "grupo": "NRDN",
+    "Forca": 2,
+    "Agilidade": 2,
+    "Vigor": 2,
+    "Inteligencia": 3,
+    "Presenca": 1,
+    "Tatica": 2,
+    "Poder": 1,
+    "proficiencias_base": {
+      "Percepção (Passiva)": 2
+    },
+    "poder_inicial": [],
+    "habilidade_inicial": [
+      {
+        "nome": "NPC",
+        "descricao": "Menos vida por ser um NPC fraco",
+        "categoria": "habilidade",
+        "subtipo": "padrao",
+        "tipo": "passivo",
+        "custo": 0,
+        "custo_mana": 0,
+        "tags": [
+          "vidaMax"
+        ],
+        "valor": [
+          -70
+        ]
+      }
+    ],
+    "kits": [
+      "Agent_1",
+      "Agent_2",
+      "Agent_3",
+      "Agent_4"
+    ],
+    "kit_fixo": null,
+    "resistencias_base": {}
+  },
+  "ATP_Soldat": {
+    "__class__": "NPC",
+    "nome": "ATP_Soldat",
+    "nivel": 1,
+    "classe": "ATP_Soldat",
+    "grupo": "NRDN",
+    "Forca": 3,
+    "Agilidade": 3,
+    "Vigor": 3,
+    "Inteligencia": 2,
+    "Presenca": 2,
+    "Tatica": 4,
+    "Poder": 1,
+    "proficiencias_base": {
+      "Carga": 2,
+      "Reflexo": 3,
+      "Atletismo": 3,
+      "Percepção (Passiva)": 3,
+      "Pontaria": 2,
+      "Combate": 4
+    },
+    "poder_inicial": [
+      {
+        "nome": "NPC",
+        "descricao": "----",
+        "categoria": "poder",
+        "subtipo": "padrao",
+        "tipo": "passivo",
+        "custo": 0,
+        "custo_mana": 0,
+        "tags": [
+          "vidaMax"
+        ],
+        "valor": [
+          -60
+        ]
+      }
+    ],
+    "habilidade_inicial": [],
+    "kits": [
+      "ATP_Soldat_1",
+      "ATP_Soldat_2",
+      "ATP_Soldat_3",
+      "ATP_Soldat_4",
+      "ATP_Soldat_5"
+    ],
+    "kit_fixo": null,
+    "resistencias_base": {}
+  },
+  "ATP_Engineer": {
+    "__class__": "NPC",
+    "nome": "ATP_Engineer",
+    "nivel": 1,
+    "classe": "ATP_Engineer",
+    "grupo": "NRDN",
+    "Forca": 4,
+    "Agilidade": 3,
+    "Vigor": 3,
+    "Inteligencia": 4,
+    "Presenca": 2,
+    "Tatica": 3,
+    "Poder": 1,
+    "proficiencias_base": {
+      "Luta": 3,
+      "Arremesso": 2,
+      "Carga": 5,
+      "Acrobacia": 2,
+      "Reflexo": 5,
+      "Atletismo": 3,
+      "Percepção (Passiva)": 5,
+      "Pontaria": 4,
+      "Combate": 4
+    },
+    "poder_inicial": [],
+    "habilidade_inicial": [
+      {
+        "nome": "NPC",
+        "descricao": "- Menos vida por ser NPC -",
+        "categoria": "habilidade",
+        "subtipo": "padrao",
+        "tipo": "passivo",
+        "custo": 0,
+        "custo_mana": 0,
+        "tags": [
+          "vidaMax"
+        ],
+        "valor": [
+          -60
+        ]
+      }
+    ],
+    "kits": [
+      "ATP_Engineer_1",
+      "ATP_Engineer_2",
+      "ATP_Engineer_3",
+      "ATP_Engineer_4"
+    ],
+    "kit_fixo": null,
+    "resistencias_base": {}
+  },
+  "ATP_Specialist": {
+    "__class__": "NPC",
+    "nome": "ATP_Specialist",
+    "nivel": 1,
+    "classe": "ATP_Specialist",
+    "grupo": "NRDN",
+    "Forca": 4,
+    "Agilidade": 4,
+    "Vigor": 3,
+    "Inteligencia": 5,
+    "Presenca": 3,
+    "Tatica": 3,
+    "Poder": 1,
+    "proficiencias_base": {},
+    "poder_inicial": [],
+    "habilidade_inicial": [],
+    "kits": [],
+    "kit_fixo": null,
+    "resistencias_base": {}
+  },
+  "MAG_Agent": {
+    "__class__": "NPC",
+    "nome": "MAG_Agent",
+    "nivel": 1,
+    "classe": "MAG_Agent",
+    "grupo": "NRDN",
+    "Forca": 3,
+    "Agilidade": 3,
+    "Vigor": 6,
+    "Inteligencia": 2,
+    "Presenca": 3,
+    "Tatica": 3,
+    "Poder": 1,
+    "proficiencias_base": {
+      "Carga": 5,
+      "Fortitude": 5,
+      "Intimidação": 5,
+      "Resistência": 5
+    },
+    "poder_inicial": [],
+    "habilidade_inicial": [
+      {
+        "nome": "Colossus",
+        "descricao": "- Personagem muito grande -",
+        "categoria": "habilidade",
+        "subtipo": "padrao",
+        "tipo": "passivo",
+        "custo": 0,
+        "custo_mana": 0,
+        "tags": [
+          "agilidade",
+          "desarmado_dano",
+          "movimentação",
+          "esquiva"
+        ],
+        "valor": [
+          -2,
+          25,
+          -2,
+          -3
+        ]
+      }
+    ],
+    "kits": [],
+    "kit_fixo": null,
+    "resistencias_base": {
+      "contundente": 50,
+      "concussivo": 50,
+      "cortante": 50,
+      "perfurante": 35,
+      "balístico": 35,
+      "rasgante": 50,
+      "explosivo": 25,
+      "congelante": 15,
+      "envenenante": 25,
+      "eletrocutante": -75,
+      "incendiário": 5,
+      "mental": -15
+    }
+  },
+  "GOL.em": {
+    "nome": "GOL.em",
+    "nivel": 1,
+    "classe": "GOL.em",
+    "grupo": "NRDN",
+    "proficiencias_base": {},
+    "habilidade_inicial": [
+      {
+        "nome": "Gigantismo",
+        "descricao": "- 2,50m de altura, 220kg de força e gordura pura, com todas suas vantagens e desvantagens -",
+        "categoria": "habilidade",
+        "subtipo": "padrao",
+        "tipo": "passivo",
+        "custo": 0,
+        "custo_mana": 0,
+        "tags": [
+          "força",
+          "agilidade"
+        ],
+        "valor": [
+          3,
+          -5
+        ]
+      }
+    ],
+    "poder_inicial": [],
+    "kits": [
+      "Golem_1",
+      "Golem_2"
+    ],
+    "kit_fixo": null,
+    "resistencias_base": {
+      "congelante": 25,
+      "envenenante": 25,
+      "eletrocutante": -25,
+      "mental": -15,
+      "contundente": 15,
+      "concussivo": 15,
+      "cortante": 15,
+      "rasgante": 15
+    },
+    "__class__": "NPC",
+    "Forca": 5,
+    "Agilidade": 2,
+    "Vigor": 5,
+    "Inteligencia": 1,
+    "Tatica": 2,
+    "Presenca": 1,
+    "Poder": 1
+  }
+}

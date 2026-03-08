@@ -1,0 +1,202 @@
+{
+  "Bandagem": {
+    "nome": "Bandagem",
+    "peso": 0.0,
+    "uso": "consumir",
+    "efeitos": [
+      {
+        "tipo": "cura",
+        "valor": 10,
+        "alvo": "vida"
+      }
+    ],
+    "descricao": "Útil para estancar sangramentos leves"
+  },
+  "Gaze": {
+    "tipo": "Consumivel",
+    "nome": "Gaze",
+    "uso": "consumir",
+    "efeitos": [
+      {
+        "tipo": "cura",
+        "valor": 25
+      }
+    ],
+    "peso": 0,
+    "descricao": "Útil para estancar sangramentos leves e escoriações"
+  },
+  "Kit médico leve": {
+    "tipo": "Consumivel",
+    "nome": "Kit médico leve",
+    "uso": "consumir",
+    "efeitos": [
+      {
+        "tipo": "cura",
+        "valor": 50
+      }
+    ],
+    "peso": 1.0,
+    "descricao": "Contém alguns suprimentos para primeiros socorros"
+  },
+  "Kit médico médio": {
+    "nome": "Kit médico médio",
+    "peso": 2.5,
+    "uso": "consumir",
+    "efeitos": [
+      {
+        "tipo": "cura",
+        "valor": 250,
+        "alvo": "vida"
+      }
+    ],
+    "descricao": "Contém vários suprimentos para primeiros socorros"
+  },
+  "Kit médico pesado": {
+    "nome": "Kit médico pesado",
+    "peso": 6.0,
+    "uso": "consumir",
+    "efeitos": [
+      {
+        "tipo": "cura",
+        "valor": 500,
+        "alvo": "vida"
+      }
+    ],
+    "descricao": "Caixa com suprimentos médicos para operação em campo"
+  },
+  "Bebida": {
+    "nome": "Bebida",
+    "peso": 1.0,
+    "uso": "consumir",
+    "efeitos": [
+      {
+        "tipo": "cura",
+        "valor": 2,
+        "alvo": "energia"
+      }
+    ],
+    "descricao": "Útil para matar a sede, ou molhar alguma coisa..."
+  },
+  "MRE": {
+    "nome": "MRE",
+    "peso": 5.0,
+    "uso": "consumir",
+    "efeitos": [
+      {
+        "tipo": "cura",
+        "valor": 5,
+        "alvo": "vida"
+      },
+      {
+        "tipo": "cura",
+        "valor": 5,
+        "alvo": "energia"
+      },
+      {
+        "tipo": "cura",
+        "valor": 5,
+        "alvo": "mana"
+      }
+    ],
+    "descricao": "Ração militar, capaz de suprir a fome de um combatente"
+  },
+  "Granada de fumaça": {
+    "nome": "Granada de fumaça",
+    "peso": 2.0,
+    "uso": "arremesso",
+    "efeitos": [
+      {
+        "tipo": "debuff",
+        "nome": "Visao ofucasda",
+        "duracao": 1,
+        "chance": 100
+      }
+    ],
+    "descricao": "Cobre uma área com uma fumaça densa temporariamente"
+  },
+  "Granada explosiva": {
+    "nome": "Granada explosiva",
+    "peso": 2.0,
+    "uso": "arremesso",
+    "efeitos": [
+      {
+        "tipo": "dano_area",
+        "subtipo": "explosivo",
+        "valor": 300,
+        "raio": 8,
+        "raio_letal": 3,
+        "falloff": "quadratico",
+        "perfuracao": 0
+      }
+    ],
+    "descricao": "Causa dano explosivo em um raio curto"
+  },
+  "Granada de fragmentação": {
+    "nome": "Granada de fragmentação",
+    "peso": 2.0,
+    "uso": "arremesso",
+    "efeitos": [
+      {
+        "tipo": "dano_area",
+        "subtipo": "fragmentacao",
+        "valor": 150,
+        "raio": 10,
+        "raio_letal": 5,
+        "falloff": "linear",
+        "perfuracao": 0
+      }
+    ],
+    "descricao": "Causa dano de fragmentação em um raio curto"
+  },
+  "Breaching charge": {
+    "nome": "Breaching charge",
+    "peso": 3.0,
+    "uso": "detonacao",
+    "efeitos": [
+      {
+        "tipo": "dano_area",
+        "subtipo": "concussivo",
+        "valor": 100,
+        "raio": 5,
+        "raio_letal": 1,
+        "falloff": "nenhum",
+        "perfuracao": 14
+      }
+    ],
+    "descricao": "Carga explosiva para abrir portas ou paredes"
+  },
+  "C4": {
+    "nome": "C4",
+    "peso": 10.0,
+    "uso": "detonacao",
+    "efeitos": [
+      {
+        "tipo": "dano_area",
+        "subtipo": "explosivo",
+        "valor": 500,
+        "raio": 15,
+        "raio_letal": 8,
+        "falloff": "quadratico",
+        "perfuracao": 4
+      }
+    ],
+    "descricao": "Explosivo plástico para destruição controlada"
+  },
+  "Claymore": {
+    "nome": "Claymore",
+    "peso": 6.0,
+    "uso": "detonacao",
+    "efeitos": [
+      {
+        "tipo": "dano_area",
+        "subtipo": "fragmentacao",
+        "valor": 250,
+        "raio": 10,
+        "raio_letal": 5,
+        "falloff": "linear",
+        "perfuracao": 0
+      }
+    ],
+    "descricao": "Mina anti-pessoal de fragmentação"
+  }
+}

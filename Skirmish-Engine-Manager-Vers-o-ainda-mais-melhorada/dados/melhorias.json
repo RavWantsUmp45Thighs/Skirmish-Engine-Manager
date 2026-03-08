@@ -1,0 +1,14 @@
+{
+  "Supressor de ruído": {
+    "nome": "Supressor de ruído",
+    "peso": 0.5,
+    "tipo": "ranged",
+    "modificadores": {
+      "dano": -2.0,
+      "MaxRange": -5.0,
+      "MinRange": 1.0,
+      "peso": 0.5,
+      "ruido": -50.0
+    }
+  }
+}

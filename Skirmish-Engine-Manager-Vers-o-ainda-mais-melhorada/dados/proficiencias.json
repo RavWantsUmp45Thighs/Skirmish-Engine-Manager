@@ -1,0 +1,30 @@
+{
+"Luta": {"nome":"Luta","atributo":"Força","valor":0},
+"Arremesso": {"nome":"Arremesso","atributo":"Força","valor":0},
+"Carga": {"nome":"Carga","atributo":"Força","valor":0},
+
+"Acrobacia": {"nome":"Acrobacia","atributo":"Agilidade","valor":0},
+"Reflexo": {"nome":"Reflexo","atributo":"Agilidade","valor":0},
+"Furtividade": {"nome":"Furtividade","atributo":"Agilidade","valor":0},
+
+"Vitalidade": {"nome":"Vitalidade","atributo":"Vigor","valor":0},
+"Atletismo": {"nome":"Atletismo","atributo":"Vigor","valor":0},
+"Fortitude": {"nome":"Fortitude","atributo":"Vigor","valor":0},
+
+"Investigação": {"nome":"Investigação","atributo":"Inteligência","valor":0},
+"Medicina (Passiva)": {"nome":"Medicina (Passiva)","atributo":"Inteligência","valor":0},
+"Percepção": {"nome":"Percepção","atributo":"Inteligência","valor":0},
+"Sobrevivencia": {"nome":"Sobrevivencia","atributo":"Inteligência","valor":0},
+
+"Diplomacia": {"nome":"Diplomacia","atributo":"Presença","valor":0},
+"Enganação": {"nome":"Enganação","atributo":"Presença","valor":0},
+"Intimidação": {"nome":"Intimidação","atributo":"Presença","valor":0},
+
+"Pontaria": {"nome":"Pontaria","atributo":"Tática","valor":0},
+"Armamento (Passiva)": {"nome":"Armamento (Passiva)","atributo":"Tática","valor":0},
+"Equipamento (Passiva)": {"nome":"Equipamento (Passiva)","atributo":"Tática","valor":0},
+
+"Mana": {"nome":"Mana","atributo":"Poder","valor":0},
+"Canalização": {"nome":"Canalização","atributo":"Poder","valor":0},
+"Resistência": {"nome":"Resistência","atributo":"Poder","valor":0}
+}

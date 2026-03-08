@@ -1,0 +1,161 @@
+{
+  "Algema": {
+    "tipo": "Item",
+    "nome": "Algema",
+    "uso": null,
+    "efeitos": [],
+    "peso": 2.0,
+    "descricao": "Usado por forças policias para restringir as mãos de uma pessoa."
+  },
+  "Bandoleira": {
+    "tipo": "Item",
+    "nome": "Bandoleira",
+    "uso": null,
+    "efeitos": [],
+    "peso": 5.0,
+    "descricao": "X"
+  },
+  "Bastão de luz": {
+    "tipo": "Item",
+    "nome": "Bastão de luz",
+    "uso": null,
+    "efeitos": [],
+    "peso": 2.0,
+    "descricao": "Emite luz por um certo tempo após acionado"
+  },
+  "Cartão de acesso": {
+    "tipo": "Item",
+    "nome": "Cartão de acesso",
+    "uso": null,
+    "efeitos": [],
+    "peso": 0.0,
+    "descricao": "Deve servir em alguma porta com chave eletrônica"
+  },
+  "Chaves": {
+    "tipo": "Item",
+    "nome": "Chaves",
+    "uso": null,
+    "efeitos": [],
+    "peso": 0.0,
+    "descricao": "Devem abrir alguma porta"
+  },
+  "Chaves de carro": {
+    "tipo": "Item",
+    "nome": "Chaves de carro",
+    "uso": null,
+    "efeitos": [],
+    "peso": 0.0,
+    "descricao": "Destranca e liga de forma fácil algum carro"
+  },
+  "Intercomunicador": {
+    "tipo": "Item",
+    "nome": "Intercomunicador",
+    "uso": null,
+    "efeitos": [],
+    "peso": 0.0,
+    "descricao": "Permite comunicar remotamente com alguém em outra linha e não ocupa as mãos, alcance de 50m"
+  },
+  "Intercomunicador militar": {
+    "tipo": "Item",
+    "nome": "Intercomunicador militar",
+    "uso": null,
+    "efeitos": [],
+    "peso": 0.0,
+    "descricao": "Permite comunicar remotamente com alguém em outra linha e não ocupa as mãos, alcance de 500m"
+  },
+  "Walkie-Talkie": {
+    "tipo": "Item",
+    "nome": "Walkie-Talkie",
+    "uso": null,
+    "efeitos": [],
+    "peso": 1.0,
+    "descricao": "Permite comunicar remotamente com alguém em outra linha, requer ao menos uma mão ou de alguma gambiarra para ser operado, alcance de 2km..."
+  },
+  "Corda": {
+    "tipo": "Item",
+    "nome": "Corda",
+    "uso": null,
+    "efeitos": [],
+    "peso": 2.0,
+    "descricao": "Útil para amarrar algo ou escalar algum lugar"
+  },
+  "Documentos pessoais": {
+    "tipo": "Item",
+    "nome": "Documentos pessoais",
+    "uso": null,
+    "efeitos": [],
+    "peso": 0.0,
+    "descricao": "Nome, data de nascimento, nacionalidade..."
+  },
+  "Garrafa": {
+    "tipo": "Item",
+    "nome": "Garrafa",
+    "uso": null,
+    "efeitos": [],
+    "peso": 0.2,
+    "descricao": "Uma garrafa de vidro vazia"
+  },
+  "Lockpicker": {
+    "tipo": "Item",
+    "nome": "Lockpicker",
+    "uso": null,
+    "efeitos": [],
+    "peso": 0.0,
+    "descricao": "Útil para arrombar algumas fechaduras"
+  },
+  "Maçarico": {
+    "tipo": "Item",
+    "nome": "Maçarico",
+    "uso": null,
+    "efeitos": [],
+    "peso": 1.0,
+    "descricao": "Útil para soldar ou cortar diversos materiais"
+  },
+  "Paracord": {
+    "tipo": "Item",
+    "nome": "Paracord",
+    "uso": null,
+    "efeitos": [],
+    "peso": 0.0,
+    "descricao": "Corda pequena militar de altissima qualidade"
+  },
+  "Pederneira": {
+    "tipo": "Item",
+    "nome": "Pederneira",
+    "uso": null,
+    "efeitos": [],
+    "peso": 0.0,
+    "descricao": "Produz lascas de magnésio e ferro-cério ao raspado com aço, útil para começar um fogo até em condições extremas"
+  },
+  "Bastão sinalizador": {
+    "tipo": "Item",
+    "nome": "Bastão sinalizador",
+    "uso": null,
+    "efeitos": [],
+    "peso": 2.0,
+    "descricao": "Um bastão capaz de fazer uma fumaça e fogo avermelhados por um tempo curto, útil para chamar atenção ou iluminar algum local"
+  },
+  "Enforca gato": {
+    "tipo": "Item",
+    "nome": "Enforca gato",
+    "uso": null,
+    "efeitos": [],
+    "peso": 0.0,
+    "descricao": "Útil para amarrar algo ou segurar alguma coisa"
+  },
+  "Enforca gato militar": {
+    "tipo": "Item",
+    "nome": "Enforca gato militar",
+    "uso": null,
+    "efeitos": [],
+    "peso": 0.0,
+    "descricao": "Útil para amarrar algo ou segurar alguma coisa, feito de material mais resistente"
+  },
+  "Caneta": {
+    "nome": "Caneta",
+    "peso": 0.0,
+    "uso": "None",
+    "efeitos": [],
+    "descricao": "Útil para escrever em papel ou outra superficie"
+  }
+}

@@ -1,0 +1,3934 @@
+{
+  "Sessão teste 1": {
+    "conteudo": {
+      "Jogadores": [
+        {
+          "nome": "Etherin bane",
+          "Nivel": 1,
+          "XPAtual": 0,
+          "XPlvlUp": 1000,
+          "Forca": 1,
+          "Agilidade": 4,
+          "Vigor": 2,
+          "Inteligencia": 1,
+          "Presenca": 2,
+          "Tatica": 3,
+          "Poder": 5,
+          "VidaMax": 120,
+          "VidaAtual": 120,
+          "EnergiaMax": 3,
+          "EnergiaAtual": 3,
+          "ManaMax": 14,
+          "ManaAtual": 14,
+          "Bloqueio": 8,
+          "Esquiva": 9,
+          "Percepcao": 5,
+          "Movimento": 13,
+          "Disparada": 24,
+          "CargaMax": 17,
+          "CargaAtual": 8.3,
+          "mod_testes": {
+            "iniciativa": 0,
+            "sorte": 0,
+            "força": 0,
+            "agilidade": 0,
+            "vigor": 0,
+            "inteligencia": 0,
+            "presença": 0,
+            "tática": 0,
+            "poder": 0,
+            "físico": 0,
+            "mental": 0,
+            "vocal": 0,
+            "qualquer teste": 0
+          },
+          "mod_efeitos": {
+            "vida": 0,
+            "energia": 0,
+            "mana": 0,
+            "vidaMax": 0,
+            "energiaMax": 0,
+            "manaMax": 0,
+            "movimentação": 0,
+            "bloqueio": 0,
+            "esquiva": 0,
+            "resistência": 0,
+            "carga": 0,
+            "percepção": 0
+          },
+          "resistencias_base": {
+            "contundente": 0,
+            "concussivo": 0,
+            "cortante": 0,
+            "perfurante": 0,
+            "balístico": 0,
+            "rasgante": 0,
+            "explosivo": 0,
+            "incendiário": 0,
+            "congelante": 0,
+            "envenenante": 0,
+            "eletrocutante": 0,
+            "mental": 0
+          },
+          "resistencias_mod": {
+            "contundente": 0,
+            "concussivo": 0,
+            "cortante": 0,
+            "perfurante": 0,
+            "balístico": 0,
+            "rasgante": 0,
+            "explosivo": 0,
+            "incendiário": 0,
+            "congelante": 0,
+            "envenenante": 0,
+            "eletrocutante": 0,
+            "mental": 0
+          },
+          "imunidades_mod": [],
+          "mod_temporarios": [],
+          "mod_efeitos_ativos": [],
+          "equipamentos": {
+            "cabeça": {
+              "nome": "Capacete médio",
+              "peso": 2.0,
+              "nivelBalistico": 5.0,
+              "absorcoes": {
+                "contundente": 30,
+                "concussivo": 15,
+                "cortante": 30,
+                "perfurante": 25,
+                "balístico": 15,
+                "rasgante": 30
+              },
+              "regioes_cobertas": [
+                "cabeça"
+              ],
+              "durabilidade": 50,
+              "durabilidadeMax": 50,
+              "regiao_indicada": "cabeça",
+              "Id": "7b2da74",
+              "Melhorias": [],
+              "descricao": "Capacete leve",
+              "__class__": "Protecao"
+            },
+            "rosto": null,
+            "pescoço": null,
+            "peito": {
+              "nome": "Colete Balístico",
+              "peso": 4.0,
+              "nivelBalistico": 6.0,
+              "absorcoes": {
+                "balístico": 10,
+                "cortante": 8
+              },
+              "regioes_cobertas": [
+                "abdômen",
+                "costas",
+                "peito"
+              ],
+              "durabilidade": 100,
+              "durabilidadeMax": 100,
+              "regiao_indicada": "peito",
+              "Id": "27e2331",
+              "Melhorias": [],
+              "descricao": "Colete padrão",
+              "__class__": "Protecao"
+            },
+            "costas": {
+              "nome": "Colete Balístico",
+              "peso": 4.0,
+              "nivelBalistico": 6.0,
+              "absorcoes": {
+                "balístico": 10,
+                "cortante": 8
+              },
+              "regioes_cobertas": [
+                "abdômen",
+                "costas",
+                "peito"
+              ],
+              "durabilidade": 100,
+              "durabilidadeMax": 100,
+              "regiao_indicada": "peito",
+              "Id": "27e2331",
+              "Melhorias": [],
+              "descricao": "Colete padrão",
+              "__class__": "Protecao"
+            },
+            "abdômen": {
+              "nome": "Colete Balístico",
+              "peso": 4.0,
+              "nivelBalistico": 6.0,
+              "absorcoes": {
+                "balístico": 10,
+                "cortante": 8
+              },
+              "regioes_cobertas": [
+                "abdômen",
+                "costas",
+                "peito"
+              ],
+              "durabilidade": 100,
+              "durabilidadeMax": 100,
+              "regiao_indicada": "peito",
+              "Id": "27e2331",
+              "Melhorias": [],
+              "descricao": "Colete padrão",
+              "__class__": "Protecao"
+            },
+            "braços": {
+              "nome": "Traje de combate leve",
+              "peso": 1.0,
+              "nivelBalistico": 3.0,
+              "absorcoes": {
+                "cortante": 5,
+                "perfurante": 5,
+                "balístico": 5,
+                "rasgante": 5
+              },
+              "regioes_cobertas": [
+                "braços",
+                "pernas"
+              ],
+              "durabilidade": 50,
+              "durabilidadeMax": 50,
+              "regiao_indicada": "braços",
+              "Id": "a385a29",
+              "Melhorias": [],
+              "descricao": "Traje leve",
+              "__class__": "Protecao"
+            },
+            "pernas": {
+              "nome": "Traje de combate leve",
+              "peso": 1.0,
+              "nivelBalistico": 3.0,
+              "absorcoes": {
+                "cortante": 5,
+                "perfurante": 5,
+                "balístico": 5,
+                "rasgante": 5
+              },
+              "regioes_cobertas": [
+                "braços",
+                "pernas"
+              ],
+              "durabilidade": 50,
+              "durabilidadeMax": 50,
+              "regiao_indicada": "braços",
+              "Id": "a385a29",
+              "Melhorias": [],
+              "descricao": "Traje leve",
+              "__class__": "Protecao"
+            }
+          },
+          "slots": {
+            "mao_direita": {
+              "nome": "G36c",
+              "peso": 2.8,
+              "classe": "Carabina",
+              "raridade": "Incomum",
+              "calibre": "5.56x45mm",
+              "capacidade": 30,
+              "TPM": 700,
+              "ruido": 150,
+              "tipo_dano": "balístico",
+              "acoes_disparo": [
+                "Semi",
+                "Auto"
+              ],
+              "modo_disparo_atual": "Auto",
+              "munições": 0,
+              "municao": null,
+              "Id": "9fe1509",
+              "Acessorios": [],
+              "Perfuracao": 0,
+              "maos": 2,
+              "descricao": "",
+              "__class__": "Ranged"
+            },
+            "mao_esquerda": {
+              "nome": "G36c",
+              "peso": 2.8,
+              "classe": "Carabina",
+              "raridade": "Incomum",
+              "calibre": "5.56x45mm",
+              "capacidade": 30,
+              "TPM": 700,
+              "ruido": 150,
+              "tipo_dano": "balístico",
+              "acoes_disparo": [
+                "Semi",
+                "Auto"
+              ],
+              "modo_disparo_atual": "Auto",
+              "munições": 0,
+              "municao": null,
+              "Id": "9fe1509",
+              "Acessorios": [],
+              "Perfuracao": 0,
+              "maos": 2,
+              "descricao": "",
+              "__class__": "Ranged"
+            }
+          },
+          "inventario": [
+            {
+              "item": {
+                "nome": "CZ Scorpion EVO3",
+                "peso": 2.7,
+                "classe": "Submetralhadora",
+                "raridade": "Incomum",
+                "calibre": "9x19mm",
+                "capacidade": 30,
+                "TPM": 900,
+                "ruido": 100,
+                "tipo_dano": "balístico",
+                "acoes_disparo": [
+                  "Semi",
+                  "Auto"
+                ],
+                "modo_disparo_atual": "Auto",
+                "munições": 0,
+                "municao": null,
+                "Id": "82f0dfc",
+                "Acessorios": [],
+                "Perfuracao": 0,
+                "maos": 2,
+                "descricao": "",
+                "__class__": "Ranged"
+              },
+              "quantidade": 1
+            },
+            {
+              "item": {
+                "tipo": "Municao",
+                "nome": "5.56x45mm FMJ",
+                "calibre": "5.56x45mm",
+                "dano": 0,
+                "tipo_dano": "balístico",
+                "perfuracao": 10,
+                "efeitos": [],
+                "descricao": "Full Metal Jacket, performance balanceada",
+                "__class__": "Municao"
+              },
+              "quantidade": 60
+            },
+            {
+              "item": {
+                "tipo": "Municao",
+                "nome": "5.56x45mm HP",
+                "calibre": "5.56x45mm",
+                "dano": 3,
+                "tipo_dano": "balístico",
+                "perfuracao": 8,
+                "efeitos": [],
+                "descricao": "Ponta oca, mais dano, menos perfuração",
+                "__class__": "Municao"
+              },
+              "quantidade": 30
+            },
+            {
+              "item": {
+                "tipo": "Municao",
+                "nome": "9x19mm HP",
+                "calibre": "9x19mm",
+                "dano": 5,
+                "tipo_dano": "balístico",
+                "perfuracao": 3,
+                "efeitos": [],
+                "descricao": "Ponta oca, mais dano, menos perfuração",
+                "__class__": "Municao"
+              },
+              "quantidade": 120
+            }
+          ],
+          "proficiencias": {
+            "Luta": {
+              "nome": "Luta",
+              "atributo": "Força",
+              "nivel": 4
+            },
+            "Arremesso": {
+              "nome": "Arremesso",
+              "atributo": "Força",
+              "nivel": 0
+            },
+            "Carga": {
+              "nome": "Carga",
+              "atributo": "Força",
+              "nivel": 0
+            },
+            "Acrobacia": {
+              "nome": "Acrobacia",
+              "atributo": "Agilidade",
+              "nivel": 0
+            },
+            "Reflexo": {
+              "nome": "Reflexo",
+              "atributo": "Agilidade",
+              "nivel": 0
+            },
+            "Furtividade": {
+              "nome": "Furtividade",
+              "atributo": "Agilidade",
+              "nivel": 0
+            },
+            "Vitalidade": {
+              "nome": "Vitalidade",
+              "atributo": "Vigor",
+              "nivel": 0
+            },
+            "Atletismo": {
+              "nome": "Atletismo",
+              "atributo": "Vigor",
+              "nivel": 0
+            },
+            "Fortitude": {
+              "nome": "Fortitude",
+              "atributo": "Vigor",
+              "nivel": 0
+            },
+            "Investigação": {
+              "nome": "Investigação",
+              "atributo": "Inteligência",
+              "nivel": 0
+            },
+            "Medicina (Passiva)": {
+              "nome": "Medicina (Passiva)",
+              "atributo": "Inteligência",
+              "nivel": 0
+            },
+            "Percepção (Passiva)": {
+              "nome": "Percepção (Passiva)",
+              "atributo": "Inteligência",
+              "nivel": 0
+            },
+            "Sobrevivencia": {
+              "nome": "Sobrevivencia",
+              "atributo": "Inteligência",
+              "nivel": 0
+            },
+            "Diplomacia": {
+              "nome": "Diplomacia",
+              "atributo": "Presença",
+              "nivel": 0
+            },
+            "Enganação": {
+              "nome": "Enganação",
+              "atributo": "Presença",
+              "nivel": 0
+            },
+            "Intimidação": {
+              "nome": "Intimidação",
+              "atributo": "Presença",
+              "nivel": 0
+            },
+            "Pontaria": {
+              "nome": "Pontaria",
+              "atributo": "Tática",
+              "nivel": 3
+            },
+            "Combate": {
+              "nome": "Combate",
+              "atributo": "Tática",
+              "nivel": 0
+            },
+            "Armamento (Passiva)": {
+              "nome": "Armamento (Passiva)",
+              "atributo": "Tática",
+              "nivel": 0
+            },
+            "Equipamento (Passiva)": {
+              "nome": "Equipamento (Passiva)",
+              "atributo": "Tática",
+              "nivel": 0
+            },
+            "Mana": {
+              "nome": "Mana",
+              "atributo": "Poder",
+              "nivel": 3
+            },
+            "Canalização": {
+              "nome": "Canalização",
+              "atributo": "Poder",
+              "nivel": 0
+            },
+            "Resistência": {
+              "nome": "Resistência",
+              "atributo": "Poder",
+              "nivel": 0
+            }
+          },
+          "poderes": {
+            "poderes": [],
+            "poderes_ofensivos": [
+              {
+                "__class__": "PoderOfensivo",
+                "nome": "Empalamento",
+                "descricao": "Cria fendas nexus ao redor do alvo, que é impalado por lâminas que emergem das fendas",
+                "custo_energia": 0,
+                "custo_mana": 2,
+                "dano": [
+                  {
+                    "tipo": "cortante",
+                    "valor": 15
+                  },
+                  {
+                    "tipo": "perfurante",
+                    "valor": 15
+                  },
+                  {
+                    "tipo": "rasgante",
+                    "valor": 15
+                  }
+                ],
+                "efeitos": [
+                  {
+                    "nome": "Hemorragia",
+                    "chance": 50,
+                    "duracao": 3
+                  },
+                  {
+                    "nome": "Imobilidade",
+                    "chance": 100,
+                    "duracao": 1
+                  }
+                ],
+                "ignora_resistencias": false
+              }
+            ]
+          },
+          "habilidades": {
+            "habilidades": [],
+            "habilidades_ofensivas": []
+          },
+          "buffs_debuffs": {
+            "efeitos": []
+          }
+        },
+        {
+          "nome": "Willford",
+          "Nivel": 5,
+          "XPAtual": 0,
+          "XPlvlUp": 3000,
+          "Forca": 3,
+          "Agilidade": 5,
+          "Vigor": 3,
+          "Inteligencia": 3,
+          "Presenca": 1,
+          "Tatica": 5,
+          "Poder": 2,
+          "VidaMax": 130,
+          "VidaAtual": 130,
+          "EnergiaMax": 5,
+          "EnergiaAtual": 5,
+          "ManaMax": 5,
+          "ManaAtual": 5,
+          "Bloqueio": 10,
+          "Esquiva": 10,
+          "Percepcao": 5,
+          "Movimento": 15,
+          "Disparada": 28,
+          "CargaMax": 21,
+          "CargaAtual": 7.0,
+          "mod_testes": {
+            "iniciativa": 0,
+            "sorte": 0,
+            "força": 0,
+            "agilidade": 0,
+            "vigor": 0,
+            "inteligencia": 0,
+            "presença": 0,
+            "tática": 0,
+            "poder": 0,
+            "físico": 0,
+            "mental": 0,
+            "vocal": 0,
+            "qualquer teste": 0
+          },
+          "mod_efeitos": {
+            "vida": 0,
+            "energia": 0,
+            "mana": 0,
+            "vidaMax": 0,
+            "energiaMax": 0,
+            "manaMax": 0,
+            "movimentação": 0,
+            "bloqueio": 0,
+            "esquiva": 0,
+            "resistência": 0,
+            "carga": 0,
+            "percepção": 0
+          },
+          "resistencias_base": {
+            "contundente": 0,
+            "concussivo": 0,
+            "cortante": 0,
+            "perfurante": 0,
+            "balístico": 0,
+            "rasgante": 0,
+            "explosivo": 0,
+            "incendiário": 0,
+            "congelante": 0,
+            "envenenante": 0,
+            "eletrocutante": 0,
+            "mental": 0
+          },
+          "resistencias_mod": {
+            "contundente": 0,
+            "concussivo": 0,
+            "cortante": 0,
+            "perfurante": 0,
+            "balístico": 0,
+            "rasgante": 0,
+            "explosivo": 0,
+            "incendiário": 0,
+            "congelante": 0,
+            "envenenante": 0,
+            "eletrocutante": 0,
+            "mental": 0
+          },
+          "imunidades_mod": [],
+          "mod_temporarios": [],
+          "mod_efeitos_ativos": [],
+          "equipamentos": {
+            "cabeça": null,
+            "rosto": null,
+            "pescoço": null,
+            "peito": {
+              "nome": "Colete leve",
+              "peso": 2.0,
+              "nivelBalistico": 6.0,
+              "absorcoes": {
+                "contundente": 15,
+                "concussivo": 5,
+                "cortante": 25,
+                "perfurante": 20,
+                "balístico": 20,
+                "rasgante": 25,
+                "explosivo": 5,
+                "incendiário": 15,
+                "envenenante": 15
+              },
+              "regioes_cobertas": [
+                "abdômen",
+                "peito",
+                "costas"
+              ],
+              "durabilidade": 50,
+              "durabilidadeMax": 50,
+              "regiao_indicada": "peito",
+              "Id": "e03687a",
+              "Melhorias": [],
+              "descricao": "",
+              "__class__": "Protecao"
+            },
+            "costas": {
+              "nome": "Colete leve",
+              "peso": 2.0,
+              "nivelBalistico": 6.0,
+              "absorcoes": {
+                "contundente": 15,
+                "concussivo": 5,
+                "cortante": 25,
+                "perfurante": 20,
+                "balístico": 20,
+                "rasgante": 25,
+                "explosivo": 5,
+                "incendiário": 15,
+                "envenenante": 15
+              },
+              "regioes_cobertas": [
+                "abdômen",
+                "peito",
+                "costas"
+              ],
+              "durabilidade": 50,
+              "durabilidadeMax": 50,
+              "regiao_indicada": "peito",
+              "Id": "e03687a",
+              "Melhorias": [],
+              "descricao": "",
+              "__class__": "Protecao"
+            },
+            "abdômen": {
+              "nome": "Colete leve",
+              "peso": 2.0,
+              "nivelBalistico": 6.0,
+              "absorcoes": {
+                "contundente": 15,
+                "concussivo": 5,
+                "cortante": 25,
+                "perfurante": 20,
+                "balístico": 20,
+                "rasgante": 25,
+                "explosivo": 5,
+                "incendiário": 15,
+                "envenenante": 15
+              },
+              "regioes_cobertas": [
+                "abdômen",
+                "peito",
+                "costas"
+              ],
+              "durabilidade": 50,
+              "durabilidadeMax": 50,
+              "regiao_indicada": "peito",
+              "Id": "e03687a",
+              "Melhorias": [],
+              "descricao": "",
+              "__class__": "Protecao"
+            },
+            "braços": {
+              "nome": "Traje leve",
+              "peso": 2.0,
+              "nivelBalistico": 6.0,
+              "absorcoes": {
+                "contundente": 15,
+                "concussivo": 5,
+                "cortante": 25,
+                "perfurante": 20,
+                "balístico": 20,
+                "rasgante": 25,
+                "explosivo": 5,
+                "incendiário": 15,
+                "envenenante": 15
+              },
+              "regioes_cobertas": [
+                "braços",
+                "pernas"
+              ],
+              "durabilidade": 50,
+              "durabilidadeMax": 50,
+              "regiao_indicada": "pernas",
+              "Id": "20584e8",
+              "Melhorias": [],
+              "descricao": "",
+              "__class__": "Protecao"
+            },
+            "pernas": {
+              "nome": "Traje leve",
+              "peso": 2.0,
+              "nivelBalistico": 6.0,
+              "absorcoes": {
+                "contundente": 15,
+                "concussivo": 5,
+                "cortante": 25,
+                "perfurante": 20,
+                "balístico": 20,
+                "rasgante": 25,
+                "explosivo": 5,
+                "incendiário": 15,
+                "envenenante": 15
+              },
+              "regioes_cobertas": [
+                "braços",
+                "pernas"
+              ],
+              "durabilidade": 50,
+              "durabilidadeMax": 50,
+              "regiao_indicada": "pernas",
+              "Id": "20584e8",
+              "Melhorias": [],
+              "descricao": "",
+              "__class__": "Protecao"
+            }
+          },
+          "slots": {
+            "mao_direita": {
+              "nome": "Tomahawk militar",
+              "peso": 3.0,
+              "dano_base": 45,
+              "crit_mult": 3,
+              "crit_valor": 20,
+              "tags": [
+                "sofisticada",
+                "alcance_curto",
+                "leve",
+                "arremessavel",
+                "uma_mao"
+              ],
+              "raridade": "Rara",
+              "Id": "6c26487",
+              "Melhorias": [],
+              "descricao": "Versão moderna e militar de um tomahawk tradicional",
+              "__class__": "Melee"
+            },
+            "mao_esquerda": null
+          },
+          "inventario": [
+            {
+              "item": {
+                "tipo": "Consumivel",
+                "nome": "Kit médico leve",
+                "peso": 1.0,
+                "descricao": "Contém alguns suprimentos para primeiros socorros",
+                "uso": "consumir",
+                "efeitos": [
+                  {
+                    "tipo": "cura",
+                    "valor": 50
+                  }
+                ],
+                "raio": null,
+                "raio_letal": null,
+                "falloff": "linear",
+                "perfuracao": 0,
+                "__class__": "Consumivel"
+              },
+              "quantidade": 1
+            },
+            {
+              "item": {
+                "nome": "AAC Honey Badger",
+                "peso": 3.0,
+                "classe": "Carabina",
+                "raridade": "Rara",
+                "calibre": ".300 Blackout",
+                "capacidade": 30,
+                "TPM": 800,
+                "ruido": 100,
+                "tipo_dano": "balístico",
+                "acoes_disparo": [
+                  "Semi",
+                  "Auto"
+                ],
+                "modo_disparo_atual": "Auto",
+                "munições": 30,
+                "municao": {
+                  "tipo": "Municao",
+                  "nome": ".300 Blackout SubS",
+                  "calibre": ".300 Blackout",
+                  "dano": 5,
+                  "tipo_dano": "balístico",
+                  "perfuracao": 7,
+                  "efeitos": [],
+                  "descricao": "Subsônica, menos performance por menos ruído",
+                  "__class__": "Municao"
+                },
+                "Id": "d26fb72",
+                "Acessorios": [],
+                "Perfuracao": 7,
+                "maos": 2,
+                "descricao": "",
+                "__class__": "Ranged"
+              },
+              "quantidade": 1
+            },
+            {
+              "item": {
+                "tipo": "Municao",
+                "nome": ".300 Blackout SubS",
+                "calibre": ".300 Blackout",
+                "dano": 5,
+                "tipo_dano": "balístico",
+                "perfuracao": 7,
+                "efeitos": [],
+                "descricao": "Subsônica, menos performance por menos ruído",
+                "__class__": "Municao"
+              },
+              "quantidade": 30
+            },
+            {
+              "item": {
+                "tipo": "Municao",
+                "nome": ".300 Blackout HV",
+                "calibre": ".300 Blackout",
+                "dano": 0,
+                "tipo_dano": "balístico",
+                "perfuracao": 9,
+                "efeitos": [],
+                "descricao": "Supersônica, performance balanceada",
+                "__class__": "Municao"
+              },
+              "quantidade": 30
+            },
+            {
+              "item": {
+                "tipo": "Municao",
+                "nome": ".45ACP FMJ",
+                "calibre": ".45ACP",
+                "dano": 0,
+                "tipo_dano": "balístico",
+                "perfuracao": 5,
+                "efeitos": [],
+                "descricao": "Full Metal Jacket, performance balanceada",
+                "__class__": "Municao"
+              },
+              "quantidade": 45
+            },
+            {
+              "item": {
+                "tipo": "Municao",
+                "nome": ".45ACP +P FMJ",
+                "calibre": ".45ACP",
+                "dano": -1,
+                "tipo_dano": "balístico",
+                "perfuracao": 5,
+                "efeitos": [],
+                "descricao": "Full Metal Jacket Sobrepressurizado, performance balanceada melhorada",
+                "__class__": "Municao"
+              },
+              "quantidade": 15
+            },
+            {
+              "item": {
+                "tipo": "Equipamento",
+                "nome": "Sling frontal",
+                "peso": 0,
+                "slots_criados": [
+                  {
+                    "nome": "Sling frontal",
+                    "tipo": "suporte",
+                    "aceita": [
+                      "Ranged"
+                    ],
+                    "requer_maos": 0,
+                    "saque_rapido": false
+                  }
+                ],
+                "descricao": "",
+                "__class__": "Equipamento"
+              },
+              "quantidade": 1
+            }
+          ],
+          "proficiencias": {
+            "Luta": {
+              "nome": "Luta",
+              "atributo": "Força",
+              "nivel": 5
+            },
+            "Arremesso": {
+              "nome": "Arremesso",
+              "atributo": "Força",
+              "nivel": 0
+            },
+            "Carga": {
+              "nome": "Carga",
+              "atributo": "Força",
+              "nivel": 0
+            },
+            "Acrobacia": {
+              "nome": "Acrobacia",
+              "atributo": "Agilidade",
+              "nivel": 0
+            },
+            "Reflexo": {
+              "nome": "Reflexo",
+              "atributo": "Agilidade",
+              "nivel": 0
+            },
+            "Furtividade": {
+              "nome": "Furtividade",
+              "atributo": "Agilidade",
+              "nivel": 3
+            },
+            "Vitalidade": {
+              "nome": "Vitalidade",
+              "atributo": "Vigor",
+              "nivel": 0
+            },
+            "Atletismo": {
+              "nome": "Atletismo",
+              "atributo": "Vigor",
+              "nivel": 0
+            },
+            "Fortitude": {
+              "nome": "Fortitude",
+              "atributo": "Vigor",
+              "nivel": 0
+            },
+            "Investigação": {
+              "nome": "Investigação",
+              "atributo": "Inteligência",
+              "nivel": 0
+            },
+            "Medicina (Passiva)": {
+              "nome": "Medicina (Passiva)",
+              "atributo": "Inteligência",
+              "nivel": 0
+            },
+            "Percepção (Passiva)": {
+              "nome": "Percepção (Passiva)",
+              "atributo": "Inteligência",
+              "nivel": 5
+            },
+            "Sobrevivencia": {
+              "nome": "Sobrevivencia",
+              "atributo": "Inteligência",
+              "nivel": 0
+            },
+            "Diplomacia": {
+              "nome": "Diplomacia",
+              "atributo": "Presença",
+              "nivel": 0
+            },
+            "Enganação": {
+              "nome": "Enganação",
+              "atributo": "Presença",
+              "nivel": 0
+            },
+            "Intimidação": {
+              "nome": "Intimidação",
+              "atributo": "Presença",
+              "nivel": 0
+            },
+            "Pontaria": {
+              "nome": "Pontaria",
+              "atributo": "Tática",
+              "nivel": 5
+            },
+            "Combate": {
+              "nome": "Combate",
+              "atributo": "Tática",
+              "nivel": 5
+            },
+            "Armamento (Passiva)": {
+              "nome": "Armamento (Passiva)",
+              "atributo": "Tática",
+              "nivel": 0
+            },
+            "Equipamento (Passiva)": {
+              "nome": "Equipamento (Passiva)",
+              "atributo": "Tática",
+              "nivel": 0
+            },
+            "Mana": {
+              "nome": "Mana",
+              "atributo": "Poder",
+              "nivel": 0
+            },
+            "Canalização": {
+              "nome": "Canalização",
+              "atributo": "Poder",
+              "nivel": 0
+            },
+            "Resistência": {
+              "nome": "Resistência",
+              "atributo": "Poder",
+              "nivel": 0
+            }
+          },
+          "poderes": {
+            "poderes": [],
+            "poderes_ofensivos": []
+          },
+          "habilidades": {
+            "habilidades": [],
+            "habilidades_ofensivas": []
+          },
+          "buffs_debuffs": {
+            "efeitos": []
+          }
+        },
+        {
+          "nome": "Edward Nancar",
+          "Nivel": 1,
+          "XPAtual": 0,
+          "XPlvlUp": 1000,
+          "Forca": 2,
+          "Agilidade": 4,
+          "Vigor": 1,
+          "Inteligencia": 1,
+          "Presenca": 1,
+          "Tatica": 2,
+          "Poder": 5,
+          "VidaMax": 110,
+          "VidaAtual": 110,
+          "EnergiaMax": 4,
+          "EnergiaAtual": 4,
+          "ManaMax": 11,
+          "ManaAtual": 11,
+          "Bloqueio": 7,
+          "Esquiva": 10,
+          "Percepcao": 5,
+          "Movimento": 14,
+          "Disparada": 25,
+          "CargaMax": 19,
+          "CargaAtual": 16.7,
+          "mod_testes": {
+            "iniciativa": 0,
+            "sorte": 0,
+            "força": 0,
+            "agilidade": 0,
+            "vigor": 0,
+            "inteligencia": 0,
+            "presença": 0,
+            "tática": 0,
+            "poder": 0,
+            "físico": 0,
+            "mental": 0,
+            "vocal": 0,
+            "qualquer teste": 0
+          },
+          "mod_efeitos": {
+            "vida": 0,
+            "energia": 0,
+            "mana": 0,
+            "vidaMax": 0,
+            "energiaMax": 0,
+            "manaMax": 0,
+            "movimentação": 0,
+            "bloqueio": 0,
+            "esquiva": 0,
+            "resistência": 0,
+            "carga": 0,
+            "percepção": 0,
+            "manamax": -2
+          },
+          "resistencias_base": {
+            "contundente": 0,
+            "concussivo": 0,
+            "cortante": 0,
+            "perfurante": 0,
+            "balístico": 0,
+            "rasgante": 0,
+            "explosivo": 0,
+            "incendiário": 0,
+            "congelante": 0,
+            "envenenante": 0,
+            "eletrocutante": 0,
+            "mental": 0
+          },
+          "resistencias_mod": {
+            "contundente": 0,
+            "concussivo": 0,
+            "cortante": 0,
+            "perfurante": 0,
+            "balístico": 0,
+            "rasgante": 0,
+            "explosivo": 0,
+            "incendiário": 0,
+            "congelante": 0,
+            "envenenante": 0,
+            "eletrocutante": 0,
+            "mental": 0
+          },
+          "imunidades_mod": [],
+          "mod_temporarios": [],
+          "mod_efeitos_ativos": [],
+          "equipamentos": {
+            "cabeça": null,
+            "rosto": null,
+            "pescoço": null,
+            "peito": null,
+            "costas": null,
+            "abdômen": null,
+            "braços": null,
+            "pernas": null
+          },
+          "slots": {
+            "mao_direita": null,
+            "mao_esquerda": null
+          },
+          "inventario": [
+            {
+              "item": {
+                "nome": "M1911",
+                "peso": 1.1,
+                "classe": "Pistola",
+                "raridade": "Comum",
+                "calibre": ".45Acp",
+                "capacidade": 9,
+                "TPM": 400,
+                "ruido": 80,
+                "tipo_dano": "balístico",
+                "acoes_disparo": [
+                  "Semi"
+                ],
+                "modo_disparo_atual": "Semi",
+                "munições": 0,
+                "municao": null,
+                "Id": "e0b9125",
+                "Acessorios": [],
+                "Perfuracao": 0,
+                "maos": 1,
+                "descricao": "Plaforma antiga e confiável e famosa pelo calibre .45 Acp, venceu duas guerras mundiais",
+                "__class__": "Ranged"
+              },
+              "quantidade": 1
+            },
+            {
+              "item": {
+                "nome": "M1911",
+                "peso": 1.1,
+                "classe": "Pistola",
+                "raridade": "Comum",
+                "calibre": ".45Acp",
+                "capacidade": 9,
+                "TPM": 400,
+                "ruido": 80,
+                "tipo_dano": "balístico",
+                "acoes_disparo": [
+                  "Semi"
+                ],
+                "modo_disparo_atual": "Semi",
+                "munições": 0,
+                "municao": null,
+                "Id": "e0b9125",
+                "Acessorios": [],
+                "Perfuracao": 0,
+                "maos": 1,
+                "descricao": "Plaforma antiga e confiável e famosa pelo calibre .45 Acp, venceu duas guerras mundiais",
+                "__class__": "Ranged"
+              },
+              "quantidade": 1
+            },
+            {
+              "item": {
+                "nome": "AKS74U",
+                "peso": 2.5,
+                "classe": "Carabina",
+                "raridade": "Comum",
+                "calibre": "5.45x39mm",
+                "capacidade": 30,
+                "TPM": 750,
+                "ruido": 150,
+                "tipo_dano": "balístico",
+                "acoes_disparo": [
+                  "Semi",
+                  "Auto"
+                ],
+                "modo_disparo_atual": "Auto",
+                "munições": 0,
+                "municao": null,
+                "Id": "c20a542",
+                "Acessorios": [],
+                "Perfuracao": 0,
+                "maos": 2,
+                "descricao": "Variante ultra-compacta do AK-74 categorizada como ADP para tripulantes e pilotos",
+                "__class__": "Ranged"
+              },
+              "quantidade": 1
+            },
+            {
+              "item": {
+                "tipo": "Municao",
+                "nome": ".45ACP +P FMJ",
+                "calibre": ".45ACP",
+                "dano": -1,
+                "tipo_dano": "balístico",
+                "perfuracao": 5,
+                "efeitos": [],
+                "descricao": "Full Metal Jacket Sobrepressurizado, performance balanceada melhorada",
+                "__class__": "Municao"
+              },
+              "quantidade": 20
+            },
+            {
+              "item": {
+                "tipo": "Municao",
+                "nome": ".45ACP HP",
+                "calibre": ".45ACP",
+                "dano": 5,
+                "tipo_dano": "balístico",
+                "perfuracao": 3,
+                "efeitos": [],
+                "descricao": "Ponta oca, mais dano, menos perfuração",
+                "__class__": "Municao"
+              },
+              "quantidade": 30
+            },
+            {
+              "item": {
+                "tipo": "Municao",
+                "nome": ".45ACP FMJ",
+                "calibre": ".45ACP",
+                "dano": 0,
+                "tipo_dano": "balístico",
+                "perfuracao": 5,
+                "efeitos": [],
+                "descricao": "Full Metal Jacket, performance balanceada",
+                "__class__": "Municao"
+              },
+              "quantidade": 30
+            },
+            {
+              "item": {
+                "tipo": "Municao",
+                "nome": "5.45x39mm SubS",
+                "calibre": "5.45x39mm",
+                "dano": -3,
+                "tipo_dano": "balístico",
+                "perfuracao": 9,
+                "efeitos": [],
+                "descricao": "Subsônica, menos performance por menos ruído",
+                "__class__": "Municao"
+              },
+              "quantidade": 60
+            },
+            {
+              "item": {
+                "tipo": "Municao",
+                "nome": "5.45x39mm SP",
+                "calibre": "5.45x39mm",
+                "dano": 3,
+                "tipo_dano": "balístico",
+                "perfuracao": 9,
+                "efeitos": [],
+                "descricao": "Ponta macia, mais dano, menos perfuração",
+                "__class__": "Municao"
+              },
+              "quantidade": 30
+            },
+            {
+              "item": {
+                "nome": "Traje leve",
+                "peso": 2.0,
+                "nivelBalistico": 6.0,
+                "absorcoes": {
+                  "contundente": 15,
+                  "concussivo": 5,
+                  "cortante": 25,
+                  "perfurante": 20,
+                  "balístico": 20,
+                  "rasgante": 25,
+                  "explosivo": 5,
+                  "incendiário": 15,
+                  "envenenante": 15
+                },
+                "regioes_cobertas": [
+                  "braços",
+                  "pernas"
+                ],
+                "durabilidade": 50,
+                "durabilidadeMax": 50,
+                "regiao_indicada": "pernas",
+                "Id": "5b2e95c",
+                "Melhorias": [],
+                "descricao": "",
+                "__class__": "Protecao"
+              },
+              "quantidade": 1
+            },
+            {
+              "item": {
+                "nome": "Colete médio",
+                "peso": 4.0,
+                "nivelBalistico": 10.0,
+                "absorcoes": {
+                  "contundente": 20,
+                  "concussivo": 10,
+                  "cortante": 35,
+                  "perfurante": 30,
+                  "balístico": 25,
+                  "rasgante": 35,
+                  "explosivo": 15,
+                  "incendiário": 25,
+                  "envenenante": 25
+                },
+                "regioes_cobertas": [
+                  "abdômen",
+                  "peito",
+                  "costas"
+                ],
+                "durabilidade": 100,
+                "durabilidadeMax": 100,
+                "regiao_indicada": "peito",
+                "Id": "5a8a036",
+                "Melhorias": [],
+                "descricao": "",
+                "__class__": "Protecao"
+              },
+              "quantidade": 1
+            },
+            {
+              "item": {
+                "nome": "Capacete médio",
+                "peso": 5.0,
+                "nivelBalistico": 10.0,
+                "absorcoes": {
+                  "contundente": 20,
+                  "concussivo": 10,
+                  "cortante": 35,
+                  "perfurante": 25,
+                  "balístico": 20,
+                  "rasgante": 35,
+                  "explosivo": 15,
+                  "incendiário": 30,
+                  "envenenante": 30
+                },
+                "regioes_cobertas": [
+                  "cabeça"
+                ],
+                "durabilidade": 100,
+                "durabilidadeMax": 100,
+                "regiao_indicada": "cabeça",
+                "Id": "8a17e01",
+                "Melhorias": [],
+                "descricao": "",
+                "__class__": "Protecao"
+              },
+              "quantidade": 1
+            },
+            {
+              "item": {
+                "tipo": "Equipamento",
+                "nome": "Cinto tático",
+                "peso": 1.0,
+                "slots_criados": [
+                  {
+                    "nome": "Cinto tático 1",
+                    "tipo": "suporte",
+                    "aceita": [
+                      "Ranged",
+                      "Melee"
+                    ],
+                    "requer_maos": 1,
+                    "saque_rapido": false
+                  },
+                  {
+                    "nome": "Cinto tático 2",
+                    "tipo": "suporte",
+                    "aceita": [
+                      "Ranged",
+                      "Melee"
+                    ],
+                    "requer_maos": 1,
+                    "saque_rapido": false
+                  }
+                ],
+                "descricao": "",
+                "__class__": "Equipamento"
+              },
+              "quantidade": 1
+            },
+            {
+              "item": {
+                "tipo": "Item",
+                "nome": "Intercomunicador",
+                "peso": 0.0,
+                "descricao": "Permite comunicar remotamente com alguém em outra linha e não ocupa as mãos, alcance de 50m",
+                "__class__": "Item"
+              },
+              "quantidade": 1
+            },
+            {
+              "item": {
+                "tipo": "Item",
+                "nome": "Documentos pessoais",
+                "peso": 0.0,
+                "descricao": "Nome, data de nascimento, nacionalidade...",
+                "__class__": "Item"
+              },
+              "quantidade": 1
+            }
+          ],
+          "proficiencias": {
+            "Luta": {
+              "nome": "Luta",
+              "atributo": "Força",
+              "nivel": 0
+            },
+            "Arremesso": {
+              "nome": "Arremesso",
+              "atributo": "Força",
+              "nivel": 0
+            },
+            "Carga": {
+              "nome": "Carga",
+              "atributo": "Força",
+              "nivel": 0
+            },
+            "Acrobacia": {
+              "nome": "Acrobacia",
+              "atributo": "Agilidade",
+              "nivel": 2
+            },
+            "Reflexo": {
+              "nome": "Reflexo",
+              "atributo": "Agilidade",
+              "nivel": 2
+            },
+            "Furtividade": {
+              "nome": "Furtividade",
+              "atributo": "Agilidade",
+              "nivel": 0
+            },
+            "Vitalidade": {
+              "nome": "Vitalidade",
+              "atributo": "Vigor",
+              "nivel": 0
+            },
+            "Atletismo": {
+              "nome": "Atletismo",
+              "atributo": "Vigor",
+              "nivel": 1
+            },
+            "Fortitude": {
+              "nome": "Fortitude",
+              "atributo": "Vigor",
+              "nivel": 0
+            },
+            "Investigação": {
+              "nome": "Investigação",
+              "atributo": "Inteligência",
+              "nivel": 0
+            },
+            "Medicina (Passiva)": {
+              "nome": "Medicina (Passiva)",
+              "atributo": "Inteligência",
+              "nivel": 0
+            },
+            "Percepção": {
+              "nome": "Percepção",
+              "atributo": "Inteligência",
+              "nivel": 0
+            },
+            "Sobrevivencia": {
+              "nome": "Sobrevivencia",
+              "atributo": "Inteligência",
+              "nivel": 0
+            },
+            "Diplomacia": {
+              "nome": "Diplomacia",
+              "atributo": "Presença",
+              "nivel": 0
+            },
+            "Enganação": {
+              "nome": "Enganação",
+              "atributo": "Presença",
+              "nivel": 0
+            },
+            "Intimidação": {
+              "nome": "Intimidação",
+              "atributo": "Presença",
+              "nivel": 0
+            },
+            "Pontaria": {
+              "nome": "Pontaria",
+              "atributo": "Tática",
+              "nivel": 3
+            },
+            "Armamento (Passiva)": {
+              "nome": "Armamento (Passiva)",
+              "atributo": "Tática",
+              "nivel": 0
+            },
+            "Equipamento (Passiva)": {
+              "nome": "Equipamento (Passiva)",
+              "atributo": "Tática",
+              "nivel": 0
+            },
+            "Mana": {
+              "nome": "Mana",
+              "atributo": "Poder",
+              "nivel": 2
+            },
+            "Canalização": {
+              "nome": "Canalização",
+              "atributo": "Poder",
+              "nivel": 0
+            },
+            "Resistência": {
+              "nome": "Resistência",
+              "atributo": "Poder",
+              "nivel": 0
+            }
+          },
+          "poderes": {
+            "poderes": [
+              {
+                "nome": "Evolução reativa",
+                "tipo": "passivo",
+                "custo": 0,
+                "custo_mana": 0,
+                "tags": [
+                  "manaMax"
+                ],
+                "valor": [
+                  -2
+                ],
+                "por_turno": false,
+                "duracao": null,
+                "descricao": "Abaixo de 25% de vida, ativa e randomiza entre 10 formas que o corpo se transforma pra negar ou bloquear um dano",
+                "dano": [],
+                "efeitos_ativos": [],
+                "ignora_resistencias": false
+              }
+            ],
+            "poderes_ofensivos": []
+          },
+          "habilidades": {
+            "habilidades": [],
+            "habilidades_ofensivas": []
+          },
+          "buffs_debuffs": {
+            "efeitos": []
+          }
+        }
+      ],
+      "_lista_inferior": [
+        {
+          "nome": "Etherin bane",
+          "Nivel": 1,
+          "XPAtual": 0,
+          "XPlvlUp": 1000,
+          "Forca": 1,
+          "Agilidade": 4,
+          "Vigor": 2,
+          "Inteligencia": 1,
+          "Presenca": 2,
+          "Tatica": 3,
+          "Poder": 5,
+          "VidaMax": 120,
+          "VidaAtual": 120,
+          "EnergiaMax": 3,
+          "EnergiaAtual": 3,
+          "ManaMax": 14,
+          "ManaAtual": 14,
+          "Bloqueio": 8,
+          "Esquiva": 9,
+          "Percepcao": 5,
+          "Movimento": 13,
+          "Disparada": 24,
+          "CargaMax": 17,
+          "CargaAtual": 8.3,
+          "mod_testes": {
+            "iniciativa": 0,
+            "sorte": 0,
+            "força": 0,
+            "agilidade": 0,
+            "vigor": 0,
+            "inteligencia": 0,
+            "presença": 0,
+            "tática": 0,
+            "poder": 0,
+            "físico": 0,
+            "mental": 0,
+            "vocal": 0,
+            "qualquer teste": 0
+          },
+          "mod_efeitos": {
+            "vida": 0,
+            "energia": 0,
+            "mana": 0,
+            "vidaMax": 0,
+            "energiaMax": 0,
+            "manaMax": 0,
+            "movimentação": 0,
+            "bloqueio": 0,
+            "esquiva": 0,
+            "resistência": 0,
+            "carga": 0,
+            "percepção": 0
+          },
+          "resistencias_base": {
+            "contundente": 0,
+            "concussivo": 0,
+            "cortante": 0,
+            "perfurante": 0,
+            "balístico": 0,
+            "rasgante": 0,
+            "explosivo": 0,
+            "incendiário": 0,
+            "congelante": 0,
+            "envenenante": 0,
+            "eletrocutante": 0,
+            "mental": 0
+          },
+          "resistencias_mod": {
+            "contundente": 0,
+            "concussivo": 0,
+            "cortante": 0,
+            "perfurante": 0,
+            "balístico": 0,
+            "rasgante": 0,
+            "explosivo": 0,
+            "incendiário": 0,
+            "congelante": 0,
+            "envenenante": 0,
+            "eletrocutante": 0,
+            "mental": 0
+          },
+          "imunidades_mod": [],
+          "mod_temporarios": [],
+          "mod_efeitos_ativos": [],
+          "equipamentos": {
+            "cabeça": {
+              "nome": "Capacete médio",
+              "peso": 2.0,
+              "nivelBalistico": 5.0,
+              "absorcoes": {
+                "contundente": 30,
+                "concussivo": 15,
+                "cortante": 30,
+                "perfurante": 25,
+                "balístico": 15,
+                "rasgante": 30
+              },
+              "regioes_cobertas": [
+                "cabeça"
+              ],
+              "durabilidade": 50,
+              "durabilidadeMax": 50,
+              "regiao_indicada": "cabeça",
+              "Id": "7b2da74",
+              "Melhorias": [],
+              "descricao": "Capacete leve",
+              "__class__": "Protecao"
+            },
+            "rosto": null,
+            "pescoço": null,
+            "peito": {
+              "nome": "Colete Balístico",
+              "peso": 4.0,
+              "nivelBalistico": 6.0,
+              "absorcoes": {
+                "balístico": 10,
+                "cortante": 8
+              },
+              "regioes_cobertas": [
+                "abdômen",
+                "costas",
+                "peito"
+              ],
+              "durabilidade": 100,
+              "durabilidadeMax": 100,
+              "regiao_indicada": "peito",
+              "Id": "27e2331",
+              "Melhorias": [],
+              "descricao": "Colete padrão",
+              "__class__": "Protecao"
+            },
+            "costas": {
+              "nome": "Colete Balístico",
+              "peso": 4.0,
+              "nivelBalistico": 6.0,
+              "absorcoes": {
+                "balístico": 10,
+                "cortante": 8
+              },
+              "regioes_cobertas": [
+                "abdômen",
+                "costas",
+                "peito"
+              ],
+              "durabilidade": 100,
+              "durabilidadeMax": 100,
+              "regiao_indicada": "peito",
+              "Id": "27e2331",
+              "Melhorias": [],
+              "descricao": "Colete padrão",
+              "__class__": "Protecao"
+            },
+            "abdômen": {
+              "nome": "Colete Balístico",
+              "peso": 4.0,
+              "nivelBalistico": 6.0,
+              "absorcoes": {
+                "balístico": 10,
+                "cortante": 8
+              },
+              "regioes_cobertas": [
+                "abdômen",
+                "costas",
+                "peito"
+              ],
+              "durabilidade": 100,
+              "durabilidadeMax": 100,
+              "regiao_indicada": "peito",
+              "Id": "27e2331",
+              "Melhorias": [],
+              "descricao": "Colete padrão",
+              "__class__": "Protecao"
+            },
+            "braços": {
+              "nome": "Traje de combate leve",
+              "peso": 1.0,
+              "nivelBalistico": 3.0,
+              "absorcoes": {
+                "cortante": 5,
+                "perfurante": 5,
+                "balístico": 5,
+                "rasgante": 5
+              },
+              "regioes_cobertas": [
+                "braços",
+                "pernas"
+              ],
+              "durabilidade": 50,
+              "durabilidadeMax": 50,
+              "regiao_indicada": "braços",
+              "Id": "a385a29",
+              "Melhorias": [],
+              "descricao": "Traje leve",
+              "__class__": "Protecao"
+            },
+            "pernas": {
+              "nome": "Traje de combate leve",
+              "peso": 1.0,
+              "nivelBalistico": 3.0,
+              "absorcoes": {
+                "cortante": 5,
+                "perfurante": 5,
+                "balístico": 5,
+                "rasgante": 5
+              },
+              "regioes_cobertas": [
+                "braços",
+                "pernas"
+              ],
+              "durabilidade": 50,
+              "durabilidadeMax": 50,
+              "regiao_indicada": "braços",
+              "Id": "a385a29",
+              "Melhorias": [],
+              "descricao": "Traje leve",
+              "__class__": "Protecao"
+            }
+          },
+          "slots": {
+            "mao_direita": {
+              "nome": "G36c",
+              "peso": 2.8,
+              "classe": "Carabina",
+              "raridade": "Incomum",
+              "calibre": "5.56x45mm",
+              "capacidade": 30,
+              "TPM": 700,
+              "ruido": 150,
+              "tipo_dano": "balístico",
+              "acoes_disparo": [
+                "Semi",
+                "Auto"
+              ],
+              "modo_disparo_atual": "Auto",
+              "munições": 0,
+              "municao": null,
+              "Id": "9fe1509",
+              "Acessorios": [],
+              "Perfuracao": 0,
+              "maos": 2,
+              "descricao": "",
+              "__class__": "Ranged"
+            },
+            "mao_esquerda": {
+              "nome": "G36c",
+              "peso": 2.8,
+              "classe": "Carabina",
+              "raridade": "Incomum",
+              "calibre": "5.56x45mm",
+              "capacidade": 30,
+              "TPM": 700,
+              "ruido": 150,
+              "tipo_dano": "balístico",
+              "acoes_disparo": [
+                "Semi",
+                "Auto"
+              ],
+              "modo_disparo_atual": "Auto",
+              "munições": 0,
+              "municao": null,
+              "Id": "9fe1509",
+              "Acessorios": [],
+              "Perfuracao": 0,
+              "maos": 2,
+              "descricao": "",
+              "__class__": "Ranged"
+            }
+          },
+          "inventario": [
+            {
+              "item": {
+                "nome": "CZ Scorpion EVO3",
+                "peso": 2.7,
+                "classe": "Submetralhadora",
+                "raridade": "Incomum",
+                "calibre": "9x19mm",
+                "capacidade": 30,
+                "TPM": 900,
+                "ruido": 100,
+                "tipo_dano": "balístico",
+                "acoes_disparo": [
+                  "Semi",
+                  "Auto"
+                ],
+                "modo_disparo_atual": "Auto",
+                "munições": 0,
+                "municao": null,
+                "Id": "82f0dfc",
+                "Acessorios": [],
+                "Perfuracao": 0,
+                "maos": 2,
+                "descricao": "",
+                "__class__": "Ranged"
+              },
+              "quantidade": 1
+            },
+            {
+              "item": {
+                "tipo": "Municao",
+                "nome": "5.56x45mm FMJ",
+                "calibre": "5.56x45mm",
+                "dano": 0,
+                "tipo_dano": "balístico",
+                "perfuracao": 10,
+                "efeitos": [],
+                "descricao": "Full Metal Jacket, performance balanceada",
+                "__class__": "Municao"
+              },
+              "quantidade": 60
+            },
+            {
+              "item": {
+                "tipo": "Municao",
+                "nome": "5.56x45mm HP",
+                "calibre": "5.56x45mm",
+                "dano": 3,
+                "tipo_dano": "balístico",
+                "perfuracao": 8,
+                "efeitos": [],
+                "descricao": "Ponta oca, mais dano, menos perfuração",
+                "__class__": "Municao"
+              },
+              "quantidade": 30
+            },
+            {
+              "item": {
+                "tipo": "Municao",
+                "nome": "9x19mm HP",
+                "calibre": "9x19mm",
+                "dano": 5,
+                "tipo_dano": "balístico",
+                "perfuracao": 3,
+                "efeitos": [],
+                "descricao": "Ponta oca, mais dano, menos perfuração",
+                "__class__": "Municao"
+              },
+              "quantidade": 120
+            }
+          ],
+          "proficiencias": {
+            "Luta": {
+              "nome": "Luta",
+              "atributo": "Força",
+              "nivel": 4
+            },
+            "Arremesso": {
+              "nome": "Arremesso",
+              "atributo": "Força",
+              "nivel": 0
+            },
+            "Carga": {
+              "nome": "Carga",
+              "atributo": "Força",
+              "nivel": 0
+            },
+            "Acrobacia": {
+              "nome": "Acrobacia",
+              "atributo": "Agilidade",
+              "nivel": 0
+            },
+            "Reflexo": {
+              "nome": "Reflexo",
+              "atributo": "Agilidade",
+              "nivel": 0
+            },
+            "Furtividade": {
+              "nome": "Furtividade",
+              "atributo": "Agilidade",
+              "nivel": 0
+            },
+            "Vitalidade": {
+              "nome": "Vitalidade",
+              "atributo": "Vigor",
+              "nivel": 0
+            },
+            "Atletismo": {
+              "nome": "Atletismo",
+              "atributo": "Vigor",
+              "nivel": 0
+            },
+            "Fortitude": {
+              "nome": "Fortitude",
+              "atributo": "Vigor",
+              "nivel": 0
+            },
+            "Investigação": {
+              "nome": "Investigação",
+              "atributo": "Inteligência",
+              "nivel": 0
+            },
+            "Medicina (Passiva)": {
+              "nome": "Medicina (Passiva)",
+              "atributo": "Inteligência",
+              "nivel": 0
+            },
+            "Percepção (Passiva)": {
+              "nome": "Percepção (Passiva)",
+              "atributo": "Inteligência",
+              "nivel": 0
+            },
+            "Sobrevivencia": {
+              "nome": "Sobrevivencia",
+              "atributo": "Inteligência",
+              "nivel": 0
+            },
+            "Diplomacia": {
+              "nome": "Diplomacia",
+              "atributo": "Presença",
+              "nivel": 0
+            },
+            "Enganação": {
+              "nome": "Enganação",
+              "atributo": "Presença",
+              "nivel": 0
+            },
+            "Intimidação": {
+              "nome": "Intimidação",
+              "atributo": "Presença",
+              "nivel": 0
+            },
+            "Pontaria": {
+              "nome": "Pontaria",
+              "atributo": "Tática",
+              "nivel": 3
+            },
+            "Combate": {
+              "nome": "Combate",
+              "atributo": "Tática",
+              "nivel": 0
+            },
+            "Armamento (Passiva)": {
+              "nome": "Armamento (Passiva)",
+              "atributo": "Tática",
+              "nivel": 0
+            },
+            "Equipamento (Passiva)": {
+              "nome": "Equipamento (Passiva)",
+              "atributo": "Tática",
+              "nivel": 0
+            },
+            "Mana": {
+              "nome": "Mana",
+              "atributo": "Poder",
+              "nivel": 3
+            },
+            "Canalização": {
+              "nome": "Canalização",
+              "atributo": "Poder",
+              "nivel": 0
+            },
+            "Resistência": {
+              "nome": "Resistência",
+              "atributo": "Poder",
+              "nivel": 0
+            }
+          },
+          "poderes": {
+            "poderes": [],
+            "poderes_ofensivos": [
+              {
+                "__class__": "PoderOfensivo",
+                "nome": "Empalamento",
+                "descricao": "Cria fendas nexus ao redor do alvo, que é impalado por lâminas que emergem das fendas",
+                "custo_energia": 0,
+                "custo_mana": 2,
+                "dano": [
+                  {
+                    "tipo": "cortante",
+                    "valor": 15
+                  },
+                  {
+                    "tipo": "perfurante",
+                    "valor": 15
+                  },
+                  {
+                    "tipo": "rasgante",
+                    "valor": 15
+                  }
+                ],
+                "efeitos": [
+                  {
+                    "nome": "Hemorragia",
+                    "chance": 50,
+                    "duracao": 3
+                  },
+                  {
+                    "nome": "Imobilidade",
+                    "chance": 100,
+                    "duracao": 1
+                  }
+                ],
+                "ignora_resistencias": false
+              }
+            ]
+          },
+          "habilidades": {
+            "habilidades": [],
+            "habilidades_ofensivas": []
+          },
+          "buffs_debuffs": {
+            "efeitos": []
+          }
+        },
+        {
+          "nome": "Willford",
+          "Nivel": 5,
+          "XPAtual": 0,
+          "XPlvlUp": 3000,
+          "Forca": 3,
+          "Agilidade": 5,
+          "Vigor": 3,
+          "Inteligencia": 3,
+          "Presenca": 1,
+          "Tatica": 5,
+          "Poder": 2,
+          "VidaMax": 130,
+          "VidaAtual": 130,
+          "EnergiaMax": 5,
+          "EnergiaAtual": 5,
+          "ManaMax": 5,
+          "ManaAtual": 5,
+          "Bloqueio": 10,
+          "Esquiva": 10,
+          "Percepcao": 5,
+          "Movimento": 15,
+          "Disparada": 28,
+          "CargaMax": 21,
+          "CargaAtual": 7.0,
+          "mod_testes": {
+            "iniciativa": 0,
+            "sorte": 0,
+            "força": 0,
+            "agilidade": 0,
+            "vigor": 0,
+            "inteligencia": 0,
+            "presença": 0,
+            "tática": 0,
+            "poder": 0,
+            "físico": 0,
+            "mental": 0,
+            "vocal": 0,
+            "qualquer teste": 0
+          },
+          "mod_efeitos": {
+            "vida": 0,
+            "energia": 0,
+            "mana": 0,
+            "vidaMax": 0,
+            "energiaMax": 0,
+            "manaMax": 0,
+            "movimentação": 0,
+            "bloqueio": 0,
+            "esquiva": 0,
+            "resistência": 0,
+            "carga": 0,
+            "percepção": 0
+          },
+          "resistencias_base": {
+            "contundente": 0,
+            "concussivo": 0,
+            "cortante": 0,
+            "perfurante": 0,
+            "balístico": 0,
+            "rasgante": 0,
+            "explosivo": 0,
+            "incendiário": 0,
+            "congelante": 0,
+            "envenenante": 0,
+            "eletrocutante": 0,
+            "mental": 0
+          },
+          "resistencias_mod": {
+            "contundente": 0,
+            "concussivo": 0,
+            "cortante": 0,
+            "perfurante": 0,
+            "balístico": 0,
+            "rasgante": 0,
+            "explosivo": 0,
+            "incendiário": 0,
+            "congelante": 0,
+            "envenenante": 0,
+            "eletrocutante": 0,
+            "mental": 0
+          },
+          "imunidades_mod": [],
+          "mod_temporarios": [],
+          "mod_efeitos_ativos": [],
+          "equipamentos": {
+            "cabeça": null,
+            "rosto": null,
+            "pescoço": null,
+            "peito": {
+              "nome": "Colete leve",
+              "peso": 2.0,
+              "nivelBalistico": 6.0,
+              "absorcoes": {
+                "contundente": 15,
+                "concussivo": 5,
+                "cortante": 25,
+                "perfurante": 20,
+                "balístico": 20,
+                "rasgante": 25,
+                "explosivo": 5,
+                "incendiário": 15,
+                "envenenante": 15
+              },
+              "regioes_cobertas": [
+                "abdômen",
+                "peito",
+                "costas"
+              ],
+              "durabilidade": 50,
+              "durabilidadeMax": 50,
+              "regiao_indicada": "peito",
+              "Id": "e03687a",
+              "Melhorias": [],
+              "descricao": "",
+              "__class__": "Protecao"
+            },
+            "costas": {
+              "nome": "Colete leve",
+              "peso": 2.0,
+              "nivelBalistico": 6.0,
+              "absorcoes": {
+                "contundente": 15,
+                "concussivo": 5,
+                "cortante": 25,
+                "perfurante": 20,
+                "balístico": 20,
+                "rasgante": 25,
+                "explosivo": 5,
+                "incendiário": 15,
+                "envenenante": 15
+              },
+              "regioes_cobertas": [
+                "abdômen",
+                "peito",
+                "costas"
+              ],
+              "durabilidade": 50,
+              "durabilidadeMax": 50,
+              "regiao_indicada": "peito",
+              "Id": "e03687a",
+              "Melhorias": [],
+              "descricao": "",
+              "__class__": "Protecao"
+            },
+            "abdômen": {
+              "nome": "Colete leve",
+              "peso": 2.0,
+              "nivelBalistico": 6.0,
+              "absorcoes": {
+                "contundente": 15,
+                "concussivo": 5,
+                "cortante": 25,
+                "perfurante": 20,
+                "balístico": 20,
+                "rasgante": 25,
+                "explosivo": 5,
+                "incendiário": 15,
+                "envenenante": 15
+              },
+              "regioes_cobertas": [
+                "abdômen",
+                "peito",
+                "costas"
+              ],
+              "durabilidade": 50,
+              "durabilidadeMax": 50,
+              "regiao_indicada": "peito",
+              "Id": "e03687a",
+              "Melhorias": [],
+              "descricao": "",
+              "__class__": "Protecao"
+            },
+            "braços": {
+              "nome": "Traje leve",
+              "peso": 2.0,
+              "nivelBalistico": 6.0,
+              "absorcoes": {
+                "contundente": 15,
+                "concussivo": 5,
+                "cortante": 25,
+                "perfurante": 20,
+                "balístico": 20,
+                "rasgante": 25,
+                "explosivo": 5,
+                "incendiário": 15,
+                "envenenante": 15
+              },
+              "regioes_cobertas": [
+                "braços",
+                "pernas"
+              ],
+              "durabilidade": 50,
+              "durabilidadeMax": 50,
+              "regiao_indicada": "pernas",
+              "Id": "20584e8",
+              "Melhorias": [],
+              "descricao": "",
+              "__class__": "Protecao"
+            },
+            "pernas": {
+              "nome": "Traje leve",
+              "peso": 2.0,
+              "nivelBalistico": 6.0,
+              "absorcoes": {
+                "contundente": 15,
+                "concussivo": 5,
+                "cortante": 25,
+                "perfurante": 20,
+                "balístico": 20,
+                "rasgante": 25,
+                "explosivo": 5,
+                "incendiário": 15,
+                "envenenante": 15
+              },
+              "regioes_cobertas": [
+                "braços",
+                "pernas"
+              ],
+              "durabilidade": 50,
+              "durabilidadeMax": 50,
+              "regiao_indicada": "pernas",
+              "Id": "20584e8",
+              "Melhorias": [],
+              "descricao": "",
+              "__class__": "Protecao"
+            }
+          },
+          "slots": {
+            "mao_direita": {
+              "nome": "Tomahawk militar",
+              "peso": 3.0,
+              "dano_base": 45,
+              "crit_mult": 3,
+              "crit_valor": 20,
+              "tags": [
+                "sofisticada",
+                "alcance_curto",
+                "leve",
+                "arremessavel",
+                "uma_mao"
+              ],
+              "raridade": "Rara",
+              "Id": "6c26487",
+              "Melhorias": [],
+              "descricao": "Versão moderna e militar de um tomahawk tradicional",
+              "__class__": "Melee"
+            },
+            "mao_esquerda": null
+          },
+          "inventario": [
+            {
+              "item": {
+                "tipo": "Consumivel",
+                "nome": "Kit médico leve",
+                "peso": 1.0,
+                "descricao": "Contém alguns suprimentos para primeiros socorros",
+                "uso": "consumir",
+                "efeitos": [
+                  {
+                    "tipo": "cura",
+                    "valor": 50
+                  }
+                ],
+                "raio": null,
+                "raio_letal": null,
+                "falloff": "linear",
+                "perfuracao": 0,
+                "__class__": "Consumivel"
+              },
+              "quantidade": 1
+            },
+            {
+              "item": {
+                "nome": "AAC Honey Badger",
+                "peso": 3.0,
+                "classe": "Carabina",
+                "raridade": "Rara",
+                "calibre": ".300 Blackout",
+                "capacidade": 30,
+                "TPM": 800,
+                "ruido": 100,
+                "tipo_dano": "balístico",
+                "acoes_disparo": [
+                  "Semi",
+                  "Auto"
+                ],
+                "modo_disparo_atual": "Auto",
+                "munições": 30,
+                "municao": {
+                  "tipo": "Municao",
+                  "nome": ".300 Blackout SubS",
+                  "calibre": ".300 Blackout",
+                  "dano": 5,
+                  "tipo_dano": "balístico",
+                  "perfuracao": 7,
+                  "efeitos": [],
+                  "descricao": "Subsônica, menos performance por menos ruído",
+                  "__class__": "Municao"
+                },
+                "Id": "d26fb72",
+                "Acessorios": [],
+                "Perfuracao": 7,
+                "maos": 2,
+                "descricao": "",
+                "__class__": "Ranged"
+              },
+              "quantidade": 1
+            },
+            {
+              "item": {
+                "tipo": "Municao",
+                "nome": ".300 Blackout SubS",
+                "calibre": ".300 Blackout",
+                "dano": 5,
+                "tipo_dano": "balístico",
+                "perfuracao": 7,
+                "efeitos": [],
+                "descricao": "Subsônica, menos performance por menos ruído",
+                "__class__": "Municao"
+              },
+              "quantidade": 30
+            },
+            {
+              "item": {
+                "tipo": "Municao",
+                "nome": ".300 Blackout HV",
+                "calibre": ".300 Blackout",
+                "dano": 0,
+                "tipo_dano": "balístico",
+                "perfuracao": 9,
+                "efeitos": [],
+                "descricao": "Supersônica, performance balanceada",
+                "__class__": "Municao"
+              },
+              "quantidade": 30
+            },
+            {
+              "item": {
+                "tipo": "Municao",
+                "nome": ".45ACP FMJ",
+                "calibre": ".45ACP",
+                "dano": 0,
+                "tipo_dano": "balístico",
+                "perfuracao": 5,
+                "efeitos": [],
+                "descricao": "Full Metal Jacket, performance balanceada",
+                "__class__": "Municao"
+              },
+              "quantidade": 45
+            },
+            {
+              "item": {
+                "tipo": "Municao",
+                "nome": ".45ACP +P FMJ",
+                "calibre": ".45ACP",
+                "dano": -1,
+                "tipo_dano": "balístico",
+                "perfuracao": 5,
+                "efeitos": [],
+                "descricao": "Full Metal Jacket Sobrepressurizado, performance balanceada melhorada",
+                "__class__": "Municao"
+              },
+              "quantidade": 15
+            },
+            {
+              "item": {
+                "tipo": "Equipamento",
+                "nome": "Sling frontal",
+                "peso": 0,
+                "slots_criados": [
+                  {
+                    "nome": "Sling frontal",
+                    "tipo": "suporte",
+                    "aceita": [
+                      "Ranged"
+                    ],
+                    "requer_maos": 0,
+                    "saque_rapido": false
+                  }
+                ],
+                "descricao": "",
+                "__class__": "Equipamento"
+              },
+              "quantidade": 1
+            }
+          ],
+          "proficiencias": {
+            "Luta": {
+              "nome": "Luta",
+              "atributo": "Força",
+              "nivel": 5
+            },
+            "Arremesso": {
+              "nome": "Arremesso",
+              "atributo": "Força",
+              "nivel": 0
+            },
+            "Carga": {
+              "nome": "Carga",
+              "atributo": "Força",
+              "nivel": 0
+            },
+            "Acrobacia": {
+              "nome": "Acrobacia",
+              "atributo": "Agilidade",
+              "nivel": 0
+            },
+            "Reflexo": {
+              "nome": "Reflexo",
+              "atributo": "Agilidade",
+              "nivel": 0
+            },
+            "Furtividade": {
+              "nome": "Furtividade",
+              "atributo": "Agilidade",
+              "nivel": 3
+            },
+            "Vitalidade": {
+              "nome": "Vitalidade",
+              "atributo": "Vigor",
+              "nivel": 0
+            },
+            "Atletismo": {
+              "nome": "Atletismo",
+              "atributo": "Vigor",
+              "nivel": 0
+            },
+            "Fortitude": {
+              "nome": "Fortitude",
+              "atributo": "Vigor",
+              "nivel": 0
+            },
+            "Investigação": {
+              "nome": "Investigação",
+              "atributo": "Inteligência",
+              "nivel": 0
+            },
+            "Medicina (Passiva)": {
+              "nome": "Medicina (Passiva)",
+              "atributo": "Inteligência",
+              "nivel": 0
+            },
+            "Percepção (Passiva)": {
+              "nome": "Percepção (Passiva)",
+              "atributo": "Inteligência",
+              "nivel": 5
+            },
+            "Sobrevivencia": {
+              "nome": "Sobrevivencia",
+              "atributo": "Inteligência",
+              "nivel": 0
+            },
+            "Diplomacia": {
+              "nome": "Diplomacia",
+              "atributo": "Presença",
+              "nivel": 0
+            },
+            "Enganação": {
+              "nome": "Enganação",
+              "atributo": "Presença",
+              "nivel": 0
+            },
+            "Intimidação": {
+              "nome": "Intimidação",
+              "atributo": "Presença",
+              "nivel": 0
+            },
+            "Pontaria": {
+              "nome": "Pontaria",
+              "atributo": "Tática",
+              "nivel": 5
+            },
+            "Combate": {
+              "nome": "Combate",
+              "atributo": "Tática",
+              "nivel": 5
+            },
+            "Armamento (Passiva)": {
+              "nome": "Armamento (Passiva)",
+              "atributo": "Tática",
+              "nivel": 0
+            },
+            "Equipamento (Passiva)": {
+              "nome": "Equipamento (Passiva)",
+              "atributo": "Tática",
+              "nivel": 0
+            },
+            "Mana": {
+              "nome": "Mana",
+              "atributo": "Poder",
+              "nivel": 0
+            },
+            "Canalização": {
+              "nome": "Canalização",
+              "atributo": "Poder",
+              "nivel": 0
+            },
+            "Resistência": {
+              "nome": "Resistência",
+              "atributo": "Poder",
+              "nivel": 0
+            }
+          },
+          "poderes": {
+            "poderes": [],
+            "poderes_ofensivos": []
+          },
+          "habilidades": {
+            "habilidades": [],
+            "habilidades_ofensivas": []
+          },
+          "buffs_debuffs": {
+            "efeitos": []
+          }
+        },
+        {
+          "nome": "Edward Nancar",
+          "Nivel": 1,
+          "XPAtual": 0,
+          "XPlvlUp": 1000,
+          "Forca": 2,
+          "Agilidade": 4,
+          "Vigor": 1,
+          "Inteligencia": 1,
+          "Presenca": 1,
+          "Tatica": 2,
+          "Poder": 5,
+          "VidaMax": 110,
+          "VidaAtual": 110,
+          "EnergiaMax": 4,
+          "EnergiaAtual": 4,
+          "ManaMax": 11,
+          "ManaAtual": 11,
+          "Bloqueio": 7,
+          "Esquiva": 10,
+          "Percepcao": 5,
+          "Movimento": 14,
+          "Disparada": 25,
+          "CargaMax": 19,
+          "CargaAtual": 16.7,
+          "mod_testes": {
+            "iniciativa": 0,
+            "sorte": 0,
+            "força": 0,
+            "agilidade": 0,
+            "vigor": 0,
+            "inteligencia": 0,
+            "presença": 0,
+            "tática": 0,
+            "poder": 0,
+            "físico": 0,
+            "mental": 0,
+            "vocal": 0,
+            "qualquer teste": 0
+          },
+          "mod_efeitos": {
+            "vida": 0,
+            "energia": 0,
+            "mana": 0,
+            "vidaMax": 0,
+            "energiaMax": 0,
+            "manaMax": 0,
+            "movimentação": 0,
+            "bloqueio": 0,
+            "esquiva": 0,
+            "resistência": 0,
+            "carga": 0,
+            "percepção": 0,
+            "manamax": -2
+          },
+          "resistencias_base": {
+            "contundente": 0,
+            "concussivo": 0,
+            "cortante": 0,
+            "perfurante": 0,
+            "balístico": 0,
+            "rasgante": 0,
+            "explosivo": 0,
+            "incendiário": 0,
+            "congelante": 0,
+            "envenenante": 0,
+            "eletrocutante": 0,
+            "mental": 0
+          },
+          "resistencias_mod": {
+            "contundente": 0,
+            "concussivo": 0,
+            "cortante": 0,
+            "perfurante": 0,
+            "balístico": 0,
+            "rasgante": 0,
+            "explosivo": 0,
+            "incendiário": 0,
+            "congelante": 0,
+            "envenenante": 0,
+            "eletrocutante": 0,
+            "mental": 0
+          },
+          "imunidades_mod": [],
+          "mod_temporarios": [],
+          "mod_efeitos_ativos": [],
+          "equipamentos": {
+            "cabeça": null,
+            "rosto": null,
+            "pescoço": null,
+            "peito": null,
+            "costas": null,
+            "abdômen": null,
+            "braços": null,
+            "pernas": null
+          },
+          "slots": {
+            "mao_direita": null,
+            "mao_esquerda": null
+          },
+          "inventario": [
+            {
+              "item": {
+                "nome": "M1911",
+                "peso": 1.1,
+                "classe": "Pistola",
+                "raridade": "Comum",
+                "calibre": ".45Acp",
+                "capacidade": 9,
+                "TPM": 400,
+                "ruido": 80,
+                "tipo_dano": "balístico",
+                "acoes_disparo": [
+                  "Semi"
+                ],
+                "modo_disparo_atual": "Semi",
+                "munições": 0,
+                "municao": null,
+                "Id": "e0b9125",
+                "Acessorios": [],
+                "Perfuracao": 0,
+                "maos": 1,
+                "descricao": "Plaforma antiga e confiável e famosa pelo calibre .45 Acp, venceu duas guerras mundiais",
+                "__class__": "Ranged"
+              },
+              "quantidade": 1
+            },
+            {
+              "item": {
+                "nome": "M1911",
+                "peso": 1.1,
+                "classe": "Pistola",
+                "raridade": "Comum",
+                "calibre": ".45Acp",
+                "capacidade": 9,
+                "TPM": 400,
+                "ruido": 80,
+                "tipo_dano": "balístico",
+                "acoes_disparo": [
+                  "Semi"
+                ],
+                "modo_disparo_atual": "Semi",
+                "munições": 0,
+                "municao": null,
+                "Id": "e0b9125",
+                "Acessorios": [],
+                "Perfuracao": 0,
+                "maos": 1,
+                "descricao": "Plaforma antiga e confiável e famosa pelo calibre .45 Acp, venceu duas guerras mundiais",
+                "__class__": "Ranged"
+              },
+              "quantidade": 1
+            },
+            {
+              "item": {
+                "nome": "AKS74U",
+                "peso": 2.5,
+                "classe": "Carabina",
+                "raridade": "Comum",
+                "calibre": "5.45x39mm",
+                "capacidade": 30,
+                "TPM": 750,
+                "ruido": 150,
+                "tipo_dano": "balístico",
+                "acoes_disparo": [
+                  "Semi",
+                  "Auto"
+                ],
+                "modo_disparo_atual": "Auto",
+                "munições": 0,
+                "municao": null,
+                "Id": "c20a542",
+                "Acessorios": [],
+                "Perfuracao": 0,
+                "maos": 2,
+                "descricao": "Variante ultra-compacta do AK-74 categorizada como ADP para tripulantes e pilotos",
+                "__class__": "Ranged"
+              },
+              "quantidade": 1
+            },
+            {
+              "item": {
+                "tipo": "Municao",
+                "nome": ".45ACP +P FMJ",
+                "calibre": ".45ACP",
+                "dano": -1,
+                "tipo_dano": "balístico",
+                "perfuracao": 5,
+                "efeitos": [],
+                "descricao": "Full Metal Jacket Sobrepressurizado, performance balanceada melhorada",
+                "__class__": "Municao"
+              },
+              "quantidade": 20
+            },
+            {
+              "item": {
+                "tipo": "Municao",
+                "nome": ".45ACP HP",
+                "calibre": ".45ACP",
+                "dano": 5,
+                "tipo_dano": "balístico",
+                "perfuracao": 3,
+                "efeitos": [],
+                "descricao": "Ponta oca, mais dano, menos perfuração",
+                "__class__": "Municao"
+              },
+              "quantidade": 30
+            },
+            {
+              "item": {
+                "tipo": "Municao",
+                "nome": ".45ACP FMJ",
+                "calibre": ".45ACP",
+                "dano": 0,
+                "tipo_dano": "balístico",
+                "perfuracao": 5,
+                "efeitos": [],
+                "descricao": "Full Metal Jacket, performance balanceada",
+                "__class__": "Municao"
+              },
+              "quantidade": 30
+            },
+            {
+              "item": {
+                "tipo": "Municao",
+                "nome": "5.45x39mm SubS",
+                "calibre": "5.45x39mm",
+                "dano": -3,
+                "tipo_dano": "balístico",
+                "perfuracao": 9,
+                "efeitos": [],
+                "descricao": "Subsônica, menos performance por menos ruído",
+                "__class__": "Municao"
+              },
+              "quantidade": 60
+            },
+            {
+              "item": {
+                "tipo": "Municao",
+                "nome": "5.45x39mm SP",
+                "calibre": "5.45x39mm",
+                "dano": 3,
+                "tipo_dano": "balístico",
+                "perfuracao": 9,
+                "efeitos": [],
+                "descricao": "Ponta macia, mais dano, menos perfuração",
+                "__class__": "Municao"
+              },
+              "quantidade": 30
+            },
+            {
+              "item": {
+                "nome": "Traje leve",
+                "peso": 2.0,
+                "nivelBalistico": 6.0,
+                "absorcoes": {
+                  "contundente": 15,
+                  "concussivo": 5,
+                  "cortante": 25,
+                  "perfurante": 20,
+                  "balístico": 20,
+                  "rasgante": 25,
+                  "explosivo": 5,
+                  "incendiário": 15,
+                  "envenenante": 15
+                },
+                "regioes_cobertas": [
+                  "braços",
+                  "pernas"
+                ],
+                "durabilidade": 50,
+                "durabilidadeMax": 50,
+                "regiao_indicada": "pernas",
+                "Id": "5b2e95c",
+                "Melhorias": [],
+                "descricao": "",
+                "__class__": "Protecao"
+              },
+              "quantidade": 1
+            },
+            {
+              "item": {
+                "nome": "Colete médio",
+                "peso": 4.0,
+                "nivelBalistico": 10.0,
+                "absorcoes": {
+                  "contundente": 20,
+                  "concussivo": 10,
+                  "cortante": 35,
+                  "perfurante": 30,
+                  "balístico": 25,
+                  "rasgante": 35,
+                  "explosivo": 15,
+                  "incendiário": 25,
+                  "envenenante": 25
+                },
+                "regioes_cobertas": [
+                  "abdômen",
+                  "peito",
+                  "costas"
+                ],
+                "durabilidade": 100,
+                "durabilidadeMax": 100,
+                "regiao_indicada": "peito",
+                "Id": "5a8a036",
+                "Melhorias": [],
+                "descricao": "",
+                "__class__": "Protecao"
+              },
+              "quantidade": 1
+            },
+            {
+              "item": {
+                "nome": "Capacete médio",
+                "peso": 5.0,
+                "nivelBalistico": 10.0,
+                "absorcoes": {
+                  "contundente": 20,
+                  "concussivo": 10,
+                  "cortante": 35,
+                  "perfurante": 25,
+                  "balístico": 20,
+                  "rasgante": 35,
+                  "explosivo": 15,
+                  "incendiário": 30,
+                  "envenenante": 30
+                },
+                "regioes_cobertas": [
+                  "cabeça"
+                ],
+                "durabilidade": 100,
+                "durabilidadeMax": 100,
+                "regiao_indicada": "cabeça",
+                "Id": "8a17e01",
+                "Melhorias": [],
+                "descricao": "",
+                "__class__": "Protecao"
+              },
+              "quantidade": 1
+            },
+            {
+              "item": {
+                "tipo": "Equipamento",
+                "nome": "Cinto tático",
+                "peso": 1.0,
+                "slots_criados": [
+                  {
+                    "nome": "Cinto tático 1",
+                    "tipo": "suporte",
+                    "aceita": [
+                      "Ranged",
+                      "Melee"
+                    ],
+                    "requer_maos": 1,
+                    "saque_rapido": false
+                  },
+                  {
+                    "nome": "Cinto tático 2",
+                    "tipo": "suporte",
+                    "aceita": [
+                      "Ranged",
+                      "Melee"
+                    ],
+                    "requer_maos": 1,
+                    "saque_rapido": false
+                  }
+                ],
+                "descricao": "",
+                "__class__": "Equipamento"
+              },
+              "quantidade": 1
+            },
+            {
+              "item": {
+                "tipo": "Item",
+                "nome": "Intercomunicador",
+                "peso": 0.0,
+                "descricao": "Permite comunicar remotamente com alguém em outra linha e não ocupa as mãos, alcance de 50m",
+                "__class__": "Item"
+              },
+              "quantidade": 1
+            },
+            {
+              "item": {
+                "tipo": "Item",
+                "nome": "Documentos pessoais",
+                "peso": 0.0,
+                "descricao": "Nome, data de nascimento, nacionalidade...",
+                "__class__": "Item"
+              },
+              "quantidade": 1
+            }
+          ],
+          "proficiencias": {
+            "Luta": {
+              "nome": "Luta",
+              "atributo": "Força",
+              "nivel": 0
+            },
+            "Arremesso": {
+              "nome": "Arremesso",
+              "atributo": "Força",
+              "nivel": 0
+            },
+            "Carga": {
+              "nome": "Carga",
+              "atributo": "Força",
+              "nivel": 0
+            },
+            "Acrobacia": {
+              "nome": "Acrobacia",
+              "atributo": "Agilidade",
+              "nivel": 2
+            },
+            "Reflexo": {
+              "nome": "Reflexo",
+              "atributo": "Agilidade",
+              "nivel": 2
+            },
+            "Furtividade": {
+              "nome": "Furtividade",
+              "atributo": "Agilidade",
+              "nivel": 0
+            },
+            "Vitalidade": {
+              "nome": "Vitalidade",
+              "atributo": "Vigor",
+              "nivel": 0
+            },
+            "Atletismo": {
+              "nome": "Atletismo",
+              "atributo": "Vigor",
+              "nivel": 1
+            },
+            "Fortitude": {
+              "nome": "Fortitude",
+              "atributo": "Vigor",
+              "nivel": 0
+            },
+            "Investigação": {
+              "nome": "Investigação",
+              "atributo": "Inteligência",
+              "nivel": 0
+            },
+            "Medicina (Passiva)": {
+              "nome": "Medicina (Passiva)",
+              "atributo": "Inteligência",
+              "nivel": 0
+            },
+            "Percepção": {
+              "nome": "Percepção",
+              "atributo": "Inteligência",
+              "nivel": 0
+            },
+            "Sobrevivencia": {
+              "nome": "Sobrevivencia",
+              "atributo": "Inteligência",
+              "nivel": 0
+            },
+            "Diplomacia": {
+              "nome": "Diplomacia",
+              "atributo": "Presença",
+              "nivel": 0
+            },
+            "Enganação": {
+              "nome": "Enganação",
+              "atributo": "Presença",
+              "nivel": 0
+            },
+            "Intimidação": {
+              "nome": "Intimidação",
+              "atributo": "Presença",
+              "nivel": 0
+            },
+            "Pontaria": {
+              "nome": "Pontaria",
+              "atributo": "Tática",
+              "nivel": 3
+            },
+            "Armamento (Passiva)": {
+              "nome": "Armamento (Passiva)",
+              "atributo": "Tática",
+              "nivel": 0
+            },
+            "Equipamento (Passiva)": {
+              "nome": "Equipamento (Passiva)",
+              "atributo": "Tática",
+              "nivel": 0
+            },
+            "Mana": {
+              "nome": "Mana",
+              "atributo": "Poder",
+              "nivel": 2
+            },
+            "Canalização": {
+              "nome": "Canalização",
+              "atributo": "Poder",
+              "nivel": 0
+            },
+            "Resistência": {
+              "nome": "Resistência",
+              "atributo": "Poder",
+              "nivel": 0
+            }
+          },
+          "poderes": {
+            "poderes": [
+              {
+                "nome": "Evolução reativa",
+                "tipo": "passivo",
+                "custo": 0,
+                "custo_mana": 0,
+                "tags": [
+                  "manaMax"
+                ],
+                "valor": [
+                  -2
+                ],
+                "por_turno": false,
+                "duracao": null,
+                "descricao": "Abaixo de 25% de vida, ativa e randomiza entre 10 formas que o corpo se transforma pra negar ou bloquear um dano",
+                "dano": [],
+                "efeitos_ativos": [],
+                "ignora_resistencias": false
+              }
+            ],
+            "poderes_ofensivos": []
+          },
+          "habilidades": {
+            "habilidades": [],
+            "habilidades_ofensivas": []
+          },
+          "buffs_debuffs": {
+            "efeitos": []
+          }
+        }
+      ],
+      "_lista_superior": [],
+      "corpo alvo": [
+        {
+          "nome": "Soldado da wagner",
+          "Nivel": 1,
+          "XPAtual": 0,
+          "XPlvlUp": 1000,
+          "Forca": 1,
+          "Agilidade": 1,
+          "Vigor": 1,
+          "Inteligencia": 1,
+          "Presenca": 1,
+          "Tatica": 1,
+          "Poder": 1,
+          "VidaMax": 110,
+          "VidaAtual": 110,
+          "EnergiaMax": 3,
+          "EnergiaAtual": 3,
+          "ManaMax": 3,
+          "ManaAtual": 3,
+          "Bloqueio": 6,
+          "Esquiva": 6,
+          "Percepcao": 5,
+          "Movimento": 7,
+          "Disparada": 12,
+          "CargaMax": 17,
+          "CargaAtual": 14.4,
+          "mod_testes": {
+            "iniciativa": 0,
+            "sorte": 0,
+            "força": 0,
+            "agilidade": 0,
+            "vigor": 0,
+            "inteligencia": 0,
+            "presença": 0,
+            "tática": 0,
+            "poder": 0,
+            "físico": 0,
+            "mental": 0,
+            "vocal": 0,
+            "qualquer teste": 0
+          },
+          "mod_efeitos": {
+            "vida": 0,
+            "energia": 0,
+            "mana": 0,
+            "vidaMax": 0,
+            "energiaMax": 0,
+            "manaMax": 0,
+            "movimentação": 0,
+            "bloqueio": 0,
+            "esquiva": 0,
+            "resistência": 0,
+            "carga": 0,
+            "percepção": 0
+          },
+          "resistencias_base": {
+            "contundente": 0,
+            "concussivo": 0,
+            "cortante": 0,
+            "perfurante": 0,
+            "balístico": 0,
+            "rasgante": 0,
+            "explosivo": 0,
+            "incendiário": 0,
+            "congelante": 0,
+            "envenenante": 0,
+            "eletrocutante": 0,
+            "mental": 0
+          },
+          "resistencias_mod": {
+            "contundente": 0,
+            "concussivo": 0,
+            "cortante": 0,
+            "perfurante": 0,
+            "balístico": 0,
+            "rasgante": 0,
+            "explosivo": 0,
+            "incendiário": 0,
+            "congelante": 0,
+            "envenenante": 0,
+            "eletrocutante": 0,
+            "mental": 0
+          },
+          "imunidades_mod": [],
+          "mod_temporarios": [],
+          "mod_efeitos_ativos": [],
+          "equipamentos": {
+            "cabeça": {
+              "nome": "Capacete médio",
+              "peso": 5.0,
+              "nivelBalistico": 10.0,
+              "absorcoes": {
+                "contundente": 20,
+                "concussivo": 10,
+                "cortante": 35,
+                "perfurante": 25,
+                "balístico": 20,
+                "rasgante": 35,
+                "explosivo": 15,
+                "incendiário": 30,
+                "envenenante": 30
+              },
+              "regioes_cobertas": [
+                "cabeça"
+              ],
+              "durabilidade": 100,
+              "durabilidadeMax": 100,
+              "regiao_indicada": "cabeça",
+              "Id": "256dd06",
+              "Melhorias": [],
+              "descricao": "",
+              "__class__": "Protecao"
+            },
+            "rosto": null,
+            "pescoço": null,
+            "peito": {
+              "nome": "Colete médio",
+              "peso": 4.0,
+              "nivelBalistico": 10.0,
+              "absorcoes": {
+                "contundente": 20,
+                "concussivo": 10,
+                "cortante": 35,
+                "perfurante": 30,
+                "balístico": 25,
+                "rasgante": 35,
+                "explosivo": 15,
+                "incendiário": 25,
+                "envenenante": 25
+              },
+              "regioes_cobertas": [
+                "abdômen",
+                "peito",
+                "costas"
+              ],
+              "durabilidade": 100,
+              "durabilidadeMax": 100,
+              "regiao_indicada": "peito",
+              "Id": "8eddda1",
+              "Melhorias": [],
+              "descricao": "",
+              "__class__": "Protecao"
+            },
+            "costas": {
+              "nome": "Colete médio",
+              "peso": 4.0,
+              "nivelBalistico": 10.0,
+              "absorcoes": {
+                "contundente": 20,
+                "concussivo": 10,
+                "cortante": 35,
+                "perfurante": 30,
+                "balístico": 25,
+                "rasgante": 35,
+                "explosivo": 15,
+                "incendiário": 25,
+                "envenenante": 25
+              },
+              "regioes_cobertas": [
+                "abdômen",
+                "peito",
+                "costas"
+              ],
+              "durabilidade": 100,
+              "durabilidadeMax": 100,
+              "regiao_indicada": "peito",
+              "Id": "8eddda1",
+              "Melhorias": [],
+              "descricao": "",
+              "__class__": "Protecao"
+            },
+            "abdômen": {
+              "nome": "Colete médio",
+              "peso": 4.0,
+              "nivelBalistico": 10.0,
+              "absorcoes": {
+                "contundente": 20,
+                "concussivo": 10,
+                "cortante": 35,
+                "perfurante": 30,
+                "balístico": 25,
+                "rasgante": 35,
+                "explosivo": 15,
+                "incendiário": 25,
+                "envenenante": 25
+              },
+              "regioes_cobertas": [
+                "abdômen",
+                "peito",
+                "costas"
+              ],
+              "durabilidade": 100,
+              "durabilidadeMax": 100,
+              "regiao_indicada": "peito",
+              "Id": "8eddda1",
+              "Melhorias": [],
+              "descricao": "",
+              "__class__": "Protecao"
+            },
+            "braços": {
+              "nome": "Traje médio",
+              "peso": 4.0,
+              "nivelBalistico": 10.0,
+              "absorcoes": {
+                "contundente": 20,
+                "concussivo": 10,
+                "cortante": 35,
+                "perfurante": 20,
+                "balístico": 20,
+                "rasgante": 35,
+                "explosivo": 15,
+                "incendiário": 25,
+                "envenenante": 25
+              },
+              "regioes_cobertas": [
+                "braços",
+                "pernas"
+              ],
+              "durabilidade": 100,
+              "durabilidadeMax": 100,
+              "regiao_indicada": "pernas",
+              "Id": "c96d06c",
+              "Melhorias": [],
+              "descricao": "",
+              "__class__": "Protecao"
+            },
+            "pernas": {
+              "nome": "Traje médio",
+              "peso": 4.0,
+              "nivelBalistico": 10.0,
+              "absorcoes": {
+                "contundente": 20,
+                "concussivo": 10,
+                "cortante": 35,
+                "perfurante": 20,
+                "balístico": 20,
+                "rasgante": 35,
+                "explosivo": 15,
+                "incendiário": 25,
+                "envenenante": 25
+              },
+              "regioes_cobertas": [
+                "braços",
+                "pernas"
+              ],
+              "durabilidade": 100,
+              "durabilidadeMax": 100,
+              "regiao_indicada": "pernas",
+              "Id": "c96d06c",
+              "Melhorias": [],
+              "descricao": "",
+              "__class__": "Protecao"
+            }
+          },
+          "slots": {
+            "mao_direita": null,
+            "mao_esquerda": null
+          },
+          "inventario": [
+            {
+              "item": {
+                "nome": "MP-443 Grach",
+                "peso": 1.0,
+                "classe": "Pistola",
+                "raridade": "Comum",
+                "calibre": "9x19mm",
+                "capacidade": 18,
+                "TPM": 400,
+                "ruido": 120,
+                "tipo_dano": "balístico",
+                "acoes_disparo": [
+                  "Semi"
+                ],
+                "modo_disparo_atual": "Semi",
+                "munições": 0,
+                "municao": null,
+                "Id": "d5c8e07",
+                "Acessorios": [],
+                "Perfuracao": 0,
+                "maos": 1,
+                "descricao": "",
+                "__class__": "Ranged"
+              },
+              "quantidade": 1
+            },
+            {
+              "item": {
+                "nome": "AK74M",
+                "peso": 3.4,
+                "classe": "Fuzil de assalto",
+                "raridade": "Incomum",
+                "calibre": "5.45x39mm",
+                "capacidade": 30,
+                "TPM": 600,
+                "ruido": 150,
+                "tipo_dano": "balístico",
+                "acoes_disparo": [
+                  "Semi",
+                  "Auto"
+                ],
+                "modo_disparo_atual": "Auto",
+                "munições": 0,
+                "municao": null,
+                "Id": "09bc44c",
+                "Acessorios": [],
+                "Perfuracao": 0,
+                "maos": 2,
+                "descricao": "Variante modernizado em polímero AK74",
+                "__class__": "Ranged"
+              },
+              "quantidade": 1
+            },
+            {
+              "item": {
+                "tipo": "Municao",
+                "nome": "5.45x39mm SP",
+                "calibre": "5.45x39mm",
+                "dano": 3,
+                "tipo_dano": "balístico",
+                "perfuracao": 9,
+                "efeitos": [],
+                "descricao": "Ponta macia, mais dano, menos perfuração",
+                "__class__": "Municao"
+              },
+              "quantidade": 37
+            },
+            {
+              "item": {
+                "tipo": "Municao",
+                "nome": "9x19mm +P FMJ",
+                "calibre": "9x19mm",
+                "dano": 0,
+                "tipo_dano": "balístico",
+                "perfuracao": 5,
+                "efeitos": [],
+                "descricao": "Full Metal Jacket Sobrepressurizado, performance balanceada melhorada",
+                "__class__": "Municao"
+              },
+              "quantidade": 14
+            },
+            {
+              "item": {
+                "nome": "Marreta militar",
+                "peso": 8.0,
+                "dano_base": 50,
+                "crit_mult": 2,
+                "crit_valor": 20,
+                "tags": [
+                  "duas_maos",
+                  "concussivo",
+                  "pesada",
+                  "alcance_medio"
+                ],
+                "raridade": "Épica",
+                "Id": "03ec2c4",
+                "Melhorias": [],
+                "descricao": "Marreta usada por militares",
+                "__class__": "Melee"
+              },
+              "quantidade": 1
+            },
+            {
+              "item": {
+                "tipo": "Item",
+                "nome": "Documentos pessoais",
+                "peso": 0.0,
+                "descricao": "Nome, data de nascimento, nacionalidade...",
+                "__class__": "Item"
+              },
+              "quantidade": 1
+            },
+            {
+              "item": {
+                "tipo": "Item",
+                "nome": "Intercomunicador militar",
+                "peso": 0.0,
+                "descricao": "Permite comunicar remotamente com alguém em outra linha e não ocupa as mãos, alcance de 500m",
+                "__class__": "Item"
+              },
+              "quantidade": 1
+            },
+            {
+              "item": {
+                "tipo": "Consumivel",
+                "nome": "Granada de fragmentação",
+                "peso": 2.0,
+                "descricao": "Causa dano de fragmentação em um raio curto",
+                "uso": "arremesso",
+                "efeitos": [
+                  {
+                    "tipo": "dano_area",
+                    "subtipo": "fragmentacao",
+                    "valor": 150,
+                    "raio": 10,
+                    "raio_letal": 5,
+                    "falloff": "linear",
+                    "perfuracao": 0
+                  }
+                ],
+                "raio": null,
+                "raio_letal": null,
+                "falloff": "linear",
+                "perfuracao": 0,
+                "__class__": "Consumivel"
+              },
+              "quantidade": 1
+            }
+          ],
+          "proficiencias": {
+            "Luta": {
+              "nome": "Luta",
+              "atributo": "Força",
+              "nivel": 0
+            },
+            "Arremesso": {
+              "nome": "Arremesso",
+              "atributo": "Força",
+              "nivel": 0
+            },
+            "Carga": {
+              "nome": "Carga",
+              "atributo": "Força",
+              "nivel": 0
+            },
+            "Acrobacia": {
+              "nome": "Acrobacia",
+              "atributo": "Agilidade",
+              "nivel": 0
+            },
+            "Reflexo": {
+              "nome": "Reflexo",
+              "atributo": "Agilidade",
+              "nivel": 0
+            },
+            "Furtividade": {
+              "nome": "Furtividade",
+              "atributo": "Agilidade",
+              "nivel": 0
+            },
+            "Vitalidade": {
+              "nome": "Vitalidade",
+              "atributo": "Vigor",
+              "nivel": 0
+            },
+            "Atletismo": {
+              "nome": "Atletismo",
+              "atributo": "Vigor",
+              "nivel": 0
+            },
+            "Fortitude": {
+              "nome": "Fortitude",
+              "atributo": "Vigor",
+              "nivel": 0
+            },
+            "Investigação": {
+              "nome": "Investigação",
+              "atributo": "Inteligência",
+              "nivel": 0
+            },
+            "Medicina (Passiva)": {
+              "nome": "Medicina (Passiva)",
+              "atributo": "Inteligência",
+              "nivel": 0
+            },
+            "Percepção": {
+              "nome": "Percepção",
+              "atributo": "Inteligência",
+              "nivel": 0
+            },
+            "Sobrevivencia": {
+              "nome": "Sobrevivencia",
+              "atributo": "Inteligência",
+              "nivel": 0
+            },
+            "Diplomacia": {
+              "nome": "Diplomacia",
+              "atributo": "Presença",
+              "nivel": 0
+            },
+            "Enganação": {
+              "nome": "Enganação",
+              "atributo": "Presença",
+              "nivel": 0
+            },
+            "Intimidação": {
+              "nome": "Intimidação",
+              "atributo": "Presença",
+              "nivel": 0
+            },
+            "Pontaria": {
+              "nome": "Pontaria",
+              "atributo": "Tática",
+              "nivel": 0
+            },
+            "Armamento (Passiva)": {
+              "nome": "Armamento (Passiva)",
+              "atributo": "Tática",
+              "nivel": 0
+            },
+            "Equipamento (Passiva)": {
+              "nome": "Equipamento (Passiva)",
+              "atributo": "Tática",
+              "nivel": 0
+            },
+            "Mana": {
+              "nome": "Mana",
+              "atributo": "Poder",
+              "nivel": 0
+            },
+            "Canalização": {
+              "nome": "Canalização",
+              "atributo": "Poder",
+              "nivel": 0
+            },
+            "Resistência": {
+              "nome": "Resistência",
+              "atributo": "Poder",
+              "nivel": 0
+            }
+          },
+          "poderes": {
+            "poderes": [],
+            "poderes_ofensivos": []
+          },
+          "habilidades": {
+            "habilidades": [],
+            "habilidades_ofensivas": []
+          },
+          "buffs_debuffs": {
+            "efeitos": []
+          }
+        }
+      ],
+      "__estado_combate__": {
+        "ordem_turno_nomes": [],
+        "turno_atual_index": 0,
+        "grupo_esquerdo": null,
+        "grupo_direito": null,
+        "iniciativas": {
+          "Etherin bane": null,
+          "Willford": null,
+          "Edward Nancar": null
+        }
+      },
+      "__log_combate__": [
+        {
+          "timestamp": "19:30:28",
+          "mensagem": "=== Log de Combate Iniciado ===",
+          "cor": "yellow",
+          "detalhes": null
+        },
+        {
+          "timestamp": "19:30:28",
+          "mensagem": "Aguardando ações de combate...",
+          "cor": "gray",
+          "detalhes": null
+        }
+      ]
+    },
+    "data_criacao": "2026-03-08T18:43:23.196949"
+  },
+  "The boys": {
+    "conteudo": {
+      "The boys": [
+        {
+          "nome": "Marcus Hellhound Walker",
+          "Nivel": 5,
+          "XPAtual": 0,
+          "XPlvlUp": 3000,
+          "Forca": 3,
+          "Agilidade": 3,
+          "Vigor": 3,
+          "Inteligencia": 3,
+          "Presenca": 1,
+          "Tatica": 1,
+          "Poder": 1,
+          "VidaMax": 130,
+          "VidaAtual": 130,
+          "EnergiaMax": 5,
+          "EnergiaAtual": 5,
+          "ManaMax": 3,
+          "ManaAtual": 3,
+          "Bloqueio": 10,
+          "Esquiva": 8,
+          "Percepcao": 5,
+          "Movimento": 14,
+          "Disparada": 23,
+          "CargaMax": 21,
+          "CargaAtual": 0,
+          "mod_testes": {
+            "iniciativa": 0,
+            "sorte": 0,
+            "força": 0,
+            "agilidade": 0,
+            "vigor": 0,
+            "inteligencia": 0,
+            "presença": 0,
+            "tática": 0,
+            "poder": 0,
+            "físico": 0,
+            "mental": 0,
+            "vocal": 0,
+            "qualquer teste": 0
+          },
+          "mod_efeitos": {
+            "vida": 0,
+            "energia": 0,
+            "mana": 0,
+            "movimentação": 0,
+            "bloqueio": 0,
+            "esquiva": 0,
+            "resistência": 0,
+            "carga": 0
+          },
+          "resistencias_base": {
+            "contundente": 0,
+            "concussivo": 0,
+            "cortante": 0,
+            "perfurante": 0,
+            "balístico": 0,
+            "rasgante": 0,
+            "explosivo": 0,
+            "incendiário": 100,
+            "congelante": 0,
+            "envenenante": 0,
+            "eletrocutante": 0,
+            "mental": 0
+          },
+          "resistencias_mod": {
+            "contundente": 0,
+            "concussivo": 0,
+            "cortante": 0,
+            "perfurante": 0,
+            "balístico": 0,
+            "rasgante": 0,
+            "explosivo": 0,
+            "incendiário": 0,
+            "congelante": 0,
+            "envenenante": 0,
+            "eletrocutante": 0,
+            "mental": 0
+          },
+          "imunidades_mod": [],
+          "mod_temporarios": [],
+          "mod_efeitos_ativos": [],
+          "equipamentos": {
+            "cabeça": null,
+            "rosto": null,
+            "pescoço": null,
+            "peito": null,
+            "costas": null,
+            "abdômen": null,
+            "braços": null,
+            "pernas": null
+          },
+          "slots": {
+            "mao_direita": null,
+            "mao_esquerda": null
+          },
+          "inventario": [],
+          "proficiencias": {
+            "Luta": {
+              "nome": "Luta",
+              "atributo": "Força",
+              "nivel": 5
+            },
+            "Arremesso": {
+              "nome": "Arremesso",
+              "atributo": "Força",
+              "nivel": 0
+            },
+            "Carga": {
+              "nome": "Carga",
+              "atributo": "Força",
+              "nivel": 0
+            },
+            "Acrobacia": {
+              "nome": "Acrobacia",
+              "atributo": "Agilidade",
+              "nivel": 3
+            },
+            "Reflexo": {
+              "nome": "Reflexo",
+              "atributo": "Agilidade",
+              "nivel": 0
+            },
+            "Furtividade": {
+              "nome": "Furtividade",
+              "atributo": "Agilidade",
+              "nivel": 3
+            },
+            "Vitalidade": {
+              "nome": "Vitalidade",
+              "atributo": "Vigor",
+              "nivel": 0
+            },
+            "Atletismo": {
+              "nome": "Atletismo",
+              "atributo": "Vigor",
+              "nivel": 3
+            },
+            "Fortitude": {
+              "nome": "Fortitude",
+              "atributo": "Vigor",
+              "nivel": 0
+            },
+            "Investigação": {
+              "nome": "Investigação",
+              "atributo": "Inteligência",
+              "nivel": 0
+            },
+            "Medicina (Passiva)": {
+              "nome": "Medicina (Passiva)",
+              "atributo": "Inteligência",
+              "nivel": 0
+            },
+            "Percepção (Passiva)": {
+              "nome": "Percepção (Passiva)",
+              "atributo": "Inteligência",
+              "nivel": 0
+            },
+            "Sobrevivencia": {
+              "nome": "Sobrevivencia",
+              "atributo": "Inteligência",
+              "nivel": 0
+            },
+            "Diplomacia": {
+              "nome": "Diplomacia",
+              "atributo": "Presença",
+              "nivel": 2
+            },
+            "Enganação": {
+              "nome": "Enganação",
+              "atributo": "Presença",
+              "nivel": 0
+            },
+            "Intimidação": {
+              "nome": "Intimidação",
+              "atributo": "Presença",
+              "nivel": 0
+            },
+            "Pontaria": {
+              "nome": "Pontaria",
+              "atributo": "Tática",
+              "nivel": 0
+            },
+            "Combate": {
+              "nome": "Combate",
+              "atributo": "Tática",
+              "nivel": 0
+            },
+            "Armamento (Passiva)": {
+              "nome": "Armamento (Passiva)",
+              "atributo": "Tática",
+              "nivel": 0
+            },
+            "Equipamento (Passiva)": {
+              "nome": "Equipamento (Passiva)",
+              "atributo": "Tática",
+              "nivel": 0
+            },
+            "Mana": {
+              "nome": "Mana",
+              "atributo": "Poder",
+              "nivel": 0
+            },
+            "Canalização": {
+              "nome": "Canalização",
+              "atributo": "Poder",
+              "nivel": 0
+            },
+            "Resistência": {
+              "nome": "Resistência",
+              "atributo": "Poder",
+              "nivel": 0
+            }
+          },
+          "poderes": {
+            "poderes": [],
+            "poderes_ofensivos": []
+          },
+          "habilidades": {
+            "habilidades": [],
+            "habilidades_ofensivas": []
+          },
+          "buffs_debuffs": {
+            "efeitos": [
+              {
+                "nome": "Regeneração",
+                "duracao": "permanente",
+                "efeito": {
+                  "atributo": "vida",
+                  "valor": 10,
+                  "por_turno": true
+                },
+                "descricao": "Recupera vida continuamente durante a duração",
+                "tipo": "buff",
+                "turnos_restantes": null
+              }
+            ]
+          }
+        }
+      ],
+      "__estado_combate__": {
+        "ordem_turno_nomes": [],
+        "turno_atual_index": 0,
+        "grupo_esquerdo": null,
+        "grupo_direito": null,
+        "iniciativas": {}
+      }
+    },
+    "data_criacao": "2026-03-07T05:54:25.559900"
+  }
+}

@@ -1,0 +1,499 @@
+{
+  "Colete leve": {
+    "nome": "Colete leve",
+    "peso": 2.0,
+    "nivelBalistico": 6.0,
+    "absorcoes": {
+      "contundente": 15,
+      "concussivo": 5,
+      "cortante": 25,
+      "perfurante": 20,
+      "balístico": 20,
+      "rasgante": 25,
+      "explosivo": 5,
+      "incendiário": 15,
+      "envenenante": 15
+    },
+    "regioes_cobertas": [
+      "abdômen",
+      "peito",
+      "costas"
+    ],
+    "regiao_indicada": "peito",
+    "durabilidade": 50,
+    "durabilidadeMax": 50,
+    "descricao": "",
+    "Melhorias": []
+  },
+  "Colete médio": {
+    "nome": "Colete médio",
+    "peso": 4.0,
+    "nivelBalistico": 10.0,
+    "absorcoes": {
+      "contundente": 20,
+      "concussivo": 10,
+      "cortante": 35,
+      "perfurante": 30,
+      "balístico": 25,
+      "rasgante": 35,
+      "explosivo": 15,
+      "incendiário": 25,
+      "envenenante": 25
+    },
+    "regioes_cobertas": [
+      "abdômen",
+      "peito",
+      "costas"
+    ],
+    "regiao_indicada": "peito",
+    "durabilidade": 100,
+    "durabilidadeMax": 100,
+    "descricao": "",
+    "Melhorias": []
+  },
+  "Colete pesado": {
+    "nome": "Colete pesado",
+    "peso": 8.0,
+    "nivelBalistico": 14.0,
+    "absorcoes": {
+      "contundente": 35,
+      "concussivo": 15,
+      "cortante": 50,
+      "perfurante": 35,
+      "balístico": 35,
+      "rasgante": 50,
+      "explosivo": 25,
+      "incendiário": 35,
+      "envenenante": 35
+    },
+    "regioes_cobertas": [
+      "abdômen",
+      "peito",
+      "costas"
+    ],
+    "regiao_indicada": "peito",
+    "durabilidade": 150,
+    "durabilidadeMax": 150,
+    "descricao": "",
+    "Melhorias": []
+  },
+  "Capacete leve": {
+    "nome": "Capacete leve",
+    "peso": 2.0,
+    "nivelBalistico": 6.0,
+    "absorcoes": {
+      "contundente": 15,
+      "concussivo": 5,
+      "cortante": 25,
+      "perfurante": 20,
+      "balístico": 20,
+      "rasgante": 25,
+      "explosivo": 5,
+      "incendiário": 15,
+      "envenenante": 15
+    },
+    "regioes_cobertas": [
+      "cabeça"
+    ],
+    "regiao_indicada": "cabeça",
+    "durabilidade": 50,
+    "durabilidadeMax": 50,
+    "descricao": "",
+    "Melhorias": []
+  },
+  "Capacete médio": {
+    "nome": "Capacete médio",
+    "peso": 5.0,
+    "nivelBalistico": 10.0,
+    "absorcoes": {
+      "contundente": 20,
+      "concussivo": 10,
+      "cortante": 35,
+      "perfurante": 25,
+      "balístico": 20,
+      "rasgante": 35,
+      "explosivo": 15,
+      "incendiário": 30,
+      "envenenante": 30
+    },
+    "regioes_cobertas": [
+      "cabeça"
+    ],
+    "regiao_indicada": "cabeça",
+    "durabilidade": 100,
+    "durabilidadeMax": 100,
+    "descricao": "",
+    "Melhorias": []
+  },
+  "Capacete pesado": {
+    "nome": "Capacete pesado",
+    "peso": 8.0,
+    "nivelBalistico": 14.0,
+    "absorcoes": {
+      "contundente": 35,
+      "concussivo": 15,
+      "cortante": 50,
+      "perfurante": 30,
+      "balístico": 30,
+      "rasgante": 50,
+      "explosivo": 25,
+      "incendiário": 50,
+      "envenenante": 25
+    },
+    "regioes_cobertas": [
+      "cabeça"
+    ],
+    "regiao_indicada": "cabeça",
+    "durabilidade": 150,
+    "durabilidadeMax": 150,
+    "descricao": "",
+    "Melhorias": []
+  },
+  "Traje leve": {
+    "nome": "Traje leve",
+    "peso": 2.0,
+    "nivelBalistico": 6.0,
+    "absorcoes": {
+      "contundente": 15,
+      "concussivo": 5,
+      "cortante": 25,
+      "perfurante": 20,
+      "balístico": 20,
+      "rasgante": 25,
+      "explosivo": 5,
+      "incendiário": 15,
+      "envenenante": 15
+    },
+    "regioes_cobertas": [
+      "braços",
+      "pernas"
+    ],
+    "regiao_indicada": "pernas",
+    "durabilidade": 50,
+    "durabilidadeMax": 50,
+    "descricao": "",
+    "Melhorias": []
+  },
+  "Traje médio": {
+    "nome": "Traje médio",
+    "peso": 4.0,
+    "nivelBalistico": 10.0,
+    "absorcoes": {
+      "contundente": 20,
+      "concussivo": 10,
+      "cortante": 35,
+      "perfurante": 20,
+      "balístico": 20,
+      "rasgante": 35,
+      "explosivo": 15,
+      "incendiário": 25,
+      "envenenante": 25
+    },
+    "regioes_cobertas": [
+      "braços",
+      "pernas"
+    ],
+    "regiao_indicada": "pernas",
+    "durabilidade": 100,
+    "durabilidadeMax": 100,
+    "descricao": "",
+    "Melhorias": []
+  },
+  "Traje pesado": {
+    "nome": "Traje pesado",
+    "peso": 6.0,
+    "nivelBalistico": 14.0,
+    "absorcoes": {
+      "contundente": 35,
+      "concussivo": 15,
+      "cortante": 50,
+      "perfurante": 35,
+      "balístico": 3,
+      "rasgante": 50,
+      "explosivo": 25,
+      "incendiário": 35,
+      "envenenante": 35
+    },
+    "regioes_cobertas": [
+      "braços",
+      "pernas"
+    ],
+    "regiao_indicada": "pernas",
+    "durabilidade": 150,
+    "durabilidadeMax": 150,
+    "descricao": "",
+    "Melhorias": []
+  },
+  "Máscara média": {
+    "nome": "Máscara média",
+    "peso": 3.0,
+    "nivelBalistico": 9.0,
+    "absorcoes": {
+      "contundente": 20,
+      "concussivo": 10,
+      "cortante": 35,
+      "perfurante": 25,
+      "balístico": 20,
+      "rasgante": 35,
+      "explosivo": 15,
+      "incendiário": 25,
+      "envenenante": 25
+    },
+    "regioes_cobertas": [
+      "rosto"
+    ],
+    "regiao_indicada": "rosto",
+    "durabilidade": 100,
+    "durabilidadeMax": 100,
+    "descricao": "",
+    "Melhorias": []
+  },
+  "Máscara pesada": {
+    "nome": "Máscara pesada",
+    "peso": 5.0,
+    "nivelBalistico": 13.0,
+    "absorcoes": {
+      "contundente": 35,
+      "concussivo": 15,
+      "cortante": 45,
+      "perfurante": 30,
+      "balístico": 30,
+      "rasgante": 45,
+      "explosivo": 25,
+      "incendiário": 35,
+      "envenenante": 35
+    },
+    "regioes_cobertas": [
+      "rosto"
+    ],
+    "regiao_indicada": "rosto",
+    "durabilidade": 150,
+    "durabilidadeMax": 150,
+    "descricao": "",
+    "Melhorias": []
+  },
+  "Agent - terno padrão": {
+    "nome": "Agent - terno padrão",
+    "peso": 1.0,
+    "nivelBalistico": 3.0,
+    "absorcoes": {
+      "cortante": 5,
+      "rasgante": 5,
+      "incendiário": 5,
+      "envenenante": 5
+    },
+    "regioes_cobertas": [
+      "braços",
+      "pernas",
+      "abdômen",
+      "peito",
+      "costas"
+    ],
+    "regiao_indicada": "peito",
+    "durabilidade": 50,
+    "durabilidadeMax": 50,
+    "descricao": "",
+    "Melhorias": []
+  },
+  "Agent - óculos padrão": {
+    "nome": "Agent - óculos padrão",
+    "peso": 0.0,
+    "nivelBalistico": 1.0,
+    "absorcoes": {
+      "cortante": 5,
+      "rasgante": 5,
+      "incendiário": 5,
+      "envenenante": 5
+    },
+    "regioes_cobertas": [
+      "rosto"
+    ],
+    "regiao_indicada": "rosto",
+    "durabilidade": 5,
+    "durabilidadeMax": 5,
+    "descricao": "",
+    "Melhorias": []
+  },
+  "Máscara leve": {
+    "nome": "Máscara leve",
+    "peso": 1.0,
+    "nivelBalistico": 5.0,
+    "absorcoes": {
+      "contundente": 15,
+      "concussivo": 5,
+      "cortante": 25,
+      "perfurante": 15,
+      "balístico": 25,
+      "rasgante": 25,
+      "explosivo": 5,
+      "incendiário": 15,
+      "envenenante": 15
+    },
+    "regioes_cobertas": [
+      "rosto"
+    ],
+    "regiao_indicada": "rosto",
+    "durabilidade": 50,
+    "durabilidadeMax": 50,
+    "descricao": "",
+    "Melhorias": []
+  },
+  "ATP - traje de combate leve": {
+    "nome": "ATP - traje de combate leve",
+    "peso": 6.0,
+    "nivelBalistico": 6.0,
+    "absorcoes": {
+      "contundente": 5,
+      "concussivo": 5,
+      "cortante": 15,
+      "perfurante": 10,
+      "balístico": 10,
+      "rasgante": 15,
+      "explosivo": 5,
+      "incendiário": 15,
+      "congelante": 15,
+      "envenenante": 15,
+      "eletrocutante": 15
+    },
+    "regioes_cobertas": [
+      "braços",
+      "pernas",
+      "pescoço"
+    ],
+    "regiao_indicada": "braços",
+    "durabilidade": 100,
+    "durabilidadeMax": 100,
+    "descricao": "",
+    "Melhorias": []
+  },
+  "ATP - Visor engineer": {
+    "nome": "ATP - Visor engineer",
+    "peso": 2.0,
+    "nivelBalistico": 5.0,
+    "absorcoes": {
+      "contundente": 5,
+      "concussivo": 5,
+      "cortante": 15,
+      "perfurante": 15,
+      "balístico": 15,
+      "rasgante": 15,
+      "explosivo": 5,
+      "incendiário": 15,
+      "congelante": 15,
+      "envenenante": 15
+    },
+    "regioes_cobertas": [
+      "rosto"
+    ],
+    "regiao_indicada": "rosto",
+    "durabilidade": 50,
+    "durabilidadeMax": 50,
+    "descricao": "",
+    "Melhorias": []
+  },
+  "ATP - Visor medic": {
+    "nome": "ATP - Visor medic",
+    "peso": 2.0,
+    "nivelBalistico": 5.0,
+    "absorcoes": {
+      "contundente": 5,
+      "concussivo": 5,
+      "cortante": 25,
+      "perfurante": 15,
+      "balístico": 15,
+      "rasgante": 25,
+      "explosivo": 15,
+      "incendiário": 25,
+      "congelante": 25,
+      "envenenante": 25,
+      "eletrocutante": 25
+    },
+    "regioes_cobertas": [
+      "rosto"
+    ],
+    "regiao_indicada": "rosto",
+    "durabilidade": 50,
+    "durabilidadeMax": 50,
+    "descricao": "",
+    "Melhorias": []
+  },
+  "ATP - Máscara soldat": {
+    "nome": "ATP - Máscara soldat",
+    "peso": 4.0,
+    "nivelBalistico": 7.0,
+    "absorcoes": {
+      "contundente": 5,
+      "concussivo": 5,
+      "cortante": 25,
+      "perfurante": 25,
+      "balístico": 25,
+      "rasgante": 25,
+      "explosivo": 10,
+      "incendiário": 25,
+      "envenenante": 25,
+      "eletrocutante": 15
+    },
+    "regioes_cobertas": [
+      "rosto"
+    ],
+    "regiao_indicada": "rosto",
+    "durabilidade": 100,
+    "durabilidadeMax": 100,
+    "descricao": "",
+    "Melhorias": []
+  },
+  "GOL.em - Armadura MK1": {
+    "nome": "GOL.em - Armadura MK1",
+    "peso": 20.0,
+    "nivelBalistico": 16.0,
+    "absorcoes": {
+      "contundente": 25,
+      "concussivo": 25,
+      "cortante": 100,
+      "perfurante": 45,
+      "balístico": 45,
+      "rasgante": 100,
+      "explosivo": 25,
+      "incendiário": 100,
+      "envenenante": 100
+    },
+    "regioes_cobertas": [
+      "braços",
+      "pernas",
+      "abdômen",
+      "costas",
+      "peito",
+      "pescoço"
+    ],
+    "regiao_indicada": "peito",
+    "durabilidade": 300,
+    "durabilidadeMax": 300,
+    "descricao": "",
+    "Melhorias": []
+  },
+  "GOL.em Capacete MK1": {
+    "nome": "GOL.em Capacete MK1",
+    "peso": 8.0,
+    "nivelBalistico": 16.0,
+    "absorcoes": {
+      "contundente": 25,
+      "concussivo": 25,
+      "cortante": 100,
+      "perfurante": 45,
+      "balístico": 45,
+      "rasgante": 100,
+      "explosivo": 25,
+      "incendiário": 100,
+      "envenenante": 100
+    },
+    "regioes_cobertas": [
+      "cabeça",
+      "rosto"
+    ],
+    "regiao_indicada": "cabeça",
+    "durabilidade": 300,
+    "durabilidadeMax": 300,
+    "descricao": "",
+    "Melhorias": []
+  }
+}

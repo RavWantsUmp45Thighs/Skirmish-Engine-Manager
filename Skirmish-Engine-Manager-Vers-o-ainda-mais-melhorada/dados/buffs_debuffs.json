@@ -1,0 +1,86 @@
+{
+  "Concussão": {
+    "nome": "Concussão",
+    "tipo": "debuff",
+    "efeito": [{"tags": ["qualquer teste"], "valor": -3}],
+    "descricao": "Reduz a eficiência em testes devido à concussão"
+  },
+  "Atordoado": {
+    "nome": "Atordoado",
+    "tipo": "debuff",
+    "efeito": [{"tags": ["qualquer teste"], "valor": -7}],
+    "descricao": "O personagem fica atordoado, sem ações no turno"
+  },
+  "Fraqueza": {
+    "nome": "Fraqueza",
+    "tipo": "debuff",
+    "efeito": [{"tags": ["físico"], "valor": -3}],
+    "descricao": "O corpo fica enfraquecido, reduzindo força em ações físicas"
+  },
+  "Sangramento": {
+    "nome": "Sangramento",
+    "tipo": "debuff",
+    "efeito": [{"tags": ["vida"], "valor": -5, "por_turno": true}],
+    "descricao": "Perde vida continuamente devido a ferimentos"
+  },
+  "Hemorragia": {
+    "nome": "Hemorragia",
+    "tipo": "debuff",
+    "efeito": [{"tags": ["vida"], "valor": -15, "por_turno": true}],
+    "descricao": "Perde vida continuamente devido a ferimentos severos"
+  },
+  "Envenenamento": {
+    "nome": "Envenenamento",
+    "tipo": "debuff",
+    "efeito": [{"tags": ["envenenante"], "valor": 5, "por_turno": true}],
+    "descricao": "O veneno corrói a vida lentamente"
+  },
+  "Em chamas": {
+    "nome": "Em chamas",
+    "tipo": "debuff",
+    "efeito": [
+      {"tags": ["incendiário"], "valor": 20, "por_turno": true},
+      {"tags": ["qualquer teste"], "valor": -3}
+    ],
+    "descricao": "O fogo causa dano contínuo e atrapalha ações"
+  },
+  "Eletrocutado": {
+    "nome": "Eletrocutado",
+    "tipo": "debuff",
+    "efeito": [
+      {"tags": ["eletrocutante"], "valor": 5, "por_turno": true},
+      {"tags": ["qualquer teste"], "valor": -4}
+    ],
+    "descricao": "O choque causa dano e dificulta ações"
+  },
+  "Foco": {
+    "nome": "Foco",
+    "tipo": "buff",
+    "efeito": [{"tags": ["mental"], "valor": 3}],
+    "descricao": "O personagem fica mais concentrado, aumentando a precisão em testes mentais"
+  },
+  "Adrenalina": {
+    "nome": "Adrenalina",
+    "tipo": "buff",
+    "efeito": [{"tags": ["físico"], "valor": 5}],
+    "descricao": "O corpo recebe força adicional temporária"
+  },
+  "Resistência a fogo": {
+    "nome": "Resistência a fogo",
+    "tipo": "buff",
+    "efeito": [{"tags": ["resistencia_incendiário"], "valor": 30}],
+    "descricao": "Reduz o dano recebido de fogo"
+  },
+  "Imunidade a fogo": {
+    "nome": "Imunidade a fogo",
+    "tipo": "buff",
+    "efeito": [{"tags": ["resistencia_incendiário"], "valor": 100}],
+    "descricao": "Imunidade total a dano de fogo"
+  },
+  "Regeneração": {
+    "nome": "Regeneração",
+    "tipo": "buff",
+    "efeito": [{"tags": ["vida"], "valor": 10, "por_turno": true}],
+    "descricao": "Recupera vida continuamente durante a duração"
+  }
+}

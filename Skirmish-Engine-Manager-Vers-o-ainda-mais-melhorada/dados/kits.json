@@ -1,0 +1,3433 @@
+{
+  "Golem_1": {
+    "__class__": "KitEquipamento",
+    "nome": "Golem_1",
+    "raridade": "Rara",
+    "Id": "ea471bf",
+    "itens": [
+      {
+        "item": {
+          "nome": "Marreta Demolidora",
+          "peso": 10.0,
+          "dano_base": 50,
+          "crit_mult": 2,
+          "crit_valor": 30,
+          "tags": [
+            "duas_maos",
+            "pesada",
+            "alcance_medio",
+            "concussivo"
+          ],
+          "raridade": "Comum",
+          "Id": "13e058f",
+          "Melhorias": [],
+          "descricao": "Marreta de obras, pesada, perfeita para derrubar paredes",
+          "_classe": "Melee"
+        },
+        "slot": "mao_direita",
+        "quantidade": 1
+      },
+      {
+        "item": {
+          "tipo": "Municao",
+          "nome": "12ga Slug",
+          "calibre": "12ga",
+          "dano": -5,
+          "tipo_dano": "balístico",
+          "perfuracao": 5,
+          "efeitos": [],
+          "descricao": "Balote , performance balanceada",
+          "_classe": "Municao"
+        },
+        "slot": "inventario",
+        "quantidade": 20
+      },
+      {
+        "item": {
+          "tipo": "Municao",
+          "nome": "12ga Dragons Breath",
+          "calibre": "12ga",
+          "dano": -35,
+          "tipo_dano": "incendiário",
+          "perfuracao": 1,
+          "efeitos": [
+            {
+              "nome": "Em chamas",
+              "duracao": 3,
+              "chance": 95
+            }
+          ],
+          "descricao": "Bafo de dragão, banha o alvo em magnésio ou zirconio flamejante",
+          "_classe": "Municao"
+        },
+        "slot": "inventario",
+        "quantidade": 10
+      },
+      {
+        "item": {
+          "tipo": "Item",
+          "nome": "Intercomunicador",
+          "peso": 0.0,
+          "descricao": "Permite comunicar remotamente com alguém em outra linha e não ocupa as mãos, alcance de 50m",
+          "_classe": "Item"
+        },
+        "slot": "inventario",
+        "quantidade": 1
+      },
+      {
+        "item": {
+          "tipo": "Item",
+          "nome": "Documentos pessoais",
+          "peso": 0.0,
+          "descricao": "Nome, data de nascimento, nacionalidade...",
+          "_classe": "Item"
+        },
+        "slot": "inventario",
+        "quantidade": 1
+      },
+      {
+        "item": {
+          "nome": "Saiga-12",
+          "peso": 4.0,
+          "classe": "Escopeta",
+          "raridade": "Comum",
+          "calibre": "12ga",
+          "capacidade": 8,
+          "TPM": 200,
+          "ruido": 120,
+          "tipo_dano": "balístico",
+          "acoes_disparo": [
+            "Semi"
+          ],
+          "modo_disparo_atual": "Semi",
+          "munições": 0,
+          "municao": null,
+          "Id": "f2aa6f5",
+          "Acessorios": [],
+          "Perfuracao": 0,
+          "maos": 2,
+          "descricao": "",
+          "_classe": "Ranged"
+        },
+        "slot": "mao_direita",
+        "quantidade": 1
+      },
+      {
+        "item": {
+          "nome": "GOL.em Capacete MK1",
+          "peso": 8.0,
+          "nivelBalistico": 16.0,
+          "absorcoes": {
+            "contundente": 25,
+            "concussivo": 25,
+            "cortante": 100,
+            "perfurante": 45,
+            "balístico": 45,
+            "rasgante": 100,
+            "explosivo": 25,
+            "incendiário": 100,
+            "envenenante": 100
+          },
+          "regioes_cobertas": [
+            "cabeça",
+            "rosto"
+          ],
+          "durabilidade": 300,
+          "durabilidadeMax": 300,
+          "regiao_indicada": "cabeça",
+          "Id": "295f899",
+          "Melhorias": [],
+          "descricao": "",
+          "_classe": "Protecao"
+        },
+        "slot": "peito",
+        "quantidade": 1
+      },
+      {
+        "item": {
+          "nome": "GOL.em - Armadura MK1",
+          "peso": 20.0,
+          "nivelBalistico": 16.0,
+          "absorcoes": {
+            "contundente": 25,
+            "concussivo": 25,
+            "cortante": 100,
+            "perfurante": 45,
+            "balístico": 45,
+            "rasgante": 100,
+            "explosivo": 25,
+            "incendiário": 100,
+            "envenenante": 100
+          },
+          "regioes_cobertas": [
+            "braços",
+            "pernas",
+            "abdômen",
+            "costas",
+            "peito",
+            "pescoço"
+          ],
+          "durabilidade": 300,
+          "durabilidadeMax": 300,
+          "regiao_indicada": "peito",
+          "Id": "144debe",
+          "Melhorias": [],
+          "descricao": "",
+          "_classe": "Protecao"
+        },
+        "slot": "peito",
+        "quantidade": 1
+      }
+    ]
+  },
+  "Golem_2": {
+    "__class__": "KitEquipamento",
+    "nome": "Golem_2",
+    "raridade": "Rara",
+    "Id": "11524ad",
+    "itens": [
+      {
+        "item": {
+          "nome": "Marreta GOL.em",
+          "peso": 15.0,
+          "dano_base": 65,
+          "crit_mult": 1,
+          "crit_valor": 1,
+          "tags": [
+            "duas_maos",
+            "pesada",
+            "alcance_longo",
+            "concussivo"
+          ],
+          "raridade": "Lendária",
+          "Id": "26eea86",
+          "Melhorias": [],
+          "descricao": "Marreta massiva usada por unidades GOL.em",
+          "_classe": "Melee"
+        },
+        "slot": "mao_direita",
+        "quantidade": 1
+      },
+      {
+        "item": {
+          "tipo": "Municao",
+          "nome": "5.56x45mm FMJ",
+          "calibre": "5.56x45mm",
+          "dano": 0,
+          "tipo_dano": "balístico",
+          "perfuracao": 10,
+          "efeitos": [],
+          "descricao": "Full Metal Jacket, performance balanceada",
+          "_classe": "Municao"
+        },
+        "slot": "inventario",
+        "quantidade": 200
+      },
+      {
+        "item": {
+          "tipo": "Item",
+          "nome": "Documentos pessoais",
+          "peso": 0.0,
+          "descricao": "Nome, data de nascimento, nacionalidade...",
+          "_classe": "Item"
+        },
+        "slot": "inventario",
+        "quantidade": 1
+      },
+      {
+        "item": {
+          "nome": "M249",
+          "peso": 7.5,
+          "classe": "Metralhadora leve",
+          "raridade": "Comum",
+          "calibre": "5.56x45mm",
+          "capacidade": 100,
+          "TPM": 600,
+          "ruido": 150,
+          "tipo_dano": "balístico",
+          "acoes_disparo": [
+            "Semi",
+            "Auto"
+          ],
+          "modo_disparo_atual": "Auto",
+          "munições": 0,
+          "municao": null,
+          "Id": "7407fea",
+          "Acessorios": [],
+          "Perfuracao": 0,
+          "maos": 1,
+          "descricao": "",
+          "_classe": "Ranged"
+        },
+        "slot": "mao_direita",
+        "quantidade": 1
+      },
+      {
+        "item": {
+          "nome": "GOL.em Capacete MK1",
+          "peso": 8.0,
+          "nivelBalistico": 16.0,
+          "absorcoes": {
+            "contundente": 25,
+            "concussivo": 25,
+            "cortante": 100,
+            "perfurante": 45,
+            "balístico": 45,
+            "rasgante": 100,
+            "explosivo": 25,
+            "incendiário": 100,
+            "envenenante": 100
+          },
+          "regioes_cobertas": [
+            "cabeça",
+            "rosto"
+          ],
+          "durabilidade": 300,
+          "durabilidadeMax": 300,
+          "regiao_indicada": "cabeça",
+          "Id": "1501501",
+          "Melhorias": [],
+          "descricao": "",
+          "_classe": "Protecao"
+        },
+        "slot": "peito",
+        "quantidade": 1
+      },
+      {
+        "item": {
+          "nome": "GOL.em - Armadura MK1",
+          "peso": 20.0,
+          "nivelBalistico": 16.0,
+          "absorcoes": {
+            "contundente": 25,
+            "concussivo": 25,
+            "cortante": 100,
+            "perfurante": 45,
+            "balístico": 45,
+            "rasgante": 100,
+            "explosivo": 25,
+            "incendiário": 100,
+            "envenenante": 100
+          },
+          "regioes_cobertas": [
+            "braços",
+            "pernas",
+            "abdômen",
+            "costas",
+            "peito",
+            "pescoço"
+          ],
+          "durabilidade": 300,
+          "durabilidadeMax": 300,
+          "regiao_indicada": "peito",
+          "Id": "ca238b1",
+          "Melhorias": [],
+          "descricao": "",
+          "_classe": "Protecao"
+        },
+        "slot": "peito",
+        "quantidade": 1
+      }
+    ]
+  },
+  "Agent_1": {
+    "__class__": "KitEquipamento",
+    "nome": "Agent_1",
+    "raridade": "Comum",
+    "Id": "4cc7109",
+    "itens": [
+      {
+        "item": {
+          "nome": "Glock 19",
+          "peso": 0.5,
+          "classe": "Pistola",
+          "raridade": "Incomum",
+          "calibre": "9x19mm",
+          "capacidade": 17,
+          "TPM": 400,
+          "ruido": 100,
+          "tipo_dano": "balístico",
+          "acoes_disparo": [
+            "Semi"
+          ],
+          "modo_disparo_atual": "Semi",
+          "munições": 0,
+          "municao": null,
+          "Id": "75da766",
+          "Acessorios": [],
+          "Perfuracao": 0,
+          "maos": 1,
+          "descricao": "Variante mais moderna e mais leve da Glock-17",
+          "_classe": "Ranged"
+        },
+        "slot": "mao_direita",
+        "quantidade": 1
+      },
+      {
+        "item": {
+          "tipo": "Municao",
+          "nome": "9x19mm FMJ",
+          "calibre": "9x19mm",
+          "dano": 0,
+          "tipo_dano": "balístico",
+          "perfuracao": 5,
+          "efeitos": [],
+          "descricao": "Full Metal Jacket, performance balanceada",
+          "_classe": "Municao"
+        },
+        "slot": "inventario",
+        "quantidade": 34
+      },
+      {
+        "item": {
+          "tipo": "Item",
+          "nome": "Documentos pessoais",
+          "peso": 0.0,
+          "descricao": "Nome, data de nascimento, nacionalidade...",
+          "_classe": "Item"
+        },
+        "slot": "inventario",
+        "quantidade": 1
+      },
+      {
+        "item": {
+          "nome": "Cassetete",
+          "peso": 4.0,
+          "dano_base": 35,
+          "crit_mult": 2,
+          "crit_valor": 22,
+          "tags": [
+            "uma_mao",
+            "leve",
+            "concussivo",
+            "alcance_curto"
+          ],
+          "raridade": "Comum",
+          "Id": "2c69666",
+          "Melhorias": [],
+          "descricao": "Bastão usado por seguranças e forças policias",
+          "_classe": "Melee"
+        },
+        "slot": "mao_direita",
+        "quantidade": 1
+      },
+      {
+        "item": {
+          "nome": "Agent - óculos padrão",
+          "peso": 0.0,
+          "nivelBalistico": 1.0,
+          "absorcoes": {
+            "cortante": 5,
+            "rasgante": 5,
+            "incendiário": 5,
+            "envenenante": 5
+          },
+          "regioes_cobertas": [
+            "rosto"
+          ],
+          "durabilidade": 5,
+          "durabilidadeMax": 5,
+          "regiao_indicada": "rosto",
+          "Id": "da042be",
+          "Melhorias": [],
+          "descricao": "",
+          "_classe": "Protecao"
+        },
+        "slot": "peito",
+        "quantidade": 1
+      },
+      {
+        "item": {
+          "nome": "Agent - terno padrão",
+          "peso": 1.0,
+          "nivelBalistico": 3.0,
+          "absorcoes": {
+            "cortante": 5,
+            "rasgante": 5,
+            "incendiário": 5,
+            "envenenante": 5
+          },
+          "regioes_cobertas": [
+            "braços",
+            "pernas",
+            "abdômen",
+            "peito",
+            "costas"
+          ],
+          "durabilidade": 50,
+          "durabilidadeMax": 50,
+          "regiao_indicada": "peito",
+          "Id": "c43b5a8",
+          "Melhorias": [],
+          "descricao": "",
+          "_classe": "Protecao"
+        },
+        "slot": "peito",
+        "quantidade": 1
+      }
+    ]
+  },
+  "Agent_2": {
+    "__class__": "KitEquipamento",
+    "nome": "Agent_2",
+    "raridade": "Comum",
+    "Id": "870fee4",
+    "itens": [
+      {
+        "item": {
+          "nome": "P226",
+          "peso": 0.7,
+          "classe": "Pistola",
+          "raridade": "Comum",
+          "calibre": "9x19mm",
+          "capacidade": 15,
+          "TPM": 400,
+          "ruido": 100,
+          "tipo_dano": "balístico",
+          "acoes_disparo": [
+            "Semi"
+          ],
+          "modo_disparo_atual": "Semi",
+          "munições": 0,
+          "municao": null,
+          "Id": "7452e36",
+          "Acessorios": [],
+          "Perfuracao": 0,
+          "maos": 1,
+          "descricao": "Plaforma confiável e moderna para o mercado civil",
+          "_classe": "Ranged"
+        },
+        "slot": "mao_direita",
+        "quantidade": 1
+      },
+      {
+        "item": {
+          "nome": "MP5K",
+          "peso": 2.1,
+          "classe": "Submetralhadora",
+          "raridade": "Incomum",
+          "calibre": "9x19mm",
+          "capacidade": 30,
+          "TPM": 800,
+          "ruido": 100,
+          "tipo_dano": "balístico",
+          "acoes_disparo": [
+            "Semi",
+            "Auto"
+          ],
+          "modo_disparo_atual": "Auto",
+          "munições": 0,
+          "municao": null,
+          "Id": "ec87af6",
+          "Acessorios": [],
+          "Perfuracao": 0,
+          "maos": 2,
+          "descricao": "Versão ultra compacta da MP5 categorizada como ADP, pensada para agentes de segurança",
+          "_classe": "Ranged"
+        },
+        "slot": "mao_direita",
+        "quantidade": 1
+      },
+      {
+        "item": {
+          "tipo": "Municao",
+          "nome": "9x19mm FMJ",
+          "calibre": "9x19mm",
+          "dano": 0,
+          "tipo_dano": "balístico",
+          "perfuracao": 5,
+          "efeitos": [],
+          "descricao": "Full Metal Jacket, performance balanceada",
+          "_classe": "Municao"
+        },
+        "slot": "inventario",
+        "quantidade": 60
+      },
+      {
+        "item": {
+          "tipo": "Municao",
+          "nome": "9x19mm HP",
+          "calibre": "9x19mm",
+          "dano": 5,
+          "tipo_dano": "balístico",
+          "perfuracao": 3,
+          "efeitos": [],
+          "descricao": "Ponta oca, mais dano, menos perfuração",
+          "_classe": "Municao"
+        },
+        "slot": "inventario",
+        "quantidade": 30
+      },
+      {
+        "item": {
+          "tipo": "Item",
+          "nome": "Documentos pessoais",
+          "peso": 0.0,
+          "descricao": "Nome, data de nascimento, nacionalidade...",
+          "_classe": "Item"
+        },
+        "slot": "inventario",
+        "quantidade": 1
+      },
+      {
+        "item": {
+          "nome": "Agent - óculos padrão",
+          "peso": 0.0,
+          "nivelBalistico": 1.0,
+          "absorcoes": {
+            "cortante": 5,
+            "rasgante": 5,
+            "incendiário": 5,
+            "envenenante": 5
+          },
+          "regioes_cobertas": [
+            "rosto"
+          ],
+          "durabilidade": 5,
+          "durabilidadeMax": 5,
+          "regiao_indicada": "rosto",
+          "Id": "ea10b82",
+          "Melhorias": [],
+          "descricao": "",
+          "_classe": "Protecao"
+        },
+        "slot": "peito",
+        "quantidade": 1
+      },
+      {
+        "item": {
+          "nome": "Agent - terno padrão",
+          "peso": 1.0,
+          "nivelBalistico": 3.0,
+          "absorcoes": {
+            "cortante": 5,
+            "rasgante": 5,
+            "incendiário": 5,
+            "envenenante": 5
+          },
+          "regioes_cobertas": [
+            "braços",
+            "pernas",
+            "abdômen",
+            "peito",
+            "costas"
+          ],
+          "durabilidade": 50,
+          "durabilidadeMax": 50,
+          "regiao_indicada": "peito",
+          "Id": "a434b70",
+          "Melhorias": [],
+          "descricao": "",
+          "_classe": "Protecao"
+        },
+        "slot": "peito",
+        "quantidade": 1
+      }
+    ]
+  },
+  "Agent_3": {
+    "__class__": "KitEquipamento",
+    "nome": "Agent_3",
+    "raridade": "Comum",
+    "Id": "32338de",
+    "itens": [
+      {
+        "item": {
+          "nome": "P226",
+          "peso": 0.7,
+          "classe": "Pistola",
+          "raridade": "Comum",
+          "calibre": "9x19mm",
+          "capacidade": 15,
+          "TPM": 400,
+          "ruido": 100,
+          "tipo_dano": "balístico",
+          "acoes_disparo": [
+            "Semi"
+          ],
+          "modo_disparo_atual": "Semi",
+          "munições": 0,
+          "municao": null,
+          "Id": "7452e36",
+          "Acessorios": [],
+          "Perfuracao": 0,
+          "maos": 1,
+          "descricao": "Plaforma confiável e moderna para o mercado civil",
+          "_classe": "Ranged"
+        },
+        "slot": "mao_direita",
+        "quantidade": 1
+      },
+      {
+        "item": {
+          "nome": "MP5K",
+          "peso": 2.1,
+          "classe": "Submetralhadora",
+          "raridade": "Incomum",
+          "calibre": "9x19mm",
+          "capacidade": 30,
+          "TPM": 800,
+          "ruido": 100,
+          "tipo_dano": "balístico",
+          "acoes_disparo": [
+            "Semi",
+            "Auto"
+          ],
+          "modo_disparo_atual": "Auto",
+          "munições": 0,
+          "municao": null,
+          "Id": "ec87af6",
+          "Acessorios": [],
+          "Perfuracao": 0,
+          "maos": 2,
+          "descricao": "Versão ultra compacta da MP5 categorizada como ADP, pensada para agentes de segurança",
+          "_classe": "Ranged"
+        },
+        "slot": "mao_direita",
+        "quantidade": 1
+      },
+      {
+        "item": {
+          "tipo": "Municao",
+          "nome": "9x19mm FMJ",
+          "calibre": "9x19mm",
+          "dano": 0,
+          "tipo_dano": "balístico",
+          "perfuracao": 5,
+          "efeitos": [],
+          "descricao": "Full Metal Jacket, performance balanceada",
+          "_classe": "Municao"
+        },
+        "slot": "inventario",
+        "quantidade": 60
+      },
+      {
+        "item": {
+          "tipo": "Municao",
+          "nome": "9x19mm HP",
+          "calibre": "9x19mm",
+          "dano": 5,
+          "tipo_dano": "balístico",
+          "perfuracao": 3,
+          "efeitos": [],
+          "descricao": "Ponta oca, mais dano, menos perfuração",
+          "_classe": "Municao"
+        },
+        "slot": "inventario",
+        "quantidade": 30
+      },
+      {
+        "item": {
+          "tipo": "Item",
+          "nome": "Cartão de acesso",
+          "peso": 0.0,
+          "descricao": "Deve servir em alguma porta com chave eletrônica",
+          "_classe": "Item"
+        },
+        "slot": "inventario",
+        "quantidade": 1
+      },
+      {
+        "item": {
+          "nome": "Agent - óculos padrão",
+          "peso": 0.0,
+          "nivelBalistico": 1.0,
+          "absorcoes": {
+            "cortante": 5,
+            "rasgante": 5,
+            "incendiário": 5,
+            "envenenante": 5
+          },
+          "regioes_cobertas": [
+            "rosto"
+          ],
+          "durabilidade": 5,
+          "durabilidadeMax": 5,
+          "regiao_indicada": "rosto",
+          "Id": "62028a3",
+          "Melhorias": [],
+          "descricao": "",
+          "_classe": "Protecao"
+        },
+        "slot": "peito",
+        "quantidade": 1
+      },
+      {
+        "item": {
+          "nome": "Agent - terno padrão",
+          "peso": 1.0,
+          "nivelBalistico": 3.0,
+          "absorcoes": {
+            "cortante": 5,
+            "rasgante": 5,
+            "incendiário": 5,
+            "envenenante": 5
+          },
+          "regioes_cobertas": [
+            "braços",
+            "pernas",
+            "abdômen",
+            "peito",
+            "costas"
+          ],
+          "durabilidade": 50,
+          "durabilidadeMax": 50,
+          "regiao_indicada": "peito",
+          "Id": "0d23ac4",
+          "Melhorias": [],
+          "descricao": "",
+          "_classe": "Protecao"
+        },
+        "slot": "peito",
+        "quantidade": 1
+      }
+    ]
+  },
+  "Agent_4": {
+    "__class__": "KitEquipamento",
+    "nome": "Agent_4",
+    "raridade": "Comum",
+    "Id": "29de7c3",
+    "itens": [
+      {
+        "item": {
+          "nome": "Glock 21",
+          "peso": 0.9,
+          "classe": "Pistola",
+          "raridade": "Incomum",
+          "calibre": ".45Acp",
+          "capacidade": 13,
+          "TPM": 400,
+          "ruido": 80,
+          "tipo_dano": "balístico",
+          "acoes_disparo": [
+            "Semi"
+          ],
+          "modo_disparo_atual": "Semi",
+          "munições": 0,
+          "municao": null,
+          "Id": "b375f45",
+          "Acessorios": [],
+          "Perfuracao": 0,
+          "maos": 1,
+          "descricao": "Variante da Glock 17, no calibre .45 Acp",
+          "_classe": "Ranged"
+        },
+        "slot": "mao_direita",
+        "quantidade": 1
+      },
+      {
+        "item": {
+          "nome": "MP7",
+          "peso": 1.9,
+          "classe": "Submetralhadora",
+          "raridade": "Incomum",
+          "calibre": "4.6x30mm",
+          "capacidade": 40,
+          "TPM": 900,
+          "ruido": 120,
+          "tipo_dano": "balístico",
+          "acoes_disparo": [
+            "Semi",
+            "Auto"
+          ],
+          "modo_disparo_atual": "Auto",
+          "munições": 0,
+          "municao": null,
+          "Id": "1ea8a59",
+          "Acessorios": [],
+          "Perfuracao": 0,
+          "maos": 2,
+          "descricao": "Submetralhadora categorizada como ADP, desenhada em torno do calibre 4.6x30mm para vencer coletes balísticos",
+          "_classe": "Ranged"
+        },
+        "slot": "mao_direita",
+        "quantidade": 1
+      },
+      {
+        "item": {
+          "tipo": "Municao",
+          "nome": ".45ACP FMJ",
+          "calibre": ".45ACP",
+          "dano": 0,
+          "tipo_dano": "balístico",
+          "perfuracao": 5,
+          "efeitos": [],
+          "descricao": "Full Metal Jacket, performance balanceada",
+          "_classe": "Municao"
+        },
+        "slot": "inventario",
+        "quantidade": 30
+      },
+      {
+        "item": {
+          "tipo": "Municao",
+          "nome": "4.6x30mm FMJ",
+          "calibre": "4.6x30mm",
+          "dano": -2,
+          "tipo_dano": "balístico",
+          "perfuracao": 6,
+          "efeitos": [],
+          "descricao": "Full Metal Jacket, performance balanceada",
+          "_classe": "Municao"
+        },
+        "slot": "inventario",
+        "quantidade": 80
+      },
+      {
+        "item": {
+          "tipo": "Item",
+          "nome": "Documentos pessoais",
+          "peso": 0.0,
+          "descricao": "Nome, data de nascimento, nacionalidade...",
+          "_classe": "Item"
+        },
+        "slot": "inventario",
+        "quantidade": 1
+      },
+      {
+        "item": {
+          "nome": "Agent - óculos padrão",
+          "peso": 0.0,
+          "nivelBalistico": 1.0,
+          "absorcoes": {
+            "cortante": 5,
+            "rasgante": 5,
+            "incendiário": 5,
+            "envenenante": 5
+          },
+          "regioes_cobertas": [
+            "rosto"
+          ],
+          "durabilidade": 5,
+          "durabilidadeMax": 5,
+          "regiao_indicada": "rosto",
+          "Id": "357d747",
+          "Melhorias": [],
+          "descricao": "",
+          "_classe": "Protecao"
+        },
+        "slot": "peito",
+        "quantidade": 1
+      },
+      {
+        "item": {
+          "nome": "Agent - terno padrão",
+          "peso": 1.0,
+          "nivelBalistico": 3.0,
+          "absorcoes": {
+            "cortante": 5,
+            "rasgante": 5,
+            "incendiário": 5,
+            "envenenante": 5
+          },
+          "regioes_cobertas": [
+            "braços",
+            "pernas",
+            "abdômen",
+            "peito",
+            "costas"
+          ],
+          "durabilidade": 50,
+          "durabilidadeMax": 50,
+          "regiao_indicada": "peito",
+          "Id": "33b5ab4",
+          "Melhorias": [],
+          "descricao": "",
+          "_classe": "Protecao"
+        },
+        "slot": "peito",
+        "quantidade": 1
+      }
+    ]
+  },
+  "ATP_Soldat_1": {
+    "__class__": "KitEquipamento",
+    "nome": "ATP_Soldat_1",
+    "raridade": "Incomum",
+    "Id": "9922a5e",
+    "itens": [
+      {
+        "item": {
+          "nome": "AK74M",
+          "peso": 3.4,
+          "classe": "Fuzil de assalto",
+          "raridade": "Incomum",
+          "calibre": "5.45x39mm",
+          "capacidade": 30,
+          "TPM": 600,
+          "ruido": 150,
+          "tipo_dano": "balístico",
+          "acoes_disparo": [
+            "Semi",
+            "Auto"
+          ],
+          "modo_disparo_atual": "Auto",
+          "munições": 0,
+          "municao": null,
+          "Id": "4c3b95a",
+          "Acessorios": [],
+          "Perfuracao": 0,
+          "maos": 2,
+          "descricao": "Variante modernizado em polímero AK74",
+          "_classe": "Ranged"
+        },
+        "slot": "mao_direita",
+        "quantidade": 1
+      },
+      {
+        "item": {
+          "nome": "P226",
+          "peso": 0.7,
+          "classe": "Pistola",
+          "raridade": "Comum",
+          "calibre": "9x19mm",
+          "capacidade": 15,
+          "TPM": 400,
+          "ruido": 100,
+          "tipo_dano": "balístico",
+          "acoes_disparo": [
+            "Semi"
+          ],
+          "modo_disparo_atual": "Semi",
+          "munições": 0,
+          "municao": null,
+          "Id": "8be0647",
+          "Acessorios": [],
+          "Perfuracao": 0,
+          "maos": 1,
+          "descricao": "Plaforma confiável e moderna para o mercado civil",
+          "_classe": "Ranged"
+        },
+        "slot": "mao_direita",
+        "quantidade": 1
+      },
+      {
+        "item": {
+          "tipo": "Municao",
+          "nome": "5.45x39mm FMJ",
+          "calibre": "5.45x39mm",
+          "dano": 0,
+          "tipo_dano": "balístico",
+          "perfuracao": 10,
+          "efeitos": [],
+          "descricao": "Full Metal Jacket, performance balanceada",
+          "_classe": "Municao"
+        },
+        "slot": "inventario",
+        "quantidade": 60
+      },
+      {
+        "item": {
+          "tipo": "Municao",
+          "nome": "9x19mm HP",
+          "calibre": "9x19mm",
+          "dano": 5,
+          "tipo_dano": "balístico",
+          "perfuracao": 3,
+          "efeitos": [],
+          "descricao": "Ponta oca, mais dano, menos perfuração",
+          "_classe": "Municao"
+        },
+        "slot": "inventario",
+        "quantidade": 30
+      },
+      {
+        "item": {
+          "tipo": "Item",
+          "nome": "Documentos pessoais",
+          "peso": 0.0,
+          "descricao": "Nome, data de nascimento, nacionalidade...",
+          "_classe": "Item"
+        },
+        "slot": "inventario",
+        "quantidade": 1
+      },
+      {
+        "item": {
+          "tipo": "Consumivel",
+          "nome": "Bandagem",
+          "peso": 0,
+          "descricao": "Útil para estancar sangramentos leves",
+          "uso": "consumir",
+          "efeitos": [
+            {
+              "tipo": "cura",
+              "valor": 10
+            }
+          ],
+          "raio": null,
+          "raio_letal": null,
+          "falloff": "linear",
+          "perfuracao": 0,
+          "_classe": "Consumivel"
+        },
+        "slot": "inventario",
+        "quantidade": 2
+      },
+      {
+        "item": {
+          "tipo": "Consumivel",
+          "nome": "Gaze",
+          "peso": 0,
+          "descricao": "Útil para estancar sangramentos leves e escoriações",
+          "uso": "consumir",
+          "efeitos": [
+            {
+              "tipo": "cura",
+              "valor": 25
+            }
+          ],
+          "raio": null,
+          "raio_letal": null,
+          "falloff": "linear",
+          "perfuracao": 0,
+          "_classe": "Consumivel"
+        },
+        "slot": "inventario",
+        "quantidade": 1
+      },
+      {
+        "item": {
+          "nome": "ATP - traje de combate leve",
+          "peso": 6.0,
+          "nivelBalistico": 6.0,
+          "absorcoes": {
+            "contundente": 5,
+            "concussivo": 5,
+            "cortante": 15,
+            "perfurante": 10,
+            "balístico": 10,
+            "rasgante": 15,
+            "explosivo": 5,
+            "incendiário": 15,
+            "congelante": 15,
+            "envenenante": 15,
+            "eletrocutante": 15
+          },
+          "regioes_cobertas": [
+            "braços",
+            "pernas",
+            "pescoço"
+          ],
+          "durabilidade": 100,
+          "durabilidadeMax": 100,
+          "regiao_indicada": "braços",
+          "Id": "68ff2b9",
+          "Melhorias": [],
+          "descricao": "",
+          "_classe": "Protecao"
+        },
+        "slot": "peito",
+        "quantidade": 1
+      },
+      {
+        "item": {
+          "nome": "ATP - Máscara soldat",
+          "peso": 4.0,
+          "nivelBalistico": 7.0,
+          "absorcoes": {
+            "contundente": 5,
+            "concussivo": 5,
+            "cortante": 25,
+            "perfurante": 25,
+            "balístico": 25,
+            "rasgante": 25,
+            "explosivo": 10,
+            "incendiário": 25,
+            "envenenante": 25,
+            "eletrocutante": 15
+          },
+          "regioes_cobertas": [
+            "rosto"
+          ],
+          "durabilidade": 100,
+          "durabilidadeMax": 100,
+          "regiao_indicada": "rosto",
+          "Id": "0eb45ef",
+          "Melhorias": [],
+          "descricao": "",
+          "_classe": "Protecao"
+        },
+        "slot": "peito",
+        "quantidade": 1
+      },
+      {
+        "item": {
+          "nome": "Colete médio",
+          "peso": 4.0,
+          "nivelBalistico": 10.0,
+          "absorcoes": {
+            "contundente": 20,
+            "concussivo": 10,
+            "cortante": 35,
+            "perfurante": 30,
+            "balístico": 25,
+            "rasgante": 35,
+            "explosivo": 15,
+            "incendiário": 25,
+            "envenenante": 25
+          },
+          "regioes_cobertas": [
+            "abdômen",
+            "peito",
+            "costas"
+          ],
+          "durabilidade": 100,
+          "durabilidadeMax": 100,
+          "regiao_indicada": "peito",
+          "Id": "eea041d",
+          "Melhorias": [],
+          "descricao": "",
+          "_classe": "Protecao"
+        },
+        "slot": "peito",
+        "quantidade": 1
+      }
+    ]
+  },
+  "ATP_Soldat_2": {
+    "__class__": "KitEquipamento",
+    "nome": "ATP_Soldat_2",
+    "raridade": "Incomum",
+    "Id": "f193431",
+    "itens": [
+      {
+        "item": {
+          "nome": "M45A1",
+          "peso": 1.3,
+          "classe": "Pistola",
+          "raridade": "Incomum",
+          "calibre": ".45Acp",
+          "capacidade": 11,
+          "TPM": 400,
+          "ruido": 80,
+          "tipo_dano": "balístico",
+          "acoes_disparo": [
+            "Semi"
+          ],
+          "modo_disparo_atual": "Semi",
+          "munições": 0,
+          "municao": null,
+          "Id": "eb7407c",
+          "Acessorios": [],
+          "Perfuracao": 0,
+          "maos": 1,
+          "descricao": "Tentativa de modernização da M1911, possui trilhos picatinny e um pente levemente maior",
+          "_classe": "Ranged"
+        },
+        "slot": "mao_direita",
+        "quantidade": 1
+      },
+      {
+        "item": {
+          "nome": "Faca M9",
+          "peso": 1,
+          "dano_base": 25,
+          "crit_mult": 2,
+          "crit_valor": 20,
+          "tags": [
+            "alcance_curto",
+            "arremessavel",
+            "cortante",
+            "sofisticada",
+            "leve",
+            "uma_mao"
+          ],
+          "raridade": "Comum",
+          "Id": "7d0927a",
+          "Melhorias": [],
+          "descricao": "Faca militar usada pelo exército americano",
+          "_classe": "Melee"
+        },
+        "slot": "mao_direita",
+        "quantidade": 1
+      },
+      {
+        "item": {
+          "tipo": "Municao",
+          "nome": ".45ACP FMJ",
+          "calibre": ".45ACP",
+          "dano": 0,
+          "tipo_dano": "balístico",
+          "perfuracao": 5,
+          "efeitos": [],
+          "descricao": "Full Metal Jacket, performance balanceada",
+          "_classe": "Municao"
+        },
+        "slot": "inventario",
+        "quantidade": 30
+      },
+      {
+        "item": {
+          "tipo": "Municao",
+          "nome": "9x19mm FMJ",
+          "calibre": "9x19mm",
+          "dano": 0,
+          "tipo_dano": "balístico",
+          "perfuracao": 5,
+          "efeitos": [],
+          "descricao": "Full Metal Jacket, performance balanceada",
+          "_classe": "Municao"
+        },
+        "slot": "inventario",
+        "quantidade": 60
+      },
+      {
+        "item": {
+          "tipo": "Item",
+          "nome": "Documentos pessoais",
+          "peso": 0.0,
+          "descricao": "Nome, data de nascimento, nacionalidade...",
+          "_classe": "Item"
+        },
+        "slot": "inventario",
+        "quantidade": 1
+      },
+      {
+        "item": {
+          "nome": "CZ Scorpion EVO3",
+          "peso": 2.7,
+          "classe": "Submetralhadora",
+          "raridade": "Incomum",
+          "calibre": "9x19mm",
+          "capacidade": 30,
+          "TPM": 900,
+          "ruido": 100,
+          "tipo_dano": "balístico",
+          "acoes_disparo": [
+            "Semi",
+            "Auto"
+          ],
+          "modo_disparo_atual": "Auto",
+          "munições": 0,
+          "municao": null,
+          "Id": "8d8e1f6",
+          "Acessorios": [],
+          "Perfuracao": 0,
+          "maos": 2,
+          "descricao": "",
+          "_classe": "Ranged"
+        },
+        "slot": "mao_direita",
+        "quantidade": 1
+      },
+      {
+        "item": {
+          "nome": "ATP - traje de combate leve",
+          "peso": 6.0,
+          "nivelBalistico": 6.0,
+          "absorcoes": {
+            "contundente": 5,
+            "concussivo": 5,
+            "cortante": 15,
+            "perfurante": 10,
+            "balístico": 10,
+            "rasgante": 15,
+            "explosivo": 5,
+            "incendiário": 15,
+            "congelante": 15,
+            "envenenante": 15,
+            "eletrocutante": 15
+          },
+          "regioes_cobertas": [
+            "braços",
+            "pernas",
+            "pescoço"
+          ],
+          "durabilidade": 100,
+          "durabilidadeMax": 100,
+          "regiao_indicada": "braços",
+          "Id": "9e278b3",
+          "Melhorias": [],
+          "descricao": "",
+          "_classe": "Protecao"
+        },
+        "slot": "peito",
+        "quantidade": 1
+      },
+      {
+        "item": {
+          "nome": "ATP - Máscara soldat",
+          "peso": 4.0,
+          "nivelBalistico": 7.0,
+          "absorcoes": {
+            "contundente": 5,
+            "concussivo": 5,
+            "cortante": 25,
+            "perfurante": 25,
+            "balístico": 25,
+            "rasgante": 25,
+            "explosivo": 10,
+            "incendiário": 25,
+            "envenenante": 25,
+            "eletrocutante": 15
+          },
+          "regioes_cobertas": [
+            "rosto"
+          ],
+          "durabilidade": 100,
+          "durabilidadeMax": 100,
+          "regiao_indicada": "rosto",
+          "Id": "b00b1da",
+          "Melhorias": [],
+          "descricao": "",
+          "_classe": "Protecao"
+        },
+        "slot": "peito",
+        "quantidade": 1
+      },
+      {
+        "item": {
+          "nome": "Colete médio",
+          "peso": 4.0,
+          "nivelBalistico": 10.0,
+          "absorcoes": {
+            "contundente": 20,
+            "concussivo": 10,
+            "cortante": 35,
+            "perfurante": 30,
+            "balístico": 25,
+            "rasgante": 35,
+            "explosivo": 15,
+            "incendiário": 25,
+            "envenenante": 25
+          },
+          "regioes_cobertas": [
+            "abdômen",
+            "peito",
+            "costas"
+          ],
+          "durabilidade": 100,
+          "durabilidadeMax": 100,
+          "regiao_indicada": "peito",
+          "Id": "f4820a1",
+          "Melhorias": [],
+          "descricao": "",
+          "_classe": "Protecao"
+        },
+        "slot": "peito",
+        "quantidade": 1
+      }
+    ]
+  },
+  "ATP_Soldat_3": {
+    "__class__": "KitEquipamento",
+    "nome": "ATP_Soldat_3",
+    "raridade": "Incomum",
+    "Id": "56b3ee5",
+    "itens": [
+      {
+        "item": {
+          "nome": "M45A1",
+          "peso": 1.3,
+          "classe": "Pistola",
+          "raridade": "Incomum",
+          "calibre": ".45Acp",
+          "capacidade": 11,
+          "TPM": 400,
+          "ruido": 80,
+          "tipo_dano": "balístico",
+          "acoes_disparo": [
+            "Semi"
+          ],
+          "modo_disparo_atual": "Semi",
+          "munições": 0,
+          "municao": null,
+          "Id": "e04b20e",
+          "Acessorios": [],
+          "Perfuracao": 0,
+          "maos": 1,
+          "descricao": "Tentativa de modernização da M1911, possui trilhos picatinny e um pente levemente maior",
+          "_classe": "Ranged"
+        },
+        "slot": "mao_direita",
+        "quantidade": 1
+      },
+      {
+        "item": {
+          "nome": "M16A3",
+          "peso": 3.6,
+          "classe": "Fuzil de assalto",
+          "raridade": "Comum",
+          "calibre": "5.56x45mm",
+          "capacidade": 30,
+          "TPM": 750,
+          "ruido": 150,
+          "tipo_dano": "balístico",
+          "acoes_disparo": [
+            "Semi",
+            "Auto"
+          ],
+          "modo_disparo_atual": "Auto",
+          "munições": 0,
+          "municao": null,
+          "Id": "ca20be5",
+          "Acessorios": [],
+          "Perfuracao": 0,
+          "maos": 2,
+          "descricao": "Variante de fuzil de assalto da M4A1",
+          "_classe": "Ranged"
+        },
+        "slot": "mao_direita",
+        "quantidade": 1
+      },
+      {
+        "item": {
+          "nome": "Faca M9",
+          "peso": 1,
+          "dano_base": 25,
+          "crit_mult": 2,
+          "crit_valor": 20,
+          "tags": [
+            "alcance_curto",
+            "arremessavel",
+            "cortante",
+            "sofisticada",
+            "leve",
+            "uma_mao"
+          ],
+          "raridade": "Comum",
+          "Id": "9e6a5c0",
+          "Melhorias": [],
+          "descricao": "Faca militar usada pelo exército americano",
+          "_classe": "Melee"
+        },
+        "slot": "mao_direita",
+        "quantidade": 1
+      },
+      {
+        "item": {
+          "tipo": "Municao",
+          "nome": ".45ACP FMJ",
+          "calibre": ".45ACP",
+          "dano": 0,
+          "tipo_dano": "balístico",
+          "perfuracao": 5,
+          "efeitos": [],
+          "descricao": "Full Metal Jacket, performance balanceada",
+          "_classe": "Municao"
+        },
+        "slot": "inventario",
+        "quantidade": 30
+      },
+      {
+        "item": {
+          "tipo": "Municao",
+          "nome": "5.56x45mm FMJ",
+          "calibre": "5.56x45mm",
+          "dano": 0,
+          "tipo_dano": "balístico",
+          "perfuracao": 10,
+          "efeitos": [],
+          "descricao": "Full Metal Jacket, performance balanceada",
+          "_classe": "Municao"
+        },
+        "slot": "inventario",
+        "quantidade": 30
+      },
+      {
+        "item": {
+          "tipo": "Municao",
+          "nome": "5.56x45mm HP",
+          "calibre": "5.56x45mm",
+          "dano": 3,
+          "tipo_dano": "balístico",
+          "perfuracao": 8,
+          "efeitos": [],
+          "descricao": "Ponta oca, mais dano, menos perfuração",
+          "_classe": "Municao"
+        },
+        "slot": "inventario",
+        "quantidade": 30
+      },
+      {
+        "item": {
+          "tipo": "Item",
+          "nome": "Documentos pessoais",
+          "peso": 0.0,
+          "descricao": "Nome, data de nascimento, nacionalidade...",
+          "_classe": "Item"
+        },
+        "slot": "inventario",
+        "quantidade": 1
+      },
+      {
+        "item": {
+          "tipo": "Consumivel",
+          "nome": "Bandagem",
+          "peso": 0.0,
+          "descricao": "Útil para estancar sangramentos leves",
+          "uso": "consumir",
+          "efeitos": [
+            {
+              "tipo": "cura",
+              "valor": 10,
+              "alvo": "vida"
+            }
+          ],
+          "raio": null,
+          "raio_letal": null,
+          "falloff": "linear",
+          "perfuracao": 0,
+          "_classe": "Consumivel"
+        },
+        "slot": "inventario",
+        "quantidade": 1
+      },
+      {
+        "item": {
+          "nome": "ATP - traje de combate leve",
+          "peso": 6.0,
+          "nivelBalistico": 6.0,
+          "absorcoes": {
+            "contundente": 5,
+            "concussivo": 5,
+            "cortante": 15,
+            "perfurante": 10,
+            "balístico": 10,
+            "rasgante": 15,
+            "explosivo": 5,
+            "incendiário": 15,
+            "congelante": 15,
+            "envenenante": 15,
+            "eletrocutante": 15
+          },
+          "regioes_cobertas": [
+            "braços",
+            "pernas",
+            "pescoço"
+          ],
+          "durabilidade": 100,
+          "durabilidadeMax": 100,
+          "regiao_indicada": "braços",
+          "Id": "f65f0ed",
+          "Melhorias": [],
+          "descricao": "",
+          "_classe": "Protecao"
+        },
+        "slot": "peito",
+        "quantidade": 1
+      },
+      {
+        "item": {
+          "nome": "ATP - Máscara soldat",
+          "peso": 4.0,
+          "nivelBalistico": 7.0,
+          "absorcoes": {
+            "contundente": 5,
+            "concussivo": 5,
+            "cortante": 25,
+            "perfurante": 25,
+            "balístico": 25,
+            "rasgante": 25,
+            "explosivo": 10,
+            "incendiário": 25,
+            "envenenante": 25,
+            "eletrocutante": 15
+          },
+          "regioes_cobertas": [
+            "rosto"
+          ],
+          "durabilidade": 100,
+          "durabilidadeMax": 100,
+          "regiao_indicada": "rosto",
+          "Id": "645d70a",
+          "Melhorias": [],
+          "descricao": "",
+          "_classe": "Protecao"
+        },
+        "slot": "peito",
+        "quantidade": 1
+      },
+      {
+        "item": {
+          "nome": "Colete leve",
+          "peso": 2.0,
+          "nivelBalistico": 6.0,
+          "absorcoes": {
+            "contundente": 15,
+            "concussivo": 5,
+            "cortante": 25,
+            "perfurante": 20,
+            "balístico": 20,
+            "rasgante": 25,
+            "explosivo": 5,
+            "incendiário": 15,
+            "envenenante": 15
+          },
+          "regioes_cobertas": [
+            "abdômen",
+            "peito",
+            "costas"
+          ],
+          "durabilidade": 50,
+          "durabilidadeMax": 50,
+          "regiao_indicada": "peito",
+          "Id": "17a0077",
+          "Melhorias": [],
+          "descricao": "",
+          "_classe": "Protecao"
+        },
+        "slot": "peito",
+        "quantidade": 1
+      }
+    ]
+  },
+  "ATP_Soldat_4": {
+    "__class__": "KitEquipamento",
+    "nome": "ATP_Soldat_4",
+    "raridade": "Incomum",
+    "Id": "24907de",
+    "itens": [
+      {
+        "item": {
+          "nome": "M4A1",
+          "peso": 2.8,
+          "classe": "Carabina",
+          "raridade": "Comum",
+          "calibre": "5.56x45mm",
+          "capacidade": 30,
+          "TPM": 750,
+          "ruido": 150,
+          "tipo_dano": "balístico",
+          "acoes_disparo": [
+            "Semi",
+            "Auto"
+          ],
+          "modo_disparo_atual": "Auto",
+          "munições": 0,
+          "municao": null,
+          "Id": "de6ee08",
+          "Acessorios": [],
+          "Perfuracao": 0,
+          "maos": 2,
+          "descricao": "Plataforma padrão e confiável feita em polímero, municiada no 5.56x45mm",
+          "_classe": "Ranged"
+        },
+        "slot": "mao_direita",
+        "quantidade": 1
+      },
+      {
+        "item": {
+          "nome": "Faca M9",
+          "peso": 1,
+          "dano_base": 25,
+          "crit_mult": 2,
+          "crit_valor": 20,
+          "tags": [
+            "alcance_curto",
+            "arremessavel",
+            "cortante",
+            "sofisticada",
+            "leve",
+            "uma_mao"
+          ],
+          "raridade": "Comum",
+          "Id": "415f037",
+          "Melhorias": [],
+          "descricao": "Faca militar usada pelo exército americano",
+          "_classe": "Melee"
+        },
+        "slot": "mao_direita",
+        "quantidade": 1
+      },
+      {
+        "item": {
+          "tipo": "Municao",
+          "nome": "5.56x45mm FMJ",
+          "calibre": "5.56x45mm",
+          "dano": 0,
+          "tipo_dano": "balístico",
+          "perfuracao": 10,
+          "efeitos": [],
+          "descricao": "Full Metal Jacket, performance balanceada",
+          "_classe": "Municao"
+        },
+        "slot": "inventario",
+        "quantidade": 60
+      },
+      {
+        "item": {
+          "tipo": "Item",
+          "nome": "Documentos pessoais",
+          "peso": 0.0,
+          "descricao": "Nome, data de nascimento, nacionalidade...",
+          "_classe": "Item"
+        },
+        "slot": "inventario",
+        "quantidade": 1
+      },
+      {
+        "item": {
+          "tipo": "Consumivel",
+          "nome": "Gaze",
+          "peso": 0,
+          "descricao": "Útil para estancar sangramentos leves e escoriações",
+          "uso": "consumir",
+          "efeitos": [
+            {
+              "tipo": "cura",
+              "valor": 25
+            }
+          ],
+          "raio": null,
+          "raio_letal": null,
+          "falloff": "linear",
+          "perfuracao": 0,
+          "_classe": "Consumivel"
+        },
+        "slot": "inventario",
+        "quantidade": 1
+      },
+      {
+        "item": {
+          "tipo": "Consumivel",
+          "nome": "Bandagem",
+          "peso": 0.0,
+          "descricao": "Útil para estancar sangramentos leves",
+          "uso": "consumir",
+          "efeitos": [
+            {
+              "tipo": "cura",
+              "valor": 10,
+              "alvo": "vida"
+            }
+          ],
+          "raio": null,
+          "raio_letal": null,
+          "falloff": "linear",
+          "perfuracao": 0,
+          "_classe": "Consumivel"
+        },
+        "slot": "inventario",
+        "quantidade": 1
+      },
+      {
+        "item": {
+          "nome": "ATP - traje de combate leve",
+          "peso": 6.0,
+          "nivelBalistico": 6.0,
+          "absorcoes": {
+            "contundente": 5,
+            "concussivo": 5,
+            "cortante": 15,
+            "perfurante": 10,
+            "balístico": 10,
+            "rasgante": 15,
+            "explosivo": 5,
+            "incendiário": 15,
+            "congelante": 15,
+            "envenenante": 15,
+            "eletrocutante": 15
+          },
+          "regioes_cobertas": [
+            "braços",
+            "pernas",
+            "pescoço"
+          ],
+          "durabilidade": 100,
+          "durabilidadeMax": 100,
+          "regiao_indicada": "braços",
+          "Id": "63db114",
+          "Melhorias": [],
+          "descricao": "",
+          "_classe": "Protecao"
+        },
+        "slot": "peito",
+        "quantidade": 1
+      },
+      {
+        "item": {
+          "nome": "ATP - Máscara soldat",
+          "peso": 4.0,
+          "nivelBalistico": 7.0,
+          "absorcoes": {
+            "contundente": 5,
+            "concussivo": 5,
+            "cortante": 25,
+            "perfurante": 25,
+            "balístico": 25,
+            "rasgante": 25,
+            "explosivo": 10,
+            "incendiário": 25,
+            "envenenante": 25,
+            "eletrocutante": 15
+          },
+          "regioes_cobertas": [
+            "rosto"
+          ],
+          "durabilidade": 100,
+          "durabilidadeMax": 100,
+          "regiao_indicada": "rosto",
+          "Id": "1aded2c",
+          "Melhorias": [],
+          "descricao": "",
+          "_classe": "Protecao"
+        },
+        "slot": "peito",
+        "quantidade": 1
+      },
+      {
+        "item": {
+          "nome": "M45A1",
+          "peso": 1.3,
+          "classe": "Pistola",
+          "raridade": "Incomum",
+          "calibre": ".45Acp",
+          "capacidade": 11,
+          "TPM": 400,
+          "ruido": 80,
+          "tipo_dano": "balístico",
+          "acoes_disparo": [
+            "Semi"
+          ],
+          "modo_disparo_atual": "Semi",
+          "munições": 0,
+          "municao": null,
+          "Id": "be05c24",
+          "Acessorios": [],
+          "Perfuracao": 0,
+          "maos": 1,
+          "descricao": "Tentativa de modernização da M1911, possui trilhos picatinny e um pente levemente maior",
+          "_classe": "Ranged"
+        },
+        "slot": "mao_direita",
+        "quantidade": 1
+      },
+      {
+        "item": {
+          "tipo": "Municao",
+          "nome": ".45ACP FMJ",
+          "calibre": ".45ACP",
+          "dano": 0,
+          "tipo_dano": "balístico",
+          "perfuracao": 5,
+          "efeitos": [],
+          "descricao": "Full Metal Jacket, performance balanceada",
+          "_classe": "Municao"
+        },
+        "slot": "inventario",
+        "quantidade": 30
+      },
+      {
+        "item": {
+          "nome": "Colete leve",
+          "peso": 2.0,
+          "nivelBalistico": 6.0,
+          "absorcoes": {
+            "contundente": 15,
+            "concussivo": 5,
+            "cortante": 25,
+            "perfurante": 20,
+            "balístico": 20,
+            "rasgante": 25,
+            "explosivo": 5,
+            "incendiário": 15,
+            "envenenante": 15
+          },
+          "regioes_cobertas": [
+            "abdômen",
+            "peito",
+            "costas"
+          ],
+          "durabilidade": 50,
+          "durabilidadeMax": 50,
+          "regiao_indicada": "peito",
+          "Id": "0fca9e0",
+          "Melhorias": [],
+          "descricao": "",
+          "_classe": "Protecao"
+        },
+        "slot": "peito",
+        "quantidade": 1
+      }
+    ]
+  },
+  "ATP_Engineer_1": {
+    "__class__": "KitEquipamento",
+    "nome": "ATP_Engineer_1",
+    "raridade": "Rara",
+    "Id": "62c3510",
+    "itens": [
+      {
+        "item": {
+          "nome": "Glock 20",
+          "peso": 0.8,
+          "classe": "Pistola",
+          "raridade": "Incomum",
+          "calibre": "10mm Auto",
+          "capacidade": 15,
+          "TPM": 300,
+          "ruido": 120,
+          "tipo_dano": "balístico",
+          "acoes_disparo": [
+            "Semi"
+          ],
+          "modo_disparo_atual": "Semi",
+          "munições": 0,
+          "municao": null,
+          "Id": "d242592",
+          "Acessorios": [],
+          "Perfuracao": 0,
+          "maos": 1,
+          "descricao": "Variante da Glock 17, no calibre 10mm Auto",
+          "_classe": "Ranged"
+        },
+        "slot": "mao_direita",
+        "quantidade": 1
+      },
+      {
+        "item": {
+          "nome": "Faca M9",
+          "peso": 1,
+          "dano_base": 25,
+          "crit_mult": 2,
+          "crit_valor": 20,
+          "tags": [
+            "alcance_curto",
+            "arremessavel",
+            "cortante",
+            "sofisticada",
+            "leve",
+            "uma_mao"
+          ],
+          "raridade": "Comum",
+          "Id": "4a5663f",
+          "Melhorias": [],
+          "descricao": "Faca militar usada pelo exército americano",
+          "_classe": "Melee"
+        },
+        "slot": "mao_direita",
+        "quantidade": 1
+      },
+      {
+        "item": {
+          "tipo": "Municao",
+          "nome": "10mm Auto FMJ",
+          "calibre": "10mm Auto",
+          "dano": 0,
+          "tipo_dano": "balístico",
+          "perfuracao": 6,
+          "efeitos": [],
+          "descricao": "Full Metal Jacket, performance balanceada",
+          "_classe": "Municao"
+        },
+        "slot": "inventario",
+        "quantidade": 30
+      },
+      {
+        "item": {
+          "tipo": "Municao",
+          "nome": "12ga Slug",
+          "calibre": "12ga",
+          "dano": -5,
+          "tipo_dano": "balístico",
+          "perfuracao": 5,
+          "efeitos": [],
+          "descricao": "Balote , performance balanceada",
+          "_classe": "Municao"
+        },
+        "slot": "inventario",
+        "quantidade": 8
+      },
+      {
+        "item": {
+          "tipo": "Municao",
+          "nome": "12ga #4 Buck",
+          "calibre": "12ga",
+          "dano": 0,
+          "tipo_dano": "balístico",
+          "perfuracao": 4,
+          "efeitos": [],
+          "descricao": "Balins #4, bastante dano, pouca perfuração",
+          "_classe": "Municao"
+        },
+        "slot": "inventario",
+        "quantidade": 16
+      },
+      {
+        "item": {
+          "tipo": "Item",
+          "nome": "Documentos pessoais",
+          "peso": 0.0,
+          "descricao": "Nome, data de nascimento, nacionalidade...",
+          "_classe": "Item"
+        },
+        "slot": "inventario",
+        "quantidade": 1
+      },
+      {
+        "item": {
+          "tipo": "Item",
+          "nome": "Bastão de luz",
+          "peso": 2.0,
+          "descricao": "Emite luz por um certo tempo após acionado",
+          "_classe": "Item"
+        },
+        "slot": "inventario",
+        "quantidade": 2
+      },
+      {
+        "item": {
+          "tipo": "Consumivel",
+          "nome": "Gaze",
+          "peso": 0,
+          "descricao": "Útil para estancar sangramentos leves e escoriações",
+          "uso": "consumir",
+          "efeitos": [
+            {
+              "tipo": "cura",
+              "valor": 25
+            }
+          ],
+          "raio": null,
+          "raio_letal": null,
+          "falloff": "linear",
+          "perfuracao": 0,
+          "_classe": "Consumivel"
+        },
+        "slot": "inventario",
+        "quantidade": 1
+      },
+      {
+        "item": {
+          "tipo": "Consumivel",
+          "nome": "Bandagem",
+          "peso": 0.0,
+          "descricao": "Útil para estancar sangramentos leves",
+          "uso": "consumir",
+          "efeitos": [
+            {
+              "tipo": "cura",
+              "valor": 10,
+              "alvo": "vida"
+            }
+          ],
+          "raio": null,
+          "raio_letal": null,
+          "falloff": "linear",
+          "perfuracao": 0,
+          "_classe": "Consumivel"
+        },
+        "slot": "inventario",
+        "quantidade": 3
+      },
+      {
+        "item": {
+          "nome": "M1014",
+          "peso": 4.0,
+          "classe": "Escopeta",
+          "raridade": "Comum",
+          "calibre": "12ga",
+          "capacidade": 7,
+          "TPM": 300,
+          "ruido": 120,
+          "tipo_dano": "balístico",
+          "acoes_disparo": [
+            "Semi"
+          ],
+          "modo_disparo_atual": "Semi",
+          "munições": 0,
+          "municao": null,
+          "Id": "719b59e",
+          "Acessorios": [],
+          "Perfuracao": 0,
+          "maos": 2,
+          "descricao": "",
+          "_classe": "Ranged"
+        },
+        "slot": "mao_direita",
+        "quantidade": 1
+      },
+      {
+        "item": {
+          "nome": "ATP - traje de combate leve",
+          "peso": 6.0,
+          "nivelBalistico": 6.0,
+          "absorcoes": {
+            "contundente": 5,
+            "concussivo": 5,
+            "cortante": 15,
+            "perfurante": 10,
+            "balístico": 10,
+            "rasgante": 15,
+            "explosivo": 5,
+            "incendiário": 15,
+            "congelante": 15,
+            "envenenante": 15,
+            "eletrocutante": 15
+          },
+          "regioes_cobertas": [
+            "braços",
+            "pernas",
+            "pescoço"
+          ],
+          "durabilidade": 100,
+          "durabilidadeMax": 100,
+          "regiao_indicada": "braços",
+          "Id": "e98e9db",
+          "Melhorias": [],
+          "descricao": "",
+          "_classe": "Protecao"
+        },
+        "slot": "peito",
+        "quantidade": 1
+      },
+      {
+        "item": {
+          "nome": "ATP - Visor engineer",
+          "peso": 2.0,
+          "nivelBalistico": 5.0,
+          "absorcoes": {
+            "contundente": 5,
+            "concussivo": 5,
+            "cortante": 15,
+            "perfurante": 15,
+            "balístico": 15,
+            "rasgante": 15,
+            "explosivo": 5,
+            "incendiário": 15,
+            "congelante": 15,
+            "envenenante": 15
+          },
+          "regioes_cobertas": [
+            "rosto"
+          ],
+          "durabilidade": 50,
+          "durabilidadeMax": 50,
+          "regiao_indicada": "rosto",
+          "Id": "ee26d8e",
+          "Melhorias": [],
+          "descricao": "",
+          "_classe": "Protecao"
+        },
+        "slot": "peito",
+        "quantidade": 1
+      },
+      {
+        "item": {
+          "nome": "Colete médio",
+          "peso": 4.0,
+          "nivelBalistico": 10.0,
+          "absorcoes": {
+            "contundente": 20,
+            "concussivo": 10,
+            "cortante": 35,
+            "perfurante": 30,
+            "balístico": 25,
+            "rasgante": 35,
+            "explosivo": 15,
+            "incendiário": 25,
+            "envenenante": 25
+          },
+          "regioes_cobertas": [
+            "abdômen",
+            "peito",
+            "costas"
+          ],
+          "durabilidade": 100,
+          "durabilidadeMax": 100,
+          "regiao_indicada": "peito",
+          "Id": "ccfae12",
+          "Melhorias": [],
+          "descricao": "",
+          "_classe": "Protecao"
+        },
+        "slot": "peito",
+        "quantidade": 1
+      }
+    ]
+  },
+  "ATP_Engineer_2": {
+    "__class__": "KitEquipamento",
+    "nome": "ATP_Engineer_2",
+    "raridade": "Rara",
+    "Id": "366f5cb",
+    "itens": [
+      {
+        "item": {
+          "nome": "Glock 20",
+          "peso": 0.8,
+          "classe": "Pistola",
+          "raridade": "Incomum",
+          "calibre": "10mm Auto",
+          "capacidade": 15,
+          "TPM": 300,
+          "ruido": 120,
+          "tipo_dano": "balístico",
+          "acoes_disparo": [
+            "Semi"
+          ],
+          "modo_disparo_atual": "Semi",
+          "munições": 0,
+          "municao": null,
+          "Id": "b36faef",
+          "Acessorios": [],
+          "Perfuracao": 0,
+          "maos": 1,
+          "descricao": "Variante da Glock 17, no calibre 10mm Auto",
+          "_classe": "Ranged"
+        },
+        "slot": "mao_direita",
+        "quantidade": 1
+      },
+      {
+        "item": {
+          "nome": "Marreta Demolidora",
+          "peso": 10.0,
+          "dano_base": 50,
+          "crit_mult": 2,
+          "crit_valor": 30,
+          "tags": [
+            "concussivo",
+            "pesada",
+            "duas_maos",
+            "alcance_medio"
+          ],
+          "raridade": "Comum",
+          "Id": "f7177c7",
+          "Melhorias": [],
+          "descricao": "Marreta de obras, pesada, perfeita para derrubar paredes",
+          "_classe": "Melee"
+        },
+        "slot": "mao_direita",
+        "quantidade": 1
+      },
+      {
+        "item": {
+          "tipo": "Municao",
+          "nome": "10mm Auto FMJ",
+          "calibre": "10mm Auto",
+          "dano": 0,
+          "tipo_dano": "balístico",
+          "perfuracao": 6,
+          "efeitos": [],
+          "descricao": "Full Metal Jacket, performance balanceada",
+          "_classe": "Municao"
+        },
+        "slot": "inventario",
+        "quantidade": 30
+      },
+      {
+        "item": {
+          "tipo": "Municao",
+          "nome": "9x39mm Sub",
+          "calibre": "9x39mm",
+          "dano": 0,
+          "tipo_dano": "balístico",
+          "perfuracao": 7,
+          "efeitos": [],
+          "descricao": "Subsônica, menos performance por menos ruído",
+          "_classe": "Municao"
+        },
+        "slot": "inventario",
+        "quantidade": 40
+      },
+      {
+        "item": {
+          "tipo": "Municao",
+          "nome": "9x39mm HV",
+          "calibre": "9x39mm",
+          "dano": 0,
+          "tipo_dano": "balístico",
+          "perfuracao": 9,
+          "efeitos": [],
+          "descricao": "Supersônica, performance balanceada",
+          "_classe": "Municao"
+        },
+        "slot": "inventario",
+        "quantidade": 20
+      },
+      {
+        "item": {
+          "tipo": "Item",
+          "nome": "Documentos pessoais",
+          "peso": 0.0,
+          "descricao": "Nome, data de nascimento, nacionalidade...",
+          "_classe": "Item"
+        },
+        "slot": "inventario",
+        "quantidade": 1
+      },
+      {
+        "item": {
+          "tipo": "Item",
+          "nome": "Enforca gato",
+          "peso": 0.0,
+          "descricao": "Útil para amarrar algo ou segurar alguma coisa",
+          "_classe": "Item"
+        },
+        "slot": "inventario",
+        "quantidade": 5
+      },
+      {
+        "item": {
+          "tipo": "Consumivel",
+          "nome": "Granada explosiva",
+          "peso": 2.0,
+          "descricao": "Causa dano explosivo em um raio curto",
+          "uso": "arremesso",
+          "efeitos": [
+            {
+              "tipo": "dano_area",
+              "subtipo": "explosivo",
+              "valor": 300,
+              "raio": 8,
+              "raio_letal": 3,
+              "falloff": "quadratico",
+              "perfuracao": 0
+            }
+          ],
+          "raio": null,
+          "raio_letal": null,
+          "falloff": "linear",
+          "perfuracao": 0,
+          "_classe": "Consumivel"
+        },
+        "slot": "inventario",
+        "quantidade": 1
+      },
+      {
+        "item": {
+          "tipo": "Consumivel",
+          "nome": "Gaze",
+          "peso": 0,
+          "descricao": "Útil para estancar sangramentos leves e escoriações",
+          "uso": "consumir",
+          "efeitos": [
+            {
+              "tipo": "cura",
+              "valor": 25
+            }
+          ],
+          "raio": null,
+          "raio_letal": null,
+          "falloff": "linear",
+          "perfuracao": 0,
+          "_classe": "Consumivel"
+        },
+        "slot": "inventario",
+        "quantidade": 2
+      },
+      {
+        "item": {
+          "nome": "As Val",
+          "peso": 2.6,
+          "classe": "Fuzil de assalto",
+          "raridade": "Incomum",
+          "calibre": "9x39mm",
+          "capacidade": 20,
+          "TPM": 800,
+          "ruido": 80,
+          "tipo_dano": "balístico",
+          "acoes_disparo": [
+            "Semi",
+            "Auto"
+          ],
+          "modo_disparo_atual": "Auto",
+          "munições": 0,
+          "municao": null,
+          "Id": "496bd74",
+          "Acessorios": [],
+          "Perfuracao": 0,
+          "maos": 2,
+          "descricao": "",
+          "_classe": "Ranged"
+        },
+        "slot": "mao_direita",
+        "quantidade": 1
+      },
+      {
+        "item": {
+          "nome": "ATP - traje de combate leve",
+          "peso": 6.0,
+          "nivelBalistico": 6.0,
+          "absorcoes": {
+            "contundente": 5,
+            "concussivo": 5,
+            "cortante": 15,
+            "perfurante": 10,
+            "balístico": 10,
+            "rasgante": 15,
+            "explosivo": 5,
+            "incendiário": 15,
+            "congelante": 15,
+            "envenenante": 15,
+            "eletrocutante": 15
+          },
+          "regioes_cobertas": [
+            "braços",
+            "pernas",
+            "pescoço"
+          ],
+          "durabilidade": 100,
+          "durabilidadeMax": 100,
+          "regiao_indicada": "braços",
+          "Id": "4272441",
+          "Melhorias": [],
+          "descricao": "",
+          "_classe": "Protecao"
+        },
+        "slot": "peito",
+        "quantidade": 1
+      },
+      {
+        "item": {
+          "nome": "ATP - Visor engineer",
+          "peso": 2.0,
+          "nivelBalistico": 5.0,
+          "absorcoes": {
+            "contundente": 5,
+            "concussivo": 5,
+            "cortante": 15,
+            "perfurante": 15,
+            "balístico": 15,
+            "rasgante": 15,
+            "explosivo": 5,
+            "incendiário": 15,
+            "congelante": 15,
+            "envenenante": 15
+          },
+          "regioes_cobertas": [
+            "rosto"
+          ],
+          "durabilidade": 50,
+          "durabilidadeMax": 50,
+          "regiao_indicada": "rosto",
+          "Id": "b79bb1a",
+          "Melhorias": [],
+          "descricao": "",
+          "_classe": "Protecao"
+        },
+        "slot": "peito",
+        "quantidade": 1
+      },
+      {
+        "item": {
+          "nome": "Colete médio",
+          "peso": 4.0,
+          "nivelBalistico": 10.0,
+          "absorcoes": {
+            "contundente": 20,
+            "concussivo": 10,
+            "cortante": 35,
+            "perfurante": 30,
+            "balístico": 25,
+            "rasgante": 35,
+            "explosivo": 15,
+            "incendiário": 25,
+            "envenenante": 25
+          },
+          "regioes_cobertas": [
+            "abdômen",
+            "peito",
+            "costas"
+          ],
+          "durabilidade": 100,
+          "durabilidadeMax": 100,
+          "regiao_indicada": "peito",
+          "Id": "f483135",
+          "Melhorias": [],
+          "descricao": "",
+          "_classe": "Protecao"
+        },
+        "slot": "peito",
+        "quantidade": 1
+      }
+    ]
+  },
+  "ATP_Engineer_4": {
+    "__class__": "KitEquipamento",
+    "nome": "ATP_Engineer_4",
+    "raridade": "Rara",
+    "Id": "7034370",
+    "itens": [
+      {
+        "item": {
+          "nome": "MP1911",
+          "peso": 1.3,
+          "classe": "Pistola",
+          "raridade": "Incomum",
+          "calibre": ".45Acp",
+          "capacidade": 15,
+          "TPM": 1000,
+          "ruido": 80,
+          "tipo_dano": "balístico",
+          "acoes_disparo": [
+            "Semi",
+            "Auto"
+          ],
+          "modo_disparo_atual": "Auto",
+          "munições": 0,
+          "municao": null,
+          "Id": "70f9b4c",
+          "Acessorios": [],
+          "Perfuracao": 0,
+          "maos": 1,
+          "descricao": "Uma versão pistola-metralhadora da M1911 feita em algum país na indonésia",
+          "_classe": "Ranged"
+        },
+        "slot": "mao_direita",
+        "quantidade": 1
+      },
+      {
+        "item": {
+          "nome": "Tomahawk militar",
+          "peso": 3.0,
+          "dano_base": 45,
+          "crit_mult": 3,
+          "crit_valor": 20,
+          "tags": [
+            "alcance_curto",
+            "arremessavel",
+            "sofisticada",
+            "leve",
+            "uma_mao"
+          ],
+          "raridade": "Rara",
+          "Id": "245864c",
+          "Melhorias": [],
+          "descricao": "Versão moderna e militar de um tomahawk tradicional",
+          "_classe": "Melee"
+        },
+        "slot": "mao_direita",
+        "quantidade": 1
+      },
+      {
+        "item": {
+          "tipo": "Municao",
+          "nome": ".45ACP FMJ",
+          "calibre": ".45ACP",
+          "dano": 0,
+          "tipo_dano": "balístico",
+          "perfuracao": 5,
+          "efeitos": [],
+          "descricao": "Full Metal Jacket, performance balanceada",
+          "_classe": "Municao"
+        },
+        "slot": "inventario",
+        "quantidade": 45
+      },
+      {
+        "item": {
+          "tipo": "Municao",
+          "nome": "7.62x54mmr FMJ",
+          "calibre": "7.62x54mmr",
+          "dano": 0,
+          "tipo_dano": "balístico",
+          "perfuracao": 15,
+          "efeitos": [],
+          "descricao": "Full Metal Jacket, performance balanceada",
+          "_classe": "Municao"
+        },
+        "slot": "inventario",
+        "quantidade": 20
+      },
+      {
+        "item": {
+          "tipo": "Item",
+          "nome": "Bastão sinalizador",
+          "peso": 2.0,
+          "descricao": "Um bastão capaz de fazer uma fumaça e fogo avermelhados por um tempo curto, útil para chamar atenção ou iluminar algum local",
+          "_classe": "Item"
+        },
+        "slot": "inventario",
+        "quantidade": 1
+      },
+      {
+        "item": {
+          "tipo": "Consumivel",
+          "nome": "Kit médico leve",
+          "peso": 1.0,
+          "descricao": "Contém alguns suprimentos para primeiros socorros",
+          "uso": "consumir",
+          "efeitos": [
+            {
+              "tipo": "cura",
+              "valor": 50
+            }
+          ],
+          "raio": null,
+          "raio_letal": null,
+          "falloff": "linear",
+          "perfuracao": 0,
+          "_classe": "Consumivel"
+        },
+        "slot": "inventario",
+        "quantidade": 1
+      },
+      {
+        "item": {
+          "tipo": "Consumivel",
+          "nome": "Granada de fumaça",
+          "peso": 2.0,
+          "descricao": "Cobre uma área com uma fumaça densa temporariamente",
+          "uso": "arremesso",
+          "efeitos": [
+            {
+              "tipo": "debuff",
+              "nome": "Visao ofucasda",
+              "duracao": 1,
+              "chance": 100
+            }
+          ],
+          "raio": null,
+          "raio_letal": null,
+          "falloff": "linear",
+          "perfuracao": 0,
+          "_classe": "Consumivel"
+        },
+        "slot": "inventario",
+        "quantidade": 2
+      },
+      {
+        "item": {
+          "nome": "Dragunov SVU",
+          "peso": 5.3,
+          "classe": "DMR",
+          "raridade": "Rara",
+          "calibre": "7.62x54mmr",
+          "capacidade": 10,
+          "TPM": 300,
+          "ruido": 200,
+          "tipo_dano": "balístico",
+          "acoes_disparo": [
+            "Semi"
+          ],
+          "modo_disparo_atual": "Semi",
+          "munições": 0,
+          "municao": null,
+          "Id": "7307f16",
+          "Acessorios": [],
+          "Perfuracao": 0,
+          "maos": 2,
+          "descricao": "",
+          "_classe": "Ranged"
+        },
+        "slot": "mao_direita",
+        "quantidade": 1
+      },
+      {
+        "item": {
+          "nome": "ATP - traje de combate leve",
+          "peso": 6.0,
+          "nivelBalistico": 6.0,
+          "absorcoes": {
+            "contundente": 5,
+            "concussivo": 5,
+            "cortante": 15,
+            "perfurante": 10,
+            "balístico": 10,
+            "rasgante": 15,
+            "explosivo": 5,
+            "incendiário": 15,
+            "congelante": 15,
+            "envenenante": 15,
+            "eletrocutante": 15
+          },
+          "regioes_cobertas": [
+            "braços",
+            "pernas",
+            "pescoço"
+          ],
+          "durabilidade": 100,
+          "durabilidadeMax": 100,
+          "regiao_indicada": "braços",
+          "Id": "4715fbd",
+          "Melhorias": [],
+          "descricao": "",
+          "_classe": "Protecao"
+        },
+        "slot": "peito",
+        "quantidade": 1
+      },
+      {
+        "item": {
+          "nome": "ATP - Visor engineer",
+          "peso": 2.0,
+          "nivelBalistico": 5.0,
+          "absorcoes": {
+            "contundente": 5,
+            "concussivo": 5,
+            "cortante": 15,
+            "perfurante": 15,
+            "balístico": 15,
+            "rasgante": 15,
+            "explosivo": 5,
+            "incendiário": 15,
+            "congelante": 15,
+            "envenenante": 15
+          },
+          "regioes_cobertas": [
+            "rosto"
+          ],
+          "durabilidade": 50,
+          "durabilidadeMax": 50,
+          "regiao_indicada": "rosto",
+          "Id": "7607687",
+          "Melhorias": [],
+          "descricao": "",
+          "_classe": "Protecao"
+        },
+        "slot": "peito",
+        "quantidade": 1
+      },
+      {
+        "item": {
+          "tipo": "Item",
+          "nome": "Documentos pessoais",
+          "peso": 0.0,
+          "descricao": "Nome, data de nascimento, nacionalidade...",
+          "_classe": "Item"
+        },
+        "slot": "inventario",
+        "quantidade": 1
+      },
+      {
+        "item": {
+          "nome": "Colete médio",
+          "peso": 4.0,
+          "nivelBalistico": 10.0,
+          "absorcoes": {
+            "contundente": 20,
+            "concussivo": 10,
+            "cortante": 35,
+            "perfurante": 30,
+            "balístico": 25,
+            "rasgante": 35,
+            "explosivo": 15,
+            "incendiário": 25,
+            "envenenante": 25
+          },
+          "regioes_cobertas": [
+            "abdômen",
+            "peito",
+            "costas"
+          ],
+          "durabilidade": 100,
+          "durabilidadeMax": 100,
+          "regiao_indicada": "peito",
+          "Id": "5a9b811",
+          "Melhorias": [],
+          "descricao": "",
+          "_classe": "Protecao"
+        },
+        "slot": "peito",
+        "quantidade": 1
+      }
+    ]
+  },
+  "ATP_Soldat_5": {
+    "__class__": "KitEquipamento",
+    "nome": "ATP_Soldat_5",
+    "raridade": "Incomum",
+    "Id": "3c0e013",
+    "itens": [
+      {
+        "item": {
+          "nome": "Kukri",
+          "peso": 2.5,
+          "dano_base": 40,
+          "crit_mult": 2,
+          "crit_valor": 19,
+          "tags": [
+            "alcance_curto",
+            "cortante",
+            "sofisticada",
+            "leve",
+            "uma_mao"
+          ],
+          "raridade": "Incomum",
+          "Id": "0fc8ff0",
+          "Melhorias": [],
+          "descricao": "Fação com uma laminâ que engorda na ponta, originado de tribos indigenas",
+          "_classe": "Melee"
+        },
+        "slot": "mao_direita",
+        "quantidade": 1
+      },
+      {
+        "item": {
+          "tipo": "Municao",
+          "nome": "5.56x45mm HP",
+          "calibre": "5.56x45mm",
+          "dano": 3,
+          "tipo_dano": "balístico",
+          "perfuracao": 8,
+          "efeitos": [],
+          "descricao": "Ponta oca, mais dano, menos perfuração",
+          "_classe": "Municao"
+        },
+        "slot": "inventario",
+        "quantidade": 30
+      },
+      {
+        "item": {
+          "tipo": "Municao",
+          "nome": "5.56x45mm FMJ",
+          "calibre": "5.56x45mm",
+          "dano": 0,
+          "tipo_dano": "balístico",
+          "perfuracao": 10,
+          "efeitos": [],
+          "descricao": "Full Metal Jacket, performance balanceada",
+          "_classe": "Municao"
+        },
+        "slot": "inventario",
+        "quantidade": 30
+      },
+      {
+        "item": {
+          "tipo": "Item",
+          "nome": "Intercomunicador",
+          "peso": 0.0,
+          "descricao": "Permite comunicar remotamente com alguém em outra linha e não ocupa as mãos, alcance de 50m",
+          "_classe": "Item"
+        },
+        "slot": "inventario",
+        "quantidade": 1
+      },
+      {
+        "item": {
+          "tipo": "Item",
+          "nome": "Documentos pessoais",
+          "peso": 0.0,
+          "descricao": "Nome, data de nascimento, nacionalidade...",
+          "_classe": "Item"
+        },
+        "slot": "inventario",
+        "quantidade": 1
+      },
+      {
+        "item": {
+          "tipo": "Consumivel",
+          "nome": "Gaze",
+          "peso": 0,
+          "descricao": "Útil para estancar sangramentos leves e escoriações",
+          "uso": "consumir",
+          "efeitos": [
+            {
+              "tipo": "cura",
+              "valor": 25
+            }
+          ],
+          "raio": null,
+          "raio_letal": null,
+          "falloff": "linear",
+          "perfuracao": 0,
+          "_classe": "Consumivel"
+        },
+        "slot": "inventario",
+        "quantidade": 1
+      },
+      {
+        "item": {
+          "tipo": "Consumivel",
+          "nome": "Granada de fragmentação",
+          "peso": 2.0,
+          "descricao": "Causa dano de fragmentação em um raio curto",
+          "uso": "arremesso",
+          "efeitos": [
+            {
+              "tipo": "dano_area",
+              "subtipo": "fragmentacao",
+              "valor": 150,
+              "raio": 10,
+              "raio_letal": 5,
+              "falloff": "linear",
+              "perfuracao": 0
+            }
+          ],
+          "raio": null,
+          "raio_letal": null,
+          "falloff": "linear",
+          "perfuracao": 0,
+          "_classe": "Consumivel"
+        },
+        "slot": "inventario",
+        "quantidade": 1
+      },
+      {
+        "item": {
+          "nome": "G36c",
+          "peso": 2.8,
+          "classe": "Carabina",
+          "raridade": "Incomum",
+          "calibre": "5.56x45mm",
+          "capacidade": 30,
+          "TPM": 700,
+          "ruido": 150,
+          "tipo_dano": "balístico",
+          "acoes_disparo": [
+            "Semi",
+            "Auto"
+          ],
+          "modo_disparo_atual": "Auto",
+          "munições": 0,
+          "municao": null,
+          "Id": "36c89cf",
+          "Acessorios": [],
+          "Perfuracao": 0,
+          "maos": 2,
+          "descricao": "",
+          "_classe": "Ranged"
+        },
+        "slot": "mao_direita",
+        "quantidade": 1
+      },
+      {
+        "item": {
+          "nome": "ATP - traje de combate leve",
+          "peso": 6.0,
+          "nivelBalistico": 6.0,
+          "absorcoes": {
+            "contundente": 5,
+            "concussivo": 5,
+            "cortante": 15,
+            "perfurante": 10,
+            "balístico": 10,
+            "rasgante": 15,
+            "explosivo": 5,
+            "incendiário": 15,
+            "congelante": 15,
+            "envenenante": 15,
+            "eletrocutante": 15
+          },
+          "regioes_cobertas": [
+            "braços",
+            "pernas",
+            "pescoço"
+          ],
+          "durabilidade": 100,
+          "durabilidadeMax": 100,
+          "regiao_indicada": "braços",
+          "Id": "521c1a7",
+          "Melhorias": [],
+          "descricao": "",
+          "_classe": "Protecao"
+        },
+        "slot": "peito",
+        "quantidade": 1
+      },
+      {
+        "item": {
+          "nome": "ATP - Máscara soldat",
+          "peso": 4.0,
+          "nivelBalistico": 7.0,
+          "absorcoes": {
+            "contundente": 5,
+            "concussivo": 5,
+            "cortante": 25,
+            "perfurante": 25,
+            "balístico": 25,
+            "rasgante": 25,
+            "explosivo": 10,
+            "incendiário": 25,
+            "envenenante": 25,
+            "eletrocutante": 15
+          },
+          "regioes_cobertas": [
+            "rosto"
+          ],
+          "durabilidade": 100,
+          "durabilidadeMax": 100,
+          "regiao_indicada": "rosto",
+          "Id": "7987836",
+          "Melhorias": [],
+          "descricao": "",
+          "_classe": "Protecao"
+        },
+        "slot": "peito",
+        "quantidade": 1
+      },
+      {
+        "item": {
+          "nome": "Capacete médio",
+          "peso": 5.0,
+          "nivelBalistico": 10.0,
+          "absorcoes": {
+            "contundente": 20,
+            "concussivo": 10,
+            "cortante": 35,
+            "perfurante": 25,
+            "balístico": 20,
+            "rasgante": 35,
+            "explosivo": 15,
+            "incendiário": 30,
+            "envenenante": 30
+          },
+          "regioes_cobertas": [
+            "cabeça"
+          ],
+          "durabilidade": 100,
+          "durabilidadeMax": 100,
+          "regiao_indicada": "cabeça",
+          "Id": "5e410aa",
+          "Melhorias": [],
+          "descricao": "",
+          "_classe": "Protecao"
+        },
+        "slot": "peito",
+        "quantidade": 1
+      },
+      {
+        "item": {
+          "nome": "Glock 20",
+          "peso": 0.8,
+          "classe": "Pistola",
+          "raridade": "Incomum",
+          "calibre": "10mm Auto",
+          "capacidade": 15,
+          "TPM": 300,
+          "ruido": 120,
+          "tipo_dano": "balístico",
+          "acoes_disparo": [
+            "Semi"
+          ],
+          "modo_disparo_atual": "Semi",
+          "munições": 0,
+          "municao": null,
+          "Id": "2bcb2d6",
+          "Acessorios": [],
+          "Perfuracao": 0,
+          "maos": 1,
+          "descricao": "Variante da Glock 17, no calibre 10mm Auto",
+          "_classe": "Ranged"
+        },
+        "slot": "mao_direita",
+        "quantidade": 1
+      },
+      {
+        "item": {
+          "tipo": "Municao",
+          "nome": "10mm Auto FMJ",
+          "calibre": "10mm Auto",
+          "dano": 0,
+          "tipo_dano": "balístico",
+          "perfuracao": 6,
+          "efeitos": [],
+          "descricao": "Full Metal Jacket, performance balanceada",
+          "_classe": "Municao"
+        },
+        "slot": "inventario",
+        "quantidade": 30
+      },
+      {
+        "item": {
+          "nome": "Colete leve",
+          "peso": 2.0,
+          "nivelBalistico": 6.0,
+          "absorcoes": {
+            "contundente": 15,
+            "concussivo": 5,
+            "cortante": 25,
+            "perfurante": 20,
+            "balístico": 20,
+            "rasgante": 25,
+            "explosivo": 5,
+            "incendiário": 15,
+            "envenenante": 15
+          },
+          "regioes_cobertas": [
+            "abdômen",
+            "peito",
+            "costas"
+          ],
+          "durabilidade": 50,
+          "durabilidadeMax": 50,
+          "regiao_indicada": "peito",
+          "Id": "2c3d7e3",
+          "Melhorias": [],
+          "descricao": "",
+          "_classe": "Protecao"
+        },
+        "slot": "peito",
+        "quantidade": 1
+      }
+    ]
+  },
+  "ATP_Engineer_3": {
+    "__class__": "KitEquipamento",
+    "nome": "ATP_Engineer_3",
+    "raridade": "Rara",
+    "Id": "60abe64",
+    "itens": [
+      {
+        "item": {
+          "nome": "Katana",
+          "peso": 1.4,
+          "dano_base": 35,
+          "crit_mult": 3,
+          "crit_valor": 27,
+          "tags": [
+            "alcance_medio",
+            "cortante",
+            "sofisticada",
+            "balanceada",
+            "uma_mao"
+          ],
+          "raridade": "Rara",
+          "Id": "d21d7b4",
+          "Melhorias": [],
+          "descricao": "Espada japonesa usada por milênios",
+          "_classe": "Melee"
+        },
+        "slot": "mao_direita",
+        "quantidade": 1
+      },
+      {
+        "item": {
+          "nome": "Glock 20",
+          "peso": 0.8,
+          "classe": "Pistola",
+          "raridade": "Incomum",
+          "calibre": "10mm Auto",
+          "capacidade": 15,
+          "TPM": 300,
+          "ruido": 120,
+          "tipo_dano": "balístico",
+          "acoes_disparo": [
+            "Semi"
+          ],
+          "modo_disparo_atual": "Semi",
+          "munições": 0,
+          "municao": null,
+          "Id": "d047534",
+          "Acessorios": [],
+          "Perfuracao": 0,
+          "maos": 1,
+          "descricao": "Variante da Glock 17, no calibre 10mm Auto",
+          "_classe": "Ranged"
+        },
+        "slot": "mao_direita",
+        "quantidade": 1
+      },
+      {
+        "item": {
+          "nome": "M4A1 SOPMOD Block II",
+          "peso": 2.9,
+          "classe": "Fuzil de assalto",
+          "raridade": "Rara",
+          "calibre": "5.56x45mm",
+          "capacidade": 30,
+          "TPM": 850,
+          "ruido": 150,
+          "tipo_dano": "balístico",
+          "acoes_disparo": [
+            "Semi",
+            "Auto"
+          ],
+          "modo_disparo_atual": "Semi",
+          "munições": 0,
+          "municao": null,
+          "Id": "5eab932",
+          "Acessorios": [],
+          "Perfuracao": 0,
+          "maos": 1,
+          "descricao": "",
+          "_classe": "Ranged"
+        },
+        "slot": "mao_direita",
+        "quantidade": 1
+      },
+      {
+        "item": {
+          "nome": "ATP - traje de combate leve",
+          "peso": 6.0,
+          "nivelBalistico": 6.0,
+          "absorcoes": {
+            "contundente": 5,
+            "concussivo": 5,
+            "cortante": 15,
+            "perfurante": 10,
+            "balístico": 10,
+            "rasgante": 15,
+            "explosivo": 5,
+            "incendiário": 15,
+            "congelante": 15,
+            "envenenante": 15,
+            "eletrocutante": 15
+          },
+          "regioes_cobertas": [
+            "braços",
+            "pernas",
+            "pescoço"
+          ],
+          "durabilidade": 100,
+          "durabilidadeMax": 100,
+          "regiao_indicada": "braços",
+          "Id": "655dc26",
+          "Melhorias": [],
+          "descricao": "",
+          "_classe": "Protecao"
+        },
+        "slot": "peito",
+        "quantidade": 1
+      },
+      {
+        "item": {
+          "nome": "ATP - Visor engineer",
+          "peso": 2.0,
+          "nivelBalistico": 5.0,
+          "absorcoes": {
+            "contundente": 5,
+            "concussivo": 5,
+            "cortante": 15,
+            "perfurante": 15,
+            "balístico": 15,
+            "rasgante": 15,
+            "explosivo": 5,
+            "incendiário": 15,
+            "congelante": 15,
+            "envenenante": 15
+          },
+          "regioes_cobertas": [
+            "rosto"
+          ],
+          "durabilidade": 50,
+          "durabilidadeMax": 50,
+          "regiao_indicada": "rosto",
+          "Id": "05d0bab",
+          "Melhorias": [],
+          "descricao": "",
+          "_classe": "Protecao"
+        },
+        "slot": "peito",
+        "quantidade": 1
+      },
+      {
+        "item": {
+          "tipo": "Municao",
+          "nome": "10mm Auto FMJ +P",
+          "calibre": "10mm Auto",
+          "dano": 2,
+          "tipo_dano": "balístico",
+          "perfuracao": 6,
+          "efeitos": [],
+          "descricao": "Full Metal Jacket, performance balanceada",
+          "_classe": "Municao"
+        },
+        "slot": "inventario",
+        "quantidade": 30
+      },
+      {
+        "item": {
+          "tipo": "Municao",
+          "nome": "5.56x45mm FMJ",
+          "calibre": "5.56x45mm",
+          "dano": 0,
+          "tipo_dano": "balístico",
+          "perfuracao": 10,
+          "efeitos": [],
+          "descricao": "Full Metal Jacket, performance balanceada",
+          "_classe": "Municao"
+        },
+        "slot": "inventario",
+        "quantidade": 60
+      },
+      {
+        "item": {
+          "tipo": "Municao",
+          "nome": "5.56x45mm SP",
+          "calibre": "5.56x45mm",
+          "dano": 2,
+          "tipo_dano": "balístico",
+          "perfuracao": 8,
+          "efeitos": [],
+          "descricao": "Ponta oca, mais dano, menos perfuração",
+          "_classe": "Municao"
+        },
+        "slot": "inventario",
+        "quantidade": 30
+      },
+      {
+        "item": {
+          "tipo": "Item",
+          "nome": "Intercomunicador",
+          "peso": 0.0,
+          "descricao": "Permite comunicar remotamente com alguém em outra linha e não ocupa as mãos, alcance de 50m",
+          "_classe": "Item"
+        },
+        "slot": "inventario",
+        "quantidade": 1
+      },
+      {
+        "item": {
+          "tipo": "Item",
+          "nome": "Documentos pessoais",
+          "peso": 0.0,
+          "descricao": "Nome, data de nascimento, nacionalidade...",
+          "_classe": "Item"
+        },
+        "slot": "inventario",
+        "quantidade": 1
+      },
+      {
+        "item": {
+          "tipo": "Item",
+          "nome": "Maçarico",
+          "peso": 1.0,
+          "descricao": "Útil para soldar ou cortar diversos materiais",
+          "_classe": "Item"
+        },
+        "slot": "inventario",
+        "quantidade": 1
+      },
+      {
+        "item": {
+          "tipo": "Item",
+          "nome": "Lockpicker",
+          "peso": 0.0,
+          "descricao": "Útil para arrombar algumas fechaduras",
+          "_classe": "Item"
+        },
+        "slot": "inventario",
+        "quantidade": 1
+      },
+      {
+        "item": {
+          "tipo": "Item",
+          "nome": "Enforca gato",
+          "peso": 0.0,
+          "descricao": "Útil para amarrar algo ou segurar alguma coisa",
+          "_classe": "Item"
+        },
+        "slot": "inventario",
+        "quantidade": 5
+      },
+      {
+        "item": {
+          "nome": "Colete médio",
+          "peso": 4.0,
+          "nivelBalistico": 10.0,
+          "absorcoes": {
+            "contundente": 20,
+            "concussivo": 10,
+            "cortante": 35,
+            "perfurante": 30,
+            "balístico": 25,
+            "rasgante": 35,
+            "explosivo": 15,
+            "incendiário": 25,
+            "envenenante": 25
+          },
+          "regioes_cobertas": [
+            "abdômen",
+            "peito",
+            "costas"
+          ],
+          "durabilidade": 100,
+          "durabilidadeMax": 100,
+          "regiao_indicada": "peito",
+          "Id": "203c385",
+          "Melhorias": [],
+          "descricao": "",
+          "_classe": "Protecao"
+        },
+        "slot": "peito",
+        "quantidade": 1
+      }
+    ]
+  }
+}

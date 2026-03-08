@@ -1,0 +1,232 @@
+{
+  "Faca M9": {
+    "nome": "Faca M9",
+    "peso": 1,
+    "dano_base": 25,
+    "crit_mult": 2,
+    "crit_valor": 20,
+    "tags": [
+      "uma_mao",
+      "cortante",
+      "leve",
+      "alcance_curto",
+      "sofisticada",
+      "arremessavel"
+    ],
+    "raridade": "Comum",
+    "descricao": "Faca militar usada pelo exército americano"
+  },
+  "Adaga": {
+    "nome": "Adaga",
+    "peso": 1,
+    "dano_base": 25,
+    "crit_mult": 2,
+    "crit_valor": 20,
+    "tags": [
+      "uma_mao",
+      "cortante",
+      "leve",
+      "alcance_curto",
+      "sofisticada",
+      "arremessavel"
+    ],
+    "raridade": "Incomum",
+    "descricao": "Adaga tradicional com estilo medieval"
+  },
+  "Espada Longa": {
+    "nome": "Espada Longa",
+    "peso": 4.5,
+    "dano_base": 25,
+    "crit_mult": 2,
+    "crit_valor": 25,
+    "tags": [
+      "uma_mao",
+      "cortante",
+      "alcance_medio",
+      "balanceada"
+    ],
+    "raridade": "Rara",
+    "descricao": "Espada tradicional com estilo medieval"
+  },
+  "Machado de Guerra": {
+    "nome": "Machado de lenhador",
+    "peso": 5.5,
+    "dano_base": 35,
+    "crit_mult": 2,
+    "crit_valor": 20,
+    "tags": [
+      "duas_maos",
+      "cortante",
+      "alcance_medio",
+      "pesada"
+    ],
+    "raridade": "Épica",
+    "descricao": "Machado feito para derrubar arvorés e cortar lenha"
+  },
+  "Marreta Demolidora": {
+    "nome": "Marreta Demolidora",
+    "peso": 10.0,
+    "dano_base": 50,
+    "crit_mult": 2,
+    "crit_valor": 30,
+    "raridade": "Comum",
+    "tags": [
+      "concussivo",
+      "pesada",
+      "duas_maos",
+      "alcance_medio"
+    ],
+    "Melhorias": [],
+    "descricao": "Marreta de obras, pesada, perfeita para derrubar paredes"
+  },
+  "Cassetete": {
+    "nome": "Cassetete",
+    "peso": 4.0,
+    "dano_base": 35,
+    "crit_mult": 2,
+    "crit_valor": 22,
+    "raridade": "Comum",
+    "tags": [
+      "concussivo",
+      "leve",
+      "uma_mao",
+      "alcance_curto"
+    ],
+    "Melhorias": [],
+    "descricao": "Bastão usado por seguranças e forças policias"
+  },
+  "Katana": {
+    "nome": "Katana",
+    "peso": 1.4,
+    "dano_base": 35,
+    "crit_mult": 3,
+    "crit_valor": 27,
+    "raridade": "Rara",
+    "tags": [
+      "cortante",
+      "balanceada",
+      "uma_mao",
+      "alcance_medio",
+      "sofisticada"
+    ],
+    "Melhorias": [],
+    "descricao": "Espada japonesa usada por milênios"
+  },
+  "Machadinha": {
+    "nome": "Machadinha",
+    "peso": 2.5,
+    "dano_base": 45,
+    "crit_mult": 2,
+    "crit_valor": 19,
+    "raridade": "Comum",
+    "tags": [
+      "cortante",
+      "leve",
+      "uma_mao",
+      "alcance_curto",
+      "arremessavel"
+    ],
+    "Melhorias": [],
+    "descricao": "Machado pequeno de uma mão, bom para arremessos"
+  },
+  "Kukri": {
+    "nome": "Kukri",
+    "peso": 2.5,
+    "dano_base": 40,
+    "crit_mult": 2,
+    "crit_valor": 19,
+    "raridade": "Incomum",
+    "tags": [
+      "cortante",
+      "leve",
+      "uma_mao",
+      "alcance_curto",
+      "sofisticada"
+    ],
+    "Melhorias": [],
+    "descricao": "Fação com uma laminâ que engorda na ponta, originado de tribos indigenas"
+  },
+  "Taco de Baseball": {
+    "nome": "Taco de Baseball",
+    "peso": 2.6,
+    "dano_base": 25,
+    "crit_mult": 2,
+    "crit_valor": 16,
+    "raridade": "Incomum",
+    "tags": [
+      "concussivo",
+      "balanceada",
+      "duas_maos",
+      "alcance_medio",
+      "sofisticada"
+    ],
+    "Melhorias": [],
+    "descricao": "Ótima escolha para auto defesa e fácil de usar"
+  },
+  "Crowbar": {
+    "nome": "Crowbar",
+    "peso": 3.0,
+    "dano_base": 25,
+    "crit_mult": 2,
+    "crit_valor": 16,
+    "raridade": "Comum",
+    "tags": [
+      "concussivo",
+      "leve",
+      "uma_mao",
+      "alcance_curto",
+      "sofisticada"
+    ],
+    "Melhorias": [],
+    "descricao": "Útil para arrombar portas"
+  },
+  "Tomahawk militar": {
+    "nome": "Tomahawk militar",
+    "peso": 3.0,
+    "dano_base": 45,
+    "crit_mult": 3,
+    "crit_valor": 20,
+    "raridade": "Rara",
+    "tags": [
+      "leve",
+      "uma_mao",
+      "alcance_curto",
+      "sofisticada",
+      "arremessavel"
+    ],
+    "Melhorias": [],
+    "descricao": "Versão moderna e militar de um tomahawk tradicional"
+  },
+  "Marreta militar": {
+    "nome": "Marreta militar",
+    "peso": 8.0,
+    "dano_base": 50,
+    "crit_mult": 2,
+    "crit_valor": 20,
+    "raridade": "Épica",
+    "tags": [
+      "concussivo",
+      "pesada",
+      "duas_maos",
+      "alcance_medio"
+    ],
+    "Melhorias": [],
+    "descricao": "Marreta usada por militares"
+  },
+  "Marreta GOL.em": {
+    "nome": "Marreta GOL.em",
+    "peso": 15.0,
+    "dano_base": 65,
+    "crit_mult": 1,
+    "crit_valor": 1,
+    "raridade": "Lendária",
+    "tags": [
+      "concussivo",
+      "pesada",
+      "duas_maos",
+      "alcance_longo"
+    ],
+    "Melhorias": [],
+    "descricao": "Marreta massiva usada por unidades GOL.em"
+  }
+}

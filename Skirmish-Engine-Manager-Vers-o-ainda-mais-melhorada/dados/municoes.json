@@ -1,0 +1,1054 @@
+{
+  "10mm Auto FMJ": {
+    "tipo": "Municao",
+    "nome": "10mm Auto FMJ",
+    "calibre": "10mm Auto",
+    "dano": 0,
+    "tipo_dano": "balístico",
+    "perfuracao": 6,
+    "efeitos": [],
+    "descricao": "Full Metal Jacket, performance balanceada"
+  },
+  "10mm Auto HP": {
+    "tipo": "Municao",
+    "nome": "10mm Auto HP",
+    "calibre": "10mm Auto",
+    "dano": 5,
+    "tipo_dano": "balístico",
+    "perfuracao": 5,
+    "efeitos": [],
+    "descricao": "Ponta oca, mais dano, menos perfuração"
+  },
+  "10mm Auto FMJ +P": {
+    "tipo": "Municao",
+    "nome": "10mm Auto FMJ +P",
+    "calibre": "10mm Auto",
+    "dano": 2,
+    "tipo_dano": "balístico",
+    "perfuracao": 6,
+    "efeitos": [],
+    "descricao": "Full Metal Jacket, performance balanceada"
+  },
+  "10mm Auto HP +P": {
+    "tipo": "Municao",
+    "nome": "10mm Auto HP +P",
+    "calibre": "10mm Auto",
+    "dano": 8,
+    "tipo_dano": "balístico",
+    "perfuracao": 5,
+    "efeitos": [],
+    "descricao": "Ponta oca, mais dano, menos perfuração"
+  },
+  "12ga #00 Buck": {
+    "tipo": "Municao",
+    "nome": "12ga #00 Buck",
+    "calibre": "12ga",
+    "dano": 0,
+    "tipo_dano": "balístico",
+    "perfuracao": 4,
+    "efeitos": [],
+    "descricao": "Balins #00, bastante dano, pouca perfuração"
+  },
+  "12ga #4 Buck": {
+    "tipo": "Municao",
+    "nome": "12ga #4 Buck",
+    "calibre": "12ga",
+    "dano": 0,
+    "tipo_dano": "balístico",
+    "perfuracao": 4,
+    "efeitos": [],
+    "descricao": "Balins #4, bastante dano, pouca perfuração"
+  },
+  "12ga Dragons Breath": {
+    "tipo": "Municao",
+    "nome": "12ga Dragons Breath",
+    "calibre": "12ga",
+    "dano": -35,
+    "tipo_dano": "incendiário",
+    "perfuracao": 1,
+    "efeitos": [
+      {
+        "nome": "Em chamas",
+        "duracao": 3,
+        "chance": 95
+      }
+    ],
+    "descricao": "Bafo de dragão, banha o alvo em magnésio ou zirconio flamejante"
+  },
+  "12ga Sabot Slug": {
+    "tipo": "Municao",
+    "nome": "12ga Sabot Slug",
+    "calibre": "12ga",
+    "dano": -15,
+    "tipo_dano": "balístico",
+    "perfuracao": 7,
+    "efeitos": [],
+    "descricao": "Balote perfurante, menos dano, ótima perfuração"
+  },
+  "12ga Slug": {
+    "tipo": "Municao",
+    "nome": "12ga Slug",
+    "calibre": "12ga",
+    "dano": -5,
+    "tipo_dano": "balístico",
+    "perfuracao": 5,
+    "efeitos": [],
+    "descricao": "Balote , performance balanceada"
+  },
+  ".223Remington FMJ": {
+    "tipo": "Municao",
+    "nome": ".223Remington FMJ",
+    "calibre": ".223 Remington",
+    "dano": 0,
+    "tipo_dano": "balístico",
+    "perfuracao": 9,
+    "efeitos": [],
+    "descricao": "Full Metal Jacket, performance balanceada"
+  },
+  ".223Remington HP": {
+    "tipo": "Municao",
+    "nome": ".223Remington HP",
+    "calibre": ".223 Remington",
+    "dano": 3,
+    "tipo_dano": "balístico",
+    "perfuracao": 7,
+    "efeitos": [],
+    "descricao": "Ponta oca, mais dano, menos perfuração"
+  },
+  ".223Remington SP": {
+    "tipo": "Municao",
+    "nome": ".223Remington SP",
+    "calibre": ".223 Remington",
+    "dano": 3,
+    "tipo_dano": "balístico",
+    "perfuracao": 7,
+    "efeitos": [],
+    "descricao": "Ponta macia, mais dano, menos perfuração"
+  },
+  "23x75mmr Barrikada": {
+    "tipo": "Municao",
+    "nome": "23x75mmr Barrikada",
+    "calibre": "23x75mmr",
+    "dano": -20,
+    "tipo_dano": "balístico",
+    "perfuracao": 12,
+    "efeitos": [],
+    "descricao": "Balote perfurante, menos dano, ótima perfuração"
+  },
+  "23x75mmr Cheremukha-7": {
+    "nome": "23x75mmr Cheremukha-7",
+    "calibre": "23x75mmr",
+    "dano": -50,
+    "tipo_dano": "balístico",
+    "perfuracao": 1,
+    "efeitos": [
+      {
+        "nome": "Atordoado",
+        "duracao": 1,
+        "chance": 100
+      }
+    ],
+    "descricao": "dispara um projétil que dispersa uma núvem de gás atordoante no impacto, pouco dano e perfuração"
+  },
+  "23x75mmr Shrapnel-10": {
+    "tipo": "Municao",
+    "nome": "23x75mmr Shrapnel-10",
+    "calibre": "23x75mmr",
+    "dano": 0,
+    "tipo_dano": "balístico",
+    "perfuracao": 5,
+    "efeitos": [],
+    "descricao": "Cartucho que dispara 10 balins grossos, bastante dano, pouca perfuração"
+  },
+  "23x75mmr Shrapnel-25": {
+    "tipo": "Municao",
+    "nome": "23x75mmr Shrapnel-25",
+    "calibre": "23x75mmr",
+    "dano": 0,
+    "tipo_dano": "balístico",
+    "perfuracao": 5,
+    "efeitos": [],
+    "descricao": "Cartucho que dispara 25 balins pequenos, bastante dano, pouca perfuração"
+  },
+  "23x75mmr Siren-7": {
+    "nome": "23x75mmr Siren-7",
+    "calibre": "23x75mmr",
+    "dano": -50,
+    "tipo_dano": "balístico",
+    "perfuracao": 1,
+    "efeitos": [
+      {
+        "nome": "desorientação",
+        "duracao": 1,
+        "chance": 100
+      }
+    ],
+    "descricao": "Dispara um projétil que dispersa uma núvem de gás anti-motim no impacto, pouco dano e perfuração"
+  },
+  "23x75mmr Volna-R": {
+    "nome": "23x75mmr Volna-R",
+    "calibre": "23x75mmr",
+    "dano": 0,
+    "tipo_dano": "concussivo",
+    "perfuracao": 3,
+    "efeitos": [
+      {
+        "nome": "concussão",
+        "duracao": 3,
+        "chance": 100
+      }
+    ],
+    "descricao": "Balote de festim menos letal anti-motim, pouco dano e perfuração, altamente concussivo"
+  },
+  "23x75mmr Zvezda": {
+    "nome": "23x75mmr Zvezda",
+    "calibre": "23x75mmr",
+    "dano": -50,
+    "tipo_dano": "balístico",
+    "perfuracao": 1,
+    "efeitos": [
+      {
+        "nome": "desorientação",
+        "duracao": 3,
+        "chance": 100
+      }
+    ],
+    "descricao": "Dispara um flash de luz e sonoro direcionado que atordoa os alvos"
+  },
+  ".30-06 FMJ": {
+    "tipo": "Municao",
+    "nome": ".30-06 FMJ",
+    "calibre": ".30-06",
+    "dano": 0,
+    "tipo_dano": "balístico",
+    "perfuracao": 13,
+    "efeitos": [],
+    "descricao": "Full Metal Jacket, performance balanceada"
+  },
+  ".30-06 SP": {
+    "tipo": "Municao",
+    "nome": ".30-06 SP",
+    "calibre": ".30-06",
+    "dano": 3,
+    "tipo_dano": "balístico",
+    "perfuracao": 11,
+    "efeitos": [],
+    "descricao": "Ponta macia, mais dano, menos perfuração"
+  },
+  ".30-06 HP": {
+    "tipo": "Municao",
+    "nome": ".30-06 HP",
+    "calibre": ".30-06",
+    "dano": 5,
+    "tipo_dano": "balístico",
+    "perfuracao": 11,
+    "efeitos": [],
+    "descricao": "Ponta oca, mais dano, menos perfuração"
+  },
+  ".300 FMJ": {
+    "tipo": "Municao",
+    "nome": ".300 FMJ",
+    "calibre": ".300 Winchester Magnum",
+    "dano": 0,
+    "tipo_dano": "balístico",
+    "perfuracao": 15,
+    "efeitos": [],
+    "descricao": "Full Metal Jacket, performance balanceada"
+  },
+  ".300 SP": {
+    "tipo": "Municao",
+    "nome": ".300 SP",
+    "calibre": ".300 Winchester Magnum",
+    "dano": 3,
+    "tipo_dano": "balístico",
+    "perfuracao": 13,
+    "efeitos": [],
+    "descricao": "Full Metal Jacket, performance balanceada"
+  },
+  ".308Remington FMJ": {
+    "tipo": "Municao",
+    "nome": ".308Remington FMJ",
+    "calibre": ".308 Remington",
+    "dano": 0,
+    "tipo_dano": "balístico",
+    "perfuracao": 13,
+    "efeitos": [],
+    "descricao": "Full Metal Jacket, performance balanceada"
+  },
+  ".308Remington SP": {
+    "tipo": "Municao",
+    "nome": ".308Remington SP",
+    "calibre": ".308 Remington",
+    "dano": 5,
+    "tipo_dano": "balístico",
+    "perfuracao": 11,
+    "efeitos": [],
+    "descricao": "Ponta macia, mais dano, menos perfuração"
+  },
+  ".308Remington HP": {
+    "tipo": "Municao",
+    "nome": ".308Remington HP",
+    "calibre": ".308 Remington",
+    "dano": 3,
+    "tipo_dano": "balístico",
+    "perfuracao": 11,
+    "efeitos": [],
+    "descricao": "Ponta macia, mais dano, menos perfuração"
+  },
+  ".30 Carbine FMJ": {
+    "tipo": "Municao",
+    "nome": ".30 Carbine FMJ",
+    "calibre": ".30 Carbine",
+    "dano": 0,
+    "tipo_dano": "balístico",
+    "perfuracao": 7,
+    "efeitos": [],
+    "descricao": "Full Metal Jacket, performance balanceada"
+  },
+  ".30 Carbine HP": {
+    "tipo": "Municao",
+    "nome": ".30 Carbine HP",
+    "calibre": ".30 Carbine",
+    "dano": 5,
+    "tipo_dano": "balístico",
+    "perfuracao": 5,
+    "efeitos": [],
+    "descricao": "Ponta oca, mais dano, menos perfuração"
+  },
+  ".338 FMJ": {
+    "tipo": "Municao",
+    "nome": ".338 FMJ",
+    "calibre": ".338 Lapua Magnum",
+    "dano": 0,
+    "tipo_dano": "balístico",
+    "perfuracao": 15,
+    "efeitos": [],
+    "descricao": "Full Metal Jacket, performance balanceada"
+  },
+  ".338 SP": {
+    "tipo": "Municao",
+    "nome": ".338 FMJ",
+    "calibre": ".338 Lapua Magnum",
+    "dano": 5,
+    "tipo_dano": "balístico",
+    "perfuracao": 13,
+    "efeitos": [],
+    "descricao": "Full Metal Jacket, performance balanceada"
+  },
+  ".357Mag FMJ": {
+    "tipo": "Municao",
+    "nome": ".357Mag FMJ",
+    "calibre": ".357Mag",
+    "dano": 0,
+    "tipo_dano": "balístico",
+    "perfuracao": 6,
+    "efeitos": [],
+    "descricao": "Full Metal Jacket, performance balanceada"
+  },
+  ".357Mag HP": {
+    "tipo": "Municao",
+    "nome": ".357Mag HP",
+    "calibre": ".357Mag",
+    "dano": 5,
+    "tipo_dano": "balístico",
+    "perfuracao": 5,
+    "efeitos": [],
+    "descricao": "Ponta oca, mais dano, menos perfuração"
+  },
+  ".357Mag FMJ +P": {
+    "tipo": "Municao",
+    "nome": ".357Mag FMJ +P",
+    "calibre": ".357Mag",
+    "dano": 3,
+    "tipo_dano": "balístico",
+    "perfuracao": 6,
+    "efeitos": [],
+    "descricao": "Full Metal Jacket, performance balanceada"
+  },
+  ".357Mag HP +P": {
+    "tipo": "Municao",
+    "nome": ".357Mag HP +P",
+    "calibre": ".357Mag",
+    "dano": 9,
+    "tipo_dano": "balístico",
+    "perfuracao": 5,
+    "efeitos": [],
+    "descricao": "Ponta oca, mais dano, menos perfuração"
+  },
+  ".375Cheytac FMJ": {
+    "tipo": "Municao",
+    "nome": ".375Cheytac FMJ",
+    "calibre": ".408Cheytac",
+    "dano": -8,
+    "tipo_dano": "balístico",
+    "perfuracao": 16,
+    "efeitos": [],
+    "descricao": "Full Metal Jacket, performance balanceada"
+  },
+  ".380ACP FMJ": {
+    "tipo": "Municao",
+    "nome": ".380ACP FMJ",
+    "calibre": ".380 ACP",
+    "dano": -5,
+    "tipo_dano": "balístico",
+    "perfuracao": 4,
+    "efeitos": [],
+    "descricao": "Full Metal Jacket, performance balanceada"
+  },
+  ".380ACP HP": {
+    "tipo": "Municao",
+    "nome": ".380ACP HP",
+    "calibre": ".380 ACP",
+    "dano": 0,
+    "tipo_dano": "balístico",
+    "perfuracao": 3,
+    "efeitos": [],
+    "descricao": "Ponta oca, mais dano, menos perfuração"
+  },
+  ".380ACP FMJ +P": {
+    "tipo": "Municao",
+    "nome": ".380ACP FMJ +P",
+    "calibre": ".380 ACP",
+    "dano": -3,
+    "tipo_dano": "balístico",
+    "perfuracao": 4,
+    "efeitos": [],
+    "descricao": "Full Metal Jacket, performance balanceada"
+  },
+  ".380ACP HP +P": {
+    "tipo": "Municao",
+    "nome": ".380ACP HP +P",
+    "calibre": ".380 ACP",
+    "dano": 2,
+    "tipo_dano": "balístico",
+    "perfuracao": 3,
+    "efeitos": [],
+    "descricao": "Ponta oca, mais dano, menos perfuração"
+  },
+  ".408Cheytac FMJ": {
+    "tipo": "Municao",
+    "nome": ".408Cheytac FMJ",
+    "calibre": ".408Cheytac",
+    "dano": 0,
+    "tipo_dano": "balístico",
+    "perfuracao": 17,
+    "efeitos": [],
+    "descricao": "Full Metal Jacket, performance balanceada"
+  },
+  ".40 S&W FMJ": {
+    "tipo": "Municao",
+    "nome": ".40 S&W FMJ",
+    "calibre": ".40S&W",
+    "dano": -5,
+    "tipo_dano": "balístico",
+    "perfuracao": 5,
+    "efeitos": [],
+    "descricao": "Full Metal Jacket, performance balanceada"
+  },
+  ".40 S&W HP": {
+    "tipo": "Municao",
+    "nome": ".40 S&W HP",
+    "calibre": ".40S&W",
+    "dano": 0,
+    "tipo_dano": "balístico",
+    "perfuracao": 3,
+    "efeitos": [],
+    "descricao": "Ponta oca, mais dano, menos perfuração"
+  },
+  ".40 S&W +P FMJ": {
+    "tipo": "Municao",
+    "nome": ".40 S&W +P FMJ",
+    "calibre": ".40S&W",
+    "dano": -2,
+    "tipo_dano": "balístico",
+    "perfuracao": 5,
+    "efeitos": [],
+    "descricao": "Full Metal Jacket Sobrepressurizado, performance balanceada melhorada"
+  },
+  ".40 S&W +P HP": {
+    "tipo": "Municao",
+    "nome": ".40 S&W +P HP",
+    "calibre": ".40S&W",
+    "dano": 0,
+    "tipo_dano": "balístico",
+    "perfuracao": 4,
+    "efeitos": [],
+    "descricao": "Ponta oca Sobrepressurizado, bem mais dano, menos perfuração"
+  },
+  ".410Bore #00 Buck": {
+    "tipo": "Municao",
+    "nome": ".410Bore #00 Buck",
+    "calibre": ".410Bore",
+    "dano": 0,
+    "tipo_dano": "balístico",
+    "perfuracao": 3,
+    "efeitos": [],
+    "descricao": "Balins #00, bastante dano, pouca perfuração"
+  },
+  ".410Bore #00 Slug": {
+    "tipo": "Municao",
+    "nome": ".410Bore #00 Slug",
+    "calibre": ".410Bore",
+    "dano": -10,
+    "tipo_dano": "balístico",
+    "perfuracao": 5,
+    "efeitos": [],
+    "descricao": "Balote #00, performance balanceada"
+  },
+  ".410Bore #9 Buck": {
+    "tipo": "Municao",
+    "nome": ".410Bore #9 Buck",
+    "calibre": ".410Bore",
+    "dano": 0,
+    "tipo_dano": "balístico",
+    "perfuracao": 3,
+    "efeitos": [],
+    "descricao": "Balins #9, bastante dano, pouca perfuração"
+  },
+  ".44Mag FMJ": {
+    "tipo": "Municao",
+    "nome": ".44Mag FMJ",
+    "calibre": ".44Mag",
+    "dano": 0,
+    "tipo_dano": "balístico",
+    "perfuracao": 7,
+    "efeitos": [],
+    "descricao": "Full Metal Jacket, performance balanceada"
+  },
+  ".44Mag HP": {
+    "tipo": "Municao",
+    "nome": ".44Mag HP",
+    "calibre": ".44Mag",
+    "dano": 5,
+    "tipo_dano": "balístico",
+    "perfuracao": 6,
+    "efeitos": [],
+    "descricao": "Ponta oca, mais dano, menos perfuração"
+  },
+  ".454Casull FMJ": {
+    "tipo": "Municao",
+    "nome": ".454Casull FMJ",
+    "calibre": ".454Casull",
+    "dano": 0,
+    "tipo_dano": "balístico",
+    "perfuracao": 7,
+    "efeitos": [],
+    "descricao": "Full Metal Jacket, performance balanceada"
+  },
+  ".454Casull HP": {
+    "tipo": "Municao",
+    "nome": ".454Casull HP",
+    "calibre": ".454Casull",
+    "dano": 7,
+    "tipo_dano": "balístico",
+    "perfuracao": 6,
+    "efeitos": [],
+    "descricao": "Ponta oca, mais dano, menos perfuração"
+  },
+  ".45-70Gov FMJ": {
+    "tipo": "Municao",
+    "nome": ".45-70Gov FMJ",
+    "calibre": ".45-70Gov",
+    "dano": 0,
+    "tipo_dano": "balístico",
+    "perfuracao": 7,
+    "efeitos": [],
+    "descricao": "Full Metal Jacket, performance balanceada"
+  },
+  ".45-70Gov HP": {
+    "tipo": "Municao",
+    "nome": ".45-70Gov HP",
+    "calibre": ".45-70Gov",
+    "dano": 5,
+    "tipo_dano": "balístico",
+    "perfuracao": 6,
+    "efeitos": [],
+    "descricao": "Ponta oca, mais dano, menos perfuração"
+  },
+  ".45-70Gov FMJ +P": {
+    "tipo": "Municao",
+    "nome": ".45-70Gov FMJ +P",
+    "calibre": ".45-70Gov",
+    "dano": 3,
+    "tipo_dano": "balístico",
+    "perfuracao": 7,
+    "efeitos": [],
+    "descricao": "Full Metal Jacket, performance balanceada"
+  },
+  ".45-70Gov HP +P": {
+    "tipo": "Municao",
+    "nome": ".45-70Gov HP +P",
+    "calibre": ".45-70Gov",
+    "dano": 9,
+    "tipo_dano": "balístico",
+    "perfuracao": 6,
+    "efeitos": [],
+    "descricao": "Ponta oca, mais dano, menos perfuração"
+  },
+  ".45ACP FMJ": {
+    "tipo": "Municao",
+    "nome": ".45ACP FMJ",
+    "calibre": ".45ACP",
+    "dano": 0,
+    "tipo_dano": "balístico",
+    "perfuracao": 5,
+    "efeitos": [],
+    "descricao": "Full Metal Jacket, performance balanceada"
+  },
+  ".45ACP HP": {
+    "tipo": "Municao",
+    "nome": ".45ACP HP",
+    "calibre": ".45ACP",
+    "dano": 5,
+    "tipo_dano": "balístico",
+    "perfuracao": 3,
+    "efeitos": [],
+    "descricao": "Ponta oca, mais dano, menos perfuração"
+  },
+  ".45ACP +P FMJ": {
+    "tipo": "Municao",
+    "nome": ".45ACP +P FMJ",
+    "calibre": ".45ACP",
+    "dano": -1,
+    "tipo_dano": "balístico",
+    "perfuracao": 5,
+    "efeitos": [],
+    "descricao": "Full Metal Jacket Sobrepressurizado, performance balanceada melhorada"
+  },
+  ".45ACP +P HP": {
+    "tipo": "Municao",
+    "nome": ".45ACP +P HP",
+    "calibre": ".45ACP",
+    "dano": 5,
+    "tipo_dano": "balístico",
+    "perfuracao": 4,
+    "efeitos": [],
+    "descricao": "Ponta oca Sobrepressurizado, bem mais dano, menos perfuração"
+  },
+  ".45ACP Super": {
+    "tipo": "Municao",
+    "nome": ".45ACP Super",
+    "calibre": ".45ACP",
+    "dano": 0,
+    "tipo_dano": "balístico",
+    "perfuracao": 6,
+    "efeitos": [],
+    "descricao": "Full Metal Jacket Sobrepressurizado, performance balanceada melhorada"
+  },
+  "4.6x30mm AP": {
+    "tipo": "Municao",
+    "nome": "4.6x30mm AP",
+    "calibre": "4.6x30mm",
+    "dano": -5,
+    "tipo_dano": "balístico",
+    "perfuracao": 8,
+    "efeitos": [],
+    "descricao": "Perfurante, mais perfuração, menos dano"
+  },
+  "4.6x30mm FMJ": {
+    "tipo": "Municao",
+    "nome": "4.6x30mm FMJ",
+    "calibre": "4.6x30mm",
+    "dano": -2,
+    "tipo_dano": "balístico",
+    "perfuracao": 6,
+    "efeitos": [],
+    "descricao": "Full Metal Jacket, performance balanceada"
+  },
+  "4.6x30mm HP": {
+    "tipo": "Municao",
+    "nome": "4.6x30mm HP",
+    "calibre": "4.6x30mm",
+    "dano": 0,
+    "tipo_dano": "balístico",
+    "perfuracao": 5,
+    "efeitos": [],
+    "descricao": "Full Metal Jacket, performance balanceada"
+  },
+  ".500Mag FMJ": {
+    "nome": ".500Mag FMJ",
+    "calibre": ".500 Magnum",
+    "dano": 0,
+    "tipo_dano": "balístico",
+    "perfuracao": 8,
+    "efeitos": [],
+    "descricao": "Full Metal Jacket, performance balanceada"
+  },
+  ".500Mag HP": {
+    "nome": ".500Mag HP",
+    "calibre": ".500 Magnum",
+    "dano": 10,
+    "tipo_dano": "balístico",
+    "perfuracao": 6,
+    "efeitos": [],
+    "descricao": "Ponta oca, mais dano, menos perfuração"
+  },
+  ".50AE FMJ": {
+    "tipo": "Municao",
+    "nome": ".50AE FMJ",
+    "calibre": ".50AE",
+    "dano": 0,
+    "tipo_dano": "balístico",
+    "perfuracao": 7,
+    "efeitos": [],
+    "descricao": "Full Metal Jacket, performance balanceada"
+  },
+  ".50AE HP": {
+    "tipo": "Municao",
+    "nome": ".50AE HP",
+    "calibre": ".50AE",
+    "dano": 7,
+    "tipo_dano": "balístico",
+    "perfuracao": 5,
+    "efeitos": [],
+    "descricao": "Full Metal Jacket, performance balanceada"
+  },
+  ".50BMG AP": {
+    "tipo": "Municao",
+    "nome": ".50BMG AP",
+    "calibre": ".50BMG",
+    "dano": 0,
+    "tipo_dano": "balístico",
+    "perfuracao": 18,
+    "efeitos": [],
+    "descricao": "Perfurante, mais perfuração, menos dano"
+  },
+  ".50BMG FMJ": {
+    "tipo": "Municao",
+    "nome": ".50BMG FMJ",
+    "calibre": ".50BMG",
+    "dano": 0,
+    "tipo_dano": "balístico",
+    "perfuracao": 17,
+    "efeitos": [],
+    "descricao": "Full Metal Jacket, performance balanceada"
+  },
+  ".50 Beowulf FMJ": {
+    "tipo": "Municao",
+    "nome": ".50AE Beowulf FMJ",
+    "calibre": ".50 Beowulf",
+    "dano": 3,
+    "tipo_dano": "balístico",
+    "perfuracao": 8,
+    "efeitos": [],
+    "descricao": "Full Metal Jacket, performance balanceada"
+  },
+  ".50 Beowulf HP": {
+    "tipo": "Municao",
+    "nome": ".50AE Beowulf FMJ",
+    "calibre": ".50 Beowulf",
+    "dano": 7,
+    "tipo_dano": "balístico",
+    "perfuracao": 6,
+    "efeitos": [],
+    "descricao": "Full Metal Jacket, performance balanceada"
+  },
+  "5.45x39mm FMJ": {
+    "tipo": "Municao",
+    "nome": "5.45x39mm FMJ",
+    "calibre": "5.45x39mm",
+    "dano": 0,
+    "tipo_dano": "balístico",
+    "perfuracao": 10,
+    "efeitos": [],
+    "descricao": "Full Metal Jacket, performance balanceada"
+  },
+  "5.45x39mm SP": {
+    "tipo": "Municao",
+    "nome": "5.45x39mm SP",
+    "calibre": "5.45x39mm",
+    "dano": 3,
+    "tipo_dano": "balístico",
+    "perfuracao": 9,
+    "efeitos": [],
+    "descricao": "Ponta macia, mais dano, menos perfuração"
+  },
+  "5.45x39mm SubS": {
+    "tipo": "Municao",
+    "nome": "5.45x39mm SubS",
+    "calibre": "5.45x39mm",
+    "dano": -3,
+    "tipo_dano": "balístico",
+    "perfuracao": 9,
+    "efeitos": [],
+    "descricao": "Subsônica, menos performance por menos ruído"
+  },
+  "5.56x45mm FMJ": {
+    "tipo": "Municao",
+    "nome": "5.56x45mm FMJ",
+    "calibre": "5.56x45mm",
+    "dano": 0,
+    "tipo_dano": "balístico",
+    "perfuracao": 10,
+    "efeitos": [],
+    "descricao": "Full Metal Jacket, performance balanceada"
+  },
+  "5.56x45mm HP": {
+    "tipo": "Municao",
+    "nome": "5.56x45mm HP",
+    "calibre": "5.56x45mm",
+    "dano": 3,
+    "tipo_dano": "balístico",
+    "perfuracao": 8,
+    "efeitos": [],
+    "descricao": "Ponta oca, mais dano, menos perfuração"
+  },
+  "5.56x45mm SP": {
+    "tipo": "Municao",
+    "nome": "5.56x45mm SP",
+    "calibre": "5.56x45mm",
+    "dano": 2,
+    "tipo_dano": "balístico",
+    "perfuracao": 8,
+    "efeitos": [],
+    "descricao": "Ponta oca, mais dano, menos perfuração"
+  },
+  "5.7x28mm AP": {
+    "tipo": "Municao",
+    "nome": "5.7x28mm AP",
+    "calibre": "5.7x28mm",
+    "dano": -5,
+    "tipo_dano": "balístico",
+    "perfuracao": 8,
+    "efeitos": [],
+    "descricao": "Perfurante, mais perfuração, menos dano"
+  },
+  "5.7x28mm FMJ": {
+    "tipo": "Municao",
+    "nome": "5.7x28mm FMJ",
+    "calibre": "5.7x28mm",
+    "dano": 0,
+    "tipo_dano": "balístico",
+    "perfuracao": 6,
+    "efeitos": [],
+    "descricao": "Full Metal Jacket, performance balanceada"
+  },
+  "5.7x28mm HP": {
+    "tipo": "Municao",
+    "nome": "5.7x28mm FMJ",
+    "calibre": "5.7x28mm",
+    "dano": 3,
+    "tipo_dano": "balístico",
+    "perfuracao": 5,
+    "efeitos": [],
+    "descricao": "Full Metal Jacket, performance balanceada"
+  },
+  "7.62x39mm FMJ": {
+    "tipo": "Municao",
+    "nome": "7.62x39mm FMJ",
+    "calibre": "7.62x39mm",
+    "dano": 0,
+    "tipo_dano": "balístico",
+    "perfuracao": 11,
+    "efeitos": [],
+    "descricao": "Full Metal Jacket, performance balanceada"
+  },
+  "7.62x39mm HP": {
+    "tipo": "Municao",
+    "nome": "7.62x39mm HP",
+    "calibre": "7.62x39mm",
+    "dano": 5,
+    "tipo_dano": "balístico",
+    "perfuracao": 9,
+    "efeitos": [],
+    "descricao": "Ponta oca, mais dano, menos perfuração"
+  },
+  "7.62x39mm SP": {
+    "tipo": "Municao",
+    "nome": "7.62x39mm SP",
+    "calibre": "7.62x39mm",
+    "dano": 3,
+    "tipo_dano": "balístico",
+    "perfuracao": 9,
+    "efeitos": [],
+    "descricao": "Ponta macia, mais dano, menos perfuração"
+  },
+  "7.62x51mm FMJ": {
+    "tipo": "Municao",
+    "nome": "7.62x51mm FMJ",
+    "calibre": "7.62x51mm",
+    "dano": 0,
+    "tipo_dano": "balístico",
+    "perfuracao": 14,
+    "efeitos": [],
+    "descricao": "Full Metal Jacket, performance balanceada"
+  },
+  "7.62x51mm SP": {
+    "tipo": "Municao",
+    "nome": "7.62x51mm SP",
+    "calibre": "7.62x51mm",
+    "dano": 4,
+    "tipo_dano": "balístico",
+    "perfuracao": 13,
+    "efeitos": [],
+    "descricao": "Ponta macia, mais dano, menos perfuração"
+  },
+  "7.62x54mmr FMJ": {
+    "tipo": "Municao",
+    "nome": "7.62x54mmr FMJ",
+    "calibre": "7.62x54mmr",
+    "dano": 0,
+    "tipo_dano": "balístico",
+    "perfuracao": 15,
+    "efeitos": [],
+    "descricao": "Full Metal Jacket, performance balanceada"
+  },
+  "7.62x54mmr SP": {
+    "tipo": "Municao",
+    "nome": "7.62x54mmr SP",
+    "calibre": "7.62x54mmr",
+    "dano": 5,
+    "tipo_dano": "balístico",
+    "perfuracao": 13,
+    "efeitos": [],
+    "descricao": "Ponta macia, mais dano, menos perfuração"
+  },
+  "7.62x54mmr HP": {
+    "tipo": "Municao",
+    "nome": "7.62x54mmr HP",
+    "calibre": "7.62x54mmr",
+    "dano": 3,
+    "tipo_dano": "balístico",
+    "perfuracao": 13,
+    "efeitos": [],
+    "descricao": "Ponta macia, mais dano, menos perfuração"
+  },
+  "7.92Mauser FMJ": {
+    "tipo": "Municao",
+    "nome": "7.92Mauser FMJ",
+    "calibre": "7.92x57mm",
+    "dano": 0,
+    "tipo_dano": "balístico",
+    "perfuracao": 9,
+    "efeitos": [],
+    "descricao": "Full Metal Jacket, performance balanceada"
+  },
+  "7.92Mauser HP": {
+    "tipo": "Municao",
+    "nome": "7.92Mauser HP",
+    "calibre": "7.92x57mm",
+    "dano": 5,
+    "tipo_dano": "balístico",
+    "perfuracao": 7,
+    "efeitos": [],
+    "descricao": "Full Metal Jacket, performance balanceada"
+  },
+  "9x18mm FMJ": {
+    "tipo": "Municao",
+    "nome": "9x18mm FMJ",
+    "calibre": "9x18mm",
+    "dano": -4,
+    "tipo_dano": "balístico",
+    "perfuracao": 4,
+    "efeitos": [],
+    "descricao": "Full Metal Jacket, performance balanceada"
+  },
+  "9x18mm HP": {
+    "tipo": "Municao",
+    "nome": "9x18mm HP",
+    "calibre": "9x18mm",
+    "dano": 0,
+    "tipo_dano": "balístico",
+    "perfuracao": 3,
+    "efeitos": [],
+    "descricao": "Ponta oca, mais dano, menos perfuração"
+  },
+  "9x18mm FMJ +P": {
+    "tipo": "Municao",
+    "nome": "9x18mm FMJ +P",
+    "calibre": "9x18mm",
+    "dano": -1,
+    "tipo_dano": "balístico",
+    "perfuracao": 4,
+    "efeitos": [],
+    "descricao": "Full Metal Jacket, performance balanceada"
+  },
+  "9x18mm HP +P": {
+    "tipo": "Municao",
+    "nome": "9x18mm HP +P",
+    "calibre": "9x18mm",
+    "dano": 2,
+    "tipo_dano": "balístico",
+    "perfuracao": 3,
+    "efeitos": [],
+    "descricao": "Ponta oca, mais dano, menos perfuração"
+  },
+  "9x19mm FMJ": {
+    "tipo": "Municao",
+    "nome": "9x19mm FMJ",
+    "calibre": "9x19mm",
+    "dano": 0,
+    "tipo_dano": "balístico",
+    "perfuracao": 5,
+    "efeitos": [],
+    "descricao": "Full Metal Jacket, performance balanceada"
+  },
+  "9x19mm HP": {
+    "tipo": "Municao",
+    "nome": "9x19mm HP",
+    "calibre": "9x19mm",
+    "dano": 5,
+    "tipo_dano": "balístico",
+    "perfuracao": 3,
+    "efeitos": [],
+    "descricao": "Ponta oca, mais dano, menos perfuração"
+  },
+  "9x19mm +P FMJ": {
+    "tipo": "Municao",
+    "nome": "9x19mm +P FMJ",
+    "calibre": "9x19mm",
+    "dano": 0,
+    "tipo_dano": "balístico",
+    "perfuracao": 5,
+    "efeitos": [],
+    "descricao": "Full Metal Jacket Sobrepressurizado, performance balanceada melhorada"
+  },
+  "9x19mm +P HP": {
+    "tipo": "Municao",
+    "nome": "9x19mm +P HP",
+    "calibre": "9x19mm",
+    "dano": 5,
+    "tipo_dano": "balístico",
+    "perfuracao": 4,
+    "efeitos": [],
+    "descricao": "Ponta oca Sobrepressurizado, bem mais dano, menos perfuração"
+  },
+  "9x39mm HV": {
+    "tipo": "Municao",
+    "nome": "9x39mm HV",
+    "calibre": "9x39mm",
+    "dano": 0,
+    "tipo_dano": "balístico",
+    "perfuracao": 9,
+    "efeitos": [],
+    "descricao": "Supersônica, performance balanceada"
+  },
+  "9x39mm SubS": {
+    "tipo": "Municao",
+    "nome": "9x39mm Sub",
+    "calibre": "9x39mm",
+    "dano": 0,
+    "tipo_dano": "balístico",
+    "perfuracao": 7,
+    "efeitos": [],
+    "descricao": "Subsônica, menos performance por menos ruído"
+  },
+  ".300 Blackout HV": {
+    "nome": ".300 Blackout HV",
+    "calibre": ".300 Blackout",
+    "dano": 0,
+    "tipo_dano": "balístico",
+    "perfuracao": 9,
+    "efeitos": [],
+    "descricao": "Supersônica, performance balanceada"
+  },
+  ".300 Blackout SubS": {
+    "nome": ".300 Blackout SubS",
+    "calibre": ".300 Blackout",
+    "dano": 5,
+    "tipo_dano": "balístico",
+    "perfuracao": 7,
+    "efeitos": [],
+    "descricao": "Subsônica, menos performance por menos ruído"
+  }
+}

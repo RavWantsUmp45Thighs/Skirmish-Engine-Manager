@@ -1,0 +1,3033 @@
+{
+  "Glock 17": {
+    "nome": "Glock 17",
+    "peso": 0.6,
+    "classe": "Pistola",
+    "raridade": "Comum",
+    "calibre": "9x19mm",
+    "tipo_dano": "balístico",
+    "capacidade": 17,
+    "TPM": 400,
+    "ruido": 100,
+    "acoes_disparo": [
+      "Semi"
+    ],
+    "modo_disparo_atual": "Semi",
+    "munições": 0,
+    "municao": null,
+    "Acessorios": [],
+    "maos": 1,
+    "descricao": "Plaforma comum e universal em vários calibres e variantes"
+  },
+  "Glock 18": {
+    "nome": "Glock 18",
+    "peso": 0.6,
+    "classe": "Pistola",
+    "raridade": "Comum",
+    "calibre": "9x19mm",
+    "tipo_dano": "balístico",
+    "capacidade": 17,
+    "TPM": 1000,
+    "ruido": 100,
+    "acoes_disparo": [
+      "Semi",
+      "Auto"
+    ],
+    "modo_disparo_atual": "Auto",
+    "munições": 0,
+    "municao": null,
+    "Acessorios": [],
+    "maos": 1,
+    "descricao": "Variante da Glock-17, encaixando na categoria de pistola-metralhadora com um modo de fogo automático e uma cadência alta de disparo"
+  },
+  "Glock 19": {
+    "nome": "Glock 19",
+    "peso": 0.5,
+    "classe": "Pistola",
+    "raridade": "Incomum",
+    "calibre": "9x19mm",
+    "tipo_dano": "balístico",
+    "capacidade": 17,
+    "TPM": 400,
+    "ruido": 100,
+    "acoes_disparo": [
+      "Semi"
+    ],
+    "modo_disparo_atual": "Semi",
+    "munições": 0,
+    "municao": null,
+    "Acessorios": [],
+    "maos": 1,
+    "descricao": "Variante mais moderna e mais leve da Glock-17"
+  },
+  "Glock 20": {
+    "nome": "Glock 20",
+    "peso": 0.8,
+    "classe": "Pistola",
+    "raridade": "Incomum",
+    "calibre": "10mm Auto",
+    "tipo_dano": "balístico",
+    "capacidade": 15,
+    "TPM": 300,
+    "ruido": 120,
+    "acoes_disparo": [
+      "Semi"
+    ],
+    "modo_disparo_atual": "Semi",
+    "munições": 0,
+    "municao": null,
+    "Acessorios": [],
+    "maos": 1,
+    "descricao": "Variante da Glock 17, no calibre 10mm Auto"
+  },
+  "Glock 21": {
+    "nome": "Glock 21",
+    "peso": 0.9,
+    "classe": "Pistola",
+    "raridade": "Incomum",
+    "calibre": ".45Acp",
+    "tipo_dano": "balístico",
+    "capacidade": 13,
+    "TPM": 400,
+    "ruido": 80,
+    "acoes_disparo": [
+      "Semi"
+    ],
+    "modo_disparo_atual": "Semi",
+    "munições": 0,
+    "municao": null,
+    "Acessorios": [],
+    "maos": 1,
+    "descricao": "Variante da Glock 17, no calibre .45 Acp"
+  },
+  "Glock 22": {
+    "nome": "Glock 22",
+    "peso": 0.6,
+    "classe": "Pistola",
+    "raridade": "Incomum",
+    "calibre": ".40S&W",
+    "tipo_dano": "balístico",
+    "capacidade": 15,
+    "TPM": 400,
+    "ruido": 80,
+    "acoes_disparo": [
+      "Semi"
+    ],
+    "modo_disparo_atual": "Semi",
+    "munições": 0,
+    "municao": null,
+    "Acessorios": [],
+    "maos": 1,
+    "descricao": "Variante da Glock 17, no calibre .40 S&W"
+  },
+  "M1911": {
+    "nome": "M1911",
+    "peso": 1.1,
+    "classe": "Pistola",
+    "raridade": "Comum",
+    "calibre": ".45Acp",
+    "tipo_dano": "balístico",
+    "capacidade": 9,
+    "TPM": 400,
+    "ruido": 80,
+    "acoes_disparo": [
+      "Semi"
+    ],
+    "modo_disparo_atual": "Semi",
+    "munições": 0,
+    "municao": null,
+    "Acessorios": [],
+    "maos": 1,
+    "descricao": "Plaforma antiga e confiável e famosa pelo calibre .45 Acp, venceu duas guerras mundiais"
+  },
+  "M45A1": {
+    "nome": "M45A1",
+    "peso": 1.3,
+    "classe": "Pistola",
+    "raridade": "Incomum",
+    "calibre": ".45Acp",
+    "tipo_dano": "balístico",
+    "capacidade": 11,
+    "TPM": 400,
+    "ruido": 80,
+    "acoes_disparo": [
+      "Semi"
+    ],
+    "modo_disparo_atual": "Semi",
+    "munições": 0,
+    "municao": null,
+    "Acessorios": [],
+    "maos": 1,
+    "descricao": "Tentativa de modernização da M1911, possui trilhos picatinny e um pente levemente maior"
+  },
+  "MP1911": {
+    "nome": "MP1911",
+    "peso": 1.3,
+    "classe": "Pistola",
+    "raridade": "Incomum",
+    "calibre": ".45Acp",
+    "tipo_dano": "balístico",
+    "capacidade": 15,
+    "TPM": 1000,
+    "ruido": 80,
+    "acoes_disparo": [
+      "Semi",
+      "Auto"
+    ],
+    "modo_disparo_atual": "Auto",
+    "munições": 0,
+    "municao": null,
+    "Acessorios": [],
+    "maos": 1,
+    "descricao": "Uma versão pistola-metralhadora da M1911 feita em algum país na indonésia"
+  },
+  "M9A3": {
+    "nome": "M9A3",
+    "peso": 0.9,
+    "classe": "Pistola",
+    "raridade": "Comum",
+    "calibre": "9x19mm",
+    "tipo_dano": "balístico",
+    "capacidade": 17,
+    "TPM": 400,
+    "ruido": 100,
+    "acoes_disparo": [
+      "Semi"
+    ],
+    "modo_disparo_atual": "Semi",
+    "munições": 0,
+    "municao": null,
+    "Acessorios": [],
+    "maos": 1,
+    "descricao": "Plaforma comum e confiável, adotada por vários exércitos"
+  },
+  "M93r": {
+    "nome": "M93r",
+    "peso": 1.1,
+    "classe": "Pistola",
+    "acoes_disparo": [
+      "Semi",
+      "Rajada"
+    ],
+    "modo_disparo_atual": "Rajada",
+    "raridade": "Incomum",
+    "calibre": "9x19mm",
+    "capacidade": 17,
+    "TPM": 1100,
+    "ruido": 100,
+    "tipo_dano": "balístico",
+    "requer_duas_maos": false,
+    "descricao": "Uma versão pistola-metralhadora da M9 feita para forças especiais da polícia italiana"
+  },
+  "P226": {
+    "nome": "P226",
+    "peso": 0.7,
+    "classe": "Pistola",
+    "raridade": "Comum",
+    "calibre": "9x19mm",
+    "tipo_dano": "balístico",
+    "capacidade": 15,
+    "TPM": 400,
+    "ruido": 100,
+    "acoes_disparo": [
+      "Semi"
+    ],
+    "modo_disparo_atual": "Semi",
+    "munições": 0,
+    "municao": null,
+    "Acessorios": [],
+    "maos": 1,
+    "descricao": "Plaforma confiável e moderna para o mercado civil"
+  },
+  "M17": {
+    "nome": "M17",
+    "peso": 0.8,
+    "classe": "Pistola",
+    "raridade": "Incomum",
+    "calibre": "9x19mm",
+    "tipo_dano": "balístico",
+    "capacidade": 17,
+    "TPM": 400,
+    "ruido": 100,
+    "acoes_disparo": [
+      "Semi"
+    ],
+    "modo_disparo_atual": "Semi",
+    "munições": 0,
+    "municao": null,
+    "Acessorios": [],
+    "maos": 1,
+    "descricao": "Plaforma confiável e moderna, pistola padrão do exército americano"
+  },
+  "Desert eagle XIX": {
+    "nome": "Desert eagle XIX",
+    "peso": 2,
+    "classe": "Pistola",
+    "raridade": "Rara",
+    "calibre": ".50AE",
+    "tipo_dano": "balístico",
+    "capacidade": 7,
+    "TPM": 250,
+    "ruido": 150,
+    "acoes_disparo": [
+      "Semi"
+    ],
+    "modo_disparo_atual": "Semi",
+    "munições": 0,
+    "municao": null,
+    "Acessorios": [],
+    "maos": 1,
+    "descricao": "Plataforma famosa mundialmente, grande, pesada, forte"
+  },
+  "Desert eagle L5": {
+    "nome": "Desert eagle L5",
+    "peso": 1.3,
+    "classe": "Pistola",
+    "raridade": "Rara",
+    "calibre": ".44 Magnum",
+    "tipo_dano": "balístico",
+    "capacidade": 8,
+    "TPM": 300,
+    "ruido": 150,
+    "acoes_disparo": [
+      "Semi"
+    ],
+    "modo_disparo_atual": "Semi",
+    "munições": 0,
+    "municao": null,
+    "Acessorios": [],
+    "maos": 1,
+    "descricao": "Versão mais leve e compacta feita em alumínio no calibre .44 Magnum"
+  },
+  "Desert eagle VII": {
+    "nome": "Desert eagle VII",
+    "peso": 1.7,
+    "classe": "Pistola",
+    "raridade": "Rara",
+    "calibre": ".357 Magnum",
+    "tipo_dano": "balístico",
+    "capacidade": 9,
+    "TPM": 350,
+    "ruido": 150,
+    "acoes_disparo": [
+      "Semi"
+    ],
+    "modo_disparo_atual": "Semi",
+    "munições": 0,
+    "municao": null,
+    "Acessorios": [],
+    "maos": 1,
+    "descricao": "Plataforma famosa mundialmente, grande, pesada, forte, variante no calibre .357 Magnum"
+  },
+  "Colt Python": {
+    "nome": "Colt Python",
+    "peso": 1.3,
+    "classe": "Revolver",
+    "acoes_disparo": [
+      "Dupla",
+      "Unica"
+    ],
+    "modo_disparo_atual": "Dupla",
+    "raridade": "Comum",
+    "calibre": ".357 Magnum",
+    "capacidade": 6,
+    "TPM": 250,
+    "ruido": 150,
+    "tipo_dano": "balístico",
+    "requer_duas_maos": false,
+    "descricao": "Revolver de ação dupla tradicional, em .357 Magnum"
+  },
+  "Colt Anaconda": {
+    "nome": "Colt Anaconda",
+    "peso": 1.5,
+    "classe": "Revolver",
+    "raridade": "Incomum",
+    "calibre": ".44 Magnum",
+    "tipo_dano": "balístico",
+    "capacidade": 6,
+    "TPM": 200,
+    "ruido": 150,
+    "acoes_disparo": [
+      "Dupla",
+      "Unica"
+    ],
+    "modo_disparo_atual": "Dupla",
+    "munições": 0,
+    "municao": null,
+    "Acessorios": [],
+    "maos": 1,
+    "descricao": "Revolver de ação dupla tradicional, em .44 Magnum"
+  },
+  "500 S&W": {
+    "nome": "500 S&W",
+    "peso": 1.6,
+    "classe": "Revolver",
+    "acoes_disparo": [
+      "Dupla",
+      "Unica"
+    ],
+    "modo_disparo_atual": "Dupla",
+    "raridade": "Épica",
+    "calibre": ".500 Magnum",
+    "capacidade": 5,
+    "TPM": 100,
+    "ruido": 180,
+    "tipo_dano": "balístico",
+    "requer_duas_maos": false,
+    "descricao": "Um revolver pesado, grande e imponente, municiado no poderoso .500 Magnum"
+  },
+  "Taurus Raging Hunter": {
+    "nome": "Taurus Raging Hunter",
+    "peso": 1.4,
+    "classe": "Revolver",
+    "raridade": "Incomum",
+    "calibre": ".44 Magnum",
+    "tipo_dano": "balístico",
+    "capacidade": 6,
+    "TPM": 250,
+    "ruido": 150,
+    "acoes_disparo": [
+      "Dupla",
+      "Unica"
+    ],
+    "modo_disparo_atual": "Dupla",
+    "munições": 0,
+    "municao": null,
+    "Acessorios": [],
+    "maos": 1,
+    "descricao": "Revolver moderno pensado para caça e esporte, em .44 Magnum"
+  },
+  "Taurus Raging Bull": {
+    "nome": "Taurus Raging Bull",
+    "peso": 1.6,
+    "classe": "Revolver",
+    "raridade": "Rara",
+    "calibre": ".454 Casull",
+    "tipo_dano": "balístico",
+    "capacidade": 5,
+    "TPM": 150,
+    "ruido": 160,
+    "acoes_disparo": [
+      "Dupla",
+      "Unica"
+    ],
+    "modo_disparo_atual": "Dupla",
+    "munições": 0,
+    "municao": null,
+    "Acessorios": [],
+    "maos": 1,
+    "descricao": "Revolver moderno pensado para a caça e esporte, no poderoso .454 Casull"
+  },
+  "Taurus Raging Judge": {
+    "nome": "Taurus Raging Judge",
+    "peso": 2.1,
+    "classe": "Revolver",
+    "raridade": "Exótica",
+    "calibre": ".454 Casull",
+    "tipo_dano": "balístico",
+    "capacidade": 6,
+    "TPM": 150,
+    "ruido": 160,
+    "acoes_disparo": [
+      "Dupla",
+      "Unica"
+    ],
+    "modo_disparo_atual": "Dupla",
+    "munições": 0,
+    "municao": null,
+    "Acessorios": [],
+    "maos": 1,
+    "descricao": "Versão maior e mais imponente do Raging Bull, capaz de disparar .45 Colt, .410 Bore e o poderoso .454 Casull"
+  },
+  "Mateba Unica 6": {
+    "nome": "Mateba Unica 6",
+    "peso": 1.3,
+    "classe": "Revolver",
+    "raridade": "Incomum",
+    "calibre": ".44 Magnum",
+    "tipo_dano": "balístico",
+    "capacidade": 6,
+    "TPM": 200,
+    "ruido": 150,
+    "acoes_disparo": [
+      "Semi"
+    ],
+    "modo_disparo_atual": "Semi",
+    "munições": 0,
+    "municao": null,
+    "Acessorios": [],
+    "maos": 1,
+    "descricao": "Protótipo de revolver de ação semi-automática italiano em .44 magnum"
+  },
+  "RSh-12": {
+    "nome": "RSh-12",
+    "peso": 2.2,
+    "classe": "Revolver",
+    "raridade": "Exótica",
+    "calibre": "12.7x55mm",
+    "tipo_dano": "balístico",
+    "capacidade": 5,
+    "TPM": 100,
+    "ruido": 150,
+    "acoes_disparo": [
+      "Semi"
+    ],
+    "modo_disparo_atual": "Semi",
+    "munições": 0,
+    "municao": null,
+    "Acessorios": [],
+    "maos": 1,
+    "descricao": "Revolver moderno russo em 12,7x55mm feito para as forças especiais da policia"
+  },
+  "MP5A2": {
+    "nome": "MP5A2",
+    "peso": 2.5,
+    "classe": "Submetralhadora",
+    "raridade": "Comum",
+    "calibre": "9x19mm",
+    "tipo_dano": "balístico",
+    "capacidade": 30,
+    "TPM": 800,
+    "ruido": 100,
+    "acoes_disparo": [
+      "Semi",
+      "Auto"
+    ],
+    "modo_disparo_atual": "Auto",
+    "munições": 0,
+    "municao": null,
+    "Acessorios": [],
+    "maos": 2,
+    "descricao": "Plataforma famosa e confiável surgida durante a guerra fria"
+  },
+  "MP5A5": {
+    "nome": "MP5A5",
+    "peso": 2.8,
+    "classe": "Submetralhadora",
+    "raridade": "Incomum",
+    "calibre": "9x19mm",
+    "tipo_dano": "balístico",
+    "capacidade": 30,
+    "TPM": 800,
+    "ruido": 100,
+    "acoes_disparo": [
+      "Semi",
+      "Auto",
+      "Rajada"
+    ],
+    "modo_disparo_atual": "Auto",
+    "munições": 0,
+    "municao": null,
+    "Acessorios": [],
+    "maos": 2,
+    "descricao": "Variante moderna da mp5, com trilhos picanity e seletor para rajada de 3 disparos"
+  },
+  "MP5K": {
+    "nome": "MP5K",
+    "peso": 2.1,
+    "classe": "Submetralhadora",
+    "raridade": "Incomum",
+    "calibre": "9x19mm",
+    "tipo_dano": "balístico",
+    "capacidade": 30,
+    "TPM": 800,
+    "ruido": 100,
+    "acoes_disparo": [
+      "Semi",
+      "Auto"
+    ],
+    "modo_disparo_atual": "Auto",
+    "munições": 0,
+    "municao": null,
+    "Acessorios": [],
+    "maos": 2,
+    "descricao": "Versão ultra compacta da MP5 categorizada como ADP, pensada para agentes de segurança"
+  },
+  "MP7": {
+    "nome": "MP7",
+    "peso": 1.9,
+    "classe": "Submetralhadora",
+    "raridade": "Incomum",
+    "calibre": "4.6x30mm",
+    "tipo_dano": "balístico",
+    "capacidade": 40,
+    "TPM": 900,
+    "ruido": 120,
+    "acoes_disparo": [
+      "Semi",
+      "Auto"
+    ],
+    "modo_disparo_atual": "Auto",
+    "munições": 0,
+    "municao": null,
+    "Acessorios": [],
+    "maos": 2,
+    "descricao": "Submetralhadora categorizada como ADP, desenhada em torno do calibre 4.6x30mm para vencer coletes balísticos"
+  },
+  "M4A1": {
+    "nome": "M4A1",
+    "peso": 2.8,
+    "classe": "Carabina",
+    "raridade": "Comum",
+    "calibre": "5.56x45mm",
+    "tipo_dano": "balístico",
+    "capacidade": 30,
+    "TPM": 750,
+    "ruido": 150,
+    "acoes_disparo": [
+      "Semi",
+      "Auto"
+    ],
+    "modo_disparo_atual": "Auto",
+    "munições": 0,
+    "municao": null,
+    "Acessorios": [],
+    "maos": 2,
+    "descricao": "Plataforma padrão e confiável feita em polímero, municiada no 5.56x45mm"
+  },
+  "AKS74U": {
+    "nome": "AKS74U",
+    "peso": 2.5,
+    "classe": "Carabina",
+    "raridade": "Comum",
+    "calibre": "5.45x39mm",
+    "tipo_dano": "balístico",
+    "capacidade": 30,
+    "TPM": 750,
+    "ruido": 150,
+    "acoes_disparo": [
+      "Semi",
+      "Auto"
+    ],
+    "modo_disparo_atual": "Auto",
+    "munições": 0,
+    "municao": null,
+    "Acessorios": [],
+    "maos": 2,
+    "descricao": "Variante ultra-compacta do AK-74 categorizada como ADP para tripulantes e pilotos"
+  },
+  "AK102": {
+    "nome": "AK102",
+    "peso": 3.2,
+    "classe": "Carabina",
+    "raridade": "Incomum",
+    "calibre": "5.56x45mm",
+    "tipo_dano": "balístico",
+    "capacidade": 30,
+    "TPM": 600,
+    "ruido": 150,
+    "acoes_disparo": [
+      "Semi",
+      "Auto"
+    ],
+    "modo_disparo_atual": "Auto",
+    "munições": 0,
+    "municao": null,
+    "Acessorios": [],
+    "maos": 2,
+    "descricao": "Variante de carabina da série AK-100 pensada para exportação, municiada no 5.45x39mm"
+  },
+  "AK104": {
+    "nome": "AK104",
+    "peso": 3.2,
+    "classe": "Carabina",
+    "raridade": "Incomum",
+    "calibre": "7.62x39mm",
+    "tipo_dano": "balístico",
+    "capacidade": 30,
+    "TPM": 600,
+    "ruido": 170,
+    "acoes_disparo": [
+      "Semi",
+      "Auto"
+    ],
+    "modo_disparo_atual": "Auto",
+    "munições": 0,
+    "municao": null,
+    "Acessorios": [],
+    "maos": 2,
+    "descricao": "Variante de carabina da série AK-100 pensada para exportação, municiada no 5.56x45mm"
+  },
+  "AK105": {
+    "nome": "AK105",
+    "peso": 3.2,
+    "classe": "Carabina",
+    "raridade": "Incomum",
+    "calibre": "5.45x39mm",
+    "tipo_dano": "balístico",
+    "capacidade": 30,
+    "TPM": 600,
+    "ruido": 150,
+    "acoes_disparo": [
+      "Semi",
+      "Auto"
+    ],
+    "modo_disparo_atual": "Auto",
+    "munições": 0,
+    "municao": null,
+    "Acessorios": [],
+    "maos": 2,
+    "descricao": "Variante de carabina da série AK-100 pensada para exportação, municiada no 7.62x39mm"
+  },
+  "AK9": {
+    "nome": "AK9",
+    "peso": 3.2,
+    "classe": "Carabina",
+    "raridade": "Incomum",
+    "calibre": "9x39mm",
+    "tipo_dano": "balístico",
+    "capacidade": 20,
+    "TPM": 600,
+    "ruido": 80,
+    "acoes_disparo": [
+      "Semi",
+      "Auto"
+    ],
+    "modo_disparo_atual": "Auto",
+    "munições": 0,
+    "municao": null,
+    "Acessorios": [],
+    "maos": 2,
+    "descricao": "Protótipo de carabina da série AK-100, municiada no 9x39mm"
+  },
+  "M16A3": {
+    "nome": "M16A3",
+    "peso": 3.6,
+    "classe": "Fuzil de assalto",
+    "raridade": "Comum",
+    "calibre": "5.56x45mm",
+    "tipo_dano": "balístico",
+    "capacidade": 30,
+    "TPM": 750,
+    "ruido": 150,
+    "acoes_disparo": [
+      "Semi",
+      "Auto"
+    ],
+    "modo_disparo_atual": "Auto",
+    "munições": 0,
+    "municao": null,
+    "Acessorios": [],
+    "maos": 2,
+    "descricao": "Variante de fuzil de assalto da M4A1"
+  },
+  "M16A4": {
+    "nome": "M16A4",
+    "peso": 4,
+    "classe": "Fuzil de assalto",
+    "raridade": "Incomum",
+    "calibre": "5.56x45mm",
+    "tipo_dano": "balístico",
+    "capacidade": 30,
+    "TPM": 800,
+    "ruido": 150,
+    "acoes_disparo": [
+      "Semi",
+      "Rajada"
+    ],
+    "modo_disparo_atual": "Rajada",
+    "munições": 0,
+    "municao": null,
+    "Acessorios": [],
+    "maos": 2,
+    "descricao": "Variante da M16A3, troca o modo de disparo automático por rajada de 3 disparos e um trilho picanity no lugar da alça de transporte"
+  },
+  "AK47": {
+    "nome": "AK47",
+    "peso": 4.3,
+    "classe": "Fuzil de assalto",
+    "raridade": "Comum",
+    "calibre": "7.62x39mm",
+    "tipo_dano": "balístico",
+    "capacidade": 30,
+    "TPM": 600,
+    "ruido": 170,
+    "acoes_disparo": [
+      "Semi",
+      "Auto"
+    ],
+    "modo_disparo_atual": "Auto",
+    "munições": 0,
+    "municao": null,
+    "Acessorios": [],
+    "maos": 2,
+    "descricao": "Plataforma soviética mundialmente conhecida municiada no 7.62x39mm"
+  },
+  "AKM": {
+    "nome": "AKM",
+    "peso": 3.1,
+    "classe": "Fuzil de assalto",
+    "raridade": "Comum",
+    "calibre": "7.62x39mm",
+    "tipo_dano": "balístico",
+    "capacidade": 30,
+    "TPM": 600,
+    "ruido": 170,
+    "acoes_disparo": [
+      "Semi",
+      "Auto"
+    ],
+    "modo_disparo_atual": "Auto",
+    "munições": 0,
+    "municao": null,
+    "Acessorios": [],
+    "maos": 2,
+    "descricao": "Variante levemente modernizado e mais leve do AK47"
+  },
+  "AK74": {
+    "nome": "AK74",
+    "peso": 3,
+    "classe": "Fuzil de assalto",
+    "raridade": "Comum",
+    "calibre": "5.45x39mm",
+    "tipo_dano": "balístico",
+    "capacidade": 30,
+    "TPM": 600,
+    "ruido": 150,
+    "acoes_disparo": [
+      "Semi",
+      "Auto"
+    ],
+    "modo_disparo_atual": "Auto",
+    "munições": 0,
+    "municao": null,
+    "Acessorios": [],
+    "maos": 2,
+    "descricao": "Variante do AK47 municiado no 5.45x39mm"
+  },
+  "AK74M": {
+    "nome": "AK74M",
+    "peso": 3.4,
+    "classe": "Fuzil de assalto",
+    "raridade": "Incomum",
+    "calibre": "5.45x39mm",
+    "tipo_dano": "balístico",
+    "capacidade": 30,
+    "TPM": 600,
+    "ruido": 150,
+    "acoes_disparo": [
+      "Semi",
+      "Auto"
+    ],
+    "modo_disparo_atual": "Auto",
+    "munições": 0,
+    "municao": null,
+    "Acessorios": [],
+    "maos": 2,
+    "descricao": "Variante modernizado em polímero AK74"
+  },
+  "AK101": {
+    "nome": "AK101",
+    "peso": 3.6,
+    "classe": "Fuzil de assalto",
+    "raridade": "Incomum",
+    "calibre": "5.56x45mm",
+    "tipo_dano": "balístico",
+    "capacidade": 30,
+    "TPM": 600,
+    "ruido": 150,
+    "acoes_disparo": [
+      "Semi",
+      "Auto"
+    ],
+    "modo_disparo_atual": "Auto",
+    "munições": 0,
+    "municao": null,
+    "Acessorios": [],
+    "maos": 2,
+    "descricao": "Variante de fuzil de assalto da série AK-100 pensada para exportação, municiada no 7.62x39mm"
+  },
+  "AK103": {
+    "nome": "AK103",
+    "peso": 3.6,
+    "classe": "Fuzil de assalto",
+    "raridade": "Incomum",
+    "calibre": "7.62x39mm",
+    "tipo_dano": "balístico",
+    "capacidade": 30,
+    "TPM": 600,
+    "ruido": 170,
+    "acoes_disparo": [
+      "Semi",
+      "Auto"
+    ],
+    "modo_disparo_atual": "Auto",
+    "munições": 0,
+    "municao": null,
+    "Acessorios": [],
+    "maos": 2,
+    "descricao": "Variante de carabina da série AK-100 pensada para exportação, municiada no 7.62x39mm"
+  },
+  "AK107": {
+    "nome": "AK107",
+    "peso": 3.6,
+    "classe": "Fuzil de assalto",
+    "raridade": "Rara",
+    "calibre": "5.45x39mm",
+    "tipo_dano": "balístico",
+    "capacidade": 30,
+    "TPM": 800,
+    "ruido": 150,
+    "acoes_disparo": [
+      "Semi",
+      "Auto"
+    ],
+    "modo_disparo_atual": "Auto",
+    "munições": 0,
+    "municao": null,
+    "Acessorios": [],
+    "maos": 2,
+    "descricao": "Protótipo de carabina da série AK-100 com sistema de recuo balanceado, permitindo maior taxa de disparo, municiada no 5.45x39mm"
+  },
+  "AK109": {
+    "nome": "AK108",
+    "peso": 3.6,
+    "classe": "Fuzil de assalto",
+    "raridade": "Rara",
+    "calibre": "5.56x45mm",
+    "tipo_dano": "balístico",
+    "capacidade": 30,
+    "TPM": 800,
+    "ruido": 150,
+    "acoes_disparo": [
+      "Semi",
+      "Auto"
+    ],
+    "modo_disparo_atual": "Auto",
+    "munições": 0,
+    "municao": null,
+    "Acessorios": [],
+    "maos": 2,
+    "descricao": "Protótipo de carabina da série AK-100 com sistema de recuo balanceado, permitindo maior taxa de disparo, municiada no 5.56x45mm"
+  },
+  "AK108": {
+    "nome": "AK109",
+    "peso": 3.6,
+    "classe": "Fuzil de assalto",
+    "raridade": "Rara",
+    "calibre": "7.62x39mm",
+    "tipo_dano": "balístico",
+    "capacidade": 30,
+    "TPM": 800,
+    "ruido": 170,
+    "acoes_disparo": [
+      "Semi",
+      "Auto"
+    ],
+    "modo_disparo_atual": "Auto",
+    "munições": 0,
+    "municao": null,
+    "Acessorios": [],
+    "maos": 2,
+    "descricao": "Protótipo de carabina da série AK-100 com sistema de recuo balanceado, permitindo maior taxa de disparo, municiada no 7.62x39mm"
+  },
+  "AK12": {
+    "nome": "AK12",
+    "peso": 3.5,
+    "classe": "Fuzil de assalto",
+    "raridade": "Rara",
+    "calibre": "5.45x39mm",
+    "tipo_dano": "balístico",
+    "capacidade": 30,
+    "TPM": 700,
+    "ruido": 150,
+    "acoes_disparo": [
+      "Semi",
+      "Auto"
+    ],
+    "modo_disparo_atual": "Auto",
+    "munições": 0,
+    "municao": null,
+    "Acessorios": [],
+    "maos": 2,
+    "descricao": "Variante moderna e modular da plataforma AK, em 5.45x39mm"
+  },
+  "AK15": {
+    "nome": "AK15",
+    "peso": 3.5,
+    "classe": "Fuzil de assalto",
+    "raridade": "Rara",
+    "calibre": "7.62x39mm",
+    "tipo_dano": "balístico",
+    "capacidade": 30,
+    "TPM": 700,
+    "ruido": 170,
+    "acoes_disparo": [
+      "Semi",
+      "Auto"
+    ],
+    "modo_disparo_atual": "Auto",
+    "munições": 0,
+    "municao": null,
+    "Acessorios": [],
+    "maos": 2,
+    "descricao": "Variante moderna e modular da plataforma AK, em 7.62x39mm"
+  },
+  "FAL": {
+    "nome": "FAL",
+    "peso": 3.5,
+    "classe": "Fuzil de batalha",
+    "raridade": "Comum",
+    "calibre": "7.62x51mm",
+    "tipo_dano": "balístico",
+    "capacidade": 20,
+    "TPM": 700,
+    "ruido": 180,
+    "acoes_disparo": [
+      "Semi",
+      "Auto"
+    ],
+    "modo_disparo_atual": "Auto",
+    "munições": 0,
+    "municao": null,
+    "Acessorios": [],
+    "maos": 2,
+    "descricao": "Fuzil de batalha bélgico municiado em 7.62x51mm, conhecido como 'O braço direito do mundo livre'"
+  },
+  "G3": {
+    "nome": "G3",
+    "peso": 4.4,
+    "classe": "Fuzil de batalha",
+    "raridade": "Comum",
+    "calibre": "7.62x51mm",
+    "tipo_dano": "balístico",
+    "capacidade": 20,
+    "TPM": 500,
+    "ruido": 180,
+    "acoes_disparo": [
+      "Semi",
+      "Auto"
+    ],
+    "modo_disparo_atual": "Auto",
+    "munições": 0,
+    "municao": null,
+    "Acessorios": [],
+    "maos": 2,
+    "descricao": "Fuzil de batalha alemão, conhecido por compartilhar o mesmo sistema de ação da submetralhadora MP5"
+  },
+  "M14": {
+    "nome": "M14",
+    "peso": 4.1,
+    "classe": "Fuzil de batalha",
+    "acoes_disparo": [
+      "Semi",
+      "Auto"
+    ],
+    "modo_disparo_atual": "Auto",
+    "raridade": "Comum",
+    "calibre": "7.62x51mm",
+    "capacidade": 20,
+    "TPM": 700,
+    "ruido": 180,
+    "tipo_dano": "balístico",
+    "descricao": "",
+    "maos": 2
+  },
+  "As Val": {
+    "nome": "As Val",
+    "peso": 2.6,
+    "classe": "Fuzil de assalto",
+    "acoes_disparo": [
+      "Semi",
+      "Auto"
+    ],
+    "modo_disparo_atual": "Auto",
+    "raridade": "Incomum",
+    "calibre": "9x39mm",
+    "capacidade": 20,
+    "TPM": 800,
+    "ruido": 80,
+    "tipo_dano": "balístico",
+    "descricao": "",
+    "maos": 2
+  },
+  "SR-3m": {
+    "nome": "SR-3m",
+    "peso": 2.2,
+    "classe": "Carabina",
+    "acoes_disparo": [
+      "Semi",
+      "Auto"
+    ],
+    "modo_disparo_atual": "Semi",
+    "raridade": "Incomum",
+    "calibre": "9x39mm",
+    "capacidade": 20,
+    "TPM": 800,
+    "ruido": 100,
+    "tipo_dano": "balístico",
+    "maos": 2
+  },
+  "Groza-1": {
+    "nome": "Groza-1",
+    "peso": 3.1,
+    "classe": "Carabina",
+    "acoes_disparo": [
+      "Semi",
+      "Auto"
+    ],
+    "modo_disparo_atual": "Auto",
+    "raridade": "Incomum",
+    "calibre": "7.62x39mm",
+    "capacidade": 30,
+    "TPM": 700,
+    "ruido": 170,
+    "tipo_dano": "balístico",
+    "maos": 2
+  },
+  "Groza-4": {
+    "nome": "Groza-4",
+    "peso": 3.4,
+    "classe": "Carabina",
+    "acoes_disparo": [
+      "Semi",
+      "Auto"
+    ],
+    "modo_disparo_atual": "Semi",
+    "raridade": "Incomum",
+    "calibre": "9x39mm",
+    "capacidade": 20,
+    "TPM": 700,
+    "ruido": 100,
+    "tipo_dano": "balístico",
+    "maos": 2
+  },
+  "KS-23": {
+    "nome": "KS-23",
+    "peso": 3.8,
+    "classe": "Escopeta",
+    "acoes_disparo": [
+      "Pump"
+    ],
+    "modo_disparo_atual": "Pump",
+    "raridade": "Rara",
+    "calibre": "23x75mmr",
+    "capacidade": 4,
+    "TPM": 100,
+    "ruido": 150,
+    "tipo_dano": "balístico",
+    "maos": 2
+  },
+  "M1014": {
+    "nome": "M1014",
+    "peso": 4.0,
+    "classe": "Escopeta",
+    "acoes_disparo": [
+      "Semi"
+    ],
+    "modo_disparo_atual": "Semi",
+    "raridade": "Comum",
+    "calibre": "12ga",
+    "capacidade": 7,
+    "TPM": 300,
+    "ruido": 120,
+    "tipo_dano": "balístico",
+    "maos": 2
+  },
+  "M870": {
+    "nome": "M870",
+    "peso": 4.0,
+    "classe": "Escopeta",
+    "acoes_disparo": [
+      "Pump"
+    ],
+    "modo_disparo_atual": "Pump",
+    "raridade": "Comum",
+    "calibre": "12ga",
+    "capacidade": 5,
+    "TPM": 150,
+    "ruido": 120,
+    "tipo_dano": "balístico",
+    "maos": 2
+  },
+  "Ithaca M37": {
+    "nome": "Ithaca M37",
+    "peso": 4.0,
+    "classe": "Escopeta",
+    "acoes_disparo": [
+      "Pump"
+    ],
+    "modo_disparo_atual": "Pump",
+    "raridade": "Comum",
+    "calibre": "12ga",
+    "capacidade": 4,
+    "TPM": 150,
+    "ruido": 120,
+    "tipo_dano": "balístico",
+    "maos": 2
+  },
+  "Saiga-12": {
+    "nome": "Saiga-12",
+    "peso": 4.0,
+    "classe": "Escopeta",
+    "acoes_disparo": [
+      "Semi"
+    ],
+    "modo_disparo_atual": "Semi",
+    "raridade": "Comum",
+    "calibre": "12ga",
+    "capacidade": 8,
+    "TPM": 200,
+    "ruido": 120,
+    "tipo_dano": "balístico",
+    "maos": 2
+  },
+  "AA-12": {
+    "nome": "AA-12",
+    "peso": 4.8,
+    "classe": "Escopeta",
+    "acoes_disparo": [
+      "Semi",
+      "Auto"
+    ],
+    "modo_disparo_atual": "Auto",
+    "raridade": "Rara",
+    "calibre": "12ga",
+    "capacidade": 8,
+    "TPM": 300,
+    "ruido": 120,
+    "tipo_dano": "balístico",
+    "maos": 2
+  },
+  "AK-308": {
+    "nome": "AK-308",
+    "peso": 3.6,
+    "classe": "Fuzil de batalha",
+    "acoes_disparo": [
+      "Semi",
+      "Auto"
+    ],
+    "modo_disparo_atual": "Auto",
+    "raridade": "Rara",
+    "calibre": ".308 Remington",
+    "capacidade": 20,
+    "TPM": 700,
+    "ruido": 180,
+    "tipo_dano": "balístico",
+    "maos": 2
+  },
+  "AN-94 Abakan": {
+    "nome": "AN-94 Abakan",
+    "peso": 3.8,
+    "classe": "Fuzil de assalto",
+    "acoes_disparo": [
+      "Semi",
+      "Auto",
+      "Rajada"
+    ],
+    "modo_disparo_atual": "Auto",
+    "raridade": "Épica",
+    "calibre": "5.45x39mm",
+    "capacidade": 30,
+    "TPM": 700,
+    "ruido": 150,
+    "tipo_dano": "balístico",
+    "maos": 2
+  },
+  "AK-12Br": {
+    "nome": "AK-12Br",
+    "peso": 4.7,
+    "classe": "Metralhadora leve",
+    "acoes_disparo": [
+      "Semi",
+      "Auto"
+    ],
+    "modo_disparo_atual": "Auto",
+    "raridade": "Rara",
+    "calibre": "5.45x39mm",
+    "capacidade": 95,
+    "TPM": 900,
+    "ruido": 150,
+    "tipo_dano": "balístico",
+    "maos": 2
+  },
+  "AWM": {
+    "nome": "AWM",
+    "peso": 6.9,
+    "classe": "Fuzil de precisão",
+    "acoes_disparo": [
+      "Bolt"
+    ],
+    "modo_disparo_atual": "Bolt",
+    "raridade": "Rara",
+    "calibre": ".338 Lapua Magnum",
+    "capacidade": 5,
+    "TPM": 100,
+    "ruido": 200,
+    "tipo_dano": "balístico",
+    "descricao": "",
+    "maos": 2
+  },
+  "AWP": {
+    "nome": "AWP",
+    "peso": 6.5,
+    "classe": "Fuzil de precisão",
+    "acoes_disparo": [
+      "Bolt"
+    ],
+    "modo_disparo_atual": "Bolt",
+    "raridade": "Incomum",
+    "calibre": ".308 Remington",
+    "capacidade": 10,
+    "TPM": 150,
+    "ruido": 180,
+    "tipo_dano": "balístico",
+    "maos": 2
+  },
+  "AWS": {
+    "nome": "AWS",
+    "peso": 6.5,
+    "classe": "Fuzil de precisão",
+    "acoes_disparo": [
+      "Bolt"
+    ],
+    "modo_disparo_atual": "Bolt",
+    "raridade": "Incomum",
+    "calibre": ".308 Remington",
+    "capacidade": 10,
+    "TPM": 150,
+    "ruido": 100,
+    "tipo_dano": "balístico",
+    "maos": 2
+  },
+  "Beowulf ECR": {
+    "nome": "Beowulf ECR",
+    "peso": 3.6,
+    "classe": "Fuzil de batalha",
+    "acoes_disparo": [
+      "Semi",
+      "Auto"
+    ],
+    "modo_disparo_atual": "Auto",
+    "raridade": "Rara",
+    "calibre": ".50 Beowulf",
+    "capacidade": 10,
+    "TPM": 800,
+    "ruido": 150,
+    "tipo_dano": "balístico",
+    "maos": 2
+  },
+  "Beowulf TCR": {
+    "nome": "Beowulf TCR",
+    "peso": 3.9,
+    "classe": "DMR",
+    "acoes_disparo": [
+      "Semi"
+    ],
+    "modo_disparo_atual": "Semi",
+    "raridade": "Rara",
+    "calibre": ".50 Beowulf",
+    "capacidade": 10,
+    "TPM": 450,
+    "ruido": 150,
+    "tipo_dano": "balístico",
+    "maos": 2
+  },
+  "Browning HP": {
+    "nome": "Browning HP",
+    "peso": 1.0,
+    "classe": "Pistola",
+    "acoes_disparo": [
+      "Semi"
+    ],
+    "modo_disparo_atual": "Semi",
+    "raridade": "Comum",
+    "calibre": "9x19mm",
+    "capacidade": 13,
+    "TPM": 400,
+    "ruido": 100,
+    "tipo_dano": "balístico",
+    "maos": 2
+  },
+  "CZ75": {
+    "nome": "CZ75",
+    "peso": 0.7,
+    "classe": "Pistola",
+    "acoes_disparo": [
+      "Semi",
+      "Auto"
+    ],
+    "modo_disparo_atual": "Auto",
+    "raridade": "Comum",
+    "calibre": "9x19mm",
+    "capacidade": 15,
+    "TPM": 900,
+    "ruido": 100,
+    "tipo_dano": "balístico",
+    "maos": 1
+  },
+  "CZ Scorpion EVO3": {
+    "nome": "CZ Scorpion EVO3",
+    "peso": 2.7,
+    "classe": "Submetralhadora",
+    "acoes_disparo": [
+      "Semi",
+      "Auto"
+    ],
+    "modo_disparo_atual": "Auto",
+    "raridade": "Incomum",
+    "calibre": "9x19mm",
+    "capacidade": 30,
+    "TPM": 900,
+    "ruido": 100,
+    "tipo_dano": "balístico",
+    "maos": 2
+  },
+  "Dragunov SVU": {
+    "nome": "Dragunov SVU",
+    "peso": 5.3,
+    "classe": "DMR",
+    "acoes_disparo": [
+      "Semi"
+    ],
+    "modo_disparo_atual": "Semi",
+    "raridade": "Incomum",
+    "calibre": "7.62x54mmr",
+    "capacidade": 10,
+    "TPM": 300,
+    "ruido": 200,
+    "tipo_dano": "balístico",
+    "descricao": "",
+    "maos": 2
+  },
+  "Dragunov SVU-A": {
+    "nome": "Dragunov SVU-A",
+    "peso": 5.4,
+    "classe": "Fuzil de batalha",
+    "acoes_disparo": [
+      "Semi",
+      "Auto"
+    ],
+    "modo_disparo_atual": "Semi",
+    "raridade": "Rara",
+    "calibre": "7.62x54mmr",
+    "capacidade": 20,
+    "TPM": 700,
+    "ruido": 200,
+    "tipo_dano": "balístico",
+    "maos": 2
+  },
+  "DSR-1 300": {
+    "nome": "DSR-1 300",
+    "peso": 5.9,
+    "classe": "Fuzil de precisão",
+    "acoes_disparo": [
+      "Bolt"
+    ],
+    "modo_disparo_atual": "Bolt",
+    "raridade": "Incomum",
+    "calibre": ".300 Winchester",
+    "capacidade": 10,
+    "TPM": 300,
+    "ruido": 200,
+    "tipo_dano": "balístico",
+    "descricao": "",
+    "maos": 2
+  },
+  "DSR-1 308": {
+    "nome": "DSR-1 308",
+    "peso": 5.9,
+    "classe": "Fuzil de precisão",
+    "acoes_disparo": [
+      "Bolt"
+    ],
+    "modo_disparo_atual": "Bolt",
+    "raridade": "Comum",
+    "calibre": ".308 Remington",
+    "capacidade": 5,
+    "TPM": 200,
+    "ruido": 180,
+    "tipo_dano": "balístico",
+    "descricao": "",
+    "maos": 2
+  },
+  "DSR-1 338": {
+    "nome": "DSR-1 338",
+    "peso": 5.9,
+    "classe": "Fuzil de precisão",
+    "acoes_disparo": [
+      "Bolt"
+    ],
+    "modo_disparo_atual": "Bolt",
+    "raridade": "Rara",
+    "calibre": ".338 Lapua Magnum",
+    "capacidade": 4,
+    "TPM": 150,
+    "ruido": 200,
+    "tipo_dano": "balístico",
+    "descricao": "",
+    "maos": 2
+  },
+  "DSR-50": {
+    "nome": "DSR-50",
+    "peso": 10.3,
+    "classe": "Fuzil antimaterial",
+    "acoes_disparo": [
+      "Bolt"
+    ],
+    "modo_disparo_atual": "Bolt",
+    "raridade": "Comum",
+    "calibre": ".50 BMG",
+    "capacidade": 3,
+    "TPM": 50,
+    "ruido": 200,
+    "tipo_dano": "balístico",
+    "descricao": "",
+    "maos": 2
+  },
+  "Rhino 44": {
+    "nome": "Rhino 44",
+    "peso": 1.0,
+    "classe": "Revolver",
+    "acoes_disparo": [
+      "Semi"
+    ],
+    "modo_disparo_atual": "Semi",
+    "raridade": "Incomum",
+    "calibre": ".44 Magnum",
+    "capacidade": 6,
+    "TPM": 200,
+    "ruido": 150,
+    "tipo_dano": "balístico",
+    "requer_duas_maos": false,
+    "descricao": ""
+  },
+  "Famas F1": {
+    "nome": "Famas F1",
+    "peso": 3.6,
+    "classe": "Fuzil de assalto",
+    "acoes_disparo": [
+      "Semi",
+      "Rajada"
+    ],
+    "modo_disparo_atual": "Rajada",
+    "raridade": "Incomum",
+    "calibre": "5.56x45mm",
+    "capacidade": 25,
+    "TPM": 900,
+    "ruido": 150,
+    "tipo_dano": "balístico",
+    "descricao": "",
+    "maos": 2
+  },
+  "Famas G2": {
+    "nome": "Famas G2",
+    "peso": 3.6,
+    "classe": "Fuzil de assalto",
+    "acoes_disparo": [
+      "Semi",
+      "Auto"
+    ],
+    "modo_disparo_atual": "Auto",
+    "raridade": "Incomum",
+    "calibre": "5.56x45mm",
+    "capacidade": 30,
+    "TPM": 1100,
+    "ruido": 150,
+    "tipo_dano": "balístico",
+    "descricao": "",
+    "maos": 2
+  },
+  "Five Seven": {
+    "nome": "Five Seven",
+    "peso": 1.0,
+    "classe": "Pistola",
+    "acoes_disparo": [
+      "Semi"
+    ],
+    "modo_disparo_atual": "Semi",
+    "raridade": "Comum",
+    "calibre": "5.7x28mm",
+    "capacidade": 21,
+    "TPM": 400,
+    "ruido": 120,
+    "tipo_dano": "balístico",
+    "descricao": "",
+    "maos": 1
+  },
+  "G36": {
+    "nome": "G36",
+    "peso": 3.6,
+    "classe": "Fuzil de assalto",
+    "acoes_disparo": [
+      "Semi",
+      "Auto"
+    ],
+    "modo_disparo_atual": "Auto",
+    "raridade": "Comum",
+    "calibre": "5.56x45mm",
+    "capacidade": 30,
+    "TPM": 700,
+    "ruido": 150,
+    "tipo_dano": "balístico",
+    "descricao": "",
+    "maos": 2
+  },
+  "G36c": {
+    "nome": "G36c",
+    "peso": 2.8,
+    "classe": "Carabina",
+    "acoes_disparo": [
+      "Semi",
+      "Auto"
+    ],
+    "modo_disparo_atual": "Auto",
+    "raridade": "Incomum",
+    "calibre": "5.56x45mm",
+    "capacidade": 30,
+    "TPM": 700,
+    "ruido": 150,
+    "tipo_dano": "balístico",
+    "descricao": "",
+    "maos": 2
+  },
+  "G36k": {
+    "nome": "G36k",
+    "peso": 3.2,
+    "classe": "Carabina",
+    "acoes_disparo": [
+      "Semi",
+      "Auto"
+    ],
+    "modo_disparo_atual": "Semi",
+    "raridade": "Comum",
+    "calibre": "5.56x45mm",
+    "capacidade": 30,
+    "TPM": 700,
+    "ruido": 150,
+    "tipo_dano": "balístico",
+    "descricao": "",
+    "maos": 2
+  },
+  "FN FNC": {
+    "nome": "FN FNC",
+    "peso": 3.6,
+    "classe": "Fuzil de assalto",
+    "acoes_disparo": [
+      "Semi",
+      "Auto"
+    ],
+    "modo_disparo_atual": "Semi",
+    "raridade": "Incomum",
+    "calibre": "5.56x45mm",
+    "capacidade": 30,
+    "TPM": 750,
+    "ruido": 150,
+    "tipo_dano": "balístico",
+    "descricao": "",
+    "maos": 2
+  },
+  "HK416": {
+    "nome": "HK416",
+    "peso": 3.3,
+    "classe": "Fuzil de assalto",
+    "acoes_disparo": [
+      "Semi",
+      "Auto"
+    ],
+    "modo_disparo_atual": "Semi",
+    "raridade": "Rara",
+    "calibre": "5.56x45mm",
+    "capacidade": 30,
+    "TPM": 850,
+    "ruido": 150,
+    "tipo_dano": "balístico",
+    "descricao": "",
+    "maos": 2
+  },
+  "HK417": {
+    "nome": "HK417",
+    "peso": 3.3,
+    "classe": "Fuzil de batalha",
+    "acoes_disparo": [
+      "Semi",
+      "Auto"
+    ],
+    "modo_disparo_atual": "Auto",
+    "raridade": "Rara",
+    "calibre": "7.62x51mm",
+    "capacidade": 20,
+    "TPM": 600,
+    "ruido": 180,
+    "tipo_dano": "balístico",
+    "descricao": "",
+    "maos": 2
+  },
+  "AAC Honey Badger": {
+    "nome": "AAC Honey Badger",
+    "peso": 3.0,
+    "classe": "Carabina",
+    "acoes_disparo": [
+      "Semi",
+      "Auto"
+    ],
+    "modo_disparo_atual": "Auto",
+    "raridade": "Rara",
+    "calibre": ".300 Blackout",
+    "capacidade": 30,
+    "TPM": 800,
+    "ruido": 100,
+    "tipo_dano": "balístico",
+    "descricao": "",
+    "maos": 2
+  },
+  "FN Ballista 300": {
+    "nome": "FN Ballista 300",
+    "peso": 7.4,
+    "classe": "Fuzil de precisão",
+    "acoes_disparo": [
+      "Bolt"
+    ],
+    "modo_disparo_atual": "Bolt",
+    "raridade": "Incomum",
+    "calibre": ".300 Winchester Magnum",
+    "capacidade": 10,
+    "TPM": 150,
+    "ruido": 200,
+    "tipo_dano": "balístico",
+    "descricao": "",
+    "maos": 2
+  },
+  "FN Ballista 308": {
+    "nome": "FN Ballista 308",
+    "peso": 7.4,
+    "classe": "Fuzil de precisão",
+    "acoes_disparo": [
+      "Bolt"
+    ],
+    "modo_disparo_atual": "Bolt",
+    "raridade": "Comum",
+    "calibre": ".308 Remington",
+    "capacidade": 10,
+    "TPM": 150,
+    "ruido": 180,
+    "tipo_dano": "balístico",
+    "descricao": "",
+    "maos": 2
+  },
+  "FN Ballista 338": {
+    "nome": "FN Ballista 338",
+    "peso": 7.4,
+    "classe": "Fuzil de precisão",
+    "acoes_disparo": [
+      "Bolt"
+    ],
+    "modo_disparo_atual": "Bolt",
+    "raridade": "Rara",
+    "calibre": ".338 Lapua Magnum",
+    "capacidade": 5,
+    "TPM": 150,
+    "ruido": 200,
+    "tipo_dano": "balístico",
+    "descricao": "",
+    "maos": 2
+  },
+  "GMC-6 Lyxn": {
+    "nome": "GMC-6 Lyxn",
+    "peso": 12.0,
+    "classe": "Fuzil antimaterial",
+    "acoes_disparo": [
+      "Semi"
+    ],
+    "modo_disparo_atual": "Semi",
+    "raridade": "Comum",
+    "calibre": ".50 BMG",
+    "capacidade": 10,
+    "TPM": 200,
+    "ruido": 200,
+    "tipo_dano": "balístico",
+    "descricao": "",
+    "maos": 2
+  },
+  "Hecate II": {
+    "nome": "Hecate II",
+    "peso": 14.4,
+    "classe": "Fuzil de precisão",
+    "acoes_disparo": [
+      "Bolt"
+    ],
+    "modo_disparo_atual": "Bolt",
+    "raridade": "Lendária",
+    "calibre": ".50 BMG",
+    "capacidade": 5,
+    "TPM": 50,
+    "ruido": 200,
+    "tipo_dano": "balístico",
+    "descricao": "",
+    "maos": 2
+  },
+  "Kriss Vector 9": {
+    "nome": "Kriss Vector 9",
+    "peso": 3.2,
+    "classe": "Submetralhadora",
+    "acoes_disparo": [
+      "Semi",
+      "Rajada",
+      "Auto"
+    ],
+    "modo_disparo_atual": "Auto",
+    "raridade": "Épica",
+    "calibre": "9x19mm",
+    "capacidade": 30,
+    "TPM": 1200,
+    "ruido": 100,
+    "tipo_dano": "balístico",
+    "descricao": "",
+    "maos": 2
+  },
+  "Kriss Vector 45": {
+    "nome": "Kriss Vector 45",
+    "peso": 3.2,
+    "classe": "Submetralhadora",
+    "acoes_disparo": [
+      "Semi",
+      "Rajada",
+      "Auto"
+    ],
+    "modo_disparo_atual": "Auto",
+    "raridade": "Épica",
+    "calibre": ".45 Acp",
+    "capacidade": 25,
+    "TPM": 1200,
+    "ruido": 80,
+    "tipo_dano": "balístico",
+    "descricao": "",
+    "maos": 2
+  },
+  "HK UMP-45": {
+    "nome": "HK UMP-45",
+    "peso": 2.3,
+    "classe": "Submetralhadora",
+    "acoes_disparo": [
+      "Semi",
+      "Rajada",
+      "Auto"
+    ],
+    "modo_disparo_atual": "Auto",
+    "raridade": "Rara",
+    "calibre": ".45 ACP",
+    "capacidade": 25,
+    "TPM": 600,
+    "ruido": 80,
+    "tipo_dano": "balístico",
+    "descricao": "My beloved",
+    "maos": 2
+  },
+  "HK UMP-40": {
+    "nome": "HK UMP-40",
+    "peso": 2.3,
+    "classe": "Submetralhadora",
+    "acoes_disparo": [
+      "Semi",
+      "Rajada",
+      "Auto"
+    ],
+    "modo_disparo_atual": "Auto",
+    "raridade": "Rara",
+    "calibre": ".40 S&W",
+    "capacidade": 30,
+    "TPM": 650,
+    "ruido": 100,
+    "tipo_dano": "balístico",
+    "descricao": "",
+    "maos": 2
+  },
+  "HK UMP-9": {
+    "nome": "HK UMP-9",
+    "peso": 2.3,
+    "classe": "Submetralhadora",
+    "acoes_disparo": [
+      "Semi",
+      "Rajada",
+      "Auto"
+    ],
+    "modo_disparo_atual": "Auto",
+    "raridade": "Rara",
+    "calibre": "9x19mm",
+    "capacidade": 30,
+    "TPM": 650,
+    "ruido": 100,
+    "tipo_dano": "balístico",
+    "descricao": "",
+    "maos": 2
+  },
+  "KSG-12": {
+    "nome": "KSG-12",
+    "peso": 4.2,
+    "classe": "Escopeta",
+    "acoes_disparo": [
+      "Pump"
+    ],
+    "modo_disparo_atual": "Pump",
+    "raridade": "Rara",
+    "calibre": "12ga",
+    "capacidade": 14,
+    "TPM": 200,
+    "ruido": 120,
+    "tipo_dano": "balístico",
+    "descricao": "",
+    "maos": 2
+  },
+  "GSH-18": {
+    "nome": "GSH-18",
+    "peso": 1.0,
+    "classe": "Pistola",
+    "acoes_disparo": [
+      "Semi"
+    ],
+    "modo_disparo_atual": "Semi",
+    "raridade": "Incomum",
+    "calibre": "9x19mm",
+    "capacidade": 18,
+    "TPM": 400,
+    "ruido": 120,
+    "tipo_dano": "balístico",
+    "descricao": "",
+    "maos": 1
+  },
+  "Izhezsk PB": {
+    "nome": "Izhezsk PB",
+    "peso": 0.9,
+    "classe": "Pistola",
+    "acoes_disparo": [
+      "Semi"
+    ],
+    "modo_disparo_atual": "Semi",
+    "raridade": "Incomum",
+    "calibre": "9x18mm",
+    "capacidade": 8,
+    "TPM": 500,
+    "ruido": 50,
+    "tipo_dano": "balístico",
+    "descricao": "",
+    "maos": 1
+  },
+  "Makarov": {
+    "nome": "Makarov",
+    "peso": 0.8,
+    "classe": "Pistola",
+    "acoes_disparo": [
+      "Semi"
+    ],
+    "modo_disparo_atual": "Semi",
+    "raridade": "Comum",
+    "calibre": "9x18mm",
+    "capacidade": 8,
+    "TPM": 500,
+    "ruido": 100,
+    "tipo_dano": "balístico",
+    "descricao": "",
+    "maos": 1
+  },
+  "Kar-98k": {
+    "nome": "Kar-98k",
+    "peso": 3.7,
+    "classe": "Fuzil de precisão",
+    "acoes_disparo": [
+      "Bolt"
+    ],
+    "modo_disparo_atual": "Bolt",
+    "raridade": "Incomum",
+    "calibre": "7,92x57mm",
+    "capacidade": 5,
+    "TPM": 150,
+    "ruido": 200,
+    "tipo_dano": "balístico",
+    "descricao": "",
+    "maos": 2
+  },
+  "L85A2": {
+    "nome": "L85A2",
+    "peso": 3.8,
+    "classe": "Fuzil de assalto",
+    "acoes_disparo": [
+      "Semi",
+      "Auto"
+    ],
+    "modo_disparo_atual": "Auto",
+    "raridade": "Comum",
+    "calibre": "5.56x45mm",
+    "capacidade": 30,
+    "TPM": 650,
+    "ruido": 150,
+    "tipo_dano": "balístico",
+    "descricao": "",
+    "maos": 2
+  },
+  "M110RSASS": {
+    "nome": "M110RSASS",
+    "peso": 6.6,
+    "classe": "DMR",
+    "acoes_disparo": [
+      "Semi"
+    ],
+    "modo_disparo_atual": "Semi",
+    "raridade": "Comum",
+    "calibre": "7,62x51mm",
+    "capacidade": 10,
+    "TPM": 500,
+    "ruido": 180,
+    "tipo_dano": "balístico",
+    "descricao": "",
+    "maos": 2
+  },
+  "M1 Garand": {
+    "nome": "M1 Garand",
+    "peso": 4.3,
+    "classe": "Fuzil de batalha",
+    "acoes_disparo": [
+      "Semi"
+    ],
+    "modo_disparo_atual": "Semi",
+    "raridade": "Comum",
+    "calibre": ".30-06",
+    "capacidade": 10,
+    "TPM": 400,
+    "ruido": 200,
+    "tipo_dano": "balístico",
+    "descricao": "",
+    "maos": 2
+  },
+  "M200 Intervention 408": {
+    "nome": "M200 Intervention 408",
+    "peso": 14.0,
+    "classe": "Fuzil de precisão",
+    "acoes_disparo": [
+      "Bolt"
+    ],
+    "modo_disparo_atual": "Bolt",
+    "raridade": "Lendária",
+    "calibre": ".408 Cheytac",
+    "capacidade": 10,
+    "TPM": 50,
+    "ruido": 200,
+    "tipo_dano": "balístico",
+    "descricao": "",
+    "maos": 2
+  },
+  "M200 Intervention 375": {
+    "nome": "M200 Intervention 375",
+    "peso": 14.0,
+    "classe": "Fuzil de precisão",
+    "acoes_disparo": [
+      "Bolt"
+    ],
+    "modo_disparo_atual": "Bolt",
+    "raridade": "Lendária",
+    "calibre": ".375 Cheytac",
+    "capacidade": 10,
+    "TPM": 50,
+    "ruido": 200,
+    "tipo_dano": "balístico",
+    "descricao": "",
+    "maos": 2
+  },
+  "M21": {
+    "nome": "M21",
+    "peso": 5.0,
+    "classe": "DMR",
+    "acoes_disparo": [
+      "Semi"
+    ],
+    "modo_disparo_atual": "Semi",
+    "raridade": "Comum",
+    "calibre": "7.62x51mm",
+    "capacidade": 10,
+    "TPM": 350,
+    "ruido": 180,
+    "tipo_dano": "balístico",
+    "descricao": "",
+    "maos": 2
+  },
+  "M27 IAR": {
+    "nome": "M27 IAR",
+    "peso": 3.6,
+    "classe": "DMR",
+    "acoes_disparo": [
+      "Semi"
+    ],
+    "modo_disparo_atual": "Semi",
+    "raridade": "Comum",
+    "calibre": "5.56x45mm",
+    "capacidade": 20,
+    "TPM": 400,
+    "ruido": 150,
+    "tipo_dano": "balístico",
+    "descricao": "",
+    "maos": 2
+  },
+  "M4": {
+    "nome": "M4",
+    "peso": 2.9,
+    "classe": "Carabina",
+    "acoes_disparo": [
+      "Semi",
+      "Rajada"
+    ],
+    "modo_disparo_atual": "Rajada",
+    "raridade": "Incomum",
+    "calibre": "5.56x45mm",
+    "capacidade": 30,
+    "TPM": 850,
+    "ruido": 150,
+    "tipo_dano": "balístico",
+    "descricao": "",
+    "maos": 2
+  },
+  "M249": {
+    "nome": "M249",
+    "peso": 7.5,
+    "classe": "Metralhadora leve",
+    "acoes_disparo": [
+      "Semi",
+      "Auto"
+    ],
+    "modo_disparo_atual": "Auto",
+    "raridade": "Comum",
+    "calibre": "5.56x45mm",
+    "capacidade": 100,
+    "TPM": 600,
+    "ruido": 150,
+    "tipo_dano": "balístico",
+    "descricao": "",
+    "maos": 2
+  },
+  "M40A1": {
+    "nome": "M40A1",
+    "peso": 6.5,
+    "classe": "Fuzil de precisão",
+    "acoes_disparo": [
+      "Bolt"
+    ],
+    "modo_disparo_atual": "Bolt",
+    "raridade": "Comum",
+    "calibre": ".308 Remington",
+    "capacidade": 5,
+    "TPM": 150,
+    "ruido": 180,
+    "tipo_dano": "balístico",
+    "descricao": "",
+    "maos": 2
+  },
+  "M4A1 SOPMOD Block II": {
+    "nome": "M4A1 SOPMOD Block II",
+    "peso": 2.9,
+    "classe": "Fuzil de assalto",
+    "acoes_disparo": [
+      "Semi",
+      "Auto"
+    ],
+    "modo_disparo_atual": "Semi",
+    "raridade": "Rara",
+    "calibre": "5.56x45mm",
+    "capacidade": 30,
+    "TPM": 850,
+    "ruido": 150,
+    "tipo_dano": "balístico",
+    "descricao": "",
+    "maos": 2
+  },
+  "M82A1": {
+    "nome": "M82A1",
+    "peso": 13.0,
+    "classe": "Fuzil antimaterial",
+    "acoes_disparo": [
+      "Semi"
+    ],
+    "modo_disparo_atual": "Semi",
+    "raridade": "Comum",
+    "calibre": ".50 BMG",
+    "capacidade": 10,
+    "TPM": 300,
+    "ruido": 200,
+    "tipo_dano": "balístico",
+    "descricao": "",
+    "maos": 2
+  },
+  "MAC-10": {
+    "nome": "MAC-10",
+    "peso": 2.8,
+    "classe": "Submetralhadora",
+    "acoes_disparo": [
+      "Semi",
+      "Auto"
+    ],
+    "modo_disparo_atual": "Auto",
+    "raridade": "Comum",
+    "calibre": ".45 Acp",
+    "capacidade": 30,
+    "TPM": 1050,
+    "ruido": 80,
+    "tipo_dano": "balístico",
+    "descricao": "",
+    "maos": 1
+  },
+  "MG36": {
+    "nome": "MG36",
+    "peso": 3.8,
+    "classe": "Metralhadora leve",
+    "acoes_disparo": [
+      "Semi",
+      "Auto"
+    ],
+    "modo_disparo_atual": "Semi",
+    "raridade": "Comum",
+    "calibre": "5.56x45mm",
+    "capacidade": 100,
+    "TPM": 700,
+    "ruido": 150,
+    "tipo_dano": "balístico",
+    "descricao": "",
+    "maos": 2
+  },
+  "MG3Kws": {
+    "nome": "MG3Kws",
+    "peso": 11.0,
+    "classe": "Metralhadora leve",
+    "acoes_disparo": [
+      "Semi",
+      "Auto"
+    ],
+    "modo_disparo_atual": "Auto",
+    "raridade": "Incomum",
+    "calibre": "7.62x51mm",
+    "capacidade": 50,
+    "TPM": 1000,
+    "ruido": 180,
+    "tipo_dano": "balístico",
+    "descricao": "",
+    "maos": 2
+  },
+  "Micro Uzi": {
+    "nome": "Micro Uzi",
+    "peso": 1.5,
+    "classe": "Pistola",
+    "acoes_disparo": [
+      "Semi",
+      "Auto"
+    ],
+    "modo_disparo_atual": "Auto",
+    "raridade": "Comum",
+    "calibre": "9x19mm",
+    "capacidade": 25,
+    "TPM": 1250,
+    "ruido": 120,
+    "tipo_dano": "balístico",
+    "descricao": "",
+    "maos": 1
+  },
+  "MK23 Socom": {
+    "nome": "MK23 Socom",
+    "peso": 1.2,
+    "classe": "Pistola",
+    "acoes_disparo": [
+      "Semi"
+    ],
+    "modo_disparo_atual": "Semi",
+    "raridade": "Rara",
+    "calibre": ".45 Acp",
+    "capacidade": 12,
+    "TPM": 400,
+    "ruido": 80,
+    "tipo_dano": "balístico",
+    "descricao": "",
+    "maos": 1
+  },
+  "MK47 Mutant": {
+    "nome": "MK47 Mutant",
+    "peso": 2.3,
+    "classe": "Fuzil de assalto",
+    "acoes_disparo": [
+      "Semi",
+      "Auto"
+    ],
+    "modo_disparo_atual": "Auto",
+    "raridade": "Incomum",
+    "calibre": "7.62x39mm",
+    "capacidade": 30,
+    "TPM": 700,
+    "ruido": 170,
+    "tipo_dano": "balístico",
+    "descricao": "",
+    "maos": 2
+  },
+  "Mosin Nagant": {
+    "nome": "Mosin Nagant",
+    "peso": 3.6,
+    "classe": "Fuzil de precisão",
+    "acoes_disparo": [
+      "Bolt"
+    ],
+    "modo_disparo_atual": "Bolt",
+    "raridade": "Comum",
+    "calibre": "7.62x54mmr",
+    "capacidade": 5,
+    "TPM": 200,
+    "ruido": 200,
+    "tipo_dano": "balístico",
+    "descricao": "",
+    "maos": 2
+  },
+  "MP40": {
+    "nome": "MP40",
+    "peso": 2.5,
+    "classe": "Submetralhadora",
+    "acoes_disparo": [
+      "Semi",
+      "Auto"
+    ],
+    "modo_disparo_atual": "Auto",
+    "raridade": "Comum",
+    "calibre": "9x19mm",
+    "capacidade": 32,
+    "TPM": 540,
+    "ruido": 120,
+    "tipo_dano": "balístico",
+    "descricao": "",
+    "maos": 2
+  },
+  "MP412 Rex": {
+    "nome": "MP412 Rex",
+    "peso": 1.4,
+    "classe": "Revolver",
+    "acoes_disparo": [
+      "Dupla",
+      "Unica"
+    ],
+    "modo_disparo_atual": "Dupla",
+    "raridade": "Comum",
+    "calibre": ".357 Magnum",
+    "capacidade": 6,
+    "TPM": 300,
+    "ruido": 150,
+    "tipo_dano": "balístico",
+    "requer_duas_maos": false,
+    "descricao": ""
+  },
+  "MP-443 Grach": {
+    "nome": "MP-443 Grach",
+    "peso": 1.0,
+    "classe": "Pistola",
+    "acoes_disparo": [
+      "Semi"
+    ],
+    "modo_disparo_atual": "Semi",
+    "raridade": "Comum",
+    "calibre": "9x19mm",
+    "capacidade": 18,
+    "TPM": 400,
+    "ruido": 120,
+    "tipo_dano": "balístico",
+    "descricao": "",
+    "maos": 1
+  },
+  "MP9": {
+    "nome": "MP9",
+    "peso": 1.4,
+    "classe": "Submetralhadora",
+    "acoes_disparo": [
+      "Semi",
+      "Auto"
+    ],
+    "modo_disparo_atual": "Auto",
+    "raridade": "Incomum",
+    "calibre": "9x19mm",
+    "capacidade": 30,
+    "TPM": 900,
+    "ruido": 120,
+    "tipo_dano": "balístico",
+    "descricao": "",
+    "maos": 2
+  },
+  "P90": {
+    "nome": "P90",
+    "peso": 2.5,
+    "classe": "Submetralhadora",
+    "acoes_disparo": [
+      "Semi",
+      "Auto"
+    ],
+    "modo_disparo_atual": "Auto",
+    "raridade": "Comum",
+    "calibre": "5.7x28mm",
+    "capacidade": 50,
+    "TPM": 900,
+    "ruido": 120,
+    "tipo_dano": "balístico",
+    "descricao": "",
+    "maos": 2
+  },
+  "PKM": {
+    "nome": "PKM",
+    "peso": 7.5,
+    "classe": "Metralhadora leve",
+    "acoes_disparo": [
+      "Semi",
+      "Auto"
+    ],
+    "modo_disparo_atual": "Auto",
+    "raridade": "Comum",
+    "calibre": "7.62x39mm",
+    "capacidade": 100,
+    "TPM": 650,
+    "ruido": 170,
+    "tipo_dano": "balístico",
+    "descricao": "",
+    "maos": 2
+  },
+  "PKP Pecheneg": {
+    "nome": "PKP Pecheneg",
+    "peso": 8.2,
+    "classe": "Metralhadora leve",
+    "acoes_disparo": [
+      "Semi",
+      "Auto"
+    ],
+    "modo_disparo_atual": "Auto",
+    "raridade": "Rara",
+    "calibre": "7.62x54mmr",
+    "capacidade": 100,
+    "TPM": 700,
+    "ruido": 200,
+    "tipo_dano": "balístico",
+    "descricao": "",
+    "maos": 2
+  },
+  "PP-19 Bizon": {
+    "nome": "PP-19 Bizon",
+    "peso": 2.1,
+    "classe": "Submetralhadora",
+    "acoes_disparo": [
+      "Semi",
+      "Auto"
+    ],
+    "modo_disparo_atual": "Auto",
+    "raridade": "Comum",
+    "calibre": "9x18mm",
+    "capacidade": 64,
+    "TPM": 700,
+    "ruido": 100,
+    "tipo_dano": "balístico",
+    "descricao": "",
+    "maos": 2
+  },
+  "PP-19 Vityaz": {
+    "nome": "PP-19 Vityaz",
+    "peso": 2.9,
+    "classe": "Submetralhadora",
+    "acoes_disparo": [
+      "Semi",
+      "Auto"
+    ],
+    "modo_disparo_atual": "Auto",
+    "raridade": "Comum",
+    "calibre": "9x19mm",
+    "capacidade": 30,
+    "TPM": 700,
+    "ruido": 120,
+    "tipo_dano": "balístico",
+    "descricao": "",
+    "maos": 2
+  },
+  "PP-2000": {
+    "nome": "PP-2000",
+    "peso": 1.4,
+    "classe": "Submetralhadora",
+    "acoes_disparo": [
+      "Semi",
+      "Auto"
+    ],
+    "modo_disparo_atual": "Auto",
+    "raridade": "Comum",
+    "calibre": "9x19mm",
+    "capacidade": 40,
+    "TPM": 600,
+    "ruido": 120,
+    "tipo_dano": "balístico",
+    "descricao": "",
+    "maos": 2
+  },
+  "PP-91 Kedr": {
+    "nome": "PP-91 Kedr",
+    "peso": 1.5,
+    "classe": "Pistola",
+    "acoes_disparo": [
+      "Semi",
+      "Auto"
+    ],
+    "modo_disparo_atual": "Auto",
+    "raridade": "Comum",
+    "calibre": "9x18mm",
+    "capacidade": 20,
+    "TPM": 1000,
+    "ruido": 100,
+    "tipo_dano": "balístico",
+    "descricao": "",
+    "maos": 1
+  },
+  "PP-9 Klin": {
+    "nome": "PP-9 Klin",
+    "peso": 1.5,
+    "classe": "Pistola",
+    "acoes_disparo": [
+      "Semi",
+      "Auto"
+    ],
+    "modo_disparo_atual": "Auto",
+    "raridade": "Incomum",
+    "calibre": "9x18mm",
+    "capacidade": 20,
+    "TPM": 1060,
+    "ruido": 100,
+    "tipo_dano": "balístico",
+    "descricao": "",
+    "maos": 1
+  },
+  "PPSH-41": {
+    "nome": "PPSH-41",
+    "peso": 3.6,
+    "classe": "Submetralhadora",
+    "acoes_disparo": [
+      "Semi",
+      "Auto"
+    ],
+    "modo_disparo_atual": "Auto",
+    "raridade": "Comum",
+    "calibre": "7.62x25mm",
+    "capacidade": 71,
+    "TPM": 1000,
+    "ruido": 100,
+    "tipo_dano": "balístico",
+    "descricao": "",
+    "maos": 2
+  },
+  "PSG-1": {
+    "nome": "PSG-1",
+    "peso": 7.2,
+    "classe": "DMR",
+    "acoes_disparo": [
+      "Semi"
+    ],
+    "modo_disparo_atual": "Semi",
+    "raridade": "Incomum",
+    "calibre": "7.62x51mm",
+    "capacidade": 10,
+    "TPM": 300,
+    "ruido": 180,
+    "tipo_dano": "balístico",
+    "descricao": "",
+    "maos": 2
+  },
+  "RPD": {
+    "nome": "RPD",
+    "peso": 7.5,
+    "classe": "Metralhadora leve",
+    "acoes_disparo": [
+      "Semi",
+      "Auto"
+    ],
+    "modo_disparo_atual": "Auto",
+    "raridade": "Comum",
+    "calibre": "7.62x39mm",
+    "capacidade": 100,
+    "TPM": 650,
+    "ruido": 170,
+    "tipo_dano": "balístico",
+    "descricao": "",
+    "maos": 2
+  },
+  "RPK": {
+    "nome": "RPK",
+    "peso": 4.7,
+    "classe": "Metralhadora leve",
+    "acoes_disparo": [
+      "Semi",
+      "Auto"
+    ],
+    "modo_disparo_atual": "Semi",
+    "raridade": "Comum",
+    "calibre": "7.62x39mm",
+    "capacidade": 45,
+    "TPM": 600,
+    "ruido": 170,
+    "tipo_dano": "balístico",
+    "descricao": "",
+    "maos": 2
+  },
+  "RPK-12": {
+    "nome": "RPK-12",
+    "peso": 3.5,
+    "classe": "Metralhadora leve",
+    "acoes_disparo": [
+      "Semi",
+      "Auto"
+    ],
+    "modo_disparo_atual": "Auto",
+    "raridade": "Comum",
+    "calibre": "5.45x39mm",
+    "capacidade": 45,
+    "TPM": 650,
+    "ruido": 150,
+    "tipo_dano": "balístico",
+    "descricao": "",
+    "maos": 2
+  },
+  "RPK-16": {
+    "nome": "RPK-16",
+    "peso": 4.5,
+    "classe": "Metralhadora leve",
+    "acoes_disparo": [
+      "Semi",
+      "Auto"
+    ],
+    "modo_disparo_atual": "Auto",
+    "raridade": "Incomum",
+    "calibre": "5.45x39mm",
+    "capacidade": 95,
+    "TPM": 700,
+    "ruido": 150,
+    "tipo_dano": "balístico",
+    "descricao": "",
+    "maos": 2
+  },
+  "RPK-74": {
+    "nome": "RPK-74",
+    "peso": 4.7,
+    "classe": "Metralhadora leve",
+    "acoes_disparo": [
+      "Semi",
+      "Auto"
+    ],
+    "modo_disparo_atual": "Auto",
+    "raridade": "Comum",
+    "calibre": "5.45x39mm",
+    "capacidade": 45,
+    "TPM": 650,
+    "ruido": 150,
+    "tipo_dano": "balístico",
+    "descricao": "",
+    "maos": 2
+  },
+  "SA58 SPR": {
+    "nome": "SA58 SPR",
+    "peso": 4.6,
+    "classe": "DMR",
+    "acoes_disparo": [
+      "Semi"
+    ],
+    "modo_disparo_atual": "Semi",
+    "raridade": "Comum",
+    "calibre": "7.62x51mm",
+    "capacidade": 20,
+    "TPM": 400,
+    "ruido": 180,
+    "tipo_dano": "balístico",
+    "descricao": "",
+    "maos": 2
+  },
+  "SCAR-H": {
+    "nome": "SCAR-H",
+    "peso": 3.7,
+    "classe": "Fuzil de batalha",
+    "acoes_disparo": [
+      "Semi",
+      "Auto"
+    ],
+    "modo_disparo_atual": "Auto",
+    "raridade": "Comum",
+    "calibre": "7.62x51mm",
+    "capacidade": 20,
+    "TPM": 600,
+    "ruido": 180,
+    "tipo_dano": "balístico",
+    "descricao": "",
+    "maos": 2
+  },
+  "SCAR SSR": {
+    "nome": "SCAR SSR",
+    "peso": 6.2,
+    "classe": "DMR",
+    "acoes_disparo": [
+      "Semi"
+    ],
+    "modo_disparo_atual": "Semi",
+    "raridade": "Comum",
+    "calibre": "7.62x51mm",
+    "capacidade": 20,
+    "TPM": 250,
+    "ruido": 180,
+    "tipo_dano": "balístico",
+    "descricao": "",
+    "maos": 2
+  },
+  "SCAR-L": {
+    "nome": "SCAR-L",
+    "peso": 3.3,
+    "classe": "Fuzil de assalto",
+    "acoes_disparo": [
+      "Semi",
+      "Auto"
+    ],
+    "modo_disparo_atual": "Auto",
+    "raridade": "Comum",
+    "calibre": "5.56x45mm",
+    "capacidade": 30,
+    "TPM": 625,
+    "ruido": 150,
+    "tipo_dano": "balístico",
+    "descricao": "",
+    "maos": 2
+  },
+  "SHAK-12": {
+    "nome": "SHAK-12",
+    "peso": 6.0,
+    "classe": "Fuzil de batalha",
+    "acoes_disparo": [
+      "Semi",
+      "Auto"
+    ],
+    "modo_disparo_atual": "Auto",
+    "raridade": "Rara",
+    "calibre": "12.7x55mm",
+    "capacidade": 20,
+    "TPM": 500,
+    "ruido": 120,
+    "tipo_dano": "balístico",
+    "descricao": "",
+    "maos": 2
+  },
+  "Skorpion VZ": {
+    "nome": "Skorpion VZ",
+    "peso": 1.2,
+    "classe": "Pistola",
+    "acoes_disparo": [
+      "Semi",
+      "Auto"
+    ],
+    "modo_disparo_atual": "Auto",
+    "raridade": "Comum",
+    "calibre": "9x18mm",
+    "capacidade": 20,
+    "TPM": 600,
+    "ruido": 100,
+    "tipo_dano": "balístico",
+    "descricao": "",
+    "maos": 2
+  },
+  "SKS": {
+    "nome": "SKS",
+    "peso": 3.8,
+    "classe": "DMR",
+    "acoes_disparo": [
+      "Semi"
+    ],
+    "modo_disparo_atual": "Semi",
+    "raridade": "Comum",
+    "calibre": "7.62x39mm",
+    "capacidade": 20,
+    "TPM": 500,
+    "ruido": 170,
+    "tipo_dano": "balístico",
+    "descricao": "",
+    "maos": 2
+  },
+  "Stevens DB": {
+    "nome": "Stevens DB",
+    "peso": 3.4,
+    "classe": "Escopeta",
+    "acoes_disparo": [
+      "Semi"
+    ],
+    "modo_disparo_atual": "Semi",
+    "raridade": "Comum",
+    "calibre": "12ga",
+    "capacidade": 2,
+    "TPM": 600,
+    "ruido": 150,
+    "tipo_dano": "balístico",
+    "descricao": "",
+    "maos": 2
+  },
+  "SV-98": {
+    "nome": "SV-98",
+    "peso": 5.8,
+    "classe": "Fuzil de precisão",
+    "acoes_disparo": [
+      "Bolt"
+    ],
+    "modo_disparo_atual": "Bolt",
+    "raridade": "Comum",
+    "calibre": "7.62x54mmr",
+    "capacidade": 10,
+    "TPM": 150,
+    "ruido": 200,
+    "tipo_dano": "balístico",
+    "descricao": "",
+    "maos": 2
+  },
+  "SVK-12": {
+    "nome": "SVK-12",
+    "peso": 4.5,
+    "classe": "DMR",
+    "acoes_disparo": [
+      "Semi",
+      "Auto",
+      "Rajada"
+    ],
+    "modo_disparo_atual": "Semi",
+    "raridade": "Comum",
+    "calibre": "7.62x54mmr",
+    "capacidade": 20,
+    "TPM": 700,
+    "ruido": 200,
+    "tipo_dano": "balístico",
+    "descricao": "",
+    "maos": 2
+  },
+  "SW357": {
+    "nome": "SW357",
+    "peso": 1.4,
+    "classe": "Revolver",
+    "acoes_disparo": [
+      "Dupla",
+      "Unica"
+    ],
+    "modo_disparo_atual": "Dupla",
+    "raridade": "Comum",
+    "calibre": ".357 Magnum",
+    "capacidade": 6,
+    "TPM": 300,
+    "ruido": 150,
+    "tipo_dano": "balístico",
+    "requer_duas_maos": false,
+    "descricao": ""
+  },
+  "TEC-9": {
+    "nome": "TEC-9",
+    "peso": 1.4,
+    "classe": "Pistola",
+    "acoes_disparo": [
+      "Semi",
+      "Auto"
+    ],
+    "modo_disparo_atual": "Semi",
+    "raridade": "Comum",
+    "calibre": "9x19mm",
+    "capacidade": 20,
+    "TPM": 1300,
+    "ruido": 120,
+    "tipo_dano": "balístico",
+    "descricao": "",
+    "maos": 1
+  },
+  "M1921 Thompson": {
+    "nome": "M1921 Thompson",
+    "peso": 4.5,
+    "classe": "Submetralhadora",
+    "acoes_disparo": [
+      "Semi",
+      "Auto"
+    ],
+    "modo_disparo_atual": "Auto",
+    "raridade": "Comum",
+    "calibre": ".45 Acp",
+    "capacidade": 30,
+    "TPM": 900,
+    "ruido": 80,
+    "tipo_dano": "balístico",
+    "descricao": "",
+    "maos": 2
+  },
+  "M1928 Thompson": {
+    "nome": "M1928 Thompson",
+    "peso": 4.9,
+    "classe": "Submetralhadora",
+    "acoes_disparo": [
+      "Semi",
+      "Auto"
+    ],
+    "modo_disparo_atual": "Auto",
+    "raridade": "Incomum",
+    "calibre": ".45 Acp",
+    "capacidade": 30,
+    "TPM": 750,
+    "ruido": 80,
+    "tipo_dano": "balístico",
+    "descricao": "",
+    "maos": 2
+  },
+  "TRG-42": {
+    "nome": "TRG-42",
+    "peso": 6.0,
+    "classe": "Fuzil de precisão",
+    "acoes_disparo": [
+      "Bolt"
+    ],
+    "modo_disparo_atual": "Bolt",
+    "raridade": "Incomum",
+    "calibre": ".338 Lapua Magnum",
+    "capacidade": 5,
+    "TPM": 150,
+    "ruido": 200,
+    "tipo_dano": "balístico",
+    "descricao": "",
+    "maos": 2
+  },
+  "Ultimax 100": {
+    "nome": "Ultimax 100",
+    "peso": 4.9,
+    "classe": "Metralhadora leve",
+    "acoes_disparo": [
+      "Semi",
+      "Auto"
+    ],
+    "modo_disparo_atual": "Auto",
+    "raridade": "Comum",
+    "calibre": "5.56x45mm",
+    "capacidade": 100,
+    "TPM": 600,
+    "ruido": 150,
+    "tipo_dano": "balístico",
+    "descricao": "",
+    "maos": 2
+  },
+  "USP-9": {
+    "nome": "USP-9",
+    "peso": 1.3,
+    "classe": "Pistola",
+    "acoes_disparo": [
+      "Semi"
+    ],
+    "modo_disparo_atual": "Semi",
+    "raridade": "Incomum",
+    "calibre": "9x19mm",
+    "capacidade": 15,
+    "TPM": 400,
+    "ruido": 120,
+    "tipo_dano": "balístico",
+    "descricao": "",
+    "maos": 1
+  },
+  "USP-45": {
+    "nome": "USP-45",
+    "peso": 1.3,
+    "classe": "Pistola",
+    "acoes_disparo": [
+      "Semi"
+    ],
+    "modo_disparo_atual": "Semi",
+    "raridade": "Incomum",
+    "calibre": ".45 Acp",
+    "capacidade": 12,
+    "TPM": 400,
+    "ruido": 80,
+    "tipo_dano": "balístico",
+    "descricao": "",
+    "maos": 1
+  },
+  "USP-40": {
+    "nome": "USP-40",
+    "peso": 1.3,
+    "classe": "Pistola",
+    "acoes_disparo": [
+      "Semi"
+    ],
+    "modo_disparo_atual": "Semi",
+    "raridade": "Incomum",
+    "calibre": ".40 S&W",
+    "capacidade": 14,
+    "TPM": 400,
+    "ruido": 100,
+    "tipo_dano": "balístico",
+    "descricao": "",
+    "maos": 1
+  },
+  "Uzi": {
+    "nome": "Uzi",
+    "peso": 2.2,
+    "classe": "Submetralhadora",
+    "acoes_disparo": [
+      "Semi",
+      "Auto"
+    ],
+    "modo_disparo_atual": "Auto",
+    "raridade": "Comum",
+    "calibre": "9x19mm",
+    "capacidade": 30,
+    "TPM": 600,
+    "ruido": 120,
+    "tipo_dano": "balístico",
+    "descricao": "",
+    "maos": 2
+  },
+  "VEPR-12": {
+    "nome": "VEPR-12",
+    "peso": 4.2,
+    "classe": "Escopeta",
+    "acoes_disparo": [
+      "Semi"
+    ],
+    "modo_disparo_atual": "Semi",
+    "raridade": "Comum",
+    "calibre": "12ga",
+    "capacidade": 8,
+    "TPM": 300,
+    "ruido": 150,
+    "tipo_dano": "balístico",
+    "descricao": "",
+    "maos": 2
+  },
+  "VSS Vintorez": {
+    "nome": "VSS Vintorez",
+    "peso": 2.6,
+    "classe": "DMR",
+    "acoes_disparo": [
+      "Semi",
+      "Auto"
+    ],
+    "modo_disparo_atual": "Semi",
+    "raridade": "Comum",
+    "calibre": "9x39mm",
+    "capacidade": 20,
+    "TPM": 700,
+    "ruido": 80,
+    "tipo_dano": "balístico",
+    "descricao": "",
+    "maos": 2
+  },
+  "WA2000": {
+    "nome": "WA2000",
+    "peso": 7.0,
+    "classe": "Fuzil de precisão",
+    "acoes_disparo": [
+      "Semi"
+    ],
+    "modo_disparo_atual": "Semi",
+    "raridade": "Rara",
+    "calibre": ".300 Winchester Magnum",
+    "capacidade": 5,
+    "TPM": 300,
+    "ruido": 200,
+    "tipo_dano": "balístico",
+    "descricao": "",
+    "maos": 2
+  },
+  "XM8": {
+    "nome": "XM8",
+    "peso": 3.6,
+    "classe": "Fuzil de assalto",
+    "acoes_disparo": [
+      "Semi",
+      "Auto"
+    ],
+    "modo_disparo_atual": "Auto",
+    "raridade": "Rara",
+    "calibre": "5.56x45mm",
+    "capacidade": 30,
+    "TPM": 750,
+    "ruido": 150,
+    "tipo_dano": "balístico",
+    "descricao": "",
+    "maos": 2
+  }
+}

@@ -1,0 +1,8 @@
+{
+"Coldre": {"nome": "Coldre de pistola","peso": 1.0,"slots_criados":[{"nome": "Coldre de pistola","tipo": "suporte","aceita": ["Ranged"],"requer_maos": 1,"saque_rapido": false}]},
+"Bainha": {"nome": "Bainha","peso": 1.0,"slots_criados":[{"nome": "Bainha","tipo": "suporte","aceita": ["Ranged"],"requer_maos": 1,"saque_rapido": false}]},
+"Cinto tático": {"nome": "Cinto tático","peso": 1.0,"slots_criados":[{"nome": "Cinto tático 1","tipo": "suporte","aceita": ["Ranged","Melee"],"requer_maos": 1,"saque_rapido": false},{"nome": "Cinto tático 2","tipo": "suporte","aceita": ["Ranged","Melee"],"requer_maos": 1,"saque_rapido": false}]},
+
+"Sling frontal": {"nome": "Sling frontal","peso": 0,"slots_criados": [{"nome":"Sling frontal","tipo": "suporte","aceita": ["Ranged"],"requer_maos": 2,"saque_rapido": false}]},
+"Gancho": {"nome": "Gancho","peso": 0,"slots_criados": [{"nome":"Gancho","tipo": "suporte","aceita": ["Melee"],"requer_maos": 2,"saque_rapido": false}]}
+}
